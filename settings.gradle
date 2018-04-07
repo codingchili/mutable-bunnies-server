@@ -1,0 +1,10 @@
+rootProject.name = 'chili-game-ext'
+include 'common',
+        'services:authentication',
+        'services:realm',
+        'services:realmregistry',
+        'services:social',
+        'services:patching',
+        'services:router',
+        'services:logging',
+        'services:website'

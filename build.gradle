@@ -1,0 +1,110 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven'
+
+project.version = "1.0.29-SNAPSHOT"
+project.group = 'com.github.codingchili.chili-game-ext'
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'idea'
+
+    version = rootProject.version
+    group = rootProject.group
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    sourceSets {
+        main {
+            java {
+                srcDir 'main/java'
+            }
+            resources {
+                srcDir 'main/resources'
+            }
+        }
+        test {
+            java {
+                srcDir 'test/java'
+            }
+            resources {
+                srcDir 'test/resources'
+            }
+        }
+    }
+
+    repositories {
+        mavenLocal()
+        maven { url 'https://jitpack.io' }
+        mavenCentral()
+    }
+
+    test {
+        testLogging {
+            exceptionFormat "full"
+        }
+        reports.html.enabled = false
+    }
+}
+
+task archivePrototype(type: Zip, dependsOn: subprojects.jar) {
+    baseName = 'prototype'
+    from fileTree('prototype')
+
+    from (configurations.compile) {
+        into 'lib'
+    }
+
+    from (project('common').jar) {
+        into 'lib'
+    }
+
+    from (project('services').subprojects.jar) {
+        into 'lib'
+    }
+}
+
+task prototype(type: JavaExec, dependsOn: subprojects.classes) {
+    workingDir = 'prototype'
+    main = 'com.codingchili.core.Launcher'
+
+    if (project.hasProperty('exec')) {
+        args += exec
+    }
+
+    subprojects.each {
+        classpath += it.sourceSets.main.runtimeClasspath
+    }
+}
+
+task alljavadoc(type: Javadoc) {
+    source subprojects.collect { it.sourceSets.main.allJava }
+    classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
+}
+
+task javadocJar(type: Jar, dependsOn: alljavadoc) {
+    classifier = 'javadoc'
+    from alljavadoc.destinationDir
+}
+
+task testReport(type: TestReport, dependsOn: 'build') {
+    destinationDir = file("$buildDir/reports/allTests")
+    reportOn subprojects*.test
+}
+
+task archiveTestReport(type: Zip, dependsOn: testReport) {
+    baseName = 'testreport'
+    from fileTree(file("$buildDir/reports/allTests"))
+}
+
+javadoc.dependsOn javadocJar
+
+artifacts {
+    archives javadocJar
+}

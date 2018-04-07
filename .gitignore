@@ -1,0 +1,11 @@
+.gradle
+.idea/
+lib/
+target/
+build/
+core/conf/
+prototype/website/bower_components/
+core/test/resources/Configurations/testfile.json
+core/db/
+services/logging/db/
+db
