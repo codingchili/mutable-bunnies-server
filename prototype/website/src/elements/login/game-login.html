@@ -59,7 +59,7 @@
                              type="password"></paper-input>
 
                 <div hidden$="{{hideregisterform}}">
-                    <paper-input value="{{password-repeat}}" label="Password (repeat)" type="password"
+                    <paper-input value="{{passwordrepeat}}" label="Password (repeat)" type="password"
                                  on-keydown="submit" id="password-repeat"></paper-input>
                     <paper-input value="{{email}}" label="Email (optional)" on-keydown="submit"></paper-input>
 
@@ -124,7 +124,7 @@
         }
 
         register(e) {
-            if (this.password === this['password-repeat']) {
+            if (this.password === this['passwordrepeat']) {
                 this.showToast('Registering..');
                 this.authentication.register({
                     accepted: (data) => {
@@ -155,7 +155,7 @@
 
         resetForm() {
             this.password = "";
-            this["password-repeat"] = "";
+            this["passwordrepeat"] = "";
             this.email = "";
             this.showLoginForm();
         }

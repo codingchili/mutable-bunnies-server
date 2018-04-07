@@ -158,7 +158,7 @@
                             <paper-ripple></paper-ripple>
 
                             <div class="class-image">
-                                <img src="{{realm.resources}}/gui/class/{{class.name}}.svg">
+                                <img src="{{realm.resources}}/gui/class/[[class.name]].svg">
                                 <paper-tooltip position="left">
                                     <div class="class-stats">
                                         <template is="dom-repeat" items="{{getStats(class)}}" as="stats">
@@ -170,7 +170,7 @@
                                 </paper-tooltip>
                             </div>
 
-                            <div class="class-name">{{class.name}}</div>
+                            <div class="class-name">[[class.name]]</div>
                             <div class="class-description">{{class.description}}</div>
 
                             <div class="spell-container">

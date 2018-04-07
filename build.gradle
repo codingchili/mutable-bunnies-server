@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven'
@@ -53,7 +55,25 @@ subprojects {
     }
 }
 
-task archivePrototype(type: Zip, dependsOn: subprojects.jar) {
+ext {
+    polymerBin = Os.isFamily(Os.FAMILY_WINDOWS) ? 'polymer.cmd' : 'polymer'
+    bowerBin = Os.isFamily(Os.FAMILY_WINDOWS) ? 'bower.cmd' : 'bower'
+}
+
+task polymer {
+    doLast {
+        exec {
+            workingDir "./prototype/website"
+            commandLine = [bowerBin, "install"]
+        }
+        exec {
+            workingDir "./prototype/website"
+            commandLine = [polymerBin, "build"]
+        }
+    }
+}
+
+task archivePrototype(type: Zip, dependsOn: [subprojects.jar, polymer]) {
     baseName = 'prototype'
     from fileTree('prototype')
 
