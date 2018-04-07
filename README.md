@@ -2,6 +2,8 @@
 
 A collection of game-oriented microservices that builds upon chili-core. One day it will be complete game.
 
+![realm-list.png](https://raw.githubusercontent.com/codingchili/chili-game-ext/master/realm-list.png)
+
 ## Building
 
 - Requires Polymer-cli.
