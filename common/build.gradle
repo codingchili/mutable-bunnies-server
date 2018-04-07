@@ -1,3 +1,3 @@
 dependencies {
-    compile "com.github.codingchili.chili-core:core:$project.version"
+    compile "com.github.codingchili.chili-core:core:$project.version@jar"
 }

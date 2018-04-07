@@ -2,7 +2,8 @@
   "entrypoint": "index.html",
   "fragments": [],
   "sources": [
-    "./src/**"
+    "./src/**",
+    "./bower_components/*"
   ],
   "extraDependencies": [
     "bower_components/webcomponentsjs/*.js"
@@ -24,6 +25,7 @@
   "lint": {
     "rules": [
       "polymer-2"
-    ]
+    ],
+    "ignoreWarnings": ["databind-with-unknown-property"]
   }
 }

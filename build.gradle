@@ -75,18 +75,28 @@ task polymer {
 
 task archivePrototype(type: Zip, dependsOn: [subprojects.jar, polymer]) {
     baseName = 'prototype'
-    from fileTree('prototype')
 
-    from (configurations.compile) {
-        into 'lib'
+    into('/') {
+        from ('prototype/script') {
+            fileMode = 0755
+            include '**/*'
+            expand(jar: jar.outputs.files[0].name, app: project.name, version: project.version)
+        }
     }
 
-    from (project('common').jar) {
-        into 'lib'
+    into('/conf') {
+        from fileTree('prototype/conf')
     }
 
-    from (project('services').subprojects.jar) {
-        into 'lib'
+    into('website') {
+        from fileTree('prototype/website/build/default')
+    }
+
+    into('lib') {
+        from(project('common').configurations.compile)
+        from(project('services').configurations.compile)
+        from(project('common').jar)
+        from(project('services').subprojects.jar)
     }
 }
 
@@ -96,6 +106,8 @@ task prototype(type: JavaExec, dependsOn: subprojects.classes) {
 
     if (project.hasProperty('exec')) {
         args += exec
+    } else {
+        args += '--deploy'
     }
 
     subprojects.each {

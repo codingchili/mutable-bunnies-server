@@ -1,8 +1,7 @@
 subprojects {
     dependencies {
-        compile "com.github.codingchili.chili-core:core:$project.version"
         compile project(':common')
-        testCompile 'io.vertx:vertx-unit:3.5.0'
+        testCompile 'io.vertx:vertx-unit:3.5.1'
         testCompile 'junit:junit:4.12'
     }
     project.group = 'com.codingchili.service'
@@ -29,9 +28,3 @@ task allJar(type: Jar, dependsOn: subprojects.jar) {
 }
 
 jar.dependsOn allJar
-
-/* services.jar is required for gradle install.
-jar {
-    actions = []
-}.dependsOn allJar
-*/

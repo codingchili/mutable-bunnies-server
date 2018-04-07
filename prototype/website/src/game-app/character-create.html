@@ -2,9 +2,11 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-in-animation.html">
@@ -16,8 +18,8 @@
  -->
 
 <dom-module id="character-create">
-    <link rel="import" href="../../style/theme.css" type="css">
-    <link rel="import" href="../../style/style.css" type="css">
+    <link rel="import" href="../style/theme.css" type="css">
+    <link rel="import" href="../style/style.css" type="css">
     <template>
         <style>
             :host {
@@ -141,6 +143,7 @@
                 font-color: #00ff00;
                 font-size: medium;
             }
+
         </style>
 
         <div class="container">
@@ -153,15 +156,15 @@
                 </div>
 
                 <div class="list select">
-                    <template is="dom-repeat" items="{{realm.classes}}" as="class">
+                    <template is="dom-repeat" items="{{realm.classes}}" as="playerclass">
                         <paper-material elevation="3" class="character-class" on-tap="select">
                             <paper-ripple></paper-ripple>
 
                             <div class="class-image">
-                                <img src="{{realm.resources}}/gui/class/[[class.name]].svg">
+                                <img src="[[realm.resources]]/gui/class/[[playerclass.name]].svg">
                                 <paper-tooltip position="left">
                                     <div class="class-stats">
-                                        <template is="dom-repeat" items="{{getStats(class)}}" as="stats">
+                                        <template is="dom-repeat" items="{{getStats(playerclass)}}" as="stats">
                                             <div class="class-stat">
                                                 +[[stats.bonus]] [[stats.name]]
                                             </div>
@@ -170,11 +173,11 @@
                                 </paper-tooltip>
                             </div>
 
-                            <div class="class-name">[[class.name]]</div>
-                            <div class="class-description">{{class.description}}</div>
+                            <div class="class-name">[[playerclass.name]]</div>
+                            <div class="class-description">{{playerclass.description}}</div>
 
                             <div class="spell-container">
-                                <template is="dom-repeat" items="{{class.spells}}" as="spell">
+                                <template is="dom-repeat" items="{{playerclass.spells}}" as="spell">
                                     <div class="spell">
                                         <img src="{{realm.resources}}/gui/spell/{{spell}}.svg"
                                              class="spell-image">
@@ -188,16 +191,16 @@
                             </div>
 
                             <div class="tags">
-                                <template is="dom-repeat" items="{{class.weapons}}" as="weapon">
+                                <template is="dom-repeat" items="{{playerclass.weapons}}" as="weapon">
                                     [[weapon]]&nbsp;
                                 </template>
-                                <template is="dom-repeat" items="{{class.armors}}" as="armor">
+                                <template is="dom-repeat" items="{{playerclass.armors}}" as="armor">
                                     [[armor]]&nbsp;
                                 </template>
                             </div>
 
                             <div class="keywords">
-                                <template is="dom-repeat" items="{{class.keywords}}" as="keyword">
+                                <template is="dom-repeat" items="{{playerclass.keywords}}" as="keyword">
                                     {{keyword}}&nbsp;
                                 </template>
                             </div>
@@ -234,86 +237,86 @@
         <paper-toast class="toast-error fit-bottom" id="toast-name" text="Character name is required."></paper-toast>
         <paper-toast class="toast-error fit-bottom" id="toast-creating" text="Creating character.."></paper-toast>
     </template>
-    <script>
-        class CharacterCreate extends Polymer.Element {
-            ready() {
-                super.ready();
-                this.showSelect();
+</dom-module>
+<script>
+    class CharacterCreate extends Polymer.Element {
+        ready() {
+            super.ready();
+            this.showSelect();
 
-                application.onRealmLoaded((realm) => {
-                    this.set('realm', realm);
-                });
-            }
+            application.onRealmLoaded((realm) => {
+                this.set('realm', realm);
+            });
+        }
 
-            static get is() {
-                return 'character-create';
-            }
+        static get is() {
+            return 'character-create';
+        }
 
-            select(e) {
-                this.showNaming(e.model.class);
-            }
+        select(e) {
+            this.showNaming(e.model.playerclass);
+        }
 
-            getStats(playableClass) {
-                let stats = [];
-                for (let key in playableClass.stats) {
-                    let bonus = playableClass.stats[key];
+        getStats(playableClass) {
+            let stats = [];
+            for (let key in playableClass.stats) {
+                let bonus = playableClass.stats[key];
 
-                    if (bonus - 5 > 0 && key !== 'level') {
-                        stats.push({'bonus': bonus, 'name': key});
-                    }
-                }
-                return stats;
-            }
-
-            showSelect() {
-                this.set("selection", true);
-                this.set("naming", false);
-            }
-
-            showNaming(playerClass) {
-                this.set("selection", false);
-                this.set("naming", true);
-                this.set("selected", playerClass);
-                this.$['name'].focus();
-            }
-
-            createCharacter(e) {
-                if (e.type == "tap" || e.keyCode == 13) {
-
-                    if (this.characterName.length == 0)
-                        this.$["toast-name"].open();
-                    else if (this.hasCharacter(this.characterName))
-                        this.$["toast-exists"].open();
-                    else {
-                        this.$["toast-creating"].open();
-
-                        new RealmServer(this.realm).create({
-                            accepted: () => {
-                                application.publish("character-create", {});
-                                this.characterName = "";
-                                this.showSelect();
-                            },
-                            error: () => {
-                                application.error("Failed to connect to the authentication server for character creation.");
-                            }
-                        }, this.selected.name, this.characterName);
-                    }
+                if (bonus - 5 > 0 && key !== 'level') {
+                    stats.push({'bonus': bonus, 'name': key});
                 }
             }
+            return stats;
+        }
 
-            hasCharacter(name) {
-                for (let i = 0; i < this.realm.characters.length; i++)
-                    if (this.realm.characters[i].name === name)
-                        return true;
+        showSelect() {
+            this.set("selection", true);
+            this.set("naming", false);
+        }
 
-                return false;
-            }
+        showNaming(playerClass) {
+            this.set("selection", false);
+            this.set("naming", true);
+            this.set("selected", playerClass);
+            this.$['name'].focus();
+        }
 
-            realmlist() {
-                this.characterName = "";
-                application.publish("cancel-create", {});
+        createCharacter(e) {
+            if (e.type == "tap" || e.keyCode == 13) {
+
+                if (this.characterName.length == 0)
+                    this.$["toast-name"].open();
+                else if (this.hasCharacter(this.characterName))
+                    this.$["toast-exists"].open();
+                else {
+                    this.$["toast-creating"].open();
+
+                    new RealmServer(this.realm).create({
+                        accepted: () => {
+                            application.publish("character-create", {});
+                            this.characterName = "";
+                            this.showSelect();
+                        },
+                        error: () => {
+                            application.error("Failed to connect to the authentication server for character creation.");
+                        }
+                    }, this.selected.name, this.characterName);
+                }
             }
         }
-        window.customElements.define(CharacterCreate.is, CharacterCreate);
-    </script>
-</dom-module>
+
+        hasCharacter(name) {
+            for (let i = 0; i < this.realm.characters.length; i++)
+                if (this.realm.characters[i].name === name)
+                    return true;
+
+            return false;
+        }
+
+        realmlist() {
+            this.characterName = "";
+            application.publish("cancel-create", {});
+        }
+    }
+    window.customElements.define(CharacterCreate.is, CharacterCreate);
+</script>

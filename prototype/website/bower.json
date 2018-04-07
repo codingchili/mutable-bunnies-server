@@ -49,6 +49,7 @@
     "paper-toast": "PolymerElements/paper-toast#latest",
     "paper-tooltip": "PolymerElements/paper-tooltip#latest",
     "iron-flex-layout": "#latest",
-    "paper-material": "PolymerElements/paper-material#^2.0.0"
+    "paper-material": "PolymerElements/paper-material#^2.0.0",
+    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.2.0"
   }
 }
