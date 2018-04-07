@@ -4,6 +4,8 @@ dist: trusty
 jdk: oraclejdk8
 install: true
 script:
+  - npm install -g polymer-cli
+  - npm install -g bower
   - ./gradlew -version
   - ./gradlew build --info --stacktrace
   - ./gradlew archivePrototype -x test
