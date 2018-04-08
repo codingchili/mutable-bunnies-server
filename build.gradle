@@ -84,12 +84,16 @@ task archivePrototype(type: Zip, dependsOn: [subprojects.jar, polymer]) {
         }
     }
 
-    into('/conf') {
+    into('conf') {
         from fileTree('prototype/conf')
     }
 
     into('website') {
         from fileTree('prototype/website/build/default')
+    }
+
+    into('website/resources') {
+        from fileTree('prototype/website/resources/')
     }
 
     into('lib') {

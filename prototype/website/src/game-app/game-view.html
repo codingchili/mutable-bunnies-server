@@ -13,7 +13,7 @@
     <template>
         <style>
             :host {
-                display: inline-block;
+                display: block;
                 width: 100%;
                 height: 100%;
                 margin-bottom: -3px;
@@ -28,11 +28,14 @@
 
             #interface {
                 position: absolute;
-                background-color: #212121;
                 z-index: 100;
                 width: 100%;
                 height: 100%;
             }
+
+
+
+
         </style>
 
 
@@ -59,16 +62,54 @@
             constructor() {
                 super();
 
-                application.onGameStart(function () {
-                    //eval(new TextDecoder('UTF-8').decode(resources["game.js"])); ???
-                    game.initialize(document.getElementById('game'));
+                application.onCompleteUpdate((event) => {
+                    // store in global so that game.js can access them.
+                    window.resources = event.resources;
+                    window.server = event.server;
+                    window.character = event.character;
+                    window.patch = event.patch;
+                    try {
+                        let index = 0;
+
+                        // serializes loading of scripts.
+                        let loader = (index) => {
+                            if (index < event.patch.executable.length) {
+                                let script = event.patch.executable[index];
+                                console.log("loading: " + script);
+
+                                let reader = new FileReader();
+                                reader.onload = function() {
+                                    (1, eval)(reader.result);
+                                    console.log("loaded: " + script);
+
+                                    index++;
+                                    loader(index);
+                                }
+                                reader.readAsText(event.patch.files[script].data);
+                            }
+                       }
+                       loader(index);
+
+                    } catch (err) {
+                        console.log(err.message);
+                        application.error(err.message);
+                        throw err;
+                    }
+
+                    window.canvas = this.$.game;
+                    window.context = event;
                 });
             }
 
             characters(e) {
+                shutdown();
                 application.showCharacters();
             }
         }
         window.customElements.define(GameView.is, GameView);
+
+
+
+
     </script>
 </dom-module>

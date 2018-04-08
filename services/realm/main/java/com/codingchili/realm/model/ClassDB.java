@@ -22,10 +22,18 @@ public class ClassDB {
                 .forEach(playable -> classes.put(playable.getName(), playable));
     }
 
+    /**
+     * @return a list of all PlayableClasses.
+     */
     public Collection<PlayableClass> asList() {
         return classes.values();
     }
 
+    /**
+     * Retrieve a playable class by its name.
+     * @param name the name of the class to retrieve.
+     * @return optional with value if found, empty otherwise.
+     */
     public Optional<PlayableClass> getByName(String name) {
         return Optional.ofNullable(classes.getOrDefault(name, null));
     }

@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
@@ -105,6 +106,8 @@
             </paper-material>
         </div>
 
+        <iron-ajax auto url="src/data/patchinfo.json" handle-as="json" last-response="{{patch}}"></iron-ajax>
+
     </template>
     <script>
         class PagePatchnotes extends Polymer.Element {
@@ -116,21 +119,6 @@
 
             static get is() {
                 return 'page-patchnotes';
-            }
-
-            ready() {
-                super.ready();
-                let patchserver = new PatchServer();
-
-                patchserver.patch({
-                    accepted: (data) => {
-                        this.set('patch', data);
-                        application.loadedVersion({name: data.name, version: data.version});
-                    },
-                    failed: () => {
-                        application.error("Failed to load application version.");
-                    }
-                });
             }
         }
         window.customElements.define(PagePatchnotes.is, PagePatchnotes);

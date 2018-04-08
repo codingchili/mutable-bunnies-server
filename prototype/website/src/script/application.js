@@ -52,6 +52,10 @@ class Application {
         this.version = event;
     }
 
+    onCompleteUpdate(callback) {
+        application.subscribe('onCompleteUpdate', callback);
+    }
+
     onAuthentication(callback) {
         application.subscribe('onAuthentication', callback);
     }
@@ -108,7 +112,6 @@ class Application {
 
     showGame() {
         application.view('game-view');
-        application.publish('onGameStart', {});
     }
 
     showStart() {

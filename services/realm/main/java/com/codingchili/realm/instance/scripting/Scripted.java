@@ -39,23 +39,4 @@ public interface Scripted {
      * form of the script.
      */
     String getSource();
-
-
-
-
-    // todo: remove testing method.
-    public static void main(String[] args) {
-        Resource res = new Resource("/scripted.yaml");
-
-        System.out.println(res.read().get().toString());
-
-        Scripted s = Serializer.unyaml(res.read().get().toString(), Scripted.class);
-        System.out.println(Serializer.yaml(s));
-
-        AbstractMap.Entry<String, String> mapping = new AbstractMap.SimpleEntry<>("jexl", "return 1;");
-        String yaml = Serializer.yaml(mapping);
-        Scripted sx = Serializer.unyaml(yaml, Scripted.class);
-
-        System.out.println(sx.<Integer>apply(new Bindings()));
-    }
 }

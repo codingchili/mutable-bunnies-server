@@ -5,7 +5,6 @@ blocks:
   default:
   - com.codingchili.logging.Service
   - com.codingchili.authentication.Service
-  - com.codingchili.patching.Service
   - com.codingchili.realm.Service
   - com.codingchili.router.Service
   - com.codingchili.social.controller.SocialHandler
@@ -15,8 +14,6 @@ blocks:
   - com.codingchili.router.Service
   website:
   - com.codingchili.website.Service
-  patcher:
-  - com.codingchili.patching.Service
   social:
   - com.codingchili.social.Service
   logger:

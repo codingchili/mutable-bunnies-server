@@ -51,8 +51,8 @@
             }
 
             .spinner {
-                width: 128px;
-                height: 128px;
+                width: 164px;
+                height: 164px;
                 margin: auto;
                 display: block;
             }
@@ -61,7 +61,8 @@
                 text-align: center;
                 font-size: smaller;
                 width: 100%;
-                margin-top: 32px;
+                position: absolute;
+                top: 156px;
             }
 
             .character-name {
@@ -247,16 +248,10 @@
             }
 
             select(e) {
-               this.showLoading('Checking version..');
-                patcher.check({
-                    completed: () => {
-                        application.update({
+                application.update({
                             server: this.server,
                             realm: this.realm,
                             character: e.model.character});
-                    },
-                    resource: this.realm.resources
-                });
             }
         }
         window.customElements.define(CharacterList.is, CharacterList);

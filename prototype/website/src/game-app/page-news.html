@@ -47,7 +47,6 @@
         </style>
 
         <div class="container">
-
             <template is="dom-repeat" items="{{data.list}}">
                 <paper-material elevation="1" class="item">
                     <div class="title">
@@ -66,23 +65,12 @@
 
                 </paper-material>
             </template>
-
         </div>
 
+        <iron-ajax auto url="src/data/news.json" handle-as="json" last-response="{{data}}"></iron-ajax>
     </template>
     <script>
         class PageNews extends Polymer.Element {
-
-            constructor() {
-                super();
-                let patchserver = new PatchServer();
-
-                patchserver.news({
-                    accepted: (data) => {
-                        this.data = data;
-                    }
-                })
-            }
 
             static get is() {
                 return 'page-news';

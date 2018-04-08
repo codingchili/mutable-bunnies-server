@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
 
@@ -61,21 +62,11 @@
             </paper-material>
         </div>
 
+        <iron-ajax auto url="src/data/gameinfo.json" handle-as="json" last-response="{{data}}"></iron-ajax>
+
     </template>
     <script>
         class PageGameInfo extends Polymer.Element {
-
-            ready() {
-                super.ready();
-
-                let patchserver = new PatchServer();
-
-                patchserver.gameinfo({
-                    accepted: (data) => {
-                        this.data = data;
-                    }
-                });
-            }
 
             static get is() {
                 return 'page-gameinfo';

@@ -1,40 +1,26 @@
 /**
  * @author Robin Duda
  *
- * Handles the loading of game resources as a zip file.
+ * Handles the loading of game resources.
  */
 class Patcher {
 
-    constructor() {
-        this.resources = {};
-    }
-
     check(callback) {
         this.callback = callback;
-        this.resource = callback.resource;
         this.reset();
     }
 
-    reset() {
-        this.patch = {};
+    load(done, patch, url) {
+        this.patch = patch;
+        this.patch.count = Object.keys(patch.files).length;
         this.index = 0;
         this.transferred = 0;
         this.downloaded = 0;
         this.chunks = 0;
         this.delta = performance.now() - 1000;
+        this.url = url;
 
-        this.network = new Network('patching.node');
-
-        this.network.rest({
-            accepted: (patch) => {
-                patch.size = this.patchSize(patch);
-                this.patch = patch;
-                this.callback.completed();
-            },
-            error: () => {
-                application.error("Failed to retrieve patch data.");
-            }
-        }, 'patchdata');
+        this.patchSize(done);
     }
 
     update(worker) {
@@ -42,31 +28,55 @@ class Patcher {
         this.worker = worker;
         worker.started(patch.name, patch.version, patch.size, patch.files);
 
-        if (patch.files.length > 0) {
-            this.download(0);
+        if (this.patch.count > 0) {
+            this.download(Object.keys(patch.files)[this.index]);
         } else {
             this.worker.completed();
         }
     }
 
-    patchSize(patch) {
-        let size = 0;
+    patchSize(done) {
+        let latch = this.patch.count;
+        let patch = this.patch;
+        patch.size = 0;
 
-        for (let i = 0; i < patch.files.length; i++) {
-            size += patch.files[i].size;
+        function countdown(file) {
+            patch.size += file.size;
+            latch--;
+            if (latch == 0) {
+                done();
+            }
         }
-        return size;
+
+        Object.keys(patch.files).forEach((key, index) => {
+           let file = patch.files[key];
+
+           if (file.size == undefined) {
+               let xhr = new XMLHttpRequest();
+               xhr.open("HEAD", this.url + key, true);
+               xhr.onreadystatechange = () => {
+                   if (xhr.readyState == 2) {
+                       file.size = parseInt(xhr.getResponseHeader("Content-Length"));
+                       countdown(file);
+                   }
+               };
+               xhr.send();
+           } else {
+               countdown(file);
+           }
+        });
     }
 
-    download(index) {
+    download(fileName) {
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', this.resource + this.patch.files[index].path + "&version=" + this.patch.version, true);
-        xhr.responseType = 'arraybuffer';
+        this.patch.files[fileName].xhr = xhr;
+        xhr.open('GET', this.url + fileName, true);
+        xhr.responseType = 'blob';
 
         this.downloaded = 0;
-        xhr.onload = this.completeHandler;
-        xhr.addEventListener('progress', this.progressHandler);
-        xhr.onreadystatechange = this.errorHandler;
+        xhr.onload = (event) => this.completeHandler(event);
+        xhr.addEventListener('progress', (event) => this.progressHandler(event));
+        xhr.onreadystatechange = (event) => this.errorHandler(event);
         xhr.send();
     }
 
@@ -91,15 +101,15 @@ class Patcher {
 
     completeHandler(event) {
         if (event.target.status === 200) {
-            this.resources[this.patch.files[this.index].path] = event.target.response;
+            let file = this.patch.files[Object.keys(this.patch.files)[this.index]];
+            file.data = event.target.response;
 
             this.index += 1;
 
-            if (this.index < this.patch.files.length) {
-                this.download(this.index);
+            if (this.index < this.patch.count) {
+                this.download(Object.keys(this.patch.files)[this.index]);
             } else {
-                console.log(resources);
-                this.worker.completed();
+                this.worker.completed(file);
             }
         }
     }

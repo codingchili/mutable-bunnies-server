@@ -6,7 +6,7 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/paper-ripple/paper-ripple.html">
-<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
@@ -84,9 +84,13 @@
             }
 
             .info {
-                width: 8%;
+                width: 24px;
                 float: left;
                 margin-top: 6px;
+            }
+
+            .description {
+                font-size: 0.85em;
             }
 
             .item {
@@ -103,26 +107,6 @@
 
             .margin-top {
                 margin-top: 64px;
-            }
-
-            .details {
-                padding: 20px;
-                width: 100%;
-                margin-left: 42px;
-            }
-
-            .stats {
-                text-align: left;
-                margin-left: 75%;
-                font-size: smaller;
-                margin-top: -16px
-            }
-
-            .classes {
-                margin-top: 8px;
-                font-size: smaller;
-                float: left;
-                padding-bottom: 16px;
             }
 
             .description {
@@ -163,6 +147,7 @@
                 margin-top: -4px;
                 width: 14px;
             }
+
 
         </style>
 
@@ -209,29 +194,24 @@
 
                                             {{realm.name}}
                                         </div>
-                                        <div class="type">{{realm.type}}</div>
-                                        <div class="reset">{{realm.lifetime}}</div>
+                                        <div class="type">[[realm.type]]</div>
+                                        <div class="reset">[[realm.lifetime]]</div>
                                         <div class$="players {{realm.populationColor}}">
-                                            {{realm.players}}/{{realm.size}}
+                                            [[realm.players]]/[[realm.size]]
                                         </div>
+
                                         <div class$="ping {{realm.pingColor}}">{{realm.ping}}</div>
-                                        <iron-icon class="info" on-mouseover="toggle" on-mouseout="untoggle"
-                                                   icon="icons:info-outline"></iron-icon>
+
+                                        <div>
+                                            <iron-icon class="info" icon="icons:info-outline"></iron-icon>
+                                            <paper-tooltip animation-delay="0" class="tooltip">
+                                                <span class="description">[[realm.description]]</span>
+                                            </paper-tooltip>
+                                        </div>
+
                                     </div>
 
-                                    <iron-collapse opened="{{realm.state}}" noAnimation="true">
-                                        <div class="details">
-                                            <div class="description">{{realm.description}}</div>
-                                            <div class="classes">
-                                                <template is="dom-repeat" items="{{realm.classes}}" as="name">
-                                                    <i> {{name}}&nbsp; </i>
-                                                </template>
-                                            </div>
-                                            <div class="stats">Experience x{{realm.leveling}}</div>
-                                            <div class="stats" style="margin-top: 6px">Droprate x{{realm.drop}}
-                                            </div>
-                                        </div>
-                                    </iron-collapse>
+
                                 </div>
                             </paper-material>
                         </template>
@@ -486,18 +466,12 @@
             }
         }
 
-        toggle(event) {
-            event.currentTarget.parentElement.parentElement.querySelector('iron-collapse').show();
-        }
-
-        untoggle(event) {
-            event.currentTarget.parentElement.parentElement.querySelector('iron-collapse').hide();
-        }
-
         select(event) {
             clearInterval(this.timer);
             application.selectRealm(event.model.realm);
         }
     }
     window.customElements.define(RealmList.is, RealmList);
+
+
 </script>

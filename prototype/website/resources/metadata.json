@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "name": "Hungry Wendigos",
+  "executable": [
+    "pixi.js",
+    "pixi-layers.js",
+    "common.js",
+    "game.js"
+  ],
+  "files": {
+    "pixi.js": {},
+    "pixi-layers.js": {},
+    "game.js": {},
+    "common.js": {},
+    "chr.png": {},
+    "chr0.png": {},
+    "chr1.png": {},
+    "tree.png": {},
+    "background_snow.png": {}
+  }
+}

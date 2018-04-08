@@ -31,6 +31,11 @@ public class Service implements CoreService {
         Router router = Router.router(core.vertx());
         router.route().handler(BodyHandler.create());
 
+        router.route("/*").handler(ctx -> {
+            // todo: secure the path.
+           ctx.request().netSocket().sendFile(ctx.currentRoute().getPath());
+        });
+
         router.route("/*").handler(StaticHandler.create()
                 .setCachingEnabled(false)
                 .setWebRoot(POLYMER));
