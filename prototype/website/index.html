@@ -4,59 +4,24 @@
     <meta charset="UTF-8">
     <title>Chili-core engine live demo!</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-    <script src="/src/script/network.js"></script>
-    <script src="/src/script/connection.js"></script>
-    <script src="/src/script/application.js"></script>
-    <script src="/src/script/service/patcher.js"></script>
-    <script src="/src/script/service/authentication.js"></script>
-    <script src="/src/script/service/patchserver.js"></script>
-    <script src="/src/script/service/realmregistry.js"></script>
-    <script src="/src/script/service/realmserver.js"></script>
+    <script src="src/script/service/authentication.js"></script>
+    <script src="src/script/network.js"></script>
+    <script src="src/script/connection.js"></script>
+    <script src="src/script/application.js"></script>
+    <script src="src/script/service/patcher.js"></script>
+    <script src="src/script/service/patchserver.js"></script>
+    <script src="src/script/service/realmregistry.js"></script>
+    <script src="src/script/service/realmserver.js"></script>
     <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
     <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
-    <link rel="import" href="/src/game-app/start-page.html">
-    <link rel="import" href="/src/game-app/footer.html">
-    <link rel="import" href="/src/game-app/game-login.html">
-    <link rel="import" href="/src/game-app/realm-list.html">
-    <link rel="import" href="/src/game-app/character-list.html">
-    <link rel="import" href="/src/game-app/game-view.html">
-    <link rel="import" href="/src/game-app/patch-download.html">
-    <link rel="import" href="/src/game-app/error-dialog.html">
-    <link rel="import" href="/src/style/theme.html">
-    <link rel="stylesheet" href="/src/style/style.css">
+    <link rel="import" href="src/game-app/app-view.html">
+    <link rel="stylesheet" href="src/style/style.css">
     <title></title>
 </head>
 <body class="layout vertical layout-start">
 
-<div id="page">
-    <start-page class="layout horizontal center-justified"/>
-</div>
+    <app-view></app-view>
 
-<div id="game-login">
-    <game-login class="layout horizontal center-justified"/>
-</div>
-
-<div id="realm-list">
-    <realm-list class="layout horizontal center-justified"/>
-</div>
-
-<div id="character-list">
-    <character-list class="layout horizontal center-justified"/>
-</div>
-
-<div id="patch-download">
-    <patch-download class="layout horizontal center-justified"/>
-</div>
-
-<div id="game-view" style="width: 100%; height: 100%;">
-    <game-view/>
-</div>
-
-<div id="error-dialog">
-    <error-dialog/>
-</div>
-
-<!--<footer-template id="footer"/>-->
 </body>
 </html>

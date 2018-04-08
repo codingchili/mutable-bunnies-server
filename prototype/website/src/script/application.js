@@ -6,7 +6,6 @@
 class Application {
     
     constructor() {
-        this.views = ['realm-list', 'page', 'game-view', 'game-login', 'character-list', 'patch-download', 'error-dialog'];
         this.authentication = null
         this.handlers = {};
     }
@@ -120,12 +119,7 @@ class Application {
     }
 
     view(view) {
-        for (var i = 0; i < this.views.length; i++) {
-            if (this.views[i] === view)
-                document.getElementById(this.views[i]).style.display = 'block';
-            else
-                document.getElementById(this.views[i]).style.display= 'none';
-        }
+        this.publish('view', view);
     }
 
     subscribe(event, callback) {

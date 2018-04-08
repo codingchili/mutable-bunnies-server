@@ -32,7 +32,7 @@
     "iron-list": "PolymerElements/iron-list#latest",
     "iron-menu-behavior": "PolymerElements/iron-menu-behavior#latest",
     "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#latest",
-    "iron-pages": "PolymerElements/iron-pages#latest",
+    "iron-pages": "PolymerElements/iron-pages#^2.1.0",
     "iron-range-behavior": "PolymerElements/iron-range-behavior#latest",
     "neon-animation": "PolymerElements/neon-animation#latest",
     "paper-behaviors": "PolymerElements/paper-behaviors#latest",
