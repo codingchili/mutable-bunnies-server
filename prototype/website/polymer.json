@@ -1,9 +1,6 @@
 {
   "entrypoint": "index.html",
   "fragments": [],
-  "sources": [
-    "./src/**"
-  ],
   "builds": [
     {
       "js": {

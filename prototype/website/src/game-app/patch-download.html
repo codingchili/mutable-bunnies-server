@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
@@ -134,7 +135,7 @@
 
                 <span class="patch-name">[[patch.name]]</span>
                 <span class="patch-version">[[patch.version]]</span>
-                <span class="patch-count">[[patch.current}}/[[patch.count]]</span>
+                <span class="patch-count">[[patch.current]]/[[patch.count]]</span>
                 <span class="patch-file">[[fileName]]</span>
                 <span class="patch-bandwidth">{{formatBitRate(patch.bandwidth)}}</span>
                 <span class="patch-size">{{formatBytes(patch.size)}}</span>
@@ -211,7 +212,7 @@
                                         character: this.character,
                                         patch: this.patch
                                     });
-                                }, 1250)
+                                }, 1)
                             },
                             progress: (bandwidth, transferred, downloaded, current) => {
                                 this.set("fileName", Object.keys(this.patch.files)[current]);

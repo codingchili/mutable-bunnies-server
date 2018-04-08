@@ -1,16 +1,15 @@
 package com.codingchili.website;
 
+import com.codingchili.core.context.CoreContext;
+import com.codingchili.core.listener.CoreService;
+import com.codingchili.core.listener.ListenerSettings;
 import com.codingchili.website.configuration.WebserverContext;
+import static com.codingchili.core.context.FutureHelper.untyped;
+
 import io.vertx.core.Future;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
-
-import com.codingchili.core.context.CoreContext;
-import com.codingchili.core.listener.CoreService;
-import com.codingchili.core.listener.ListenerSettings;
-
-import static com.codingchili.core.context.FutureHelper.untyped;
 
 /**
  * @author Robin Duda
@@ -30,11 +29,6 @@ public class Service implements CoreService {
     public void start(Future<Void> start) {
         Router router = Router.router(core.vertx());
         router.route().handler(BodyHandler.create());
-
-        router.route("/*").handler(ctx -> {
-            // todo: secure the path.
-           ctx.request().netSocket().sendFile(ctx.currentRoute().getPath());
-        });
 
         router.route("/*").handler(StaticHandler.create()
                 .setCachingEnabled(false)
