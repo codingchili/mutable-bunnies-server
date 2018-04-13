@@ -33,7 +33,7 @@
                 margin: 326px auto auto;
                 width: 525px;
                 min-width: 326px;
-                height: 186px;
+                display: block;
             }
 
             @media (max-width: 525px) {
@@ -46,40 +46,36 @@
             .register {
                 margin-top: 32px;
             }
+
         </style>
 
-        <div class="container center-box" id="container">
-            <paper-material elevation="3">
-                <div class="title">
-                    <h4>{{title}}</h4>
-                </div>
+        <paper-material class="container center-box" id="container" elevation="3">
+            <div class="title">
+                <h4>{{title}}</h4>
+            </div>
 
-                <paper-input value="{{username}}" id="username" label="Username" on-keydown="submit"
-                             autofocus></paper-input>
-                <paper-input value="{{password}}" id="password" label="Password" on-keydown="submit"
-                             type="password"></paper-input>
+            <paper-input value="{{username}}" id="username" label="Username" on-keydown="submit"
+                         autofocus></paper-input>
+            <paper-input value="{{password}}" id="password" label="Password" on-keydown="submit"
+                         type="password"></paper-input>
 
-                <div hidden$="{{hideregisterform}}">
-                    <paper-input value="{{passwordrepeat}}" label="Password (repeat)" type="password"
-                                 on-keydown="submit" id="password-repeat"></paper-input>
-                    <paper-input value="{{email}}" label="Email (optional)" on-keydown="submit"></paper-input>
+            <div hidden$="{{hideregisterform}}">
+                <paper-input value="{{passwordrepeat}}" label="Password (repeat)" type="password"
+                             on-keydown="submit" id="password-repeat"></paper-input>
+                <paper-input value="{{email}}" label="Email (optional)" on-keydown="submit"></paper-input>
 
-                    <paper-button class="register flex" on-tap="showLoginForm">Back</paper-button>
-                    <paper-button raised class="primary flex" on-tap="register">Register</paper-button>
-                </div>
+                <paper-button class="register flex" on-tap="showLoginForm">Back</paper-button>
+                <paper-button raised class="primary flex" on-tap="register">Register</paper-button>
+            </div>
 
-                <div hidden$="{{hideloginform}}">
-                    <paper-button class="register flex" on-tap="showRegisterForm">Register</paper-button>
-                    <paper-button raised class="primary flex" on-tap="authenticate">Authenticate</paper-button>
-                </div>
+            <div hidden$="{{hideloginform}}">
+                <paper-button class="register flex" on-tap="showRegisterForm">Register</paper-button>
+                <paper-button raised class="primary flex" on-tap="authenticate">Authenticate</paper-button>
+            </div>
 
-            </paper-material>
+        </paper-material>
 
-            <paper-toast class="fit-bottom" id="loginToast" text="{{toasttext}}"></paper-toast>
-        </div>
-
-        </div>
-
+        <paper-toast class="fit-bottom" id="loginToast" text="{{toasttext}}"></paper-toast>
     </template>
 </dom-module>
 
@@ -191,4 +187,5 @@
         }
     }
     window.customElements.define(GameLogin.is, GameLogin);
+
 </script>

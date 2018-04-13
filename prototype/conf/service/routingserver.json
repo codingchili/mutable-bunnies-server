@@ -44,11 +44,11 @@
     "client.realmregistry.node" : ".*",
     "patching.node" : ".*"
   },
-  "global" : "VVuCMk0jeITAJ5HIa5GUfX1cO+wLThDyyaQiL6OXU6MdYWbThampCsOnnonTDRKwxQuFwerpwXET5WV9vi65uA==",
+  "global" : "1CRjPlOJulfgLEf2ECfkR/own3WA4CvHSXOCL/0Xn1wv49+Q6WDCDKdM/pLgD32tkgQq18hUXtMBb/DxT8XbyQ==",
   "logging" : {
     "properties" : { },
-    "key" : "oui9FmWdB4tYzGD3DzsYcjiCxrYwTqB8Uwl9QIZx/NdvlEi4+XnpDt9WFhBc8mq+ONqSMbvzhBop317PGbrURw==",
+    "key" : "iiTpuKW/E3kCzAK11fcgZPWhhCtO6SpMMQHa4Uy3HDxDw3IkH1JV77jYzhih0fUkLfuspK8anPx6Mc4uPeHqiA==",
     "domain" : "routing.node",
-    "expiry" : 1523722968
+    "expiry" : 1524160022
   }
 }

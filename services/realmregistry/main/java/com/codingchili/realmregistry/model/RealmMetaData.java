@@ -5,6 +5,7 @@ import com.codingchili.realmregistry.configuration.RegisteredRealm;
 
 /**
  * @author Robin Duda
+ *
  * Contains realm metadata used in the realm-list.
  */
 public class RealmMetaData extends Attributes {
@@ -26,20 +27,17 @@ public class RealmMetaData extends Attributes {
     }
 
     public RealmMetaData(RegisteredRealm settings) {
-
         this.setName(settings.getName())
-                .setDescription(settings.getDescription())
                 .setResources(settings.getResources())
                 .setVersion(settings.getVersion())
                 .setSize(settings.getSize())
-                .setType(settings.getType())
                 .setHost(settings.getHost())
                 .setPort(settings.getPort())
-                .setLifetime(settings.getLifetime())
                 .setPlayers(settings.getPlayers())
                 .setTrusted(settings.getTrusted())
                 .setUpdated(settings.getUpdated())
-                .setSecure(settings.getSecure());
+                .setSecure(settings.getSecure())
+                .setAttributes(settings.getAttributes());
     }
 
     public long getUpdated() {
@@ -73,8 +71,9 @@ public class RealmMetaData extends Attributes {
         return secure;
     }
 
-    private void setSecure(Boolean secure) {
+    private RealmMetaData setSecure(Boolean secure) {
         this.secure = secure;
+        return this;
     }
 
     public String getName() {

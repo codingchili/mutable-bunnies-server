@@ -1,0 +1,89 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!--
+    @author Robin Duda
+    Realm chat.
+ -->
+
+<dom-module id="mega-loader">
+    <link rel="import" href="../style/theme.css" type="css">
+    <link rel="import" href="../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            .loading-text {
+                text-align: center;
+                font-size: smaller;
+                width: 100%;
+                margin-top: -88px;
+            }
+
+            .spinner {
+                width: 164px;
+                height: 164px;
+                margin: auto;
+                display: block;
+            }
+
+            .loading-box {
+                height: 174px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 96px;
+                width: 364px;
+                padding-top: 32px;
+                display: block;
+            }
+        </style>
+
+        <template is="dom-if" if="[[enabled]]">
+            <paper-material elevation="0" class="loading-box">
+                <paper-spinner-lite class="spinner thin" active></paper-spinner-lite>
+                <div class="loading-text">[[text]]</div>
+            </paper-material>
+        </template>
+
+
+    </template>
+    <script>
+        class MegaLoader extends Polymer.Element {
+            static get is() {
+                return 'mega-loader';
+            }
+
+            static get properties() {
+                return {
+                    enabled: {
+                        type: Boolean,
+                        value: false
+                    },
+                    text: {
+                        type: String,
+                        value: ''
+                    }
+                }
+            }
+
+            ready() {
+                super.ready();
+            }
+
+            enable() {
+                this.enabled = true;
+            }
+
+            disable() {
+                this.enabled = false;
+            }
+
+            text(text) {
+                this.text = text;
+            }
+        }
+        window.customElements.define(MegaLoader.is, MegaLoader);
+
+    </script>
+</dom-module>

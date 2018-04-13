@@ -137,7 +137,3 @@ class Application {
 }
 
 var application = new Application();
-
-document.addEventListener('DOMContentLoaded', function() {
-    application.view('game-login');
-});

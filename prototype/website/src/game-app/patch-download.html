@@ -187,7 +187,6 @@
 
                 // load patch metadata - file size etc.
                 patcher.load(() => {
-                    console.log('patcherloaded.');
                     this._download();
                 }, this.patch, this.realm.resources);
             }

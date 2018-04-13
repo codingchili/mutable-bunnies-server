@@ -28,6 +28,14 @@ class RealmServer {
         });
     }
 
+    join(callback, characterName) {
+        this.connection.send(callback, 'instance.join', {
+            token: this.realm.token,
+            realm: this.realm.name,
+            character: characterName
+        });
+    }
+
     static ping(callback, realm) {
         new Network()
             .setPort(realm.port)

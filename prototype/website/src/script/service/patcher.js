@@ -24,6 +24,9 @@ class Patcher {
     }
 
     update(worker) {
+
+        // todo: if up to date call worker.completed without calling worker.started.
+
         const patch = this.patch;
         this.worker = worker;
         worker.started(patch.name, patch.version, patch.size, patch.files);

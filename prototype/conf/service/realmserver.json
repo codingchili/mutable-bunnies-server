@@ -1,16 +1,13 @@
 {
   "node" : "realmserver.node",
-  "enabled" : [ {
-    "realm" : "Angel Oak",
-    "instances" : [ ]
-  } ],
+  "enabled" : [ "Angel Oak", "Enchanted Willow", "Red Maple" ],
   "storage" : "com.codingchili.core.storage.IndexedMapPersisted",
   "realmUpdates" : 5000,
-  "global" : "VVuCMk0jeITAJ5HIa5GUfX1cO+wLThDyyaQiL6OXU6MdYWbThampCsOnnonTDRKwxQuFwerpwXET5WV9vi65uA==",
+  "global" : "1CRjPlOJulfgLEf2ECfkR/own3WA4CvHSXOCL/0Xn1wv49+Q6WDCDKdM/pLgD32tkgQq18hUXtMBb/DxT8XbyQ==",
   "logging" : {
     "properties" : { },
-    "key" : "2tPqWWGeqeQxS4or7R6ifsQzzRo/IEBC2ziUvNphGg0aYkEqv3IRx9OJ1M/49cqVyOndBm9xv4Eao+2XyqFKUw==",
+    "key" : "eeI57oZCKIMvRTwab9vT0ZTM+vmXk4XkJM7TJB6GzW7LZN27ibbxNZ/LxQI5EQFGlHhn7KgILcdmpx24hVlwwA==",
     "domain" : "realmserver.node",
-    "expiry" : 1523722968
+    "expiry" : 1524160022
   }
 }

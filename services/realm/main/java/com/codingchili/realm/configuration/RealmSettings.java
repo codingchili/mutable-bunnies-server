@@ -29,14 +29,12 @@ public class RealmSettings extends AttributeConfigurable {
     private List<PlayableClass> classes = new ArrayList<>();
     private List<Affliction> afflictions = new ArrayList<>();
     private Token authentication;
-    private String description;
     private String resources;
     private String version;
     private String host;
     private int port;
     private int size;
     private String type;
-    private String lifetime;
     private int players = 0;
     private Boolean trusted;
     private Boolean secure;
@@ -68,37 +66,29 @@ public class RealmSettings extends AttributeConfigurable {
                 .setHost(host)
                 .setClasses(classes)
                 .setAfflictions(afflictions)
-                .setDescription(description)
                 .setResources(resources)
                 .setVersion(version)
                 .setName(name)
                 .setSize(size)
                 .setType(type)
-                .setLifetime(lifetime)
                 .setPlayers(players)
                 .setTrusted(trusted)
                 .setSecure(secure)
                 .setAuthentication(null);
-
         copy.setAttributes(attributes);
-
         return copy;
     }
 
-    /**
-     * @param instances loads configuration for the given instance.
-     */
-    public void load(List<String> instances) {
-        readInstances(instances);
+    public void load() {
+        readInstances();
         readPlayerClasses();
         readAfflictions();
     }
 
-    private void readInstances(List<String> enabled) {
+    private void readInstances() {
         available(PATH_INSTANCE).stream()
                 .map(path -> override(path, name))
                 .map(path -> get(path, InstanceSettings.class))
-                .filter(instance -> enabled.contains(instance.getName()) || enabled.isEmpty())
                 .forEach(instances::add);
     }
 
@@ -280,22 +270,6 @@ public class RealmSettings extends AttributeConfigurable {
     }
 
     /**
-     * @return get the realm description.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description set the realm description.
-     * @return fluent
-     */
-    private RealmSettings setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    /**
      * @return get the version of the realm.
      */
     public String getVersion() {
@@ -340,22 +314,6 @@ public class RealmSettings extends AttributeConfigurable {
      */
     public RealmSettings setType(String type) {
         this.type = type;
-        return this;
-    }
-
-    /**
-     * @return get the lifetime of the realm as a description.
-     */
-    public String getLifetime() {
-        return lifetime;
-    }
-
-    /**
-     * @param lifetime set the lifetime as a string.
-     * @return fluent
-     */
-    private RealmSettings setLifetime(String lifetime) {
-        this.lifetime = lifetime;
         return this;
     }
 

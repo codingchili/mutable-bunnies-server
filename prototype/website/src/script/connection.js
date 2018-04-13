@@ -7,6 +7,7 @@ class Connection {
         this.port = port;
         this.host = host;
         this.handlers = {};
+        this.onConnectHandlers = [];
 
         this.ws = new WebSocket("wss://" + this.host + ":" + this.port + "/");
         this.ws.onmessage = (msg) => {
@@ -14,9 +15,10 @@ class Connection {
         };
         this.ws.onopen = () => {
             this.open = true;
-            if (this.connected != null) {
-                this.connected();
+            for (let i = 0; i < this.onConnectHandlers.length; i++) {
+                this.onConnectHandlers[i]();
             }
+            this.onConnectHandlers = [];
         }
         this.ws.onerror = (evt) => {
             this.onerror(evt);
@@ -24,19 +26,22 @@ class Connection {
     }
 
     onConnected(connected) {
-        this.connected = connected;
+        this.onConnectHandlers.push(connected);
     }
 
     send(callback, route, data) {
-        setTimeout(() => {
-            this.handlers[route] = callback;
-            data.route = route;
+        this.handlers[route] = callback;
+        data.route = route;
+
+        if (this.open) {
             this.ws.send(JSON.stringify(data));
-        }, (this.connected) ? 1 : 200);
+        } else {
+            this.onConnected(() => this.send(callback, route, data));
+        }
     }
 
-    addHandler(route, handler) {
-        console.log('Connection::addHandler()_noop');
+    addHandler(route, callback) {
+        this.handlers[route] = callback;
     }
 
     onmessage(event) {

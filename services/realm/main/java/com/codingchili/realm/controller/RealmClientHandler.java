@@ -19,7 +19,7 @@ import static com.codingchili.core.protocol.RoleMap.PUBLIC;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * Handles messages between the realm handler and clients.
  */
 @Address(Address.WEBSOCKET)
@@ -60,23 +60,22 @@ public class RealmClientHandler implements CoreHandler {
             throw new CoreRuntimeException("Failure: Already connected to " + request.connection().getProperty(ID_INSTANCE));
         } else {
             characters.findOne(find -> {
-                        if (find.succeeded()) {
-                            PlayerCreature creature = find.result();
+                if (find.succeeded()) {
+                    PlayerCreature creature = find.result();
 
-                            InstanceRequest join = new InstanceRequest()
-                                .setPlayer(find.result())
-                                .setRealmName(context.realm().getName());
+                    InstanceRequest join = new InstanceRequest()
+                            .setPlayer(find.result())
+                            .setRealmName(context.realm().getName());
 
-                            // save the instance the player is connected to on the request object.
-                            request.connection().setProperty(ID_INSTANCE, creature.getInstance());
-                            context.connections().put(request.account(), request.connection());
+                    // save the instance the player is connected to on the request object.
+                    request.connection().setProperty(ID_INSTANCE, creature.getInstance());
+                    context.connections().put(request.account(), request.connection());
 
-                            message(creature.getInstance(), join);
-                        } else {
-                            request.result(find);
-                        }
-                    }, request.account(),
-                    request.character());
+                    message(creature.getInstance(), join);
+                } else {
+                    request.result(find);
+                }
+            }, request.account(), request.character());
         }
     }
 

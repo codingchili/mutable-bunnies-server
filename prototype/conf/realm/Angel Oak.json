@@ -10,24 +10,23 @@
   },
   "authentication" : {
     "properties" : { },
-    "key" : "3l3YLgECa52ihBrmXkHlhe6gBAeuj2U/UXbCKVIFGB7nRW37/S1p5o8YcouYBSuc97Led2cTjz7q+3LIeeE94Q==",
+    "key" : "Wd9+ZLbwECyuFxeqI0gGobDMmbvTr2CE53m4Rq10oXlyPZBDyzSb4sue8GRDnmbSUZYOAj3NjSsiEwE8sGCm3A==",
     "domain" : "Angel Oak.realm.node",
-    "expiry" : 1523722968
+    "expiry" : 1524160022
   },
   "resources" : "/resources/",
   "version" : 1.0,
   "size" : 5000,
   "players" : 0,
   "name" : "Angel Oak",
-  "description": "Public test server.",
   "host" : "localhost",
-  "port" : 9901,
-  "secret" : "d1N+xk0AQIJYd/IsT6rCnl3XHg/XvIMvUQOYLN1wh4VPkYioWsQgRWrCQ9XS1MjOdPkmWjj4++6CjkMy+LS7Qw==",
-  "global" : "VVuCMk0jeITAJ5HIa5GUfX1cO+wLThDyyaQiL6OXU6MdYWbThampCsOnnonTDRKwxQuFwerpwXET5WV9vi65uA==",
+  "port" : 9301,
+  "secret" : "uvlgjEl7T9p5c1CUesmz5T5AU/QJFCO9yMJggcFzDc8QTlCkXUbFVCkUtTwGEG2p0y8VizYhwiL8RvPcDmyvtg==",
+  "global" : "1CRjPlOJulfgLEf2ECfkR/own3WA4CvHSXOCL/0Xn1wv49+Q6WDCDKdM/pLgD32tkgQq18hUXtMBb/DxT8XbyQ==",
   "logging" : {
     "properties" : { },
-    "key" : "9NOaybkmABT4SMPC29CeLbCZbDBD48pJ0EH1yiiwnXNI0U240VJ/OeK0o1CPzqxlPuI6cmElqxctrtfz4P02yA==",
+    "key" : "JJz/377gga8cT/hP0vb+2SLGqeMPgF5N2BavphupYqFiJtZowAnyq+KYxmnl3JL1iAUY80wHZRhvYLS99Ro2Gg==",
     "domain" : "Angel Oak.realm.node",
-    "expiry" : 1523722967
+    "expiry" : 1524160022
   }
 }

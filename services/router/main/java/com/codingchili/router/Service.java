@@ -1,5 +1,6 @@
 package com.codingchili.router;
 
+import com.codingchili.core.Launcher;
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.listener.CoreListener;
 import com.codingchili.core.listener.CoreService;
@@ -77,5 +78,10 @@ public class Service implements CoreService {
         context.listener(() -> listener.get()
                 .handler(handler)
                 .settings(() -> context.getListener(type))).setHandler(future);
+    }
+
+    // for development.
+    public static void main(String[] args) {
+        Launcher.main(args);
     }
 }

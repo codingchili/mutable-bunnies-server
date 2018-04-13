@@ -13,7 +13,6 @@ import static com.codingchili.common.Strings.PATH_REALM;
  */
 public class EnabledRealm {
     private String realm;
-    private List<String> instances = new ArrayList<>();
 
     public String getRealm() {
         return realm;
@@ -21,14 +20,6 @@ public class EnabledRealm {
 
     public void setRealm(String realm) {
         this.realm = realm;
-    }
-
-    public List<String> getInstances() {
-        return instances;
-    }
-
-    public void setInstances(List<String> instances) {
-        this.instances = instances;
     }
 
     @JsonIgnore

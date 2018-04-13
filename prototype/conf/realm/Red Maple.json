@@ -1,0 +1,32 @@
+{
+  "node" : "Red Maple.realm.node",
+  "attributes" : {
+    "drop" : 1.0,
+    "classes" : [ "Paladin" ],
+    "lifetime" : "weekly",
+    "description" : "Stable realm, PvP Aggressive.",
+    "leveling" : 1.0,
+    "type" : "PvP"
+  },
+  "authentication" : {
+    "properties" : { },
+    "key" : "x0M/tspETWfhf9lJdfRBxRici/XW63jkpS4632gOWDDRd8k0ujTLEJYGxq6e6TbR994K2QXgIliEeeiRsXF88w==",
+    "domain" : "Red Maple.realm.node",
+    "expiry" : 1524160022
+  },
+  "resources" : "/resources/",
+  "version" : 1.0,
+  "size" : 5000,
+  "players" : 0,
+  "name" : "Red Maple",
+  "host" : "localhost",
+  "port" : 9501,
+  "secret" : "z4MVO8PhHsX+6qu9cdw1mJTHoTgqW6mkZcn7tcjIye+w5RSmRaNLvgsWkG+a0ejNs6ubO9tg4M1A4yF6pktKAw==",
+  "global" : "1CRjPlOJulfgLEf2ECfkR/own3WA4CvHSXOCL/0Xn1wv49+Q6WDCDKdM/pLgD32tkgQq18hUXtMBb/DxT8XbyQ==",
+  "logging" : {
+    "properties" : { },
+    "key" : "9QV5d2XxLpTHqATMkdMdH410ISGaNU2WhrUtpOJEWnp3CPoB9cIHYiBZAvsiHOmCr0lfWCuQdESdzbpWVihtSg==",
+    "domain" : "Red Maple.realm.node",
+    "expiry" : 1524160022
+  }
+}

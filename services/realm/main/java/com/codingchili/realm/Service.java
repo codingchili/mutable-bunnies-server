@@ -19,6 +19,8 @@ import com.codingchili.core.files.Configurations;
 import com.codingchili.core.listener.*;
 import com.codingchili.core.listener.transport.WebsocketListener;
 
+import static com.codingchili.common.Strings.EXT_JSON;
+import static com.codingchili.common.Strings.PATH_REALM;
 import static com.codingchili.core.context.FutureHelper.untyped;
 import static com.codingchili.core.files.Configurations.system;
 import static com.codingchili.realm.configuration.RealmServerSettings.PATH_REALMSERVER;
@@ -50,14 +52,18 @@ public class Service implements CoreService {
         RealmServerSettings server = Configurations.get(PATH_REALMSERVER, RealmServerSettings.class);
         List<Future> deployments = new ArrayList<>();
 
-        for (EnabledRealm enabled : server.getEnabled()) {
-            RealmSettings realm = Configurations.get(enabled.getPath(), RealmSettings.class);
-            realm.load(enabled.getInstances());
+        for (String enabled : server.getEnabled()) {
+            RealmSettings realm = Configurations.get(realmPath(enabled), RealmSettings.class);
+            realm.load();
             Future<Void> future = Future.future();
             deploy(future, realm);
             deployments.add(future);
         }
         CompositeFuture.all(deployments).setHandler(untyped(start));
+    }
+
+    private static String realmPath(String realmName) {
+        return PATH_REALM + realmName + EXT_JSON;
     }
 
     /**

@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="character-create.html">
+<link rel="import" href="mega-loader.html">
 
 
 <!--
@@ -23,6 +24,11 @@
             :host {
                 display: block;
                 margin-top: 128px;
+            }
+
+            .container {
+                display: block;
+                width: 582px;
             }
 
             .character {
@@ -41,39 +47,11 @@
                 height: 64px;
             }
 
-            .loading-box {
-                margin-left: auto;
-                margin-right: auto;
-                margin-top: 96px;
-                width: 364px;
-                height: 196px;
-                padding-top: 32px;
-            }
-
-            .spinner {
-                width: 164px;
-                height: 164px;
-                margin: auto;
-                display: block;
-            }
-
-            .loading-text {
-                text-align: center;
-                font-size: smaller;
-                width: 100%;
-                position: absolute;
-                top: 156px;
-            }
-
             .character-name {
                 font-size: smaller;
                 bottom: 4px;
                 width: 100%;
                 text-align: center;
-            }
-
-            .container-loading-box {
-                padding-bottom: 128px;
             }
 
             .character-list-box {
@@ -100,53 +78,47 @@
                 float: right;
                 margin-bottom: -24px;
             }
+
         </style>
 
-        <div class="container center-box">
+        <paper-material class="container center-box" elevation="3">
 
-            <paper-material elevation="3">
-                <div hidden="[[create]]">
-                    <div class="realm-title">
-                        <h4 style="display: inline-block">{{realm.name}}</h4>
-                        <iron-icon on-tap="realmlist"
-                                   icon="icons:reply"></iron-icon>
-                    </div>
-
-                    <div class="container-loading-box" hidden="[[loaded]]">
-                        <paper-material elevation="2" class="loading-box">
-                            <paper-spinner-lite class="spinner thin" active></paper-spinner-lite>
-
-                            <div class="loading-text">{{status}}</div>
-                        </paper-material>
-                    </div>
-
-
-                    <div class="character-list-box" hidden="[[loading]]">
-                        <template is="dom-repeat" items="[[realm.characters]]" as="character">
-                            <paper-material elevation="2" class="character" on-tap="select">
-                                <paper-ripple></paper-ripple>
-                                <paper-tooltip animation-delay="0" class="tooltip">
-                                    <span class="tooltip-text">{{character.className}} Lv.{{character.level}}</span>
-                                </paper-tooltip>
-                                <iron-icon on-tap="removeCharacter"
-                                           icon="icons:close" class="character-remove"></iron-icon>
-                                <img src="{{realm.resources}}/gui/class/{{character.className}}.svg"
-                                     class="class-image">
-
-                                <div class="character-name">{{character.name}}</div>
-                            </paper-material>
-                        </template>
-
-                        <paper-button on-tap="showCreate">Create</paper-button>
-
-                    </div>
+            <div hidden="[[create]]">
+                <div class="realm-title">
+                    <h4 style="display: inline-block">{{realm.name}}</h4>
+                    <iron-icon on-tap="realmlist"
+                               icon="icons:reply"></iron-icon>
                 </div>
 
-                <character-create hidden="[[list]]" class="character-create">
-                </character-create>
+                <mega-loader text="[[status]]" enabled="[[!loaded]]">
+                </mega-loader>
 
-            </paper-material>
-        </div>
+
+                <div class="character-list-box" hidden="[[loading]]">
+                    <template is="dom-repeat" items="[[realm.characters]]" as="character">
+                        <paper-material elevation="2" class="character" on-tap="select">
+                            <paper-ripple></paper-ripple>
+                            <paper-tooltip animation-delay="0" class="tooltip">
+                                <span class="tooltip-text">{{character.className}} Lv.{{character.level}}</span>
+                            </paper-tooltip>
+                            <iron-icon on-tap="removeCharacter"
+                                       icon="icons:close" class="character-remove"></iron-icon>
+                            <img src="{{realm.resources}}/gui/class/{{character.className}}.svg"
+                                 class="class-image">
+
+                            <div class="character-name">{{character.name}}</div>
+                        </paper-material>
+                    </template>
+
+                    <paper-button on-tap="showCreate">Create</paper-button>
+
+                </div>
+            </div>
+
+            <character-create hidden="[[list]]" class="character-create">
+            </character-create>
+
+        </paper-material>
 
     </template>
     <script>
@@ -255,5 +227,6 @@
             }
         }
         window.customElements.define(CharacterList.is, CharacterList);
+
     </script>
 </dom-module>

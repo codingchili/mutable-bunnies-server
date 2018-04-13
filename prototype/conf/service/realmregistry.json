@@ -1,14 +1,14 @@
 {
   "node" : "realmregistry.node",
   "realms" : [ "Angel Oak", "Developer Realm", "Iron Oak", "Staging Realm", "Wisteria", "Red Maple" ],
-  "realmSecret" : "xPFpsBb/jI1TYYSU+KF/jW/h8KeYqlqflk7wgGJ/Pn23ltN+IHCqyU8rmAqTSucH9jJ3I1Z+VViZfD5G+ldlmg==",
+  "realmSecret" : "d12pIRcBvt7SSL58oTAE7KTaZ4ZLHnI83u25xYF7RJnKkJGziMOpjo2azsg/y8S02aERor609FSwK8xFbA7WIg==",
   "realmTimeout" : 7000,
-  "global" : "VVuCMk0jeITAJ5HIa5GUfX1cO+wLThDyyaQiL6OXU6MdYWbThampCsOnnonTDRKwxQuFwerpwXET5WV9vi65uA==",
-  "clientSecret" : "sPMUdp4BsiU8JkDzu7nU4TaoRmC+SaoZIPgQX2m6nKQTnW+tOql1A0Qdh+FGCzVS+QVfmgBW6aOifq6+ZgVeLg==",
+  "global" : "1CRjPlOJulfgLEf2ECfkR/own3WA4CvHSXOCL/0Xn1wv49+Q6WDCDKdM/pLgD32tkgQq18hUXtMBb/DxT8XbyQ==",
+  "clientSecret" : "h41ll4M+uU9L8FmWSQ8NPYGcQZ2Ul3e7WKKJ4yb3mqJxaPBihpfShZEMI6bgtG5gYwSZxh0kwWO/kek7uvPdxw==",
   "logging" : {
     "properties" : { },
-    "key" : "6+M7y8/BaJ5IsJgK+TxJdyLfrtRIvZq+h1KZydFKRGuVaJj2BoUonxUVz9x463wgbcv7RZ1GwCijiwV2JrDjQw==",
+    "key" : "CKQCoEemGkkEZqNfyd86J5AnebNBQ/os4nvgGakjj3cwf5WRCJx4lfFm5hoSw9HzqRq5t5XxHUWtRRbMAeYQ7w==",
     "domain" : "realmregistry.node",
-    "expiry" : 1523722968
+    "expiry" : 1524160022
   }
 }

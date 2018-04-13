@@ -14,6 +14,7 @@ import static com.codingchili.core.protocol.Role.PUBLIC;
 
 /**
  * @author Robin Duda
+ *
  * Routing used to authenticate users and create/delete characters.
  */
 public class RealmRegistryClientHandler implements CoreHandler {

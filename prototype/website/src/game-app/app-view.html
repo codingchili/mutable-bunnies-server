@@ -49,7 +49,7 @@
                 <game-view/>
             </div>
 
-            <div id="page">
+            <div id="start-page">
                 <start-page class="layout horizontal center-justified"/>
             </div>
         </iron-pages>
@@ -71,7 +71,7 @@
 
             ready() {
                 super.ready();
-                this.view = 'game-login';
+                this.view = 'start-page';
 
                 application.subscribe('view', (view) => {
                     this.view = view;

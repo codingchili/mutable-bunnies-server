@@ -1,5 +1,7 @@
 package com.codingchili.realmregistry.configuration;
 
+import java.util.Map;
+
 import com.codingchili.core.security.Token;
 import com.codingchili.core.storage.Storable;
 
@@ -9,14 +11,12 @@ import com.codingchili.core.storage.Storable;
  * Contains information about a realm, received from a realmserver..
  */
 public class RegisteredRealm implements Storable {
+    private Map<String, Object> attributes;
     private Token authentication;
-    private String description;
     private String resources;
     private String host;
     private String version;
-    private String type;
     private String name;
-    private String lifetime;
     private Boolean trusted;
     private Boolean secure;
     private long updated;
@@ -43,20 +43,6 @@ public class RegisteredRealm implements Storable {
     public RegisteredRealm setAuthentication(Token authentication) {
         this.authentication = authentication;
         return this;
-    }
-
-    /**
-     * @return the realm description as a string.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description the realm description as a string.
-     */
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     /**
@@ -133,34 +119,6 @@ public class RegisteredRealm implements Storable {
     }
 
     /**
-     * @return type of the realm, a description.
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * @param type sets the type description of the realm.
-     */
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /**
-     * @return the lifetime of the realm.
-     */
-    public String getLifetime() {
-        return lifetime;
-    }
-
-    /**
-     * @param lifetime sets the lifetime of the realm.
-     */
-    public void setLifetime(String lifetime) {
-        this.lifetime = lifetime;
-    }
-
-    /**
      * @return get the number of connected players.
      */
     public int getPlayers() {
@@ -234,6 +192,20 @@ public class RegisteredRealm implements Storable {
         return this;
     }
 
+    /**
+     * @return a set of extra attributes for the realm.
+     */
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * @param attributes a set of extra attributes to set.
+     */
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
+
     @Override
     public int hashCode() {
         return getId().hashCode();
@@ -241,7 +213,7 @@ public class RegisteredRealm implements Storable {
 
     @Override
     public String toString() {
-        return "name=" + name + " description=" + description;
+        return "{name=" + name;
     }
 
     @Override

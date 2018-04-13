@@ -6,11 +6,12 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
-
+<link rel="import" href="mega-loader.html">
 
 <!--
     @author Robin Duda
@@ -34,6 +35,7 @@
                 width: 80%;
                 max-width: 825px;
                 margin-top: 128px;
+                display: block;
             }
 
             .realm-box {
@@ -47,7 +49,7 @@
 
             .name-title {
                 margin-left: 8px;
-                width: 34%;
+                width: 36%;
                 float: left;
                 margin-top: 12px;
             }
@@ -84,8 +86,6 @@
             }
 
             .info {
-                width: 24px;
-                float: left;
                 margin-top: 6px;
             }
 
@@ -94,6 +94,7 @@
             }
 
             .item {
+                text-align: center;
                 position: relative;
                 display: inline-block;
                 width: 100%;
@@ -145,81 +146,76 @@
                 float: left;
                 padding-right: 8px;
                 margin-top: -4px;
-                width: 14px;
             }
 
+            .list {
+                padding-bottom: 12px;
+            }
 
+            .loader {
+                margin-top: 96px;
+            }
         </style>
 
-        <div class="container center-box">
-
-            <paper-material elevation="3">
-
-                <paper-tabs id="tabs" selected="{{page}}" no-slide link>
-                    <paper-tab on-tap="trusted">Public</paper-tab>
-                    <paper-tab on-tap="untrusted">Private</paper-tab>
-                </paper-tabs>
-
-                <div hidden="{{trustedservers}}" class="mod-warning">
-                    <h5><span class="red"> Warning:</span> These servers may contain resources and code not
-                        provided by &trade;.</h5>
-                </div>
-
-                <div class="titles">
-                    <paper-button class="name-title" on-tap="order" data-args="name">Name</paper-button>
-                    <paper-button class="type" on-tap="order" data-args="type">Type</paper-button>
-                    <paper-button class="reset" on-tap="order" data-args="lifetime">Reset</paper-button>
-                    <paper-button class="players" on-tap="order" data-args="players">Players</paper-button>
-                    <paper-button class="ping" on-tap="order" data-args="ping">Ping</paper-button>
-                </div>
-
-                <iron-pages selected="0" class="realm-box margin-top">
-                    <div>
-                        <template is="dom-repeat" items="{{realms}}" as="realm" sort="{{sort}}">
-                            <paper-material elevation="1">
-                                <div class="item noselect" hidden="{{realm.hidden}}">
-                                    <div on-tap="select" class="status">
-                                        <paper-ripple></paper-ripple>
-                                        <div class="name">
-
-                                            <template is="dom-if" if="{{favourite(realm.name)}}">
-                                                <iron-icon icon="icons:favorite-border" class="realm-favorite">
-                                                </iron-icon>
-                                            </template>
-
-                                            <template is="dom-if" if="{{realm.secure}}">
-                                                <iron-icon icon="icons:lock-outline" class="realm-favorite">
-                                                </iron-icon>
-                                            </template>
-
-                                            {{realm.name}}
-                                        </div>
-                                        <div class="type">[[realm.type]]</div>
-                                        <div class="reset">[[realm.lifetime]]</div>
-                                        <div class$="players {{realm.populationColor}}">
-                                            [[realm.players]]/[[realm.size]]
-                                        </div>
-
-                                        <div class$="ping {{realm.pingColor}}">{{realm.ping}}</div>
-
-                                        <div>
-                                            <iron-icon class="info" icon="icons:info-outline"></iron-icon>
-                                            <paper-tooltip animation-delay="0" class="tooltip">
-                                                <span class="description">[[realm.description]]</span>
-                                            </paper-tooltip>
-                                        </div>
-
-                                    </div>
+        <paper-material class="container center-box" elevation="3">
 
 
-                                </div>
-                            </paper-material>
-                        </template>
-                    </div>
-                </iron-pages>
+            <paper-tabs id="tabs" selected="{{page}}" no-slide link>
+                <paper-tab on-tap="trusted">Public</paper-tab>
+                <paper-tab on-tap="untrusted">Private</paper-tab>
+            </paper-tabs>
 
-            </paper-material>
-        </div>
+            <div hidden="{{trustedservers}}" class="mod-warning">
+                <h5><span class="red"> Warning:</span> These servers may contain resources and code not
+                    provided by &trade;.</h5>
+            </div>
+
+            <div class="titles">
+                <paper-button class="name-title" on-tap="order" data-args="name">Name</paper-button>
+                <paper-button class="type" on-tap="order" data-args="type">Type</paper-button>
+                <paper-button class="reset" on-tap="order" data-args="lifetime">Reset</paper-button>
+                <paper-button class="players" on-tap="order" data-args="players">Players</paper-button>
+                <paper-button class="ping" on-tap="order" data-args="ping">Ping</paper-button>
+            </div>
+
+            <mega-loader class="loader" text="Loading realms.." enabled="[[loading]]"></mega-loader>
+
+            <div class="list">
+                <template is="dom-repeat" items="{{realms}}" as="realm" sort="{{sort}}">
+                    <paper-material class="item noselect status" on-tap="select" hidden="{{realm.hidden}}"
+                                    elevation="0">
+                        <paper-ripple></paper-ripple>
+                        <div class="name">
+
+                            <template is="dom-if" if="{{favourite(realm.name)}}">
+                                <iron-icon icon="icons:favorite-border" class="realm-favorite">
+                                </iron-icon>
+                            </template>
+
+                            <template is="dom-if" if="{{realm.secure}}">
+                                <iron-icon icon="icons:lock-outline" class="realm-favorite">
+                                </iron-icon>
+                            </template>
+
+                            {{realm.name}}
+                        </div>
+                        <div class="type">[[realm.attributes.type]]</div>
+                        <div class="reset">[[realm.attributes.lifetime]]</div>
+                        <div class$="players {{realm.populationColor}}">
+                            [[realm.players]]/[[realm.size]]
+                        </div>
+
+                        <div class$="ping {{realm.pingColor}}">{{realm.ping}}</div>
+
+                        <iron-icon class="info" icon="icons:info-outline"></iron-icon>
+                        <paper-tooltip animation-delay="0" class="tooltip">
+                            <span class="description">[[realm.description]]</span>
+                        </paper-tooltip>
+                    </paper-material>
+                </template>
+            </div>
+
+        </paper-material>
 
     </template>
 </dom-module>
@@ -234,16 +230,18 @@
         ready() {
             super.ready();
             this.page = 0;
+            this.realms = [];
             this.trustedservers = true;
             this.set("sort", this.favoriteSort.bind(this));
 
             application.onAuthentication((authentication) => {
+                if (this.realms.length == 0) {
+                    this.loading = true;
+                }
 
                 this.set("favourites", authentication.account.servers);
                 this.update();
                 this.timer = setInterval(this.update.bind(this), 6000);
-
-                window.dispatchEvent(new Event('resize'));
             });
 
             application.onLogout(() => {
@@ -319,10 +317,12 @@
             new RealmRegistry().list({
                 accepted: (data) => {
                     this.load(data.realms);
+                    this.loading = false;
                 },
                 failed: (error) => {
                     clearInterval(this.timer);
                     application.error("Failed to retrieve realm list from realm registry.");
+                    this.loading = false;
                 }
             });
         }
@@ -472,6 +472,13 @@
         }
     }
     window.customElements.define(RealmList.is, RealmList);
+
+
+
+
+
+
+
 
 
 </script>

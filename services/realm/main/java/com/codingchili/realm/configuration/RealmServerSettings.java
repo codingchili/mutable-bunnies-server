@@ -15,21 +15,21 @@ import java.util.List;
 @JsonIgnoreProperties({"realms"})
 public class RealmServerSettings extends ServiceConfigurable {
     public static final String PATH_REALMSERVER = "conf/service/realmserver.json";
-    private List<EnabledRealm> enabled = new ArrayList<>();
+    private List<String> enabled = new ArrayList<>();
     private int realmUpdates = 3500;
     private String storage = IndexedMapPersisted.class.getName();
 
     /**
      * @return get a list of enabled realms.
      */
-    public List<EnabledRealm> getEnabled() {
+    public List<String> getEnabled() {
         return enabled;
     }
 
     /**
      * @param enabled sets the list of enabled realms.
      */
-    public void setEnabled(List<EnabledRealm> enabled) {
+    public void setEnabled(List<String> enabled) {
         this.enabled = enabled;
     }
 
@@ -37,7 +37,7 @@ public class RealmServerSettings extends ServiceConfigurable {
      * @param realm adds a new realm.
      */
     @JsonIgnore
-    public void addRealm(EnabledRealm realm) {
+    public void addRealm(String realm) {
         this.enabled.add(realm);
     }
 
