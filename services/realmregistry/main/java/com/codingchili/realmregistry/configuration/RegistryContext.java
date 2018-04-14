@@ -8,6 +8,7 @@ import com.codingchili.core.logging.Level;
 import com.codingchili.core.logging.Logger;
 import com.codingchili.core.security.Token;
 import com.codingchili.core.security.TokenFactory;
+import com.codingchili.core.storage.JsonMap;
 import com.codingchili.core.storage.StorageLoader;
 import com.codingchili.realmregistry.model.AsyncRealmStore;
 import com.codingchili.realmregistry.model.RealmDB;
@@ -43,7 +44,8 @@ public class RegistryContext extends SystemContext implements ServiceContext {
 
     public void getRealmStore(Handler<AsyncResult<AsyncRealmStore>> handler) {
         if (!loading.getAndSet(true)) {
-            new StorageLoader<RegisteredRealm>().jsonmap(this)
+            new StorageLoader<RegisteredRealm>(this)
+                    .withPlugin(JsonMap.class)
                     .withCollection(COLLECTION_REALMS)
                     .withValue(RegisteredRealm.class)
                     .build(prepare -> {

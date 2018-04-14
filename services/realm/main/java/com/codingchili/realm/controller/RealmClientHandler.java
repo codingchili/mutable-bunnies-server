@@ -1,16 +1,19 @@
 package com.codingchili.realm.controller;
 
 import com.codingchili.realm.configuration.RealmContext;
-import com.codingchili.realm.instance.controller.InstanceRequest;
 import com.codingchili.realm.instance.model.entity.PlayableClass;
 import com.codingchili.realm.instance.model.entity.PlayerCreature;
+import com.codingchili.realm.instance.model.events.JoinMessage;
+import com.codingchili.realm.instance.model.events.LeaveMessage;
 import com.codingchili.realm.model.*;
+import io.vertx.core.json.JsonObject;
 
 import java.util.Collection;
 
 import com.codingchili.core.context.CoreRuntimeException;
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
+import com.codingchili.core.logging.Logger;
 import com.codingchili.core.protocol.*;
 
 import static com.codingchili.common.Strings.*;
@@ -27,10 +30,12 @@ public class RealmClientHandler implements CoreHandler {
     private final Protocol<Request> protocol = new Protocol<>(this);
     private AsyncCharacterStore characters;
     private RealmContext context;
+    private Logger logger;
 
     public RealmClientHandler(RealmContext context) {
         this.context = context;
         this.characters = context.characters();
+        this.logger = context.logger(getClass());
     }
 
     @Api(PUBLIC)
@@ -40,13 +45,21 @@ public class RealmClientHandler implements CoreHandler {
 
     @Api(route = ANY)
     public void instanceMessage(RealmRequest request) {
-        request.connection().getProperty(ID_INSTANCE).ifPresent(instance -> {
-            message(instance, request.data());
-        });
+        message(request, request.data());
     }
 
-    private void message(String target, Object msg) {
-        context.bus().send(target, msg);
+    private void message(Request request, Object msg) {
+        if (!(msg instanceof JsonObject)) {
+            msg = Serializer.json(msg);
+        }
+        context.bus().send(request.connection().getProperty(ID_INSTANCE).orElseThrow(
+                () -> new CoreRuntimeException("Not connected to an instance.")
+        ), msg, (reply) -> {
+            request.result(reply);
+            if (reply.failed()) {
+                logger.onError(reply.cause());
+            }
+        });
     }
 
     @Override
@@ -56,22 +69,29 @@ public class RealmClientHandler implements CoreHandler {
 
     @Api(route = CLIENT_INSTANCE_JOIN)
     public void join(RealmRequest request) {
-        if (context.connections().containsKey(request.account())) {
-            throw new CoreRuntimeException("Failure: Already connected to " + request.connection().getProperty(ID_INSTANCE));
+        if (context.isConnected(request.account())) {
+            throw new CoreRuntimeException("Failure: Already connected to " +
+                    request.connection().getProperty(ID_INSTANCE).orElse("?"));
         } else {
             characters.findOne(find -> {
                 if (find.succeeded()) {
                     PlayerCreature creature = find.result();
 
-                    InstanceRequest join = new InstanceRequest()
+                    JoinMessage join = new JoinMessage()
                             .setPlayer(find.result())
                             .setRealmName(context.realm().getName());
 
-                    // save the instance the player is connected to on the request object.
-                    request.connection().setProperty(ID_INSTANCE, creature.getInstance());
-                    context.connections().put(request.account(), request.connection());
+                    // store the player characters name on the connection.
+                    request.connection().setProperty(ID_NAME, creature.getName());
 
-                    message(creature.getInstance(), join);
+                    // notify the remote instance when the client disconnects.
+                    request.connection().onClose(() -> {
+                        leave(request);
+                    });
+
+                    // save the instance the player is connected to on the request object.
+                    context.connect(creature, request.connection());
+                    message(request, join);
                 } else {
                     request.result(find);
                 }
@@ -81,7 +101,8 @@ public class RealmClientHandler implements CoreHandler {
 
     @Api(route = CLIENT_INSTANCE_LEAVE)
     public void leave(RealmRequest request) {
-        context.connections().remove(request.account());
+        context.remove(request);
+        message(request, new LeaveMessage(request));
     }
 
     @Api(route = CLIENT_CHARACTER_REMOVE)

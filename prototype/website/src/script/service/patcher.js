@@ -5,14 +5,8 @@
  */
 class Patcher {
 
-    check(callback) {
-        this.callback = callback;
-        this.reset();
-    }
-
-    load(done, patch, url) {
+    load(callback, patch, url) {
         this.patch = patch;
-        this.patch.count = Object.keys(patch.files).length;
         this.index = 0;
         this.transferred = 0;
         this.downloaded = 0;
@@ -20,22 +14,113 @@ class Patcher {
         this.delta = performance.now() - 1000;
         this.url = url;
 
-        this.patchSize(done);
+        // copy files from the executables into the download section.
+        for (let i = 0; i < patch.executable.length; i++) {
+            if (!patch.files[patch.executable[i]]) {
+                patch.files[patch.executable[i]] = {};
+            }
+        }
+
+        this.patch.count = Object.keys(patch.files).length;
+
+        if (this.isUpToDate(patch.version)) {
+            callback.upToDate();
+        } else {
+            this.patchSize(callback.beginUpdate);
+        }
     }
 
     update(worker) {
-
-        // todo: if up to date call worker.completed without calling worker.started.
-
-        const patch = this.patch;
         this.worker = worker;
-        worker.started(patch.name, patch.version, patch.size, patch.files);
 
-        if (this.patch.count > 0) {
-            this.download(Object.keys(patch.files)[this.index]);
-        } else {
+        if (this.patch.version == this.getVersion()) {
+            this.patch.files = this.getFiles(worker);
             this.worker.completed();
+        } else {
+            localStorage.clear();
+            worker.started(this.patch.name, this.patch.version, this.patch.size, this.patch.files);
+
+            if (this.patch.count > 0) {
+                this.download(Object.keys(this.patch.files)[this.index]);
+            } else {
+                this.worker.completed();
+            }
         }
+    }
+
+    isUpToDate(version) {
+        return this.getVersion() == version;
+    }
+
+    getVersion() {
+        return localStorage.getItem("version@"  + this.url);
+    }
+
+    setVersion(version) {
+        localStorage.setItem("version@" + this.url, version);
+    }
+
+    getFiles(worker) {
+        let files = JSON.parse(localStorage.getItem("files@" + this.url));
+        this.patch.files = files;
+        this.patch.size = 0;
+        let transferred = 0;
+
+        for (let key in files) {
+            this.patch.size += files[key].data.length;
+        }
+
+        worker.started(this.patch.name, this.patch.version, this.patch.size, this.patch.files);
+
+        let i = 0;
+        for (let key in files) {
+            i++;
+            let size = files[key].data.length;
+            files[key].data = this.dataURIToBlob(files[key].data);
+            transferred += size;
+            // does not emit bandwidth or downloaded per file.
+            worker.progress(0, transferred, 0, Object.keys(files).indexOf(files[key].name));
+        }
+        return files;
+    }
+
+    setFiles(files) {
+        let i = 0;
+        let save = {};
+        for (let key in files) {
+            let file = {};
+            file.name = files[key].name;
+            file.xhr = {};
+            file.xhrType = 'application/blob';
+
+            let reader = new FileReader();
+             reader.readAsDataURL(files[key].data);
+             reader.onloadend = () => {
+                 let base64data = reader.result;
+                 file.data = base64data;
+                 save[key] = file;
+                 i++;
+
+                 if (i == Object.keys(patch.files).length) {
+                    localStorage.setItem("files@" + this.url, JSON.stringify(save));
+                 }
+             };
+        }
+    }
+
+    // see: https://stackoverflow.com/a/12300351
+    dataURIToBlob(dataURI) {
+          var byteString = atob(dataURI.split(',')[1]);
+          var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+          var ab = new ArrayBuffer(byteString.length);
+          var ia = new Uint8Array(ab);
+
+          for (var i = 0; i < byteString.length; i++) {
+              ia[i] = byteString.charCodeAt(i);
+          }
+
+          var blob = new Blob([ab], {type: mimeString});
+          return blob;
     }
 
     patchSize(done) {
@@ -112,6 +197,8 @@ class Patcher {
             if (this.index < this.patch.count) {
                 this.download(Object.keys(this.patch.files)[this.index]);
             } else {
+                this.setVersion(this.patch.version);
+                this.setFiles(this.patch.files);
                 this.worker.completed(file);
             }
         }
@@ -121,7 +208,7 @@ class Patcher {
         if (event.target.status === 409) {
             this.reset();
         } else if (event.target.status === 404) {
-            application.error("Failed to retrieve file.");
+            application.error("Failed to retrieve file " + Object.keys(this.patch.files)[this.index]);
         }
     }
 }

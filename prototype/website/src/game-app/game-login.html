@@ -90,6 +90,10 @@
             super.ready();
             this.authentication = new Authentication();
             this.showLoginForm();
+
+            // development.
+            this.username = 'admin';
+            this.password = 'admin';
         }
 
         authenticate(e) {

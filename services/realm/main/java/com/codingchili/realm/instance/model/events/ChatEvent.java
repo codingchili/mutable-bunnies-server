@@ -2,8 +2,6 @@ package com.codingchili.realm.instance.model.events;
 
 import com.codingchili.realm.instance.model.entity.Creature;
 
-import java.util.Optional;
-
 /**
  * @author Robin Duda
  */
@@ -27,6 +25,6 @@ public class ChatEvent implements Event {
 
     @Override
     public EventType getType() {
-        return EventType.CHAT;
+        return EventType.chat;
     }
 }

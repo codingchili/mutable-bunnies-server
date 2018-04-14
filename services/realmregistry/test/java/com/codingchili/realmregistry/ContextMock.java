@@ -5,6 +5,7 @@ import com.codingchili.core.context.StorageContext;
 import com.codingchili.core.context.SystemContext;
 import com.codingchili.core.security.Token;
 import com.codingchili.core.security.TokenFactory;
+import com.codingchili.core.storage.PrivateMap;
 import com.codingchili.core.storage.StorageLoader;
 import com.codingchili.realmregistry.configuration.RealmRegistrySettings;
 import com.codingchili.realmregistry.configuration.RegisteredRealm;
@@ -31,7 +32,8 @@ public class ContextMock extends RegistryContext {
 
     @Override
     public void getRealmStore(Handler<AsyncResult<AsyncRealmStore>> handler) {
-        new StorageLoader<RegisteredRealm>().privatemap(new StorageContext<>(this))
+        new StorageLoader<RegisteredRealm>(new StorageContext<>(this))
+                .withPlugin(PrivateMap.class)
                 .withValue(RegisteredRealm.class)
                 .withDB("", "")
                 .build(result -> {

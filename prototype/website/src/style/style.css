@@ -22,7 +22,7 @@ paper-button {
 }
 
 iron-icon {
-    color: #4a148c;
+    color: var(--text-primary-color);
     cursor: pointer;
 }
 

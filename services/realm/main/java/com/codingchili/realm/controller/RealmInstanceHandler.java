@@ -18,13 +18,16 @@ import com.codingchili.core.protocol.*;
 
 import static com.codingchili.common.Strings.ID_ACCOUNT;
 import static com.codingchili.common.Strings.NODE_AUTHENTICATION_REALMS;
+import static com.codingchili.core.configuration.CoreStrings.ANY;
 import static com.codingchili.core.protocol.ResponseStatus.ACCEPTED;
+import static com.codingchili.core.protocol.RoleMap.PUBLIC;
 
 /**
  * @author Robin Duda
  *
  * Handles messaging between the realm and connected instances.
  */
+@Roles(PUBLIC)
 public class RealmInstanceHandler implements CoreHandler {
     private Protocol<Request> protocol = new Protocol<>(this);
     private RealmContext context;
@@ -41,7 +44,7 @@ public class RealmInstanceHandler implements CoreHandler {
         deployInstances(future);
     }
 
-    @Api
+    @Api(route = ANY)
     public void any(Request request) {
         // handles any else request..?
         String receiver = request.data().getString(ID_ACCOUNT);
@@ -100,7 +103,7 @@ public class RealmInstanceHandler implements CoreHandler {
 
     private void registerRealm(Long handler) {
         RealmUpdate realm = new RealmUpdate(context.realm())
-                .setPlayers(context.connections().size() + 1);
+                .setPlayers(context.connections().size());
 
         context.bus().send(NODE_AUTHENTICATION_REALMS, Serializer.json(realm), response -> {
             if (response.succeeded()) {

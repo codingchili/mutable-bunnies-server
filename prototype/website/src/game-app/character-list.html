@@ -90,11 +90,10 @@
                                icon="icons:reply"></iron-icon>
                 </div>
 
-                <mega-loader text="[[status]]" enabled="[[!loaded]]">
-                </mega-loader>
+                <mega-loader text="[[status]]" enabled="[[!loaded]]"></mega-loader>
 
 
-                <div class="character-list-box" hidden="[[loading]]">
+                <div class="character-list-box" hidden="[[!loaded]]">
                     <template is="dom-repeat" items="[[realm.characters]]" as="character">
                         <paper-material elevation="2" class="character" on-tap="select">
                             <paper-ripple></paper-ripple>
@@ -197,12 +196,10 @@
             showLoading(status) {
                 this.set('status', status);
                 this.set('loaded', false);
-                this.set('loading', true);
             }
 
             hideLoading() {
                 this.set('loaded', true);
-                this.set('loading', false);
             }
 
             showCreate() {

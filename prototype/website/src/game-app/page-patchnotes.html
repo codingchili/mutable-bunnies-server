@@ -106,7 +106,8 @@
             </paper-material>
         </div>
 
-        <iron-ajax auto url="src/data/patchinfo.json" handle-as="json" last-response="{{patch}}"></iron-ajax>
+        <iron-ajax auto url="src/data/patchinfo.json" handle-as="json" on-response="_loaded"
+                   last-response="{{patch}}"></iron-ajax>
 
     </template>
     <script>
@@ -119,6 +120,10 @@
 
             static get is() {
                 return 'page-patchnotes';
+            }
+
+            _loaded(event, request) {
+                    application.loadedVersion(this.patch);
             }
         }
         window.customElements.define(PagePatchnotes.is, PagePatchnotes);

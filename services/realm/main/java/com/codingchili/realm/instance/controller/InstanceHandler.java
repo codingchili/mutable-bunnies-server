@@ -2,25 +2,38 @@ package com.codingchili.realm.instance.controller;
 
 import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.context.InstanceContext;
+import com.codingchili.realm.instance.model.entity.Entity;
+import com.codingchili.realm.instance.model.entity.PlayerCreature;
+import com.codingchili.realm.instance.model.events.JoinMessage;
+import com.codingchili.realm.instance.model.events.LeaveMessage;
+import com.hazelcast.internal.cluster.impl.JoinRequest;
 import io.vertx.core.Future;
 
 import com.codingchili.core.context.DeploymentAware;
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
+import com.codingchili.core.logging.Logger;
 import com.codingchili.core.protocol.*;
+
+import static com.codingchili.common.Strings.CLIENT_INSTANCE_JOIN;
+import static com.codingchili.common.Strings.CLIENT_INSTANCE_LEAVE;
+import static com.codingchili.core.protocol.RoleMap.PUBLIC;
 
 /**
  * @author Robin Duda
+ *
  * Handles players in an settings.
  */
+@Roles(PUBLIC)
 public class InstanceHandler implements CoreHandler, DeploymentAware {
     private final Protocol<Request> protocol = new Protocol<>(this);
     private InstanceContext context;
+    private GameContext game;
 
     public InstanceHandler(InstanceContext context) {
         this.context = context;
 
-        GameContext game = new GameContext(context);
+        game = new GameContext(context);
 
         protocol.annotated(new MovementHandler(game));
         protocol.annotated(new TradeHandler(game));
@@ -29,27 +42,31 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
     }
 
     @Api
-    public void ping(InstanceRequest request) {
+    public void ping(Request request) {
         request.accept();
     }
 
-    private Role authenticator(Request request) {
-        if (context.verifyToken(request.token())) {
-            return Role.USER;
-        } else {
-            return Role.PUBLIC;
-        }
+    @Api(route = CLIENT_INSTANCE_JOIN)
+    public void join(Request request) {
+        JoinMessage join = Serializer.unpack(request.data(), JoinMessage.class);
+        PlayerCreature creature = join.getPlayer();
+        game.add(creature);
+        context.onPlayerJoin(join);
+        request.accept();
     }
 
-    @Api
-    public void joinInstance(InstanceRequest request) {
-
+    @Api(route = CLIENT_INSTANCE_LEAVE)
+    public void leave(Request request) {
+        LeaveMessage leave = Serializer.unpack(request.data(), LeaveMessage.class);
+        Entity player = game.getById(leave.getPlayerName());
+        context.onPlayerLeave(leave);
+        game.remove(player);
         request.accept();
     }
 
     @Override
     public void handle(Request request) {
-        protocol.get(request.route(), authenticator(request)).submit(new InstanceRequest(request));
+        protocol.get(request.route()).submit(request);
     }
 
     @Override

@@ -37,6 +37,12 @@ public interface Entity extends Storable, Receiver<Event> {
     Set<String> getInteractions();
 
     /**
+     *
+     * @return
+     */
+    EventProtocol protocol();
+
+    /**
      * Called after loading the creature to set the context.
      *
      * @param context the game context.

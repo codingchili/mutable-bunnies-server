@@ -1,19 +1,17 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
-<style include="iron-flex iron-flex-alignment"></style>
 
 <!--
     @author Robin Duda
     Polymer element for use as a footer.
  -->
 
-<dom-module id="footer-template">
+<dom-module id="app-footer">
     <link rel="import" href="../style/theme.css" type="css">
     <template>
         <style>
             :host {
-                display: inline-block;
+                display: block;
             }
 
             paper-material {
@@ -22,7 +20,10 @@
                 bottom: 0;
                 left: 0;
                 text-align: center;
+                background-color: #212121;s
+                display: block;
             }
+
         </style>
 
         <div>
@@ -37,10 +38,10 @@
 
     </template>
     <script>
-        class FooterTemplate {
+        class AppFooter extends Polymer.Element {
 
             static get is() {
-                return 'footer-template';
+                return 'app-footer';
             }
 
             ready() {
@@ -50,6 +51,7 @@
                 });
             }
         }
-        window.customElements.define(FooterTemplate.is, FooterTemplate);
+        window.customElements.define(AppFooter.is, AppFooter);
+
     </script>
 </dom-module>

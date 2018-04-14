@@ -1,16 +1,15 @@
 package com.codingchili.realm.instance.context;
 
-import com.codingchili.core.context.Delay;
-import com.codingchili.core.context.ServiceContext;
-import com.codingchili.core.context.SystemContext;
+import com.codingchili.realm.configuration.*;
+import com.codingchili.realm.instance.model.events.JoinMessage;
+import com.codingchili.realm.instance.model.events.LeaveMessage;
+import io.vertx.core.Future;
+
+import com.codingchili.core.context.*;
 import com.codingchili.core.files.Configurations;
 import com.codingchili.core.logging.Level;
 import com.codingchili.core.logging.Logger;
 import com.codingchili.core.security.Token;
-import com.codingchili.realm.configuration.RealmContext;
-import com.codingchili.realm.configuration.RealmServerSettings;
-import com.codingchili.realm.configuration.RealmSettings;
-import io.vertx.core.Future;
 
 import static com.codingchili.common.Strings.*;
 
@@ -20,6 +19,8 @@ import static com.codingchili.common.Strings.*;
 public class InstanceContext extends SystemContext implements ServiceContext {
     private static final String LOG_INSTANCE_SKIPTICKS = "skippedTicks";
     private static final String COUNT = "count";
+    private static final String PLAYER_JOIN = "player.join";
+    private static final String PLAYER_LEAVE = "player.leave";
     private Logger logger;
     private final String settings;
     private final RealmContext context;
@@ -33,7 +34,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
     }
 
     public String address() {
-        return settings().getName();
+        return context.realm().getName() + "." + settings().getName();
     }
 
     public InstanceSettings settings() {
@@ -74,5 +75,19 @@ public class InstanceContext extends SystemContext implements ServiceContext {
     public void skippedTicks(int ticks) {
         logger.event(LOG_INSTANCE_SKIPTICKS, Level.WARNING)
                 .put(COUNT, ticks);
+    }
+
+    public void onPlayerJoin(JoinMessage join) {
+        logger.event(PLAYER_JOIN, Level.INFO)
+                .put(ID_NAME, join.getPlayer().getName())
+                .put(ID_ACCOUNT, join.getPlayer().getAccount())
+        .send();
+    }
+
+    public void onPlayerLeave(LeaveMessage leave) {
+        logger.event(PLAYER_LEAVE, Level.INFO)
+                .put(ID_NAME, leave.getPlayerName())
+                .put(ID_ACCOUNT, leave.getAccountName())
+        .send();
     }
 }

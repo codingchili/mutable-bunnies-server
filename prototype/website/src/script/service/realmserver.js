@@ -23,7 +23,6 @@ class RealmServer {
     remove(callback, characterName) {
         this.connection.send(callback, 'character.remove', {
             token: this.realm.token,
-            realm: this.realm.name,
             character: characterName
         });
     }
@@ -31,8 +30,33 @@ class RealmServer {
     join(callback, characterName) {
         this.connection.send(callback, 'instance.join', {
             token: this.realm.token,
-            realm: this.realm.name,
             character: characterName
+        });
+    }
+
+    chatmessage(callback, text) {
+        this.connection.send(callback, 'chat', {
+            token: this.realm.token,
+            text: text
+        });
+    }
+
+    onChatMessage(handler) {
+        console.log('add handler?');
+        this.connection.addHandler('chat', handler);
+    }
+
+    disconnect() {
+        this.connection.send({
+            accepted: () => {
+                // disconnected successfully.
+            },
+            error: (e) => {
+                // failed to disconnect gracefully.
+                application.error(e.message);
+            }
+        }, 'instance.leave', {
+            token: this.realm.token
         });
     }
 

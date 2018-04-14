@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="./chat-box.html">
+<link rel="import" href="./mega-loader.html">
 
 <!--
     @author Robin Duda
@@ -20,7 +21,7 @@
                 padding: 0;
             }
 
-            #game {
+            #canvas {
                 position: absolute;
                 width: 100%;
                 height: 100%;
@@ -32,18 +33,20 @@
                 width: 100%;
                 height: 100%;
             }
+
+
         </style>
         <div id="interface">
-            <paper-button class="primary" on-tap="characters" raised>CHARACTERS</paper-button>
 
+            <template is="dom-if" if="[[!loading]]">
+                <paper-button class="primary" on-tap="characters" raised>CHARACTERS</paper-button>
 
-            <chat-box>
-            </chat-box>
-
+                <chat-box>
+                </chat-box>
+            </template>
         </div>
 
-        <canvas id="game">
-        </canvas>
+        <canvas id="canvas"></canvas>
 
     </template>
     <script>
@@ -53,17 +56,19 @@
                 return 'game-view';
             }
 
-            constructor() {
-                super();
-
-                // todo: should call join on the server before loading game.js
+            ready() {
+                super.ready();
 
                 application.onCompleteUpdate((event) => {
-                    // store in global so that game.js can access them.
-                    window.resources = event.resources;
+                    this.loading = true;
+                    event.status('Initializing..');
+
                     window.server = event.server;
                     window.character = event.character;
                     window.patch = event.patch;
+                    window.onScriptsLoaded = () => {};
+                    document.canvas = this.$.canvas;
+
                     try {
                         let index = 0;
 
@@ -71,17 +76,26 @@
                         let loader = (index) => {
                             if (index < event.patch.executable.length) {
                                 let script = event.patch.executable[index];
-                                console.log("loading: " + script);
+                                event.status('init ' + script.split('.')[0]);
 
                                 let reader = new FileReader();
-                                reader.onload = function() {
+                                reader.onload = () => {
                                     (1, eval)(reader.result);
-                                    console.log("loaded: " + script);
-
                                     index++;
                                     loader(index);
                                 }
-                                reader.readAsText(event.patch.files[script].data);
+                                if (event.patch.files[script]) {
+                                    reader.readAsText(event.patch.files[script].data);
+                                } else {
+                                    application.error('Failed to execute bootstrap script: "' + script + '".');
+                                }
+                            } else {
+                                event.status('Starting game..');
+                                window.onScriptsLoaded();
+                                this.loading = false;
+
+                                // use the patching UI for loading the game scripts.
+                                application.showGame();
                             }
                        }
                        loader(index);
@@ -90,13 +104,11 @@
                         application.error(err.message);
                         throw err;
                     }
-                    window.canvas = this.$.game;
-                    window.context = event;
                 });
             }
 
             characters(e) {
-                shutdown();
+                window.onScriptShutdown();
                 application.showCharacters();
             }
         }

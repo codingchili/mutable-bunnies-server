@@ -2,11 +2,13 @@ package com.codingchili.realm.instance.model.entity;
 
 import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.model.events.Event;
+import com.codingchili.realm.instance.model.events.EventType;
+import io.vertx.core.json.JsonObject;
 
 import com.codingchili.core.listener.transport.ClusterRequest;
-import com.codingchili.core.protocol.ResponseStatus;
-import com.codingchili.core.protocol.Serializer;
+import com.codingchili.core.protocol.*;
 
+import static com.codingchili.common.Strings.ID_ACCOUNT;
 import static com.codingchili.core.configuration.CoreStrings.*;
 
 /**
@@ -15,24 +17,32 @@ import static com.codingchili.core.configuration.CoreStrings.*;
  * model for player characters.
  */
 public class PlayerCreature extends SimpleCreature {
-    private String instance = "starting_instance_1";
-    private String realm;
+    private String instance = "level 1";
     private String className;
     private String account;
+    private String realmName;
 
     public PlayerCreature() {
     }
 
     public PlayerCreature(String id) {
-        this.id = id;
         this.name = id;
     }
 
     @Override
+    public String getId() {
+        return name;
+    }
+
+    @Override
     public void setContext(GameContext context) {
+        this.context = context;
+        this.realmName = context.getInstance().realm().getName();
         protocol.annotated(this);
+        for (EventType type: EventType.values()) {
+            protocol.use(type.toString(), this::handle);
+        }
         context.subscribe(this);
-        super.setContext(context);
     }
 
     public String getAccount() {
@@ -60,17 +70,12 @@ public class PlayerCreature extends SimpleCreature {
         this.className = className;
     }
 
-    public String getRealm() {
-        return realm;
-    }
-
-    public void setRealm(String realm) {
-        this.realm = realm;
-    }
-
     @Override
     public void handle(Event event) {
-        context.getInstance().bus().send(realm, event, reply -> {
+        JsonObject message = Serializer.json(event);
+        message.put(ID_ACCOUNT, account);
+
+        context.getInstance().bus().send(realmName, message, reply -> {
             if (reply.succeeded()) {
 
                 ClusterRequest request = new ClusterRequest(reply.result());
@@ -78,11 +83,9 @@ public class PlayerCreature extends SimpleCreature {
 
                 if (!ResponseStatus.ACCEPTED.equals(ResponseStatus.valueOf(status))) {
                     onError(request.data().encodePrettily());
-                    context.remove(this);
                 }
             } else {
                 onError(throwableToString(reply.cause()));
-                context.remove(this);
             }
         });
     }

@@ -1,0 +1,83 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<!--
+    @author Robin Duda
+    Polymer element for use as a footer.
+ -->
+
+<dom-module id="app-toolbar">
+    <link rel="import" href="../style/theme.css" type="css">
+    <link rel="import" href="../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+                display: block;
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                background-color: #212121;
+            }
+
+            paper-material {
+                display: block;
+            }
+
+            .header {
+                display: block;
+            }
+
+            iron-icon {
+                padding: 8px;
+            }
+
+            iron-icon:hover {
+                color: var(--primary-color);
+                cursor: pointer;
+            ]
+
+        </style>
+
+        <paper-material class="header" elevation="3">
+                <iron-icon icon="icons:home" on-tap="_home"></iron-icon>
+
+            <template is="dom-if" if="[[loggedin]]">
+                    <iron-icon style="float:right;" icon="icons:close" on-tap="_logout"></iron-icon>
+            </template>
+        </paper-material>
+
+    </template>
+    <script>
+        class AppToolbar extends Polymer.Element {
+
+            static get is() {
+                return 'app-toolbar';
+            }
+
+            ready() {
+                super.ready();
+
+                application.onAuthentication(() => {
+                    this.loggedin = true;
+                });
+
+                application.onLogout(() => {
+                    this.loggedin = true;
+                });
+            }
+
+            _home() {
+                application.view('start-page');
+            }
+
+            _logout() {
+                application.logout();
+            }
+        }
+        window.customElements.define(AppToolbar.is, AppToolbar);
+
+
+
+    </script>
+</dom-module>

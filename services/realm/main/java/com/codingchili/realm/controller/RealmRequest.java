@@ -10,7 +10,7 @@ import static com.codingchili.common.Strings.*;
 /**
  * @author Robin Duda
  */
-class RealmRequest extends RequestWrapper {
+public class RealmRequest extends RequestWrapper {
 
     RealmRequest(Request request) {
         super(request);

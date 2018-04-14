@@ -43,7 +43,6 @@ class Application {
 
     updateComplete(event) {
         application.publish('onCompleteUpdate', event);
-        application.showGame();
     }
 
     loadedVersion(event) {

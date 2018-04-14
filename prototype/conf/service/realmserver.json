@@ -1,6 +1,6 @@
 {
   "node" : "realmserver.node",
-  "enabled" : [ "Angel Oak", "Enchanted Willow", "Red Maple" ],
+  "enabled" : [ "Angel Oak" ],
   "storage" : "com.codingchili.core.storage.IndexedMapPersisted",
   "realmUpdates" : 5000,
   "global" : "1CRjPlOJulfgLEf2ECfkR/own3WA4CvHSXOCL/0Xn1wv49+Q6WDCDKdM/pLgD32tkgQq18hUXtMBb/DxT8XbyQ==",

@@ -58,31 +58,31 @@
                 margin-left: 20px;
                 width: 34%;
                 float: left;
-                margin-top: 12px;
+                margin-top: 6px;
             }
 
             .type {
                 width: 12%;
                 float: left;
-                margin-top: 12px;
+                margin-top: 6px;
             }
 
             .reset {
                 width: 14%;
                 float: left;
-                margin-top: 12px;
+                margin-top: 6px;
             }
 
             .players {
                 width: 18%;
                 float: left;
-                margin-top: 12px;
+                margin-top: 6px;
             }
 
             .ping {
                 width: 7%;
                 float: left;
-                margin-top: 12px;
+                margin-top: 6px;
             }
 
             .info {
@@ -143,9 +143,15 @@
             }
 
             .realm-favorite {
+                color: #ff0000;
                 float: left;
                 padding-right: 8px;
                 margin-top: -4px;
+            }
+
+            .realm-favorite:hover {
+                color: #ff0000;
+                cursor: default;
             }
 
             .list {
@@ -202,7 +208,8 @@
                         <div class="type">[[realm.attributes.type]]</div>
                         <div class="reset">[[realm.attributes.lifetime]]</div>
                         <div class$="players {{realm.populationColor}}">
-                            [[realm.players]]/[[realm.size]]
+                            [[realm.players]]
+                            <!-- show this in tooltip? [[realm.size]]-->
                         </div>
 
                         <div class$="ping {{realm.pingColor}}">{{realm.ping}}</div>
@@ -241,7 +248,7 @@
 
                 this.set("favourites", authentication.account.servers);
                 this.update();
-                this.timer = setInterval(this.update.bind(this), 6000);
+                this.timer = setInterval(this.update.bind(this), 3000);
             });
 
             application.onLogout(() => {

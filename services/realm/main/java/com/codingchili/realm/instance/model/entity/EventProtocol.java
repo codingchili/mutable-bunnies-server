@@ -11,17 +11,11 @@ import com.codingchili.core.protocol.RoleMap;
  * A protocol to map events to entities.
  */
 public class EventProtocol extends Protocol<Event> {
-    private String id;
 
     public EventProtocol() {}
 
     public EventProtocol(Entity entity) {
-        this.id = entity.getId();
         setRole(RoleMap.get(RoleMap.PUBLIC));
         annotated(entity);
-    }
-
-    public String getId() {
-        return id;
     }
 }

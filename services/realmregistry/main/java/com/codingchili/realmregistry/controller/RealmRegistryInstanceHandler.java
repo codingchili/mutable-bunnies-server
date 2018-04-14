@@ -59,6 +59,7 @@ public class RealmRegistryInstanceHandler implements CoreHandler {
         RegisteredRealm realm = request.getRealm();
         realm.setTrusted(context.isTrustedRealm(realm.getName()));
         realm.setUpdated(Instant.now().toEpochMilli());
+        realm.setPlayers(request.players());
 
         realms.put(insert -> {
             if (insert.succeeded()) {

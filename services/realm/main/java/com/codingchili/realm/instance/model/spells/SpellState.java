@@ -63,8 +63,13 @@ public class SpellState {
         return learned;
     }
 
-    public SpellState setLearned(String spellName) {
-        learned.add(spellName);
+    public SpellState setLearned(Set<String> spellSet) {
+        learned = spellSet;
+        return this;
+    }
+
+    public SpellState addLearned(String spell) {
+        learned.add(spell);
         return this;
     }
 

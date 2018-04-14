@@ -1,5 +1,6 @@
 package com.codingchili.realm.configuration;
 
+import com.codingchili.realm.controller.RealmRequest;
 import com.codingchili.realm.instance.context.InstanceSettings;
 import com.codingchili.realm.instance.model.entity.PlayerCreature;
 import com.codingchili.realm.instance.model.entity.PlayableClass;
@@ -88,10 +89,6 @@ public class RealmContext extends SystemContext implements ServiceContext {
         return new ListenerSettings().setPort(realm().getPort());
     }
 
-    public String address() {
-        return realm().getHost();
-    }
-
     public List<InstanceSettings> instances() {
         return realm().getInstances();
     }
@@ -146,5 +143,26 @@ public class RealmContext extends SystemContext implements ServiceContext {
         logger.event(LOG_INSTANCE_DEPLOY_ERROR, ERROR)
                 .put(LOG_MESSAGE, getdeployInstanceError(instance, cause))
                 .send();
+    }
+
+    public void connect(PlayerCreature creature, Connection connection) {
+        connection.setProperty(ID_INSTANCE, realm().getName() + "." + creature.getInstance());
+        connections.put(creature.getAccount(), connection);
+
+        logger.log("Account " + creature.getAccount() + " connecting with character " + creature.getName() + " to " + creature.getInstance());
+
+        connection.onClose(() -> {
+            logger.log("Account " + creature.getAccount() + " disconnected with character " + creature.getName());
+            connections.remove(creature.getAccount());
+        });
+    }
+
+    public boolean isConnected(String account) {
+        Connection connection = connections.get(account);
+        return connection != null && connection.getProperty(ID_INSTANCE).isPresent();
+    }
+
+    public void remove(RealmRequest request) {
+        connections.remove(request.account());
     }
 }

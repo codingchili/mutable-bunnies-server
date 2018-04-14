@@ -15,13 +15,6 @@ public class InstanceRequest extends RequestWrapper {
     private String realmName;
 
     /**
-     * Constructor for outbound messages.
-     */
-    public InstanceRequest() {
-        super(null);
-    }
-
-    /**
      * Constructor for inbound messages.
      * @param request the request to map as an instance request.
      */

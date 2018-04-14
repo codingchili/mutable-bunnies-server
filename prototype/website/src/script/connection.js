@@ -40,18 +40,23 @@ class Connection {
         }
     }
 
+    close() {
+        this.ws.close();
+    }
+
     addHandler(route, callback) {
         this.handlers[route] = callback;
     }
 
     onmessage(event) {
        let data = JSON.parse(event.data);
+       let route = data.route || data.type;
 
-       if (this.handlers[data.route]) {
+       if (this.handlers[route]) {
          if (data.status === ResponseStatus.ACCEPTED) {
-            this.handlers[data.route].accepted(data);
+            this.handlers[route].accepted(data);
          } else {
-            this.handlers[data.route].error(data);
+            this.handlers[route].error(data);
          }
        } else {
          console.log('no handler for message: ' + event.data);

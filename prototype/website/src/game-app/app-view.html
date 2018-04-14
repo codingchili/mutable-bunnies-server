@@ -1,7 +1,9 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="start-page.html">
-<link rel="import" href="footer.html">
+<link rel="import" href="app-footer.html">
+<link rel="import" href="app-toolbar.html">
 <link rel="import" href="game-login.html">
 <link rel="import" href="realm-list.html">
 <link rel="import" href="character-list.html">
@@ -23,10 +25,21 @@
             :host {
                 display: block;
                 width: 100%;
-                height: 100%;
+            }
+
+            #toolbar {
+                z-index: 100;
+            }
+
+            #footer {
+                z-index: 100;
             }
 
         </style>
+
+        <template is="dom-if" if="{{!_gameVisible(view)}}">
+            <app-toolbar id="toolbar"></app-toolbar>
+        </template>
 
         <iron-pages selected="{{view}}" attr-for-selected="id" id="content">
             <div id="game-login">
@@ -59,7 +72,9 @@
             <error-dialog/>
         </div>
 
-        <!--<footer-template id="footer"/>-->
+        <template is="dom-if" if="{{!_gameVisible(view)}}">
+            <app-footer id="footer"></app-footer>
+        </template>
 
     </template>
     <script>
@@ -71,15 +86,21 @@
 
             ready() {
                 super.ready();
-                this.view = 'start-page';
+                this.view = 'game-login';
 
                 application.subscribe('view', (view) => {
                     this.view = view;
                 });
             }
 
+            _gameVisible() {
+                return this.view == 'game-view';
+            }
+
         }
         window.customElements.define(AppView.is, AppView);
+
+
 
     </script>
 </dom-module>

@@ -23,20 +23,18 @@
             .interface-box {
                 width: 416px;
                 height: 246px;
+                display: block;
             }
 
             .input {
                 position: absolute;
+                display: block;
                 bottom: 2px;
-                left: 0;
-                right: 66px;
-            }
-
-            .button {
-                position: absolute;
-                width: 42px;
-                bottom: 0;
-                right: 0;
+                left: 0px;
+                right: 0px;
+                --paper-input-container-input {
+                    font-size: 9px;
+                };
             }
 
             .messages {
@@ -45,6 +43,7 @@
                 margin-left: 8px;
                 margin-top: 2px;
                 padding-left: 0px;
+                margin-bottom: 0px;
             }
         </style>
 
@@ -59,10 +58,9 @@
                     </template>
                 </ul>
             </div>
-            <paper-input value="{{message}}" id="message" class="input" maxlength="40" placeholder="message"
+            <paper-input value="{{message}}" id="message" class="input" maxlength="60" placeholder="message"
                          on-keydown="submit"
                          autofocus></paper-input>
-            <paper-button class="button" on-tap="send">SEND</paper-button>
         </paper-material>
     </template>
     <script>
@@ -76,20 +74,32 @@
                 super.ready();
                 this.set("messages", []);
                 this.set("message", "");
+
+                console.log('server handler for chat registering.')
+                window.server.onChatMessage({
+                    accepted: (msg) => {
+                        console.log(msg);
+                        this.push("messages", msg.text);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                    }
+                });
             }
 
             send() {
                 if (this.message.length !== 0) {
-                    this.push("messages", this.message);
+                    //this.push("messages", this.message);
+                    server.chatmessage(this.message);
                     this.set("message", "");
 
-                    while (this.messages.length >= 14) {
+                    while (this.messages.length >= 12) {
                         this.splice("messages", 0, 1);
                     }
                 }
             }
 
-            submit() {
+            submit(event) {
                 if (event.keyCode === 13)
                     this.send();
             }

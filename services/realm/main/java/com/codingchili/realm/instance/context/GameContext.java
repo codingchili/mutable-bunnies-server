@@ -53,6 +53,11 @@ public class GameContext {
 
         spells = new SpellEngine(this);
 
+        ticker((t) -> {
+            creatures.all().stream().findFirst().ifPresent(creature -> {
+                publish(new ChatEvent(creature, "hello from server."));
+            });
+        }, 300);
         instance.periodic(() -> TICK_INTERVAL_MS, instance.address(), this::tick);
     }
 
@@ -150,8 +155,8 @@ public class GameContext {
     public void remove(Entity entity) {
         creatures.remove(entity.getId());
         structures.remove(entity.getId());
-        publish(new SpawnEvent().setEntity(entity).setType(DESPAWN));
         unsubscribe(entity);
+        publish(new SpawnEvent().setEntity(entity).setType(DESPAWN));
     }
 
     private void unsubscribe(Entity entity) {
@@ -159,24 +164,21 @@ public class GameContext {
     }
 
     public EventProtocol subscribe(Entity entity) {
-        EventProtocol protocol = new EventProtocol(entity);
+        EventProtocol protocol = entity.protocol();
 
         protocol.available().stream()
                 .map(EventType::valueOf)
                 .forEach(event -> {
                     listeners.computeIfAbsent(event, (key) -> new ConcurrentHashMap<>());
-                    listeners.get(event).put(protocol.getId(), protocol);
+                    listeners.get(event).put(entity.getId(), protocol);
                 });
-
         return protocol;
     }
 
-    // publish-subscribe does not support unicast.
     public void publish(Event event) {
         Map<String, EventProtocol> scoped = listeners.computeIfAbsent(event.getType(), (key) -> new ConcurrentHashMap<>());
-        String type = event.getType().toString();
 
-        //System.out.println(Serializer.yaml(event));
+        String type = event.getType().toString();
 
         switch (event.getBroadcast()) {
             case PARTITION:
