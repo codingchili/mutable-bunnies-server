@@ -16,7 +16,7 @@ window.onScriptShutdown = () => {
     if (game) {
         game.shutdown();
     }
-    server.disconnect();
+    server.leave();
 }
 
 class Game extends Canvas {

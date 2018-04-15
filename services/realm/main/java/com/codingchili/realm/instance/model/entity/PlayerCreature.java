@@ -3,13 +3,12 @@ package com.codingchili.realm.instance.model.entity;
 import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.model.events.Event;
 import com.codingchili.realm.instance.model.events.EventType;
-import io.vertx.core.json.JsonObject;
+import com.codingchili.realm.instance.transport.PlayerRequest;
+import io.vertx.core.Future;
 
-import com.codingchili.core.listener.transport.ClusterRequest;
-import com.codingchili.core.protocol.*;
+import com.codingchili.core.protocol.Serializer;
 
-import static com.codingchili.common.Strings.ID_ACCOUNT;
-import static com.codingchili.core.configuration.CoreStrings.*;
+import static com.codingchili.core.configuration.CoreStrings.throwableToString;
 
 /**
  * @author Robin Duda
@@ -39,7 +38,7 @@ public class PlayerCreature extends SimpleCreature {
         this.context = context;
         this.realmName = context.getInstance().realm().getName();
         protocol.annotated(this);
-        for (EventType type: EventType.values()) {
+        for (EventType type : EventType.values()) {
             protocol.use(type.toString(), this::handle);
         }
         context.subscribe(this);
@@ -72,22 +71,14 @@ public class PlayerCreature extends SimpleCreature {
 
     @Override
     public void handle(Event event) {
-        JsonObject message = Serializer.json(event);
-        message.put(ID_ACCOUNT, account);
-
-        context.getInstance().bus().send(realmName, message, reply -> {
-            if (reply.succeeded()) {
-
-                ClusterRequest request = new ClusterRequest(reply.result());
-                String status = request.data().getString(PROTOCOL_STATUS);
-
-                if (!ResponseStatus.ACCEPTED.equals(ResponseStatus.valueOf(status))) {
-                    onError(request.data().encodePrettily());
-                }
-            } else {
+        Future<Object> future = Future.future();
+        PlayerRequest message = new PlayerRequest(future, event, account);
+        future.setHandler((reply) -> {
+            if (reply.failed()) {
                 onError(throwableToString(reply.cause()));
             }
         });
+        context.getInstance().bus().send(realmName, message);
     }
 
     private void onError(String msg) {

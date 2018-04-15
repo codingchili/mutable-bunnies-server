@@ -45,11 +45,4 @@ public class JavaScript implements Scripted {
     public String getSource() {
         return source;
     }
-
-    public static void main(String[] args) {
-        Scripted scripted = new JavaScript("addr(100);");
-        Bindings bindings = new Bindings();
-        bindings.put("addr", (Function<Integer, Integer>) (base) -> base + 9);
-        System.out.println((Integer) scripted.apply(bindings));
-    }
 }

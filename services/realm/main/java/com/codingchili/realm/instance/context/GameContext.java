@@ -53,11 +53,6 @@ public class GameContext {
 
         spells = new SpellEngine(this);
 
-        ticker((t) -> {
-            creatures.all().stream().findFirst().ifPresent(creature -> {
-                publish(new ChatEvent(creature, "hello from server."));
-            });
-        }, 300);
         instance.periodic(() -> TICK_INTERVAL_MS, instance.address(), this::tick);
     }
 
@@ -188,15 +183,14 @@ public class GameContext {
                 break;
             case ADJACENT:
                 Stream.of(creatures, structures).forEach(grid -> {
-                    grid.adjacent(getById(event.getSource()).getVector()).forEach(entity -> {
-                        scoped.get(entity.getId()).get(type).submit(event);
+                    grid.adjacent(getById(event.getSource()).getVector()).forEach(entity -> { scoped.get(entity.getId()).get(type).submit(event);
                     });
                 });
                 break;
         }
     }
 
-    public Entity getById(String id) {
+    public <T extends Entity> T getById(String id) {
         Entity entity = null;
         if (creatures.exists(id)) {
             entity = creatures.get(id);
@@ -206,7 +200,7 @@ public class GameContext {
             }
         }
         Objects.requireNonNull(entity, String.format("Could not find entity with id '%s'.", id));
-        return entity;
+        return (T) entity;
     }
 
     public Logger getLogger(Class<?> aClass) {

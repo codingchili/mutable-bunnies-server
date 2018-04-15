@@ -2,8 +2,7 @@ package com.codingchili.realm;
 
 import com.codingchili.common.Strings;
 import com.codingchili.realm.configuration.*;
-import com.codingchili.realm.controller.RealmClientHandler;
-import com.codingchili.realm.controller.RealmInstanceHandler;
+import com.codingchili.realm.controller.*;
 import com.codingchili.realm.model.RealmNotUniqueException;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -86,7 +85,8 @@ public class Service implements CoreService {
                             .handler(new RealmClientHandler(rc));
 
                     // deploy handler for incoming messages from instances.
-                    rc.handler(() -> new RealmInstanceHandler(rc)).setHandler(instances -> {
+                    rc.listener(() -> new LocalBusListener().handler(new RealmInstanceHandler(rc)))
+                            .setHandler(instances -> {
 
                         if (instances.succeeded()) {
                             // deploy handler for incoming messages from clients.

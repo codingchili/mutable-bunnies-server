@@ -1,9 +1,8 @@
 package com.codingchili.realm.controller;
 
+import com.codingchili.core.context.CoreRuntimeException;
 import com.codingchili.core.listener.Request;
 import com.codingchili.core.listener.RequestWrapper;
-import com.codingchili.core.protocol.Serializer;
-import com.codingchili.core.security.Account;
 
 import static com.codingchili.common.Strings.*;
 
@@ -17,7 +16,8 @@ public class RealmRequest extends RequestWrapper {
     }
 
     public String account() {
-        return token().getDomain();
+        return connection().getProperty(ID_ACCOUNT).orElseThrow(() ->
+                new CoreRuntimeException("Account name is required from unauthenticated route."));
     }
 
     public String character() {
@@ -28,11 +28,12 @@ public class RealmRequest extends RequestWrapper {
         return data().getString(ID_PLAYERCLASS);
     }
 
-    public Account getAccount() {
-        return Serializer.unpack(data().getJsonObject(ID_ACCOUNT), Account.class);
-    }
-
     public String instance() {
         return data().getString(ID_INSTANCE);
+    }
+
+    public String connected() {
+        return connection().getProperty(ID_INSTANCE).orElseThrow(() ->
+                new CoreRuntimeException("Failed to retrieve instance from connection: not set."));
     }
 }

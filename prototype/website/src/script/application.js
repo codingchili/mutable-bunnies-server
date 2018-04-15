@@ -24,6 +24,7 @@ class Application {
 
     selectRealm(realm) {
         application.realm = realm;
+        application.publish('onRealmSelect', application.realm);
         application.showCharacters();
     }
 
@@ -99,8 +100,11 @@ class Application {
         application.authenticated(application.authentication);
     }
 
+    onRealmSelect(callback) {
+        application.subscribe('onRealmSelect', callback);
+    }
+
     showCharacters() {
-        application.publish('onRealmSelect', application.realm);
         application.view('character-list');
     }
 

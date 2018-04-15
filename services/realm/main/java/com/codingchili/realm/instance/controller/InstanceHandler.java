@@ -6,17 +6,15 @@ import com.codingchili.realm.instance.model.entity.Entity;
 import com.codingchili.realm.instance.model.entity.PlayerCreature;
 import com.codingchili.realm.instance.model.events.JoinMessage;
 import com.codingchili.realm.instance.model.events.LeaveMessage;
-import com.hazelcast.internal.cluster.impl.JoinRequest;
+import com.codingchili.realm.instance.transport.ControlRequest;
 import io.vertx.core.Future;
 
 import com.codingchili.core.context.DeploymentAware;
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
-import com.codingchili.core.logging.Logger;
 import com.codingchili.core.protocol.*;
 
-import static com.codingchili.common.Strings.CLIENT_INSTANCE_JOIN;
-import static com.codingchili.common.Strings.CLIENT_INSTANCE_LEAVE;
+import static com.codingchili.common.Strings.*;
 import static com.codingchili.core.protocol.RoleMap.PUBLIC;
 
 /**
@@ -47,8 +45,8 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
     }
 
     @Api(route = CLIENT_INSTANCE_JOIN)
-    public void join(Request request) {
-        JoinMessage join = Serializer.unpack(request.data(), JoinMessage.class);
+    public void join(ControlRequest request) {
+        JoinMessage join = request.raw(JoinMessage.class);
         PlayerCreature creature = join.getPlayer();
         game.add(creature);
         context.onPlayerJoin(join);
@@ -56,8 +54,8 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
     }
 
     @Api(route = CLIENT_INSTANCE_LEAVE)
-    public void leave(Request request) {
-        LeaveMessage leave = Serializer.unpack(request.data(), LeaveMessage.class);
+    public void leave(ControlRequest request) {
+        LeaveMessage leave = request.raw(LeaveMessage.class);
         Entity player = game.getById(leave.getPlayerName());
         context.onPlayerLeave(leave);
         game.remove(player);

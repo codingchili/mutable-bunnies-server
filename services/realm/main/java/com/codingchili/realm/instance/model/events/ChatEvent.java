@@ -1,6 +1,6 @@
 package com.codingchili.realm.instance.model.events;
 
-import com.codingchili.realm.instance.model.entity.Creature;
+import com.codingchili.realm.instance.model.entity.Entity;
 
 /**
  * @author Robin Duda
@@ -9,7 +9,7 @@ public class ChatEvent implements Event {
     private String source;
     private String text;
 
-    public ChatEvent(Creature source, String text) {
+    public ChatEvent(Entity source, String text) {
         this.source = source.getId();
         this.text = text;
     }

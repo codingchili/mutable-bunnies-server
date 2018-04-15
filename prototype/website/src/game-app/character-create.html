@@ -289,7 +289,7 @@
                 else {
                     this.$["toast-creating"].open();
 
-                    new RealmServer(this.realm).create({
+                    this.server.create({
                         accepted: () => {
                             application.publish("character-create", {});
                             this.characterName = "";
@@ -301,6 +301,10 @@
                     }, this.selected.name, this.characterName);
                 }
             }
+        }
+
+        setServer(server) {
+            this.server = server;
         }
 
         hasCharacter(name) {

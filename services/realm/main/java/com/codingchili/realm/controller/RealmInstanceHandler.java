@@ -4,6 +4,7 @@ import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.realm.instance.context.InstanceContext;
 import com.codingchili.realm.instance.context.InstanceSettings;
 import com.codingchili.realm.instance.controller.InstanceHandler;
+import com.codingchili.realm.instance.transport.PlayerRequest;
 import com.codingchili.realm.model.RealmUpdate;
 import com.codingchili.realm.model.UpdateResponse;
 import io.vertx.core.CompositeFuture;
@@ -45,20 +46,19 @@ public class RealmInstanceHandler implements CoreHandler {
     }
 
     @Api(route = ANY)
-    public void any(Request request) {
+    public void any(PlayerRequest request) {
         // handles any else request..?
-        String receiver = request.data().getString(ID_ACCOUNT);
-        Connection connection = context.connections().get(receiver);
+        Connection connection = context.connections().get(request.receiver());
         if (connection != null) {
             try {
                 connection.write(request.data());
                 request.accept();
             } catch (Exception e) {
-                context.connections().remove(receiver);
+                context.connections().remove(request.receiver());
                 request.error(e);
             }
         } else {
-            request.error(new CoreRuntimeException("Connection with id '" + receiver + "' not available."));
+            request.error(new CoreRuntimeException("Connection with id '" + request.receiver() + "' not available."));
         }
     }
 
@@ -82,7 +82,7 @@ public class RealmInstanceHandler implements CoreHandler {
 
             // sometime in the future the instances will be deployed remotely - just deploy
             // the instances on the same cluster.
-            context.handler(() -> handler).setHandler((done) -> {
+            context.listener(() -> new LocalBusListener().handler(handler)).setHandler((done) -> {
                 if (done.succeeded()) {
                     deploy.complete();
                 } else {

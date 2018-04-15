@@ -1,20 +1,23 @@
 package com.codingchili.realm.controller;
 
 import com.codingchili.realm.configuration.RealmContext;
+import com.codingchili.realm.instance.controller.InstanceRequest;
 import com.codingchili.realm.instance.model.entity.PlayableClass;
 import com.codingchili.realm.instance.model.entity.PlayerCreature;
 import com.codingchili.realm.instance.model.events.JoinMessage;
 import com.codingchili.realm.instance.model.events.LeaveMessage;
+import com.codingchili.realm.instance.transport.ControlMessage;
+import com.codingchili.realm.instance.transport.ControlRequest;
 import com.codingchili.realm.model.*;
-import io.vertx.core.json.JsonObject;
+import io.vertx.core.Future;
 
 import java.util.Collection;
 
 import com.codingchili.core.context.CoreRuntimeException;
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
-import com.codingchili.core.logging.Logger;
 import com.codingchili.core.protocol.*;
+import com.codingchili.core.security.Token;
 
 import static com.codingchili.common.Strings.*;
 import static com.codingchili.core.configuration.CoreStrings.ANY;
@@ -30,12 +33,10 @@ public class RealmClientHandler implements CoreHandler {
     private final Protocol<Request> protocol = new Protocol<>(this);
     private AsyncCharacterStore characters;
     private RealmContext context;
-    private Logger logger;
 
     public RealmClientHandler(RealmContext context) {
         this.context = context;
         this.characters = context.characters();
-        this.logger = context.logger(getClass());
     }
 
     @Api(PUBLIC)
@@ -45,21 +46,16 @@ public class RealmClientHandler implements CoreHandler {
 
     @Api(route = ANY)
     public void instanceMessage(RealmRequest request) {
-        message(request, request.data());
-    }
-
-    private void message(Request request, Object msg) {
-        if (!(msg instanceof JsonObject)) {
-            msg = Serializer.json(msg);
-        }
         context.bus().send(request.connection().getProperty(ID_INSTANCE).orElseThrow(
                 () -> new CoreRuntimeException("Not connected to an instance.")
-        ), msg, (reply) -> {
-            request.result(reply);
-            if (reply.failed()) {
-                logger.onError(reply.cause());
-            }
-        });
+        ), new InstanceRequest(request));
+    }
+
+    private Future<Object> sendInstance(ControlMessage message) {
+        Future<Object> future = Future.future();
+        ControlRequest request = new ControlRequest(future, message);
+        context.bus().send(message.getTarget(), request);
+        return future;
     }
 
     @Override
@@ -77,11 +73,11 @@ public class RealmClientHandler implements CoreHandler {
                 if (find.succeeded()) {
                     PlayerCreature creature = find.result();
 
-                    JoinMessage join = new JoinMessage()
+                    JoinMessage join = new JoinMessage(request)
                             .setPlayer(find.result())
                             .setRealmName(context.realm().getName());
 
-                    // store the player characters name on the connection.
+                    // store the player character and account names on the connection.
                     request.connection().setProperty(ID_NAME, creature.getName());
 
                     // notify the remote instance when the client disconnects.
@@ -91,7 +87,7 @@ public class RealmClientHandler implements CoreHandler {
 
                     // save the instance the player is connected to on the request object.
                     context.connect(creature, request.connection());
-                    message(request, join);
+                    sendInstance(join).setHandler(request::result);
                 } else {
                     request.result(find);
                 }
@@ -102,7 +98,7 @@ public class RealmClientHandler implements CoreHandler {
     @Api(route = CLIENT_INSTANCE_LEAVE)
     public void leave(RealmRequest request) {
         context.remove(request);
-        message(request, new LeaveMessage(request));
+        sendInstance(new LeaveMessage(request));
     }
 
     @Api(route = CLIENT_CHARACTER_REMOVE)
@@ -145,9 +141,7 @@ public class RealmClientHandler implements CoreHandler {
             } else {
                 request.error(new CharacterExistsException(request.character()));
             }
-
             // todo: create a PlayerCreature from the class template.
-            //
         }, creature);
     }
 
@@ -162,10 +156,17 @@ public class RealmClientHandler implements CoreHandler {
 
 
     private Role authenticator(Request request) {
-        if (context.verifyToken(request.token())) {
+        // websockets are persistent: only need to verify users token once.
+        if ((request.connection().getProperty(ID_ACCOUNT).isPresent())) {
             return Role.USER;
         } else {
-            return Role.PUBLIC;
+            Token token = request.token();
+            if (context.verifyToken(token)) {
+                request.connection().setProperty(ID_ACCOUNT, token.getDomain());
+                return Role.USER;
+            } else {
+                return Role.PUBLIC;
+            }
         }
     }
 }

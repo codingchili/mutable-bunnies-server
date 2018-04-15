@@ -30,6 +30,7 @@ class Connection {
     }
 
     send(callback, route, data) {
+        data = data || {};
         this.handlers[route] = callback;
         data.route = route;
 

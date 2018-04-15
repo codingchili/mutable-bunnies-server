@@ -53,7 +53,7 @@
                 <ul class="messages">
                     <template is="dom-repeat" items="{{messages}}" as="message">
                         <li class="text">
-                            {{message}}
+                            [[message.source]]: [[message.text]]
                         </li>
                     </template>
                 </ul>
@@ -79,7 +79,7 @@
                 window.server.onChatMessage({
                     accepted: (msg) => {
                         console.log(msg);
-                        this.push("messages", msg.text);
+                        this.add(msg);
                     },
                     error: (err) => {
                         console.log(err);
@@ -89,13 +89,21 @@
 
             send() {
                 if (this.message.length !== 0) {
-                    //this.push("messages", this.message);
-                    server.chatmessage(this.message);
-                    this.set("message", "");
+                    server.chatmessage({
+                        accepted: (msg) => this.add(msg),
+                        error: () => {}
+                    }, this.message);
 
-                    while (this.messages.length >= 12) {
-                        this.splice("messages", 0, 1);
-                    }
+                    this.set("message", "");
+                }
+            }
+
+            add(message) {
+                if (message.text) {
+                    this.push("messages", message);
+                }
+                while (this.messages.length >= 12) {
+                    this.splice("messages", 0, 1);
                 }
             }
 
