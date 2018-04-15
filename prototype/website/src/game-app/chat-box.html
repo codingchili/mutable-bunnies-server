@@ -75,7 +75,6 @@
                 this.set("messages", []);
                 this.set("message", "");
 
-                console.log('server handler for chat registering.')
                 window.server.onChatMessage({
                     accepted: (msg) => {
                         console.log(msg);

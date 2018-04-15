@@ -24,6 +24,7 @@ import static com.codingchili.core.logging.Level.WARNING;
  * Authentication service context.
  */
 public class AuthenticationContext extends SystemContext implements ServiceContext {
+    private static final String LOG_ACCOUNT = "account";
     private AsyncAccountStore accounts;
     private Logger logger;
 
@@ -62,7 +63,7 @@ public class AuthenticationContext extends SystemContext implements ServiceConte
 
     public void onAuthenticationFailure(Account account, String host) {
         logger.event(LOG_ACCOUNT_UNAUTHORIZED, WARNING)
-                .put(LOG_USER, account.getUsername())
+                .put(LOG_ACCOUNT, account.getUsername())
                 .put(LOG_REMOTE, host).send();
     }
 

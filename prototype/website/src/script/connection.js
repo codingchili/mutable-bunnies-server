@@ -31,8 +31,9 @@ class Connection {
 
     send(callback, route, data) {
         data = data || {};
-        this.handlers[route] = callback;
         data.route = route;
+
+        this.setHandler(route, callback);
 
         if (this.open) {
             this.ws.send(JSON.stringify(data));
@@ -45,7 +46,13 @@ class Connection {
         this.ws.close();
     }
 
-    addHandler(route, callback) {
+    setHandler(route, callback) {
+        if (!callback.accepted) {
+            callback.accepted = (message) => callback(message);
+        }
+        if (!callback.error) {
+            callback.error = (err) => application.onError(err.message);
+        }
         this.handlers[route] = callback;
     }
 

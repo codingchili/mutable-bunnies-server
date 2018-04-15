@@ -5,7 +5,10 @@
     "pixi.js",
     "pixi-layers.js",
     "canvas.js",
-    "game.js"
+    "game.js",
+    "texteffects.js",
+    "assetloader.js",
+    "spawnhandler.js"
   ],
   "files": {
     "chr.png": {},

@@ -44,8 +44,7 @@ public class SpellDB {
                                     ConfigurationFactory.readObject(path.toString()), Spell.class);
                             spells.put(spell.getName(), spell);
                         }
-                    })
-                    .build();
+                    }).build();
         }
     }
 

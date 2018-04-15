@@ -4,10 +4,13 @@ import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.context.InstanceContext;
 import com.codingchili.realm.instance.model.entity.Entity;
 import com.codingchili.realm.instance.model.entity.PlayerCreature;
-import com.codingchili.realm.instance.model.events.JoinMessage;
-import com.codingchili.realm.instance.model.events.LeaveMessage;
+import com.codingchili.realm.instance.model.events.*;
 import com.codingchili.realm.instance.transport.ControlRequest;
 import io.vertx.core.Future;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import com.codingchili.core.context.DeploymentAware;
 import com.codingchili.core.listener.CoreHandler;
@@ -19,7 +22,7 @@ import static com.codingchili.core.protocol.RoleMap.PUBLIC;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * Handles players in an settings.
  */
 @Roles(PUBLIC)
@@ -50,6 +53,20 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
         PlayerCreature creature = join.getPlayer();
         game.add(creature);
         context.onPlayerJoin(join);
+
+        List<SpawnEvent> entities = new ArrayList<>();
+        Consumer<Entity> spawner = (entity) -> {
+            entities.add(new SpawnEvent()
+                    .setType(SpawnEvent.SpawnType.SPAWN)
+                    .setEntity(entity));
+        };
+
+        game.entities().all().forEach(spawner);
+        game.creatures().all().stream().filter(entity ->
+                !entity.getId().equals(creature.getId()))
+                .forEach(spawner);
+
+        creature.handle(new ConnectEvent(creature, entities));
         request.accept();
     }
 

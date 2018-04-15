@@ -41,7 +41,7 @@ class RealmServer {
 
     onChatMessage(handler) {
         console.log('add handler?');
-        this.connection.addHandler('chat', handler);
+        this.connection.setHandler('chat', handler);
     }
 
     leave() {

@@ -47,7 +47,7 @@ public class AfflictionDB {
 
                             afflictions.put(affliction.getName(), affliction);
                         }
-                    });
+                    }).build();
         }
     }
 

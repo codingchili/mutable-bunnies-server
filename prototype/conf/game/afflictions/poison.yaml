@@ -1,7 +1,7 @@
 ---
 name: "poison"
 description: "Takes damage based on maximum health and increases over time."
-duration: 8
+duration: 12
 interval: 0.5
 chance: 0.6
 tick:
@@ -12,7 +12,7 @@ tick:
       state['amp'] = state['amp'] + 0.01;
     }
 
-    damage = this.target.stats[Attribute.maxhealth] * (0.01 + state['amp']);
+    damage = this.target.stats[Attribute.maxhealth] * (0.01 + state['amp']) + 500;
 
     //log.accept('damage is ' + damage);
     //log.accept('current health is = ' + this.target.stats[Attribute.health]);
