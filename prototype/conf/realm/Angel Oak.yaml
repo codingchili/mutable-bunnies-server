@@ -1,0 +1,44 @@
+---
+node: "Angel Oak"
+host: "192.168.10.101"
+version: 1
+size: 5000
+resources: "/resources/"
+attributes:
+  drop: 1
+  lifetime: "weekly"
+  description: "Stable realm, PvP Aggressive."
+  leveling: 1
+  type: "PvP"
+availableClasses:
+- "Paladin"
+- "Druid"
+- "Assassin"
+- "Hunter"
+onPlayerJoin:
+  js: |
+    if (source.instance == null) {
+      // this will reset the vector when joining the instance.
+
+      source.fromAnotherInstance = true;
+      source.instance = 'level 1';
+    } else {
+      source.instance = 'level 2';
+    }
+listener:
+  secure: true
+  port: 9301
+  timeout: 3000
+  binaryWebsockets: false
+authentication:
+  properties: {}
+  domain: "Angel Oak.node"
+  key: "0Mn2qQm7btFZqDOOjHJMkx3Fnnkyyt49nEgQuU3Wq2RLcxJKiZkIe6QEBh6W5CY74MPRqhZfpoAAFJyWasV0ew=="
+  expiry: 1524823696
+secret: "Mz7ccFqlaiCDRYXK9IerQphZuk3IyEZXl7vzAGV0hkojCoh83eiQC+2x629SOLr133jSu43Gi6l64j0ot1ayeQ=="
+global: "TWArV+8l8mi8lYg38HdcBaGhI1skJhv1EZ27l5cZtgVJ/ynFVSDMDfzoUrqivVCrOrgXEUa/6HbYcf4F468TUg=="
+logging:
+  properties: {}
+  domain: "Angel Oak.node"
+  key: "JzWTV2PHMdtNAZo1JDJdOUcnPuTCwQ0Bjgyew7QHuZvk+3GCjFlc/TmwgJt+vkf83HV0/FGyJxpKNQAhxWeyHQ=="
+  expiry: 1524823696

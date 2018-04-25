@@ -13,8 +13,8 @@ import java.util.List;
 public class RealmRegistrySettings extends ServiceConfigurable {
     static final String PATH_REALMREGISTRY = Strings.getService("realmregistry");
     private List<String> realms = new ArrayList<>();
-    private byte[] realmSecret = new byte[]{0x54};
-    private byte[] clientSecret = new byte[]{0x48};
+    private byte[] realmSecret = null;
+    private byte[] clientSecret = null;
     private int realmTimeout = 5000;
 
     /**

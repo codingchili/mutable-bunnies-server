@@ -2,8 +2,6 @@ package com.codingchili.realm.instance.scripting;
 
 import javax.script.*;
 
-import java.util.function.Function;
-
 import com.codingchili.core.context.CoreRuntimeException;
 
 /**
@@ -15,10 +13,16 @@ public class JavaScript implements Scripted {
     private static final ScriptEngineManager factory = new ScriptEngineManager();
     public static final String NAME = "js";
     private static final ScriptEngine engine = factory.getEngineByName("javascript");
+    private CompiledScript compiled;
     private String source;
 
     public JavaScript(String source) {
         this.source = source;
+        try {
+            this.compiled = ((Compilable) engine).compile(source);
+        } catch (ScriptException e) {
+            throw new CoreRuntimeException(e.getMessage());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -30,7 +34,7 @@ public class JavaScript implements Scripted {
             bindings.forEach(bind::put);
         }
         try {
-            return (T) engine.eval(source, bind);
+            return (T) compiled.eval(bind);
         } catch (ScriptException e) {
             throw new CoreRuntimeException(e.getMessage());
         }

@@ -3,8 +3,7 @@ package com.codingchili.realm.instance.model.entity;
 import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.model.events.Event;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import com.codingchili.core.listener.Receiver;
 import com.codingchili.core.storage.Storable;
@@ -37,10 +36,14 @@ public interface Entity extends Storable, Receiver<Event> {
     Set<String> getInteractions();
 
     /**
-     *
-     * @return
+     * @return contains events the entity subscribes to.
      */
     EventProtocol protocol();
+
+    /**
+     * @return an attribute map that can be used by scripts.
+     */
+    Map<String, Object> getAttributes();
 
     /**
      * Called after loading the creature to set the context.

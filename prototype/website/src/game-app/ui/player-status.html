@@ -1,0 +1,136 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-progress/paper-progress.html">
+
+<!--
+    @author Robin Duda
+    Realm chat.
+ -->
+
+<dom-module id="player-status">
+    <link rel="import" href="../../style/theme.css" type="css">
+    <link rel="import" href="../../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+                position: absolute;
+                left: 16px;
+                top: 16px;
+                width: 416px;
+            }
+
+            .interface-box {
+                left: -50%;
+                display: block;
+                background-color: #000000;
+                opacity: 0.84;
+                height: 84px;
+            }
+
+            .portrait {
+                height: 42px;
+                margin-top: 4px;
+                margin-left: 4px;
+            }
+
+            .name {
+                display: block;
+                position: absolute;
+                left: 64px;
+                opacity: 0.7;
+                top: 16px;
+                font: 16px 'LeagueGothicRegular';
+            }
+
+            .health-bar {
+                margin-left: 64px;
+                width: 338px;
+                --paper-progress-active-color: #8c0006;
+                --paper-progress-container-color: #8c000632;
+            }
+
+            .energy-bar {
+                left: 64px;
+                width: 338px;
+                top: 14px;
+                --paper-progress-active-color: #4db6ac;
+                --paper-progress-container-color: #4db6ac32;
+            }
+
+            .level {
+                display: block;
+                position: absolute;
+                top: 48px;
+                left: 8px;
+                width: 48px;
+                text-align: center;
+            }
+
+            .exp-bar {
+                width: 48px;
+                top: 10px;
+                left: 8px;
+                --paper-progress-active-color: #b6a500;
+                --paper-progress-container-color: #b6a50032;
+            }
+
+            @media (max-width: 632px) {
+                :host {
+                    top: 0px;
+                    left: 0px;
+                    right: 0px;
+                    width: unset;
+                }
+
+                .energy-bar {
+                    width: 80%;
+                }
+
+                .health-bar {
+                    width: 80%;
+                }
+            }
+
+        </style>
+
+        <paper-material elevation="3" class="interface-box">
+            <span class="level">[[character.stats.level]]</span>
+            <span class="name">[[character.name]]</span>
+            <img class="portrait" src="[[realm.resources]]/gui/class/[[character.className]].svg">
+
+            <paper-progress class="health-bar transiting" min="0" max="[[character.stats.maxhealth]]"
+                            value="[[character.stats.health]]"></paper-progress>
+
+            <paper-progress class="energy-bar transiting" min="0" max="[[character.stats.maxenergy]]"
+                            value="[[character.stats.energy]]"></paper-progress>
+
+            <paper-progress class="exp-bar transiting" min="0" max="[[character.stats.nextlevel]]"
+                            value="[[character.stats.experience]]"></paper-progress>
+        </paper-material>
+
+    </template>
+    <script>
+        class PlayerStatus extends Polymer.Element {
+
+            static get is() {
+                return 'player-status';
+            }
+
+            constructor() {
+                super();
+
+                setInterval(() => {
+                    this.character = application.character;
+                    this.realm = application.realm;
+                    this.set("character", application.character);
+                    this.notifyPath("character");
+                    this.notifyPath("character.stats");
+                    this.notifySplices("character");
+                    this.notifySplices("character.stats");
+                }, 1000);
+            }
+        }
+
+        window.customElements.define(PlayerStatus.is, PlayerStatus);
+    </script>
+</dom-module>

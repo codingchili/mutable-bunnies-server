@@ -1,36 +1,37 @@
 package com.codingchili.realm.instance.controller;
 
 import com.codingchili.realm.instance.context.GameContext;
-import com.codingchili.realm.instance.model.spells.SpellEngine;
+import com.codingchili.realm.instance.model.events.MovementEvent;
+import com.codingchili.realm.instance.model.spells.MovementEngine;
+import com.codingchili.realm.instance.transport.InstanceRequest;
 
-import com.codingchili.core.listener.*;
+import com.codingchili.core.listener.Receiver;
+import com.codingchili.core.listener.Request;
+import com.codingchili.core.protocol.Api;
 
 /**
  * @author Robin Duda
+ *
+ * Handles movement within the game world.
  */
 public class MovementHandler implements Receiver<Request> {
-    private GameContext game;
-    private SpellEngine spells;
+    private MovementEngine engine;
 
+    /**
+     * @param game creates a new movement handler for the given instance.
+     */
     public MovementHandler(GameContext game) {
-        this.game = game;
+        this.engine = game.movement();
     }
 
-    // todo: update vectors + handle collision/paths.
-    // todo: cancel spells if casting non mobile spell.
-
-  /*  public void move(MovementRequest request) {
-        // todo: some system to update the vectors: should publish event.
-
-        game.getById(request.sender()).setVector(request.getVector());
-        // todo: call vector.update for each creature somewhere.
-        game.publish("new movement event.", request.asEvent() ?);
-    }*/
+    @Api
+    public void move(InstanceRequest request) {
+        MovementEvent movement = request.raw(MovementEvent.class);
+        engine.update(movement.getVector(), request.target());
+    }
 
     @Override
     public void handle(Request request) {
-        // todo handle player input
+        //
     }
-
-    // todo write to client: easy just near the game context.
 }

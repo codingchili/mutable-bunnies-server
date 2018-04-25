@@ -7,13 +7,17 @@ import java.util.Set;
  * @author Robin Duda
  * <p>
  * A vector within the game world.
+ * <p>
+ * sample use cases
+ * - used to represent player positions and movements.
+ * - used to cast spells.
  */
 public class Vector {
-    private float velocity = 1.0f;
+    private float velocity = 0.01f;
     private float direction = 0.0f;
     private int size = 24;
-    private float x = 0;
-    private float y = 0;
+    private float x = -1;
+    private float y = -1;
 
     public float getX() {
         return x;
@@ -97,7 +101,6 @@ public class Vector {
      * Moves the vector in its direction given its velocity.
      */
     public void forward() {
-        // todo: support variable/configurable tick rate.
         x += Math.sin(direction) * velocity;
         y += Math.cos(direction) * velocity;
     }

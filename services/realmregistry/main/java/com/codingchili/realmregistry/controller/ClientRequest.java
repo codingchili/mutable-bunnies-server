@@ -11,12 +11,11 @@ import static com.codingchili.common.Strings.ID_TOKEN;
 /**
  * @author Robin Duda
  */
-
-
-class ClientRequest extends RequestWrapper {
+class ClientRequest implements RequestWrapper {
+    private Request request;
 
     ClientRequest(Request request) {
-        super(request);
+        this.request = request;
     }
 
     public String realmName() {
@@ -27,16 +26,9 @@ class ClientRequest extends RequestWrapper {
         return token().getDomain();
     }
 
-    public String character() {
-        return data().getString(Strings.ID_CHARACTER);
-    }
-
-    public String className() {
-        return data().getString(Strings.ID_CLASS);
-    }
-
-    public String sender() {
-        return data().getString(Strings.PROTOCOL_CONNECTION);
+    @Override
+    public Request request() {
+        return request;
     }
 
     public Token token() {

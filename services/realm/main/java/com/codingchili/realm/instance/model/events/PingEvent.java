@@ -9,7 +9,7 @@ package com.codingchili.realm.instance.model.events;
 public class PingEvent implements Event {
 
     @Override
-    public EventType getType() {
-        return EventType.ANY;
+    public EventType getRoute() {
+        return EventType.any;
     }
 }

@@ -1,9 +1,10 @@
 package com.codingchili.realm.instance.model.afflictions;
 
-import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.model.entity.Creature;
 import com.codingchili.realm.instance.scripting.Bindings;
 import com.codingchili.realm.instance.scripting.Scripted;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Random;
 
@@ -78,18 +79,22 @@ public class Affliction implements Storable {
         this.chance = chance;
     }
 
+    @JsonIgnore
     public Scripted getModifier() {
         return modifier;
     }
 
+    @JsonProperty("modifier")
     public void setModifier(Scripted modifier) {
         this.modifier = modifier;
     }
 
+    @JsonIgnore
     public Scripted getTick() {
         return tick;
     }
 
+    @JsonProperty("tick")
     public void setTick(Scripted tick) {
         this.tick = tick;
     }

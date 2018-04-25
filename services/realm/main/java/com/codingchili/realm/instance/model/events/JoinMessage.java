@@ -1,24 +1,16 @@
 package com.codingchili.realm.instance.model.events;
 
-import com.codingchili.realm.controller.RealmRequest;
 import com.codingchili.realm.instance.model.entity.PlayerCreature;
-import com.codingchili.realm.instance.transport.ControlMessage;
+import com.codingchili.realm.instance.transport.ReceivableMessage;
 
 import static com.codingchili.common.Strings.CLIENT_INSTANCE_JOIN;
 
 /**
  * @author Robin Duda
  */
-public class JoinMessage implements ControlMessage {
-    private RealmRequest request;
+public class JoinMessage implements ReceivableMessage {
     private PlayerCreature player;
     private String realmName;
-
-    public JoinMessage() {}
-
-    public JoinMessage(RealmRequest request) {
-        this.request = request;
-    }
 
     public JoinMessage setPlayer(PlayerCreature player) {
         this.player = player;
@@ -38,12 +30,13 @@ public class JoinMessage implements ControlMessage {
         return realmName;
     }
 
-    public String getRoute() {
-        return CLIENT_INSTANCE_JOIN;
+    @Override
+    public String target() {
+        return player.getName();
     }
 
     @Override
-    public String getTarget() {
-        return request.connected();
+    public String route() {
+        return CLIENT_INSTANCE_JOIN;
     }
 }

@@ -1,8 +1,7 @@
 package com.codingchili.realm.model;
 
 import com.codingchili.realm.instance.model.entity.PlayerCreature;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
+import io.vertx.core.*;
 
 import java.util.Collection;
 
@@ -43,4 +42,12 @@ public interface AsyncCharacterStore {
      * @param character the handler of the character.
      */
     void remove(Handler<AsyncResult<Void>> future, String username, String character);
+
+    /**
+     * Updates an existing player.
+     *
+     * @param player the player to update.
+     * @return callback
+     */
+    Future<Void> update(PlayerCreature player);
 }

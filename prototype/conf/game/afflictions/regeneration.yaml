@@ -6,9 +6,12 @@ interval: 1.2
 chance: 1.0
 tick:
   jexl: |
-    amount= this.target.stats[Attribute.maxhealth] * (0.01 + state['amp']) + 35;
+    if (state['amp']) {
+      state['amp'] = state['amp'] + 0.02;
+    } else {
+      state['amp'] = 0.0;
+    }
 
-    //log.accept('damage is ' + damage);
-    //log.accept('current health is = ' + this.target.stats[Attribute.health]);
-
-    spells.damage(this.source, this.target, amount, DamageType.heal);
+    // heal for 1pct of the targets max health.
+    amount = target.stats[Attribute.maxhealth] * (0.01 + state['amp']);
+    spells.damage(source, target, amount, DamageType.heal);

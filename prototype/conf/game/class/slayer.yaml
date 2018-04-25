@@ -24,5 +24,6 @@ stats:
   magicResist: 0
   armorClass: 0
   dexterity: 5
+  movement: 2.5
   experience: 0
   level: 1

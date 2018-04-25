@@ -33,7 +33,7 @@ public class AfflictionEvent implements Event {
     }
 
     @Override
-    public EventType getType() {
-        return EventType.AFFLICTION;
+    public EventType getRoute() {
+        return EventType.affliction;
     }
 }

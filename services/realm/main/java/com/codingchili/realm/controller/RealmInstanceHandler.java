@@ -4,7 +4,8 @@ import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.realm.instance.context.InstanceContext;
 import com.codingchili.realm.instance.context.InstanceSettings;
 import com.codingchili.realm.instance.controller.InstanceHandler;
-import com.codingchili.realm.instance.transport.PlayerRequest;
+import com.codingchili.realm.instance.model.events.SavePlayerMessage;
+import com.codingchili.realm.instance.transport.InstanceRequest;
 import com.codingchili.realm.model.RealmUpdate;
 import com.codingchili.realm.model.UpdateResponse;
 import io.vertx.core.CompositeFuture;
@@ -15,9 +16,10 @@ import java.util.List;
 
 import com.codingchili.core.context.CoreRuntimeException;
 import com.codingchili.core.listener.*;
+import com.codingchili.core.listener.transport.Connection;
+import com.codingchili.core.logging.Logger;
 import com.codingchili.core.protocol.*;
 
-import static com.codingchili.common.Strings.ID_ACCOUNT;
 import static com.codingchili.common.Strings.NODE_AUTHENTICATION_REALMS;
 import static com.codingchili.core.configuration.CoreStrings.ANY;
 import static com.codingchili.core.protocol.ResponseStatus.ACCEPTED;
@@ -32,44 +34,44 @@ import static com.codingchili.core.protocol.RoleMap.PUBLIC;
 public class RealmInstanceHandler implements CoreHandler {
     private Protocol<Request> protocol = new Protocol<>(this);
     private RealmContext context;
+    private Logger logger;
     private boolean registered = false;
 
     public RealmInstanceHandler(RealmContext context) {
         this.context = context;
+        this.logger = context.logger(getClass());
         context.periodic(context::updateRate, getClass().getSimpleName(), this::registerRealm);
+        this.registerRealm(-1L);
     }
 
     @Override
     public void start(Future<Void> future) {
-        context.onRealmStarted(context.realm().getName());
+        context.onRealmStarted(context.realm().getNode());
         deployInstances(future);
     }
 
     @Api(route = ANY)
-    public void any(PlayerRequest request) {
+    public void any(InstanceRequest request) {
         // handles any else request..?
-        Connection connection = context.connections().get(request.receiver());
+        Connection connection = context.connections().get(request.target());
         if (connection != null) {
             try {
                 connection.write(request.data());
                 request.accept();
             } catch (Exception e) {
-                context.connections().remove(request.receiver());
+                context.connections().remove(request.target());
+                logger.onError(e);
                 request.error(e);
             }
         } else {
-            request.error(new CoreRuntimeException("Connection with id '" + request.receiver() + "' not available."));
+            request.error(new CoreRuntimeException("Connection with id '" + request.target() + "' not available."));
         }
     }
 
     @Api
-    public void save(Request request) {
-        request.accept();
-    }
-
-    @Api
-    public void disconnect(Request request) {
-        request.accept();
+    public void save(InstanceRequest request) {
+        SavePlayerMessage message = request.raw(SavePlayerMessage.class);
+        context.characters().update(message.getCreature()).setHandler(request::result);
     }
 
     private void deployInstances(Future<Void> future) {
@@ -78,11 +80,12 @@ public class RealmInstanceHandler implements CoreHandler {
             Future deploy = Future.future();
             futures.add(deploy);
 
-            InstanceHandler handler = new InstanceHandler(new InstanceContext(context, instance));
+            InstanceContext instanceContext = new InstanceContext(context, instance);
+            InstanceHandler handler = new InstanceHandler(instanceContext);
 
             // sometime in the future the instances will be deployed remotely - just deploy
             // the instances on the same cluster.
-            context.listener(() -> new LocalBusListener().handler(handler)).setHandler((done) -> {
+            instanceContext.listener(() -> new FasterBusListener().handler(handler)).setHandler((done) -> {
                 if (done.succeeded()) {
                     deploy.complete();
                 } else {
@@ -111,12 +114,12 @@ public class RealmInstanceHandler implements CoreHandler {
 
                 if (update.is(ACCEPTED)) {
                     if (!registered) {
-                        context.onRealmRegistered(context.realm().getName());
+                        context.onRealmRegistered(context.realm().getNode());
                     }
                     registered = true;
                 } else {
                     registered = false;
-                    context.onRealmRejected(context.realm().getName(), update.message());
+                    context.onRealmRejected(context.realm().getNode(), update.message());
                 }
             }
         });
@@ -124,7 +127,7 @@ public class RealmInstanceHandler implements CoreHandler {
 
     @Override
     public String address() {
-        return context.realm().getName();
+        return context.realm().getNode();
     }
 
     @Override

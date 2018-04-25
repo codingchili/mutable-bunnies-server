@@ -14,6 +14,8 @@ import java.util.function.Consumer;
 
 import com.codingchili.core.logging.Level;
 
+import static com.codingchili.core.configuration.CoreStrings.ID_NAME;
+
 /**
  * @author Robin Duda
  * <p>
@@ -55,8 +57,15 @@ public class ActiveAffliction {
      * @return true if still active.
      */
     public boolean tick(GameContext context) {
-        affliction.tick(getBindings(context));
-        return ((ticks -= interval) > 0);
+        try {
+            affliction.tick(getBindings(context));
+            return ((ticks -= interval) > 0);
+        } catch (Exception e) {
+            context.getLogger(getClass()).event("affliction.fail", Level.ERROR)
+                .put(ID_NAME, affliction.getName())
+                .send(e.getMessage());
+            return false;
+        }
     }
 
 
@@ -69,12 +78,13 @@ public class ActiveAffliction {
                 .setContext(context)
                 .setState(state)
                 .set("spells", context.spells())
-                .set("this", this)
+                .set("source", source)
+                .set("target", target)
                 .set("DamageType", DamageType.class)
-                .set("log", (Consumer<String>) (message) -> {
+                .set("log", (Consumer<Object>) (message) -> {
                     context.getLogger(getClass()).event("affliction", Level.INFO)
                             .put("name", affliction.getName())
-                            .send(message);
+                            .send(message.toString());
                 })
                 .setAttribute(Attribute.class);
     }

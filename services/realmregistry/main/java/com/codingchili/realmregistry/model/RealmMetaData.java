@@ -1,7 +1,8 @@
 package com.codingchili.realmregistry.model;
 
+import com.codingchili.common.RegisteredRealm;
+
 import com.codingchili.core.configuration.Attributes;
-import com.codingchili.realmregistry.configuration.RegisteredRealm;
 
 /**
  * @author Robin Duda
@@ -10,7 +11,7 @@ import com.codingchili.realmregistry.configuration.RegisteredRealm;
  */
 public class RealmMetaData extends Attributes {
     private long updated;
-    private String name;
+    private String node;
     private String description;
     private String host;
     private String resources;
@@ -27,7 +28,7 @@ public class RealmMetaData extends Attributes {
     }
 
     public RealmMetaData(RegisteredRealm settings) {
-        this.setName(settings.getName())
+        this.setNode(settings.getNode())
                 .setResources(settings.getResources())
                 .setVersion(settings.getVersion())
                 .setSize(settings.getSize())
@@ -76,12 +77,12 @@ public class RealmMetaData extends Attributes {
         return this;
     }
 
-    public String getName() {
-        return name;
+    public String getNode() {
+        return node;
     }
 
-    private RealmMetaData setName(String name) {
-        this.name = name;
+    private RealmMetaData setNode(String node) {
+        this.node = node;
         return this;
     }
 

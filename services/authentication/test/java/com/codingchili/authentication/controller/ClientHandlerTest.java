@@ -1,6 +1,6 @@
 package com.codingchili.authentication.controller;
 
-import com.codingchili.authentication.configuration.AuthenticationContext;
+import com.codingchili.authentication.configuration.AuthContext;
 import com.codingchili.authentication.model.AsyncAccountStore;
 import com.codingchili.authentication.model.ContextMock;
 import com.codingchili.core.protocol.ResponseStatus;
@@ -37,7 +37,7 @@ public class ClientHandlerTest {
     private static final String USERNAME_NEW = "new-username";
     private static final String USERNAME_MISSING = "missing-username";
     private static final String PASSWORD_WRONG = "wrong-password";
-    private static AuthenticationContext context;
+    private static AuthContext context;
     private static ClientHandler handler;
 
     @Rule

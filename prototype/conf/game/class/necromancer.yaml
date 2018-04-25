@@ -24,4 +24,5 @@ stats:
   armorClass: 10
   dexterity: 5
   experience: 0
+  movement: 2.3
   level: 1

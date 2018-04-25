@@ -1,7 +1,8 @@
 package com.codingchili.realmregistry.model;
 
 import com.codingchili.core.security.Token;
-import com.codingchili.realmregistry.configuration.RegisteredRealm;
+
+import com.codingchili.common.RegisteredRealm;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 

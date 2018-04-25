@@ -37,6 +37,12 @@
                 padding-bottom: 32px;
                 display: block;
             }
+
+            @media (max-width: 632px){
+                .loading-box {
+                    width: unset;
+                }
+            }
         </style>
 
         <template is="dom-if" if="[[enabled]]">
@@ -83,6 +89,7 @@
                 this.text = text;
             }
         }
+
         window.customElements.define(MegaLoader.is, MegaLoader);
 
     </script>

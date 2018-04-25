@@ -1,6 +1,5 @@
 package com.codingchili.realm.configuration;
 
-import com.codingchili.realm.instance.model.entity.PlayableClass;
 import com.codingchili.realm.model.AsyncCharacterStore;
 import com.codingchili.realm.model.CharacterDB;
 import io.vertx.core.Future;
@@ -22,11 +21,11 @@ public class ContextMock extends RealmContext {
     }
 
     public ContextMock(CoreContext context) {
-        super(context,new RealmSettings()
-                .setName("realmName")
+        super(context, () -> new RealmSettings()
+                .setNode("realmName")
                 .setAuthentication(new Token(new TokenFactory("s".getBytes()), "realmName")));
 
-        super.getClasses().add(new PlayableClass().setName("class.name"));
+        //super.realm()..add(new PlayableClass().setName("class.name"));
     }
 
     @Override

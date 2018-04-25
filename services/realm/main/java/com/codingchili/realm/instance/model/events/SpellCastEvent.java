@@ -16,7 +16,7 @@ public class SpellCastEvent implements Event {
     }
 
     public String getSpell() {
-        return spell.getSpell().getName();
+        return spell.getSpell().getId();
     }
 
     public SpellCastEvent setSpell(ActiveSpell spell) {
@@ -42,8 +42,8 @@ public class SpellCastEvent implements Event {
     }
 
     @Override
-    public EventType getType() {
-        return EventType.SPELL;
+    public EventType getRoute() {
+        return EventType.spell;
     }
 
     @Override

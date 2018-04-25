@@ -113,7 +113,7 @@
     <script>
         class PagePatchnotes extends Polymer.Element {
 
-            constructor () {
+            constructor() {
                 super();
                 this.patch = {};
             }
@@ -123,9 +123,10 @@
             }
 
             _loaded(event, request) {
-                    application.loadedVersion(this.patch);
+                application.loadedVersion(this.patch);
             }
         }
+
         window.customElements.define(PagePatchnotes.is, PagePatchnotes);
     </script>
 </dom-module>

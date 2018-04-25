@@ -2,7 +2,7 @@ package com.codingchili.authentication.model;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.security.Account;
-import com.codingchili.core.security.HashHelper;
+import com.codingchili.core.security.HashFactory;
 import com.codingchili.core.storage.AsyncStorage;
 import com.codingchili.core.storage.exception.ValueAlreadyPresentException;
 import com.codingchili.core.storage.exception.ValueMissingException;
@@ -20,11 +20,11 @@ import static io.vertx.core.Future.succeededFuture;
  */
 public class AccountDB implements AsyncAccountStore {
     private final AsyncStorage<AccountMapping> accounts;
-    private final HashHelper hasher;
+    private final HashFactory hasher;
 
     public AccountDB(AsyncStorage<AccountMapping> map, CoreContext context) {
         this.accounts = map;
-        this.hasher = new HashHelper(context);
+        this.hasher = new HashFactory(context);
     }
 
     @Override

@@ -1,19 +1,20 @@
 package com.codingchili.realm.instance.model.spells;
 
 import com.codingchili.realm.instance.scripting.Scripted;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.codingchili.core.configuration.Configurable;
 import com.codingchili.core.configuration.CoreStrings;
-import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.storage.Storable;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * A spell item from the spell DB.
  */
 public class Spell implements Storable, Configurable {
-    protected String name = "no name";
+    protected String id = "no name";
     protected String description = "no description";
     protected Boolean mobile = true; // can move and cast?
     protected Target target = Target.caster; // spell target: caster, area etc.
@@ -30,20 +31,16 @@ public class Spell implements Storable, Configurable {
 
     @Override
     public String getPath() {
-        return "conf/game/classes/" + name + CoreStrings.EXT_YAML;
+        return "conf/game/classes/" + id + CoreStrings.EXT_YAML;
     }
 
     @Override
     public String getId() {
-        return name;
+        return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -118,6 +115,7 @@ public class Spell implements Storable, Configurable {
         this.interval = interval;
     }
 
+    @JsonIgnore
     public Scripted getOnCastBegin() {
         return onCastBegin;
     }
@@ -126,31 +124,33 @@ public class Spell implements Storable, Configurable {
         this.onCastBegin = onCastBegin;
     }
 
+    @JsonIgnore
     public Scripted getOnCastProgress() {
         return onCastProgress;
     }
 
+    @JsonProperty("onCastProgress")
     public void setOnCastProgress(Scripted onCastProgress) {
         this.onCastProgress = onCastProgress;
     }
 
+    @JsonIgnore
     public Scripted getOnCastComplete() {
         return onCastComplete;
     }
 
+    @JsonProperty("onCastComplete")
     public void setOnCastComplete(Scripted onCastComplete) {
         this.onCastComplete = onCastComplete;
     }
 
+    @JsonIgnore
     public Scripted getOnSpellActive() {
         return onSpellActive;
     }
 
+    @JsonProperty("onSpellActive")
     public void setOnSpellActive(Scripted onSpellActive) {
         this.onSpellActive = onSpellActive;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(Serializer.yaml(new Spell()));
     }
 }

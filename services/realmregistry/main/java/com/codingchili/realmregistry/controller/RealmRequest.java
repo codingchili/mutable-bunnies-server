@@ -1,35 +1,38 @@
 package com.codingchili.realmregistry.controller;
 
+import com.codingchili.common.RegisteredRealm;
+
 import com.codingchili.core.listener.Request;
 import com.codingchili.core.listener.RequestWrapper;
 import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.security.Token;
-import com.codingchili.realmregistry.configuration.RegisteredRealm;
 
 import static com.codingchili.common.Strings.*;
 
 /**
  * @author Robin Duda
+ * <p>
+ * A request from the raelm to the realm registry.
  */
-class RealmRequest extends RequestWrapper {
-    private RegisteredRealm realm = new RegisteredRealm();
+class RealmRequest implements RequestWrapper {
+    private RegisteredRealm realm;
+    private Request request;
 
     RealmRequest(Request request) {
-        super(request);
+        this.request = request;
 
-        parseRealm();
-    }
-
-    private void parseRealm() {
         if (data().containsKey(ID_REALM)) {
             realm = Serializer.unpack(data().getJsonObject(ID_REALM), RegisteredRealm.class);
-        } else {
-            realm = new RegisteredRealm();
-
-            if (data().containsKey(ID_TOKEN)) {
-                realm.setAuthentication(Serializer.unpack(data().getJsonObject(ID_TOKEN), Token.class));
-            }
         }
+
+        if (data().containsKey(ID_TOKEN)) {
+            realm.setAuthentication(Serializer.unpack(data().getJsonObject(ID_TOKEN), Token.class));
+        }
+    }
+
+    @Override
+    public Request request() {
+        return request;
     }
 
     public Token token() {
@@ -50,17 +53,5 @@ class RealmRequest extends RequestWrapper {
         } else {
             return 0;
         }
-    }
-
-    public String sender() {
-        return data().getString(PROTOCOL_CONNECTION);
-    }
-
-    public String account() {
-        return data().getString(ID_ACCOUNT);
-    }
-
-    public String name() {
-        return data().getString(ID_CHARACTER);
     }
 }

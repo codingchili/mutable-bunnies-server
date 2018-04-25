@@ -14,12 +14,12 @@ public class SpawnEvent implements Event {
         return this;
     }
 
-    public SpawnEvent setEntity(Entity entity) {
+    public SpawnEvent setEntities(Entity entity) {
         this.entity = entity;
         return this;
     }
 
-    public Entity getEntity() {
+    public Entity getEntities() {
         return entity;
     }
 
@@ -28,8 +28,8 @@ public class SpawnEvent implements Event {
     }
 
     @Override
-    public EventType getType() {
-        return EventType.SPAWN;
+    public EventType getRoute() {
+        return EventType.spawn;
     }
 
     public enum SpawnType {SPAWN, DESPAWN, DISCONNECT, DEATH}

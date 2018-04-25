@@ -17,7 +17,7 @@ public class EntityUpdateEvent implements Event {
     }
 
     @Override
-    public EventType getType() {
-        return EventType.UPDATE;
+    public EventType getRoute() {
+        return EventType.update;
     }
 }

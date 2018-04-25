@@ -1,0 +1,102 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+
+<!--
+    @author Robin Duda
+    Realm chat.
+ -->
+
+<dom-module id="spell-bar">
+    <link rel="import" href="../../style/theme.css" type="css">
+    <link rel="import" href="../../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+                position: absolute;
+                bottom: 16px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .interface-box {
+                left: -50%;
+                display: block;
+                background-color: #000000;
+                opacity: 0.84;
+                height: 46px;
+            }
+
+            .spell-icon {
+                height: 42px;
+                padding-left: 4px;
+                padding-right: 4px;
+            }
+
+            .cooldown-bar {
+                --paper-progress-active-color: #4db6ac;
+                --paper-progress-container-color: #4db6ac32;
+                width: 42px;
+                margin-left: 4px;
+                position: absolute;
+                top: 40px;
+            }
+
+            @media (max-width: 632px) {
+                :host {
+                    bottom: 48px;
+                }
+            }
+
+        </style>
+
+        <paper-material elevation="3" class="interface-box">
+            <template is="dom-repeat" items="{{spells}}" as="spell">
+                <template is="dom-if" if="{{_learned(spell)}}">
+                    <!-- in hint -->
+                    <!-- [[spell.id]]-->
+
+                    <!-- in hint -->
+                    <!--[[spell.description]]-->
+
+                    <!-- lower opacity on cooldown -->
+                    <img class="spell-icon" src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
+
+                    <!-- cooldown, hide otherwise. -->
+                    <paper-progress class="cooldown-bar transiting" min="0" max="[[character.stats.nextlevel]]"
+                                    value="[[character.stats.experience]]"></paper-progress>
+                </template>
+            </template>
+        </paper-material>
+
+    </template>
+    <script>
+        class SpellBar extends Polymer.Element {
+
+            static get is() {
+                return 'spell-bar';
+            }
+
+            constructor() {
+                super();
+
+                this.spells = [{"id": "hello"}];
+
+                setInterval(() => {
+                    this.spells = application.realm.spells;
+                    this.character = application.character;
+                    this.set("realm", application.realm);
+                    this.set("spells", application.realm.spells);
+                    this.notifyPath("realm");
+                    this.notifyPath("spells");
+                    this.notifySplices("spells");
+                }, 1000);
+            }
+
+            _learned(spell) {
+                return application.character.spells.learned.indexOf(spell.id) >= 0;
+            }
+        }
+
+        window.customElements.define(SpellBar.is, SpellBar);
+    </script>
+</dom-module>

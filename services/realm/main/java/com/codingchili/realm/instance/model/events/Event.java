@@ -35,5 +35,5 @@ public interface Event {
     /**
      * @return the type of event.
      */
-    EventType getType();
+    EventType getRoute();
 }

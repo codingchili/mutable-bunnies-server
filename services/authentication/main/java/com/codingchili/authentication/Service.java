@@ -1,6 +1,6 @@
 package com.codingchili.authentication;
 
-import com.codingchili.authentication.configuration.AuthenticationContext;
+import com.codingchili.authentication.configuration.AuthContext;
 import com.codingchili.authentication.controller.ClientHandler;
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.listener.CoreService;
@@ -14,7 +14,7 @@ import static com.codingchili.core.context.FutureHelper.untyped;
  */
 public class Service implements CoreService {
     private CoreContext core;
-    private AuthenticationContext context;
+    private AuthContext context;
 
     @Override
     public void init(CoreContext core) {
@@ -23,7 +23,7 @@ public class Service implements CoreService {
 
     @Override
     public void start(Future<Void> start) {
-        Future<AuthenticationContext> providerFuture = Future.future();
+        Future<AuthContext> providerFuture = Future.future();
 
         providerFuture.setHandler(future -> {
             if (future.succeeded()) {
@@ -33,6 +33,6 @@ public class Service implements CoreService {
                 start.fail(future.cause());
             }
         });
-        AuthenticationContext.create(providerFuture, core);
+        AuthContext.create(providerFuture, core);
     }
 }

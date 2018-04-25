@@ -3,15 +3,27 @@
  */
 class Connection {
 
-    constructor(host, port) {
+    constructor(host, port, secure) {
+        this.clientClosed = false;
+        this.binaryWebsocket = false;
         this.port = port;
         this.host = host;
         this.handlers = {};
         this.onConnectHandlers = [];
 
-        this.ws = new WebSocket("wss://" + this.host + ":" + this.port + "/");
-        this.ws.onmessage = (msg) => {
-            this.onmessage(msg);
+        this.protocol = (secure) ? "wss://" : "ws://";
+
+        this.ws = new WebSocket(this.protocol + this.host + ":" + this.port + "/");
+        this.ws.binaryType = 'arraybuffer';
+
+        this.decoder = new TextDecoder("UTF-8");
+        this.ws.onmessage = (event) => {
+
+            if (this.binaryWebsocket) {
+                event.data = this.decoder.decode(event.data)
+            }
+
+            this.onmessage(event.data);
         };
         this.ws.onopen = () => {
             this.open = true;
@@ -19,10 +31,25 @@ class Connection {
                 this.onConnectHandlers[i]();
             }
             this.onConnectHandlers = [];
-        }
+        };
         this.ws.onerror = (evt) => {
             this.onerror(evt);
         };
+    }
+
+    onmessage(data) {
+        data = JSON.parse(data);
+        let route = data.route;
+
+        if (this.handlers[route]) {
+            if (data.status === ResponseStatus.ACCEPTED) {
+                this.handlers[route].accepted(data);
+            } else {
+                this.handlers[route].error(data);
+            }
+        } else {
+            console.log('no handler for message: ' + JSON.stringify(data));
+        }
     }
 
     onConnected(connected) {
@@ -43,6 +70,7 @@ class Connection {
     }
 
     close() {
+        this.clientClosed = true;
         this.ws.close();
     }
 
@@ -54,21 +82,6 @@ class Connection {
             callback.error = (err) => application.onError(err.message);
         }
         this.handlers[route] = callback;
-    }
-
-    onmessage(event) {
-       let data = JSON.parse(event.data);
-       let route = data.route || data.type;
-
-       if (this.handlers[route]) {
-         if (data.status === ResponseStatus.ACCEPTED) {
-            this.handlers[route].accepted(data);
-         } else {
-            this.handlers[route].error(data);
-         }
-       } else {
-         console.log('no handler for message: ' + event.data);
-       }
     }
 
     onerror(event) {

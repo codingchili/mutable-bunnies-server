@@ -5,7 +5,7 @@ import com.codingchili.realm.instance.context.InstanceContext;
 import com.codingchili.realm.instance.model.entity.Entity;
 import com.codingchili.realm.instance.model.entity.PlayerCreature;
 import com.codingchili.realm.instance.model.events.*;
-import com.codingchili.realm.instance.transport.ControlRequest;
+import com.codingchili.realm.instance.transport.InstanceRequest;
 import io.vertx.core.Future;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
         protocol.annotated(new MovementHandler(game));
         protocol.annotated(new TradeHandler(game));
         protocol.annotated(new SpellHandler(game));
-        protocol.annotated(new DialogHandler(game));
+        protocol.annotated(new ChatHandler(game));
     }
 
     @Api
@@ -47,36 +47,30 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
         request.accept();
     }
 
-    @Api(route = CLIENT_INSTANCE_JOIN)
-    public void join(ControlRequest request) {
+    @Api
+    public void join(InstanceRequest request) {
         JoinMessage join = request.raw(JoinMessage.class);
         PlayerCreature creature = join.getPlayer();
-        game.add(creature);
+        List<Entity> entities = new ArrayList<>();
+
+        entities.add(creature);
+        entities.addAll(game.entities().all());
+        entities.addAll(game.creatures().all());
+
         context.onPlayerJoin(join);
+        game.add(creature);
 
-        List<SpawnEvent> entities = new ArrayList<>();
-        Consumer<Entity> spawner = (entity) -> {
-            entities.add(new SpawnEvent()
-                    .setType(SpawnEvent.SpawnType.SPAWN)
-                    .setEntity(entity));
-        };
-
-        game.entities().all().forEach(spawner);
-        game.creatures().all().stream().filter(entity ->
-                !entity.getId().equals(creature.getId()))
-                .forEach(spawner);
-
-        creature.handle(new ConnectEvent(creature, entities));
-        request.accept();
+        request.write(new ConnectEvent(creature, entities));
     }
 
-    @Api(route = CLIENT_INSTANCE_LEAVE)
-    public void leave(ControlRequest request) {
+    @Api
+    public void leave(InstanceRequest request) {
         LeaveMessage leave = request.raw(LeaveMessage.class);
-        Entity player = game.getById(leave.getPlayerName());
-        context.onPlayerLeave(leave);
+        PlayerCreature player = game.getById(leave.getPlayerName());
+        player.getVector().setVelocity(0);
         game.remove(player);
-        request.accept();
+        game.getInstance().sendRealm(new SavePlayerMessage(player));
+        context.onPlayerLeave(leave);
     }
 
     @Override
@@ -91,7 +85,7 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
 
     @Override
     public void stop(Future<Void> future) {
-        context.onInstanceStopped(future, context.realm().getName(), context.settings().getName());
+        context.onInstanceStopped(future, context.realm().getNode(), context.settings().getName());
     }
 
     @Override

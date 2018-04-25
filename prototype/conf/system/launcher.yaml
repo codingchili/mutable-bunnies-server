@@ -1,6 +1,8 @@
 ---
 version: CORE-1.0.5-PR
 application: prototype
+clustered: false
+warnOnDefaultsLoaded: true
 blocks:
   default:
   - com.codingchili.logging.Service

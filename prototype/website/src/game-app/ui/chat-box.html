@@ -1,0 +1,138 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+
+<!--
+    @author Robin Duda
+    Realm chat.
+ -->
+
+<dom-module id="chat-box">
+    <link rel="import" href="../../style/theme.css" type="css">
+    <link rel="import" href="../../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+                display: block;
+                position: absolute;
+                bottom: 16px;
+                left: 16px;
+            }
+
+            .interface-box {
+                width: 416px;
+                height: 246px;
+                display: block;
+                background-color: #000000;
+                opacity: 0.84;
+            }
+
+            .input {
+                position: absolute;
+                display: block;
+                bottom: 2px;
+                left: 0px;
+                right: 0px;
+            }
+
+            --paper-input-container-input {
+                font-size: 9px;
+            }
+
+            .messages {
+                list-style-type: none;
+                font-size: smaller;
+                margin-left: 8px;
+                margin-top: 2px;
+                padding-left: 0px;
+                margin-bottom: 0px;
+            }
+
+            @media (max-width: 632px) {
+                :host {
+                    bottom: 0;
+                    left: 0px;
+                    right: 0px;
+                    height: 47px;
+                    display: block;
+                }
+
+                .interface-box {
+                    height: 47px;
+                    left: 0px;
+                    right: 0px;
+                    width: unset;
+                }
+
+                .messages {
+                    display: none;
+                }
+            }
+        </style>
+
+
+        <paper-material elevation="3" class="interface-box">
+            <div class="list">
+                <ul class="messages">
+                    <template is="dom-repeat" items="{{messages}}" as="message">
+                        <li class="text">
+                            [[message.source]]: [[message.text]]
+                        </li>
+                    </template>
+                </ul>
+            </div>
+            <paper-input value="{{message}}" id="message" class="input" maxlength="60" placeholder="message"
+                         on-keydown="submit"
+                         autofocus></paper-input>
+        </paper-material>
+    </template>
+    <script>
+        class ChatBox extends Polymer.Element {
+
+            static get is() {
+                return 'chat-box';
+            }
+
+            ready() {
+                super.ready();
+                this.set("messages", []);
+                this.set("message", "");
+
+                this._setHandler();
+                application.onScriptsLoaded(() => {
+                    this._setHandler();
+                });
+            }
+
+            _setHandler() {
+                window.chatHandler.onChatMessage(msg => {
+                    this.add(msg);
+                });
+            }
+
+            send() {
+                if (this.message.length !== 0) {
+                    window.chatHandler.send(this.message);
+                    this.set("message", "");
+                }
+            }
+
+            add(message) {
+                if (message.text) {
+                    this.push("messages", message);
+                }
+                while (this.messages.length >= 12) {
+                    this.splice("messages", 0, 1);
+                }
+            }
+
+            submit(event) {
+                if (event.keyCode === 13)
+                    this.send();
+            }
+        }
+
+        window.customElements.define(ChatBox.is, ChatBox);
+    </script>
+</dom-module>

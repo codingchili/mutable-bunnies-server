@@ -1,15 +1,16 @@
 package com.codingchili.realm.instance.model.spells;
 
-import com.codingchili.realm.instance.model.entity.Creature;
 import com.codingchili.realm.instance.model.entity.Vector;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * A spelltarget.
+ * @author Robin Duda
+ * <p>
+ * A spell target is required to cast spells.
+ * A target can be either a vector or a single creature, depending on the spell.
  */
 public class SpellTarget {
     private Vector vector;
-    private Creature creature;
+    private String targetId;
 
     public Vector getVector() {
         return vector;
@@ -20,17 +21,12 @@ public class SpellTarget {
         return this;
     }
 
-    @JsonIgnore
-    public Creature getCreature() {
-        return creature;
-    }
-
     public String getTargetId() {
-        return creature.getId();
+        return targetId;
     }
 
-    public SpellTarget setCreature(Creature creature) {
-        this.creature = creature;
+    public SpellTarget setTargetId(String targetId) {
+        this.targetId = targetId;
         return this;
     }
 }

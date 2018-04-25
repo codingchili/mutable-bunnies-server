@@ -9,6 +9,7 @@ import com.codingchili.router.configuration.RouterContext;
 
 import static com.codingchili.common.Strings.ANY;
 import static com.codingchili.common.Strings.NODE_ROUTER;
+import static com.codingchili.core.configuration.CoreStrings.PROTOCOL_CONNECTION;
 
 /**
  * @author Robin Duda
@@ -29,6 +30,9 @@ public class RouterHandler extends BusRouter {
     @Override
     public void handle(Request request) {
         if (context.isRouteExternal(request.target(), request.route())) {
+
+            request.data().put(PROTOCOL_CONNECTION, request.connection().remote());
+
             protocol.get(request.target(), Role.USER).submit(request);
         } else {
             request.error(new AuthorizationRequiredException(

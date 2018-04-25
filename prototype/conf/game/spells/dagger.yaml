@@ -1,0 +1,20 @@
+---
+id: "dagger"
+description: "Applies poison to the target."
+cooldown: 5.0
+casttime: 0.5
+charges: 3
+target: caster
+onCastBegin:
+  jexl:
+    //spells.energy(caster, -35);
+    //log.accept('onCastBegin!');
+
+    return true;
+onCastComplete:
+  jexl: |
+    log.accept('casting dagger completed');
+
+    for (creature : game.creatures().all()) {
+      spells.damage(source, creature, -10, DamageType.physical);
+    }

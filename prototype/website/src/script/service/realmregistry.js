@@ -14,7 +14,7 @@ class RealmRegistry {
     realmtoken(callback, realmName) {
         this.network.rest(callback, 'realmtoken', {
            'realm': realmName,
-            'token': application.authentication.token
+            'token': application.token
         });
     }
 }

@@ -2,6 +2,8 @@ package com.codingchili.realm.model;
 
 
 import com.codingchili.core.security.Token;
+
+import com.codingchili.common.RegisteredRealm;
 import com.codingchili.realm.configuration.RealmSettings;
 
 import static com.codingchili.common.Strings.REALM_UPDATE;
@@ -11,7 +13,7 @@ import static com.codingchili.common.Strings.REALM_UPDATE;
  * A request to register a realm on the authentication server.
  */
 public class RealmUpdate {
-    private RealmSettings realm;
+    private RegisteredRealm realm;
     private Token token;
     private int players = 0;
 
@@ -19,7 +21,7 @@ public class RealmUpdate {
      * @param realm constructs a new realm update from an existing realm.
      */
     public RealmUpdate(RealmSettings realm) {
-        this.realm = realm;
+        this.realm = realm.toMetadata();
         this.token = realm.getAuthentication();
     }
 
@@ -32,11 +34,11 @@ public class RealmUpdate {
         return players;
     }
 
-    public RealmSettings getRealm() {
+    public RegisteredRealm getRealm() {
         return realm;
     }
 
-    public RealmUpdate setRealm(RealmSettings realm) {
+    public RealmUpdate setRealm(RegisteredRealm realm) {
         this.realm = realm;
         return this;
     }

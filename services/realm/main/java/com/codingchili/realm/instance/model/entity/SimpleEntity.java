@@ -4,20 +4,18 @@ import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.model.events.Event;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Robin Duda
  */
 public abstract class SimpleEntity implements Entity {
+    protected transient GameContext context;
+    protected transient EventProtocol protocol = new EventProtocol(this);
     private String id = UUID.randomUUID().toString();
+    protected Map<String, Object> attributes = new HashMap<>();
     protected String name = "<no name>";
-    protected EventProtocol protocol = new EventProtocol(this);
-    protected GameContext context;
-    protected Vector vector = new Vector()
-            .setX((float) (Math.random() * 1000))
-            .setY((float) (Math.random() * 1000));
+    protected Vector vector = new Vector();
 
     @Override
     public void setContext(GameContext context) {
@@ -31,7 +29,15 @@ public abstract class SimpleEntity implements Entity {
 
     @Override
     public void handle(Event event) {
-        protocol.get(event.getType().toString()).submit(event);
+        protocol.get(event.getRoute().toString()).submit(event);
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
     }
 
     @Override

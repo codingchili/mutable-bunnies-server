@@ -7,10 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Stats extends ConcurrentHashMap<Attribute, Float> {
 
-    public Stats() {
-        super();
-    }
-
     public Stats update(Attribute type, float points) {
         float current = getOrDefault(type, 0f) + points;
         put(type, current);

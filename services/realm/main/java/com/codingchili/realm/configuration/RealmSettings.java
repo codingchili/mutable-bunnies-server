@@ -1,8 +1,8 @@
 package com.codingchili.realm.configuration;
 
+import com.codingchili.common.RegisteredRealm;
 import com.codingchili.realm.instance.context.InstanceSettings;
-import com.codingchili.realm.instance.model.afflictions.Affliction;
-import com.codingchili.realm.instance.model.entity.PlayableClass;
+import com.codingchili.realm.instance.scripting.Scripted;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.vertx.core.json.JsonObject;
@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.*;
 
 import com.codingchili.core.configuration.AttributeConfigurable;
-import com.codingchili.core.files.ConfigurationFactory;
+import com.codingchili.core.listener.ListenerSettings;
 import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.security.Token;
 
@@ -26,20 +26,19 @@ import static com.codingchili.core.files.Configurations.*;
 @JsonIgnoreProperties({"instances"})
 public class RealmSettings extends AttributeConfigurable {
     private final List<InstanceSettings> instances = new ArrayList<>();
-    private List<PlayableClass> classes = new ArrayList<>();
-    private List<Affliction> afflictions = new ArrayList<>();
+    private Set<String> availableClasses = new HashSet<>();
+    private ListenerSettings listener = new ListenerSettings();
+    private Scripted onPlayerJoin;
     private Token authentication;
     private String resources;
     private String version;
-    private String host;
-    private int port;
-    private int size;
     private String type;
-    private int players = 0;
+    private String node;
+    private String host;
     private Boolean trusted;
-    private Boolean secure;
     private long updated;
-    private String name;
+    private int size;
+    private int players = 0;
 
     /**
      * Checks if an overridden resource exist in PATH_GAME_OVERRIDE for the
@@ -60,51 +59,45 @@ public class RealmSettings extends AttributeConfigurable {
         }
     }
 
-    public RealmSettings removeAuthentication() {
-        RealmSettings copy = new RealmSettings()
-                .setPort(port)
+    /**
+     * @return creates a copy of the realmsettings into a RegisteredRealm that contains
+     * metadata for connecting clients. Do not include the realms token in this.
+     */
+    public RegisteredRealm toMetadata() {
+        return new RegisteredRealm()
+                .setNode(node)
+                .setSize(size)
                 .setHost(host)
-                .setClasses(classes)
-                .setAfflictions(afflictions)
+                .setPort(listener.getPort())
+                .setSecure(listener.isSecure())
                 .setResources(resources)
                 .setVersion(version)
-                .setName(name)
-                .setSize(size)
-                .setType(type)
                 .setPlayers(players)
-                .setTrusted(trusted)
-                .setSecure(secure)
-                .setAuthentication(null);
-        copy.setAttributes(attributes);
-        return copy;
+                .setAvailableClasses(availableClasses)
+                .setAttributes(attributes);
     }
 
     public void load() {
-        readInstances();
-        readPlayerClasses();
-        readAfflictions();
-    }
-
-    private void readInstances() {
         available(PATH_INSTANCE).stream()
-                .map(path -> override(path, name))
+                .map(path -> override(path, node))
                 .map(path -> get(path, InstanceSettings.class))
                 .forEach(instances::add);
     }
 
-    private void readPlayerClasses() {
-        available(PATH_GAME_CLASSES).stream()
-                .map(path -> override(path, name))
-                .map(ConfigurationFactory::readObject)
-                .map(json -> Serializer.unpack(json, PlayableClass.class))
-                .forEach(classes::add);
+    /**
+     * @return a list of available classes.
+     */
+    public Set<String> getAvailableClasses() {
+        return availableClasses;
     }
 
-    private void readAfflictions() {
-        available(PATH_GAME_AFFLICTIONS).stream()
-                .map(path -> override(path, name))
-                .map(ConfigurationFactory::readObject)
-                .forEach(affliction -> afflictions.add(Serializer.unpack(affliction, Affliction.class)));
+    /**
+     * @param availableClasses a list of available classes.
+     * @return fluent
+     */
+    public RealmSettings setAvailableClasses(Set<String> availableClasses) {
+        this.availableClasses = availableClasses;
+        return this;
     }
 
     /**
@@ -127,23 +120,14 @@ public class RealmSettings extends AttributeConfigurable {
      * @return the port of this realm.
      */
     public int getPort() {
-        return port;
-    }
-
-    /**
-     * @param port the port the realm is listening on.
-     * @return fluent
-     */
-    public RealmSettings setPort(int port) {
-        this.port = port;
-        return this;
+        return listener.getPort();
     }
 
     /**
      * @return returns true if the connection must be secure.
      */
     public Boolean getSecure() {
-        return secure;
+        return this.listener.isSecure();
     }
 
     /**
@@ -151,57 +135,7 @@ public class RealmSettings extends AttributeConfigurable {
      * @return fluent
      */
     private RealmSettings setSecure(Boolean secure) {
-        this.secure = secure;
-        return this;
-    }
-
-    /**
-     * @return a list of all afflictions configured.
-     */
-    public List<Affliction> getAfflictions() {
-        return afflictions;
-    }
-
-    /**
-     * @param afflictions sets a list of available afflictions.
-     * @return fluent
-     */
-    private RealmSettings setAfflictions(List<Affliction> afflictions) {
-        this.afflictions = afflictions;
-        return this;
-    }
-
-    /**
-     * @param affliction an affliction to add
-     * @return fluent
-     */
-    private RealmSettings addAffliction(Affliction affliction) {
-        this.afflictions.add(affliction);
-        return this;
-    }
-
-    /**
-     * @return return all available player classes.
-     */
-    public List<PlayableClass> getClasses() {
-        return classes;
-    }
-
-    /**
-     * @param classes sets a list of available player classes.
-     * @return fluent
-     */
-    public RealmSettings setClasses(List<PlayableClass> classes) {
-        this.classes = classes;
-        return this;
-    }
-
-    /**
-     * @param klass the playerclass to add to available.
-     * @return fluent
-     */
-    public RealmSettings addClass(PlayableClass klass) {
-        this.classes.add(klass);
+        this.listener.setSecure(secure);
         return this;
     }
 
@@ -256,16 +190,16 @@ public class RealmSettings extends AttributeConfigurable {
     /**
      * @return get the handler of this realm.
      */
-    public String getName() {
-        return name;
+    public String getNode() {
+        return node;
     }
 
     /**
-     * @param name set the handler of this realm
+     * @param node set the handler of this realm
      * @return fluent
      */
-    public RealmSettings setName(String name) {
-        this.name = name;
+    public RealmSettings setNode(String node) {
+        this.node = node;
         return this;
     }
 
@@ -318,6 +252,22 @@ public class RealmSettings extends AttributeConfigurable {
     }
 
     /**
+     * @return listener configuration for the realm.
+     */
+    public ListenerSettings getListener() {
+        return listener;
+    }
+
+    /**
+     * @param listener the listener configuration to use for the realm.
+     * @return fluent
+     */
+    public RealmSettings setListener(ListenerSettings listener) {
+        this.listener = listener;
+        return this;
+    }
+
+    /**
      * @return true if this realm is not a third-party server.
      */
     public Boolean getTrusted() {
@@ -340,9 +290,23 @@ public class RealmSettings extends AttributeConfigurable {
         return instances;
     }
 
+    /**
+     * @return a script that calculates the starting instance based on the given player.
+     */
+    public Scripted getOnPlayerJoin() {
+        return onPlayerJoin;
+    }
+
+    /**
+     * @param startingInstance a script that calculates the starting instance based on the given player.
+     */
+    public void setOnPlayerJoin(Scripted startingInstance) {
+        this.onPlayerJoin = startingInstance;
+    }
+
     @Override
     public boolean equals(Object other) {
-        return other instanceof RealmSettings && (((RealmSettings) other).getName().equals(name));
+        return other instanceof RealmSettings && (((RealmSettings) other).getNode().equals(node));
     }
 
     @Override

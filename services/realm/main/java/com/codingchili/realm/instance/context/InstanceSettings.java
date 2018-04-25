@@ -1,15 +1,18 @@
 package com.codingchili.realm.instance.context;
 
 import com.codingchili.core.configuration.Configurable;
+
+import com.codingchili.realm.instance.model.SpawnPoint;
 import com.codingchili.realm.instance.model.entity.Node;
 import com.codingchili.realm.instance.model.npc.Npc;
 import com.codingchili.realm.instance.model.entity.Portal;
+import com.codingchili.realm.instance.scripting.Scripted;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.codingchili.common.Strings.EXT_JSON;
 import static com.codingchili.common.Strings.PATH_INSTANCE;
+import static com.codingchili.core.configuration.CoreStrings.EXT_YAML;
 
 /**
  * @author Robin Duda
@@ -19,6 +22,8 @@ public class InstanceSettings implements Configurable {
     private List<Portal> portals = new ArrayList<>();
     private List<Node> nodes = new ArrayList<>();
     private List<Npc> npc = new ArrayList<>();
+    private List<SpawnPoint> spawns = new ArrayList<>();
+    private Scripted onPlayerJoin;
     private String name = "default";
     private int limit = 0;
     private int width = 1;
@@ -54,6 +59,34 @@ public class InstanceSettings implements Configurable {
     protected InstanceSettings setLimit(int limit) {
         this.limit = limit;
         return this;
+    }
+
+    /**
+     * @return the script executed when a player joins the instance.
+     */
+    public Scripted getOnPlayerJoin() {
+        return onPlayerJoin;
+    }
+
+    /**
+     * @param onPlayerJoin a script to execute when a player joins the instance.
+     */
+    public void setOnPlayerJoin(Scripted onPlayerJoin) {
+        this.onPlayerJoin = onPlayerJoin;
+    }
+
+    /**
+     * @return a list of configured player spawning points.
+     */
+    public List<SpawnPoint> getSpawns() {
+        return spawns;
+    }
+
+    /**
+     * @param spawns a list of player SPAWN points.
+     */
+    public void setSpawns(List<SpawnPoint> spawns) {
+        this.spawns = spawns;
     }
 
     /**
@@ -165,6 +198,6 @@ public class InstanceSettings implements Configurable {
 
     @Override
     public String getPath() {
-        return PATH_INSTANCE + name + EXT_JSON;
+        return PATH_INSTANCE + name + EXT_YAML;
     }
 }

@@ -8,5 +8,7 @@ shutdownHookTimeout: 3000
 configurationPoll: 1500
 cachedFilePoll: 2000
 consoleLogging: true
-workerPoolSize: 16
+workerPoolSize: 8
 clusterTimeout: 3000
+blockedThreadChecker: 2000
+maxEventLoopExecuteTime: 2000

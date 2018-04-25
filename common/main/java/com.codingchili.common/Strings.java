@@ -25,8 +25,8 @@ public abstract class Strings extends CoreStrings {
     public static final String CLIENT_CHARACTER_LIST = "character.list";
     public static final String CLIENT_CHARACTER_CREATE = "character.create";
     public static final String CLIENT_CHARACTER_REMOVE = "character.remove";
-    public static final String CLIENT_INSTANCE_JOIN = "instance.join";
-    public static final String CLIENT_INSTANCE_LEAVE = "instance.leave";
+    public static final String CLIENT_INSTANCE_JOIN = "join";
+    public static final String CLIENT_INSTANCE_LEAVE = "leave";
     public static final String CLIENT_AUTHENTICATE = "authenticate";
     public static final String CLIENT_REGISTER = "register";
     public static final String CLIENT_REALM_TOKEN = "realmtoken";
@@ -81,10 +81,10 @@ public abstract class Strings extends CoreStrings {
     public static final String LOG_REALM_STOP = "realm.stop";
     public static final String LOG_MESSAGE = "message";
     public static final String LOG_ACCOUNT_UNAUTHORIZED = "account.unauthorized";
-    public static final String LOG_ACCOUNT_AUTHENTICATED = "account.authenticated";
+    public static final String LOG_ACCOUNT_AUTHENTICATED = "authenticate";
     public static final String LOG_ACCOUNT_REGISTERED = "account.registered";
-    public static final String LOG_REALM_REGISTERED = "realm.registered";
-    public static final String LOG_REALM_DISCONNECT = "realm.disconnected";
+    public static final String LOG_REALM_REGISTERED = "realm.register";
+    public static final String LOG_REALM_DISCONNECT = "realm.disconnect";
     public static final String LOG_REALM_UPDATE = "realm.update";
     public static final String LOG_REALM_REJECTED = "realm.rejected";
     public static final String LOG_PAGE_LOAD = "page.load";

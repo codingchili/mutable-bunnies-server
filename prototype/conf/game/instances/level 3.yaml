@@ -1,0 +1,17 @@
+---
+name: level 3
+portals: []
+nodes: []
+npc: []
+limit: 50
+width: 3000
+height: 3000
+spawns:
+  - x: 300
+    y: 325
+onPlayerJoin:
+  jexl: |
+    if (source.fromAnotherInstance) {
+      source.vector.x = spawn.x;
+      source.vector.y = spawn.y;
+    }

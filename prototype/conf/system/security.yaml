@@ -35,4 +35,12 @@ dependencies:
       authentication:
         service: realmregistry
         secret: realmSecret
+argon:
+  iterations: 1
+  memory: 8192
+  parallelism: 4
+  hashLength: 32
+  saltLength: 16
+hmacAlgorithm: HmacSHA512
 secretBytes: 64
+tokenttl: 604800

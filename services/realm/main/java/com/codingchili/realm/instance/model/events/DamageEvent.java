@@ -47,8 +47,8 @@ public class DamageEvent implements Event {
     }
 
     @Override
-    public EventType getType() {
-        return EventType.DAMAGE;
+    public EventType getRoute() {
+        return EventType.damage;
     }
 
     @Override

@@ -136,17 +136,17 @@ public class RealmClientHandlerTest {
 
         handle(CLIENT_CHARACTER_LIST, (response, status) -> {
             test.assertEquals(ResponseStatus.ACCEPTED, status);
-            test.assertTrue(characterInJsonArray(CHARACTER_NAME, response.getJsonArray(ID_CHARACTERS)));
+            test.assertTrue(characterInJsonArray(response.getJsonArray(ID_CHARACTERS)));
             async.complete();
         }, new JsonObject()
                 .put(ID_TOKEN, getClientToken()));
     }
 
-    private boolean characterInJsonArray(String charname, JsonArray characters) {
+    private boolean characterInJsonArray(JsonArray characters) {
         Boolean found = false;
 
         for (int i = 0; i < characters.size(); i++) {
-            if (characters.getJsonObject(i).getString(ID_NAME).equals(charname))
+            if (characters.getJsonObject(i).getString(ID_NAME).equals(RealmClientHandlerTest.CHARACTER_NAME))
                 found = true;
         }
         return found;

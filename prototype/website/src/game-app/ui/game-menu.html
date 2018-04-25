@@ -1,0 +1,56 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+
+<!--
+    @author Robin Duda
+    Realm chat.
+ -->
+
+<dom-module id="game-menu">
+    <link rel="import" href="../../style/theme.css" type="css">
+    <link rel="import" href="../../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+            }
+
+            .interface-box {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                display: block;
+                height: 28px;
+                padding-left: 8px;
+                padding-right: 8px;
+                background-color: #000000;
+                opacity: 0.84;
+            }
+        </style>
+
+        <paper-material elevation="3" class="interface-box">
+            <iron-icon icon="icons:close" class="menu-icon" on-click="_characters"></iron-icon>
+        </paper-material>
+
+    </template>
+    <script>
+        class GameMenu extends Polymer.Element {
+
+            static get is() {
+                return 'game-menu';
+            }
+
+            constructor() {
+                super();
+            }
+
+            _characters(e) {
+                window.game.onScriptShutdown();
+                application.scriptShutdown();
+                application.showCharacters();
+            }
+        }
+
+        window.customElements.define(GameMenu.is, GameMenu);
+    </script>
+</dom-module>

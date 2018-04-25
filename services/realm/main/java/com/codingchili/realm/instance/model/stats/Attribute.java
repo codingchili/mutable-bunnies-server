@@ -22,7 +22,7 @@ public enum Attribute {
     spellpower,  // computed by INT
     healing, // affects the efficiency of heals.
     energy,
-    maxenergy
+    nextlevel, maxenergy
 
     /*
     todo:

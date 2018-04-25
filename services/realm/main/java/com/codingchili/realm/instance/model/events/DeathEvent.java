@@ -33,7 +33,7 @@ public class DeathEvent implements Event {
     }
 
     @Override
-    public EventType getType() {
-        return EventType.DEATH;
+    public EventType getRoute() {
+        return EventType.death;
     }
 }

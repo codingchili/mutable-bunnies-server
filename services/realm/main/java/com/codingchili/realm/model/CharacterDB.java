@@ -59,4 +59,11 @@ public class CharacterDB implements AsyncCharacterStore {
                     }
                 });
     }
+
+    @Override
+    public Future<Void> update(PlayerCreature player) {
+        Future<Void> future = Future.future();
+        characters.put(player, future);
+        return future;
+    }
 }

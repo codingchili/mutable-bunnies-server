@@ -11,6 +11,8 @@ import java.util.function.Predicate;
 
 /**
  * @author Robin Duda
+ *
+ * The affliction state contains applied afflictions to a single creature.
  */
 public class AfflictionState {
     private Stats stats = new Stats();
@@ -26,19 +28,35 @@ public class AfflictionState {
         this.stats = modifiers;
     }
 
+    /**
+     * @return a list of afflictions that are active.
+     */
     public Queue<ActiveAffliction> getList() {
         return list;
     }
 
+    /**
+     * @param list a list of afflictions to set.
+     */
     public void setList(Queue<ActiveAffliction> list) {
         this.list = list;
     }
 
+    /**
+     * adds a new affliction.
+     * @param affliction the affliction to add.
+     * @param game the game context to send updates to.
+     */
     public void add(ActiveAffliction affliction, GameContext game) {
         list.add(affliction);
         update(game);
     }
 
+    /**
+     * Checks if an affliction is added by its name.
+     * @param afflictionName the name of the affliction.
+     * @return true if the affliction is active in this state.
+     */
     public boolean has(String afflictionName) {
         for (ActiveAffliction active : list) {
             if (active.getAffliction().getName().equals(afflictionName)) {
@@ -48,6 +66,11 @@ public class AfflictionState {
         return false;
     }
 
+    /**
+     * Removes afflictions based on a predicate.
+     * @param predicate the predicate to determine if an affliction is to be removed.
+     * @param game the game context to send updates to.
+     */
     public void removeIf(Predicate<ActiveAffliction> predicate, GameContext game) {
         AtomicBoolean removed = new AtomicBoolean(false);
 
@@ -61,7 +84,6 @@ public class AfflictionState {
 
         if (removed.get()) {
             update(game);
-            //System.out.println("post remove str is " + stats.get(Attribute.strength));
         }
     }
 
@@ -69,7 +91,5 @@ public class AfflictionState {
         stats.clear();
         list.forEach(active ->
                 stats = stats.apply(active.modify(game)));
-
-        //System.out.println("post update str is " + stats.get(Attribute.strength));
     }
 }

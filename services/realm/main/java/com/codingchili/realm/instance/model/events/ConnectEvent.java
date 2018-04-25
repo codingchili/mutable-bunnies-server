@@ -1,5 +1,6 @@
 package com.codingchili.realm.instance.model.events;
 
+import com.codingchili.realm.instance.model.entity.Entity;
 import com.codingchili.realm.instance.model.entity.PlayerCreature;
 
 import java.util.List;
@@ -12,10 +13,10 @@ import java.util.List;
  */
 public class ConnectEvent implements Event {
     private PlayerCreature creature;
-    private List<SpawnEvent> spawn;
+    private List<Entity> entities;
 
-    public ConnectEvent(PlayerCreature creature, List<SpawnEvent> spawn) {
-        this.spawn = spawn;
+    public ConnectEvent(PlayerCreature creature, List<Entity> entities) {
+        this.entities = entities;
         this.creature = creature;
     }
 
@@ -25,15 +26,19 @@ public class ConnectEvent implements Event {
     }
 
     @Override
-    public EventType getType() {
-        return EventType.SPAWN;
+    public EventType getRoute() {
+        return EventType.join;
     }
 
-    public List<SpawnEvent> getSpawn() {
-        return spawn;
+    public SpawnEvent.SpawnType getSpawn() {
+        return SpawnEvent.SpawnType.SPAWN;
     }
 
-    public void setSpawn(List<SpawnEvent> spawn) {
-        this.spawn = spawn;
+    public List<Entity> getEntities() {
+        return entities;
+    }
+
+    public void setEntities(List<Entity> entities) {
+        this.entities = entities;
     }
 }

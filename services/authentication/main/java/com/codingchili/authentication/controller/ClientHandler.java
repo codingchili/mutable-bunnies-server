@@ -1,9 +1,9 @@
 package com.codingchili.authentication.controller;
 
-import com.codingchili.authentication.configuration.AuthenticationContext;
+import com.codingchili.authentication.configuration.AuthContext;
 import com.codingchili.authentication.model.AccountPasswordException;
 import com.codingchili.authentication.model.AsyncAccountStore;
-import com.codingchili.authentication.model.ClientAuthentication;
+
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
 import com.codingchili.core.protocol.Protocol;
@@ -19,11 +19,11 @@ import static com.codingchili.core.protocol.Role.USER;
  * Routing used to register/authenticate accounts.
  */
 public class ClientHandler implements CoreHandler {
-    private final Protocol<ClientRequest> protocol = new Protocol<>();
+    private final Protocol<ClientLogin> protocol = new Protocol<>();
     private final AsyncAccountStore accounts;
-    private AuthenticationContext context;
+    private AuthContext context;
 
-    public ClientHandler(AuthenticationContext context) {
+    public ClientHandler(AuthContext context) {
         this.context = context;
 
         accounts = context.getAccountStore();
@@ -36,10 +36,10 @@ public class ClientHandler implements CoreHandler {
     @Override
     public void handle(Request request) {
         Role role = (context.verifyClientToken(request.token())) ? USER : PUBLIC;
-        protocol.get(request.route(), role).submit(new ClientRequest(request));
+        protocol.get(request.route(), role).submit(new ClientLogin(request));
     }
 
-    private void register(ClientRequest request) {
+    private void register(ClientLogin request) {
         accounts.register(register -> {
             if (register.succeeded()) {
                 sendAuthentication(register.result(), request, true);
@@ -49,7 +49,7 @@ public class ClientHandler implements CoreHandler {
         }, request.getAccount());
     }
 
-    private void authenticate(ClientRequest request) {
+    private void authenticate(ClientLogin request) {
         accounts.authenticate(authentication -> {
             if (authentication.succeeded()) {
                 sendAuthentication(authentication.result(), request, false);
@@ -57,22 +57,22 @@ public class ClientHandler implements CoreHandler {
                 request.error(authentication.cause());
 
                 if (authentication.cause() instanceof AccountPasswordException)
-                    context.onAuthenticationFailure(request.getAccount(), request.sender());
+                    context.onAuthenticationFailure(request.getAccount(), request.remote());
             }
         }, request.getAccount());
     }
 
-    private void sendAuthentication(Account account, ClientRequest request, boolean registered) {
+    private void sendAuthentication(Account account, ClientLogin request, boolean registered) {
         request.write(
-                new ClientAuthentication(
+                new com.codingchili.authentication.model.ClientAuthentication(
                         account,
                         context.signClientToken(account.getUsername()),
                         registered));
 
         if (registered)
-            context.onRegistered(account.getUsername(), request.sender());
+            context.onRegistered(account.getUsername(), request.remote());
         else
-            context.onAuthenticated(account.getUsername(), request.sender());
+            context.onAuthenticated(account.getUsername(), request.remote());
     }
 
     @Override

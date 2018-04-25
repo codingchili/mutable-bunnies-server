@@ -14,7 +14,7 @@ import java.util.List;
  */
 @JsonIgnoreProperties({"realms"})
 public class RealmServerSettings extends ServiceConfigurable {
-    public static final String PATH_REALMSERVER = "conf/service/realmserver.json";
+    public static final String PATH_REALMSERVER = "conf/service/realmserver.yaml";
     private List<String> enabled = new ArrayList<>();
     private int realmUpdates = 3500;
     private String storage = IndexedMapPersisted.class.getName();

@@ -1,25 +1,22 @@
 package com.codingchili.realmregistry.configuration;
 
-import com.codingchili.core.context.CoreContext;
-import com.codingchili.core.context.ServiceContext;
-import com.codingchili.core.context.SystemContext;
+import com.codingchili.common.RegisteredRealm;
+import com.codingchili.realmregistry.model.AsyncRealmStore;
+import com.codingchili.realmregistry.model.RealmDB;
+import io.vertx.core.*;
+
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.codingchili.core.context.*;
 import com.codingchili.core.files.Configurations;
 import com.codingchili.core.logging.Level;
 import com.codingchili.core.logging.Logger;
 import com.codingchili.core.security.Token;
 import com.codingchili.core.security.TokenFactory;
-import com.codingchili.core.storage.JsonMap;
+import com.codingchili.core.storage.SharedMap;
 import com.codingchili.core.storage.StorageLoader;
-import com.codingchili.realmregistry.model.AsyncRealmStore;
-import com.codingchili.realmregistry.model.RealmDB;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
 import static com.codingchili.common.Strings.*;
 import static com.codingchili.realmregistry.configuration.RealmRegistrySettings.PATH_REALMREGISTRY;
@@ -28,11 +25,10 @@ import static com.codingchili.realmregistry.configuration.RealmRegistrySettings.
  * @author Robin Duda
  */
 public class RegistryContext extends SystemContext implements ServiceContext {
-    protected AsyncRealmStore realms;
     protected TokenFactory realmFactory;
-    private AsyncRealmStore realmDB;
+    protected AsyncRealmStore realmDB;
     private AtomicBoolean loading = new AtomicBoolean(false);
-    private Queue<Consumer<AsyncRealmStore>> waiting = new ConcurrentLinkedQueue<>();
+    private Queue<Handler<AsyncResult<AsyncRealmStore>>> waiting = new ConcurrentLinkedQueue<>();
     private Logger logger;
 
     public RegistryContext(CoreContext core) {
@@ -43,15 +39,21 @@ public class RegistryContext extends SystemContext implements ServiceContext {
     }
 
     public void getRealmStore(Handler<AsyncResult<AsyncRealmStore>> handler) {
-        if (!loading.getAndSet(true)) {
+        if (realmDB != null) {
+            handler.handle(Future.succeededFuture(realmDB));
+        } else if (!loading.getAndSet(true)) {
+            waiting.add(handler);
             new StorageLoader<RegisteredRealm>(this)
-                    .withPlugin(JsonMap.class)
+                    .withPlugin(SharedMap.class)
                     .withCollection(COLLECTION_REALMS)
                     .withValue(RegisteredRealm.class)
                     .build(prepare -> {
-                        this.realmDB = new RealmDB(prepare.result());
-                        waiting.forEach(waiting -> waiting.accept(realmDB));
-                        handler.handle(Future.succeededFuture(realmDB));
+                        if (prepare.succeeded()) {
+                            this.realmDB = new RealmDB(prepare.result());
+                            waiting.forEach(waiting -> waiting.handle(Future.succeededFuture(realmDB)));
+                        } else {
+                            waiting.forEach(waiting -> waiting.handle(Future.failedFuture(prepare.cause())));
+                        }
                     });
         } else {
             waiting.add((store) -> handler.handle(Future.succeededFuture(realmDB)));

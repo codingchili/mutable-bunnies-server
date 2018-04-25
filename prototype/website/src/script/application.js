@@ -6,14 +6,15 @@
 class Application {
     
     constructor() {
-        this.authentication = null
         this.handlers = {};
     }
 
     authenticated(authentication) {
-        application.authentication = authentication;
+        application.token = authentication.token;
+        application.account = authentication.account;
+        console.log(application.token);
         application.view('realm-list');
-        application.publish('onAuthentication', authentication);
+        application.publish('onAuthentication', application);
     }
 
     error(error) {
@@ -37,8 +38,10 @@ class Application {
         application.publish('onRealmLoaded', event);
     }
 
-    update(event) {
-        application.publish('onBeginUpdate', event);
+    selectCharacter(event) {
+        this.character = event.character;
+        this.server = event.server;
+        application.publish('onCharacterSelect', event);
         application.showPatcher();
     }
 
@@ -75,12 +78,28 @@ class Application {
         application.subscribe('onRealmLoaded', callback);
     }
 
-    onUpdate(callback) {
-        application.subscribe('onBeginUpdate', callback);
+    onCharacterSelect(callback) {
+        application.subscribe('onCharacterSelect', callback);
     }
 
     onGameStart(callback) {
         application.subscribe('onGameStart', callback);
+    }
+
+    onScriptsLoaded(callback) {
+        application.subscribe('onScriptsLoaded', callback);
+    }
+
+    onScriptShutdown(callback) {
+        application.subscribe('onScriptShutdown', callback);
+    }
+
+    scriptsLoaded() {
+        application.publish('onScriptsLoaded', {});
+    }
+
+    scriptShutdown() {
+        application.publish('onScriptShutdown', {});
     }
 
     onVersion(callback) {
@@ -97,7 +116,6 @@ class Application {
 
     showRealms() {
         application.view('realm-list');
-        application.authenticated(application.authentication);
     }
 
     onRealmSelect(callback) {
@@ -133,6 +151,7 @@ class Application {
     }
 
     publish(event, data) {
+        console.log('publishing event: ' + event);
         if (this.handlers[event])
             for (let subscriber = 0; subscriber < this.handlers[event].length; subscriber++)
                 this.handlers[event][subscriber](data);

@@ -24,7 +24,7 @@ public class ChatEvent implements Event {
     }
 
     @Override
-    public EventType getType() {
+    public EventType getRoute() {
         return EventType.chat;
     }
 }

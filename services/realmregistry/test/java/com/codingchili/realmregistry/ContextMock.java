@@ -7,8 +7,9 @@ import com.codingchili.core.security.Token;
 import com.codingchili.core.security.TokenFactory;
 import com.codingchili.core.storage.PrivateMap;
 import com.codingchili.core.storage.StorageLoader;
+
+import com.codingchili.common.RegisteredRealm;
 import com.codingchili.realmregistry.configuration.RealmRegistrySettings;
-import com.codingchili.realmregistry.configuration.RegisteredRealm;
 import com.codingchili.realmregistry.configuration.RegistryContext;
 import com.codingchili.realmregistry.model.AsyncRealmStore;
 import com.codingchili.realmregistry.model.RealmDB;
@@ -37,14 +38,14 @@ public class ContextMock extends RegistryContext {
                 .withValue(RegisteredRealm.class)
                 .withDB("", "")
                 .build(result -> {
-                    this.realms = new RealmDB(result.result());
+                    this.realmDB = new RealmDB(result.result());
 
                     RegisteredRealm realm = new RegisteredRealm()
-                            .setName("realmName")
+                            .setNode("realmName")
                             .setAuthentication(new Token(new TokenFactory("s".getBytes()), "realmName"));
 
-                    realms.put(Future.future(), realm);
-                    handler.handle(Future.succeededFuture(realms));
+                    realmDB.put(Future.future(), realm);
+                    handler.handle(Future.succeededFuture(realmDB));
                 });
     }
 

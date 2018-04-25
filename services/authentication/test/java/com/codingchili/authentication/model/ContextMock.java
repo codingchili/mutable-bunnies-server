@@ -1,6 +1,6 @@
 package com.codingchili.authentication.model;
 
-import com.codingchili.authentication.configuration.AuthenticationContext;
+import com.codingchili.authentication.configuration.AuthContext;
 import com.codingchili.authentication.configuration.AuthenticationSettings;
 import com.codingchili.core.context.StorageContext;
 import com.codingchili.core.context.SystemContext;
@@ -10,7 +10,7 @@ import com.codingchili.core.storage.PrivateMap;
 /**
  * @author Robin Duda
  */
-public class ContextMock extends AuthenticationContext {
+public class ContextMock extends AuthContext {
     private AuthenticationSettings settings = new AuthenticationSettings();
     private AsyncAccountStore accounts;
 

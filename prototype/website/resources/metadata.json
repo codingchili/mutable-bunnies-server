@@ -1,14 +1,18 @@
 {
-  "version": "1.2",
+  "version": "1.2.23",
   "name": "Hungry Wendigos",
   "executable": [
     "pixi.js",
     "pixi-layers.js",
     "canvas.js",
     "game.js",
+    "input.js",
     "texteffects.js",
     "assetloader.js",
-    "spawnhandler.js"
+    "spawnhandler.js",
+    "chathandler.js",
+    "movementhandler.js",
+    "camera.js"
   ],
   "files": {
     "chr.png": {},

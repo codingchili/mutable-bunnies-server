@@ -38,10 +38,6 @@
                 display: block;
             }
 
-            .realm-box {
-                min-height: 624px;
-            }
-
             .titles {
                 width: 100%;
                 margin-top: 12px;
@@ -51,7 +47,7 @@
                 margin-left: 8px;
                 width: 36%;
                 float: left;
-                margin-top: 12px;
+                margin-top: 6px;
             }
 
             .name {
@@ -71,6 +67,7 @@
                 width: 14%;
                 float: left;
                 margin-top: 6px;
+                padding-left: 0px;
             }
 
             .players {
@@ -83,6 +80,7 @@
                 width: 7%;
                 float: left;
                 margin-top: 6px;
+                padding-left: 0px;
             }
 
             .info {
@@ -104,10 +102,6 @@
                 position: relative;
                 height: 32px;
                 width: 100%;
-            }
-
-            .margin-top {
-                margin-top: 64px;
             }
 
             .description {
@@ -161,6 +155,45 @@
             .loader {
                 margin-top: 96px;
             }
+
+            @media (max-width: 632px) {
+                .container {
+                    width: 100%;
+                    margin-top: 46px;
+                }
+
+                .realm-favorite {
+                    width: 16px;
+                    margin-top: -2px;
+                }
+
+                .name-title {
+                    width: 46%;
+                }
+
+                .players {
+                    width: 24%;
+                    text-align: left;
+                    padding-left: 0px;
+                }
+
+                .name {
+                    width: 46%;
+                    text-align: left;
+                }
+
+                .type {
+                    display: none;
+                }
+
+                .reset{
+                    display: none;
+                }
+
+                .info {
+                    display: none;
+                }
+            }
         </style>
 
         <paper-material class="container center-box" elevation="3">
@@ -193,7 +226,7 @@
                         <paper-ripple></paper-ripple>
                         <div class="name">
 
-                            <template is="dom-if" if="{{favourite(realm.name)}}">
+                            <template is="dom-if" if="{{favourite(realm.node)}}">
                                 <iron-icon icon="icons:favorite-border" class="realm-favorite">
                                 </iron-icon>
                             </template>
@@ -203,7 +236,7 @@
                                 </iron-icon>
                             </template>
 
-                            {{realm.name}}
+                            {{realm.node}}
                         </div>
                         <div class="type">[[realm.attributes.type]]</div>
                         <div class="reset">[[realm.attributes.lifetime]]</div>
@@ -241,14 +274,15 @@
             this.trustedservers = true;
             this.set("sort", this.favoriteSort.bind(this));
 
-            application.onAuthentication((authentication) => {
-                if (this.realms.length == 0) {
-                    this.loading = true;
-                }
+            application.subscribe('view', (view) => {
+                if (view === RealmList.is) {
+                    if (this.realms.length === 0) {
+                        this.loading = true;
+                    }
 
-                this.set("favourites", authentication.account.servers);
-                this.update();
-                this.timer = setInterval(this.update.bind(this), 3000);
+                    this.update();
+                    this.timer = setInterval(this.update.bind(this), 3000);
+                }
             });
 
             application.onLogout(() => {
@@ -394,7 +428,7 @@
 
         applyAll() {
             if (this.realms && this.realms.hasOwnProperty('length')) {
-                for (var i = 0; i < this.realms.length; i++) {
+                for (let i = 0; i < this.realms.length; i++) {
                     this.apply(i);
                 }
             }
@@ -466,7 +500,7 @@
 
         setPing(realm, ping) {
             for (let i = 0; i < this.realms.length; i++) {
-                if (this.realms[i].name === realm.name) {
+                if (this.realms[i].node === realm.node) {
                     this.set("realms." + i + ".ping", ping);
                     this.apply(i);
                 }
@@ -478,14 +512,8 @@
             application.selectRealm(event.model.realm);
         }
     }
+
     window.customElements.define(RealmList.is, RealmList);
-
-
-
-
-
-
-
 
 
 </script>

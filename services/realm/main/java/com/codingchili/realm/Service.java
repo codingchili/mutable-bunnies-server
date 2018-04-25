@@ -12,14 +12,15 @@ import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.files.Configurations;
 import com.codingchili.core.listener.*;
 import com.codingchili.core.listener.transport.WebsocketListener;
 
-import static com.codingchili.common.Strings.EXT_JSON;
 import static com.codingchili.common.Strings.PATH_REALM;
+import static com.codingchili.core.configuration.CoreStrings.EXT_YAML;
 import static com.codingchili.core.context.FutureHelper.untyped;
 import static com.codingchili.core.files.Configurations.system;
 import static com.codingchili.realm.configuration.RealmServerSettings.PATH_REALMSERVER;
@@ -52,8 +53,8 @@ public class Service implements CoreService {
         List<Future> deployments = new ArrayList<>();
 
         for (String enabled : server.getEnabled()) {
-            RealmSettings realm = Configurations.get(realmPath(enabled), RealmSettings.class);
-            realm.load();
+            Supplier<RealmSettings> realm = () -> Configurations.get(realmPath(enabled), RealmSettings.class);
+            realm.get().load();
             Future<Void> future = Future.future();
             deploy(future, realm);
             deployments.add(future);
@@ -62,7 +63,7 @@ public class Service implements CoreService {
     }
 
     private static String realmPath(String realmName) {
-        return PATH_REALM + realmName + EXT_JSON;
+        return PATH_REALM + realmName + EXT_YAML;
     }
 
     /**
@@ -71,28 +72,26 @@ public class Service implements CoreService {
      *
      * @param realm the realm to be deployed dynamically.
      */
-    private void deploy(Future<Void> future, RealmSettings realm) {
+    private void deploy(Future<Void> future, Supplier<RealmSettings> realm) {
         Consumer<RealmContext> deployer = (rc) -> {
             // Check if the routing id for the realm is unique
-            context.bus().send(realm.getName(), getPing(), getDeliveryOptions(), response -> {
+            context.bus().send(realm.get().getNode(), getPing(), getDeliveryOptions(), response -> {
 
                 if (response.failed()) {
                     // If no response then the id is not already in use.
-                    ListenerSettings settings = rc.getListenerSettings();
-
                     CoreListener listener = new WebsocketListener()
-                            .settings(() -> settings)
+                            .settings(() -> realm.get().getListener())
                             .handler(new RealmClientHandler(rc));
 
                     // deploy handler for incoming messages from instances.
-                    rc.listener(() -> new LocalBusListener().handler(new RealmInstanceHandler(rc)))
+                    rc.listener(() -> new FasterBusListener().handler(new RealmInstanceHandler(rc)))
                             .setHandler(instances -> {
 
                         if (instances.succeeded()) {
                             // deploy handler for incoming messages from clients.
                             rc.listener(() -> listener).setHandler(deploy -> {
                                 if (deploy.failed()) {
-                                    rc.onDeployRealmFailure(realm.getName());
+                                    rc.onDeployRealmFailure(realm.get().getNode());
                                     throw new RuntimeException(deploy.cause());
                                 }
                             }).setHandler(clients -> {

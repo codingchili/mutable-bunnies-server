@@ -1,0 +1,18 @@
+---
+name: level 2
+portals: []
+nodes: []
+npc: []
+limit: 50
+width: 3000
+height: 3000
+spawns:
+  - x: 300
+    y: 325
+onPlayerJoin:
+  jexl: |
+    // the vector must be reset when a player leaves an instance.
+    if (source.fromAnotherInstance) {
+      source.vector.x = spawn.x;
+      source.vector.y = spawn.y;
+    }

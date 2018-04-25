@@ -12,15 +12,26 @@ class TextEffects {
             'poison': this.poison
         };
 
-         server.connection.setHandler('DAMAGE', event => {
+        server.connection.setHandler('damage', event => {
             let target = game.lookup(event.targetId);
             this.effects[event.damage](target, event);
-         });
+            target.stats.health += event.value;
+        });
+
+        game.ticker(() => {
+            this.update();
+        });
     }
 
     update() {
         for (let i = 0; i < this.counters.length; i++) {
             let counter = this.counters[i];
+
+            if (!counter.visible) {
+                // skip updating text that is outside of the screen.
+                continue;
+            }
+
             counter.ttl--;
 
             if (counter.ttl <= 0 && counter.alpha <= 0) {
@@ -49,14 +60,14 @@ class TextEffects {
         }
     }
 
-    hitText(target, text, color) {
+    hitText(target, text, options) {
         let style = new PIXI.TextStyle({
             fontFamily: 'Verdana',
             fontSize: 12,
-            fontWeight: 'bold',
-            fill: [color.begin, color.end],
+            //fontWeight: 'bold',
+            fill: [options.begin, options.end],
             stroke: '#000000',
-            strokeThickness: 3,
+            strokeThickness: 4,
             wordWrap: true,
             wordWrapWidth: 440
         });
@@ -65,11 +76,11 @@ class TextEffects {
         counter.dir = (6.14 / 360) * Math.random() * 360;
 
         // if event.critical
-        if (Math.trunc(Math.random() * 6) === 0) {
+        if (options.critical) {
             style.fontSize = 16;
-            counter.ttl = 82;
+            counter.ttl = options.ttl || 120;
         } else {
-            counter.ttl = 40;
+            counter.ttl = options.ttl || 100;
         }
 
         counter.offset = target.width / 2;
@@ -77,16 +88,15 @@ class TextEffects {
         counter.y = target.y + (target.height / 2) - (counter.height / 2) + counter.offset * Math.sin(counter.dir);
         counter.alpha = 0.0;
         counter.speed = 2.56;
-        counter.ttl = 100;
         counter.slowdown = 0.925;
         counter.fade_in = 0.02;
         counter.fade_out = 0.015;
         counter.layer = 5;
 
-        if (text[0] == '+') {
+        if (options.float) {
             counter.dir = (6.14 / 360) * 270;
             counter.speed = 1.8;
-            counter.x =  target.x + (target.width/ 2) - (counter.width / 2);
+            counter.x = 2 + target.x + (target.width / 2) - (counter.width / 2);
             counter.y = target.y + (counter.height / 2);
         }
 
@@ -95,16 +105,17 @@ class TextEffects {
     }
 
     physical(target, event) {
-        textEffects.hitText(target, '-' + event.value), {
+        textEffects.hitText(target, '-' + event.value, {
             begin: '#ff1800',
             end: '#ff0f00',
-        };
+        });
     }
 
     heal(target, event) {
         textEffects.hitText(target, '+' + event.value, {
             begin: '#06ff00',
             end: '#13ff01',
+            float: true
         });
     }
 
@@ -116,17 +127,18 @@ class TextEffects {
     }
 
     experience(target, event) {
-      textEffects.hitText(target, '+' + event.value, {
+        textEffects.hitText(target, '+' + event.value, {
             begin: '#ffc200',
             end: '#ffc200',
+            float: true
         });
     }
 
     trueDamage(target, event) {
-      textEffects.hitText(target, '-' + event.value, {
-           begin: '#ffeaf9',
-           end: '#ff0702',
-       });
+        textEffects.hitText(target, '-' + event.value, {
+            begin: '#ffeaf9',
+            end: '#ff0702',
+        });
     }
 
     poison(target, event) {
@@ -137,9 +149,11 @@ class TextEffects {
     }
 
     chat(target, event) {
-         textEffects.hitText(target, '+Hello my name is robba+', {
-            begin: '#ffd8f7',
-            end: '#ffe6eb',
+        textEffects.hitText(target, event.text, {
+            begin: event.color1 || '#ffd8f7',
+            end: event.color2 || '#ffe6eb',
+            float: true,
+            ttl: 295
         });
     }
 }

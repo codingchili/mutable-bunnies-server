@@ -9,10 +9,11 @@ import static com.codingchili.common.Strings.*;
 /**
  * @author Robin Duda
  */
-public class RealmRequest extends RequestWrapper {
+public class RealmRequest implements RequestWrapper {
+    private Request request;
 
     RealmRequest(Request request) {
-        super(request);
+        this.request = request;
     }
 
     public String account() {
@@ -29,11 +30,12 @@ public class RealmRequest extends RequestWrapper {
     }
 
     public String instance() {
-        return data().getString(ID_INSTANCE);
+        return connection().getProperty(ID_INSTANCE).orElseThrow(() ->
+                new CoreRuntimeException("Client has not joined an instance yet."));
     }
 
-    public String connected() {
-        return connection().getProperty(ID_INSTANCE).orElseThrow(() ->
-                new CoreRuntimeException("Failed to retrieve instance from connection: not set."));
+    @Override
+    public Request request() {
+        return request;
     }
 }

@@ -1,7 +1,10 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="./chat-box.html">
 <link rel="import" href="./mega-loader.html">
+<link rel="import" href="./ui/chat-box.html">
+<link rel="import" href="./ui/player-status.html">
+<link rel="import" href="./ui/spell-bar.html">
+<link rel="import" href="./ui/game-menu.html">
 
 <!--
     @author Robin Duda
@@ -33,16 +36,14 @@
                 width: 100%;
                 height: 100%;
             }
-
-
         </style>
         <div id="interface">
 
             <template is="dom-if" if="[[!loading]]">
-                <paper-button class="primary" on-tap="characters" raised>CHARACTERS</paper-button>
-
-                <chat-box>
-                </chat-box>
+                <player-status></player-status>
+                <chat-box></chat-box>
+                <spell-bar></spell-bar>
+                <game-menu></game-menu>
             </template>
         </div>
 
@@ -66,7 +67,8 @@
                     window.server = event.server;
                     window.character = event.character;
                     window.patch = event.patch;
-                    window.onScriptsLoaded = () => {};
+                    window.onScriptsLoaded = () => {
+                    };
                     document.canvas = this.$.canvas;
 
                     try {
@@ -80,38 +82,49 @@
 
                                 let reader = new FileReader();
                                 reader.onload = () => {
-                                    (1, eval)(reader.result);
-                                    index++;
-                                    loader(index);
-                                }
+                                    try {
+                                        (1, eval)(reader.result);
+                                        index++;
+                                        loader(index);
+                                    } catch (err) {
+                                        this._handleError(err);
+                                    }
+                                };
                                 if (event.patch.files[script]) {
                                     reader.readAsText(event.patch.files[script].data);
                                 } else {
-                                    application.error('Failed to execute bootstrap script: "' + script + '".');
+                                    application.error('Bootstrap script not downloaded: "' + script + '".');
                                 }
                             } else {
                                 event.status('Starting game..');
-                                window.onScriptsLoaded();
-                                this.loading = false;
 
-                                // use the patching UI for loading the game scripts.
-                                application.showGame();
+                                application.scriptsLoaded();
+                                window.game.onScriptsLoaded({
+                                    accepted: () => {
+                                        // use the patching UI for loading the game scripts.
+                                        application.showGame();
+                                        this.loading = false;
+                                    },
+                                    error: (msg) => {
+                                        this._handleError(new Error(msg));
+                                    }
+                                });
                             }
-                       }
-                       loader(index);
+                        };
+                        loader(index);
                     } catch (err) {
-                        console.log(err.message);
-                        application.error(err.message);
-                        throw err;
+                        this._handleError(err);
                     }
                 });
             }
 
-            characters(e) {
-                window.onScriptShutdown();
-                application.showCharacters();
+            _handleError(err) {
+                console.log(err.message);
+                application.error(err.message);
+                throw err;
             }
         }
+
         window.customElements.define(GameView.is, GameView);
     </script>
 </dom-module>

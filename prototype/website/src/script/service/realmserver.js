@@ -5,13 +5,29 @@ class RealmServer {
 
     constructor(realm) {
         this.realm = realm;
-        this.connection = new Connection(realm.host, realm.port);
+        this.connection = new Connection(realm.host, realm.port, realm.secure);
+    }
+
+    connect(callback) {
+        this.connection.send(callback, 'connect', {
+            token: this.realm.token
+        });
     }
 
     characterlist(callback) {
-        this.connection.send(callback, 'character.list', {
-            token: this.realm.token
-        });
+        this.connection.send(callback, 'character.list');
+    }
+
+    afflictioninfo(callback) {
+        this.connection.send(callback, 'afflictioninfo');
+    }
+
+    spellinfo(callback) {
+        this.connection.send(callback, 'spellinfo');
+    }
+
+    classinfo(callback) {
+        this.connection.send(callback, 'classinfo');
     }
 
     create(callback, className, characterName) {
@@ -28,20 +44,9 @@ class RealmServer {
     }
 
     join(callback, characterName) {
-        this.connection.send(callback, 'instance.join', {
+        this.connection.send(callback, 'join', {
             character: characterName
         });
-    }
-
-    chatmessage(callback, message) {
-        this.connection.send(callback, 'chat', {
-            message: message
-        });
-    }
-
-    onChatMessage(handler) {
-        console.log('add handler?');
-        this.connection.setHandler('chat', handler);
     }
 
     leave() {
@@ -53,7 +58,7 @@ class RealmServer {
                 // failed to disconnect gracefully.
                 application.error(e.message);
             }
-        }, 'instance.leave');
+        }, 'leave');
     }
 
     close() {

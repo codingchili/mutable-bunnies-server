@@ -32,13 +32,6 @@
                 margin-top: 128px;
             }
 
-            .loading-text {
-                text-align: center;
-                font-size: smaller;
-                width: 100%;
-                margin-top: 32px;
-            }
-
             .download-progress {
                 margin-top: 128px;
                 margin-left: auto;
@@ -112,13 +105,10 @@
                 top: 146px
             }
 
-
             mega-loader {
                 top: 64px;
                 position: relative;
             }
-
-
         </style>
 
         <paper-material class="container center-box" elevation="3">
@@ -156,95 +146,96 @@
 </dom-module>
 
 <script>
-        class PatchDownload extends Polymer.Element {
+    class PatchDownload extends Polymer.Element {
 
-            static get is() {
-                return 'patch-download';
-            }
+        static get is() {
+            return 'patch-download';
+        }
 
-            ready() {
-                super.ready();
+        ready() {
+            super.ready();
 
+            this.downloading = false;
+
+            application.onCharacterSelect((event) => {
+                this.status = "Checking version..";
                 this.downloading = false;
+                this.server = event.server;
+                this.realm = event.realm;
+                this.character = event.character;
+                this.$.patchLoader.generateRequest();
+            });
+        }
 
-                application.onUpdate((event) => {
-                    this.status = "Checking version..";
-                    this.downloading = false;
-                    this.server = event.server;
-                    this.realm = event.realm;
-                    this.character = event.character;
-                    this.$.patchLoader.generateRequest();
-                });
-            }
+        _onPatchMetadata(event, request) {
+            this.patch = request.response;
+            this.patch.bandwidth = 0;
+            this.patch.transferred = 0;
+            this.patch.current = 0;
+            this.patch.downloaded = 0;
 
-            _onPatchMetadata(event, request) {
-                this.patch = request.response;
-                this.patch.bandwidth = 0;
-                this.patch.transferred = 0;
-                this.patch.current = 0;
-                this.patch.downloaded = 0;
-
-                    patcher.load({
-                        upToDate: () => {
-                            this.status = "Loading files..";
-                            this._download();
-                        },
-                        beginUpdate: () => {
-                            this.downloading = true;
-                            this._download();
-                        }
-                    }, this.patch, this.realm.resources);
-
-            }
-
-            _download() {
-                patcher.update({
-                            started: (name, version, size, files) => {
-                                this.set("patch.size", size);
-                                this.set("patch.files", files);
-                                this.notifyPath("patch.size");
-                            },
-                            completed: (file) => {
-                                if (file) {
-                                    this.set("patch.downloaded", file.size);
-                                    this.set("patch.transferred", this.patch.size);
-                                    this.notifyPath("patch.downloaded");
-                                    this.notifyPath("patch.transferred");
-                                }
-
-                                application.updateComplete({
-                                    server: this.server,
-                                    realm: this.realm,
-                                    character: this.character,
-                                    patch: this.patch,
-                                    status: (text) => {
-                                        this.set("status", text);
-                                    }
-                                });
-                            },
-                            progress: (bandwidth, transferred, downloaded, current) => {
-                                this.set("fileName", Object.keys(this.patch.files)[current]);
-                                this.set("patch.bandwidth", bandwidth);
-                                this.set("patch.transferred", transferred);
-                                this.set("patch.downloaded", downloaded);
-                                this.set("patch.file", this.patch.files[this.fileName]);
-                                this.set("patch.current", current + 1);
-                                this.set("totalPercent", ((transferred * 100) / this.patch.size).toFixed(0));
-                                this.set("status", "Loading files.. " + this.totalPercent + "%");
-                            }
-                        });
-            }
-
-            formatBytes(bits) {
-                return parseFloat(bits / 1024 / 1024).toFixed(2) + " MB";
-            }
-
-            formatBitRate(bits) {
-                return parseFloat(bits / 1024 / 1024).toFixed(0) + " kbps";
-            }
+            patcher.load({
+                upToDate: () => {
+                    this.status = "Loading files..";
+                    this._download();
+                },
+                beginUpdate: () => {
+                    this.downloading = true;
+                    this._download();
+                }
+            }, this.patch, this.realm.resources);
 
         }
-        window.customElements.define(PatchDownload.is, PatchDownload);
+
+        _download() {
+            patcher.update({
+                started: (name, version, size, files) => {
+                    this.set("patch.size", size);
+                    this.set("patch.files", files);
+                    this.notifyPath("patch.size");
+                },
+                completed: (file) => {
+                    if (file) {
+                        this.set("patch.downloaded", file.size);
+                        this.set("patch.transferred", this.patch.size);
+                        this.notifyPath("patch.downloaded");
+                        this.notifyPath("patch.transferred");
+                    }
+
+                    application.updateComplete({
+                        server: this.server,
+                        realm: this.realm,
+                        character: this.character,
+                        patch: this.patch,
+                        status: (text) => {
+                            this.set("status", text);
+                        }
+                    });
+                },
+                progress: (bandwidth, transferred, downloaded, current) => {
+                    this.set("fileName", Object.keys(this.patch.files)[current]);
+                    this.set("patch.bandwidth", bandwidth);
+                    this.set("patch.transferred", transferred);
+                    this.set("patch.downloaded", downloaded);
+                    this.set("patch.file", this.patch.files[this.fileName]);
+                    this.set("patch.current", current + 1);
+                    this.set("totalPercent", ((transferred * 100) / this.patch.size).toFixed(0));
+                    this.set("status", "Loading files.. " + this.totalPercent + "%");
+                }
+            });
+        }
+
+        formatBytes(bits) {
+            return parseFloat(bits / 1024 / 1024).toFixed(2) + " MB";
+        }
+
+        formatBitRate(bits) {
+            return parseFloat(bits / 1024 / 1024).toFixed(0) + " kbps";
+        }
+
+    }
+
+    window.customElements.define(PatchDownload.is, PatchDownload);
 
 
 </script>

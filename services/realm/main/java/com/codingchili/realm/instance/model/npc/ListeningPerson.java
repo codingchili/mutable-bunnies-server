@@ -25,10 +25,10 @@ public class ListeningPerson extends SimpleCreature {
 
     // npcs/structures can listen for events.
 
-    @Api(route = "chat")
+    @Api(route = "CHAT")
     public void chatevent(ChatEvent event) {
-        //   ChatEvent chat = ChatEvent.class.cast(event);
-        //     System.out.println(chat.getText());
+        //   ChatEvent CHAT = ChatEvent.class.cast(event);
+        //     System.out.println(CHAT.getText());
         called += 1;
     }
 }

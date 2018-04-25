@@ -1,0 +1,9 @@
+---
+node: "social.node"
+message: "hello world!!!"
+global: "TWArV+8l8mi8lYg38HdcBaGhI1skJhv1EZ27l5cZtgVJ/ynFVSDMDfzoUrqivVCrOrgXEUa/6HbYcf4F468TUg=="
+logging:
+  properties: {}
+  domain: "social.node"
+  key: "e1dZf59wEwFLLqb0tIJE6WdY07J4EylbdWRhDYKG6sWrHEmOz59vR9AdsS5Jqn36883lj3U2V0lXFdbGwf3yuw=="
+  expiry: 1524823697

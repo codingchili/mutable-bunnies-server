@@ -35,15 +35,15 @@
             iron-icon:hover {
                 color: var(--primary-color);
                 cursor: pointer;
-            ]
+            }
 
         </style>
 
         <paper-material class="header" elevation="3">
-                <iron-icon icon="icons:home" on-tap="_home"></iron-icon>
+            <iron-icon icon="icons:home" on-tap="_home"></iron-icon>
 
             <template is="dom-if" if="[[loggedin]]">
-                    <iron-icon style="float:right;" icon="icons:close" on-tap="_logout"></iron-icon>
+                <iron-icon style="float:right;" icon="icons:close" on-tap="_logout"></iron-icon>
             </template>
         </paper-material>
 
@@ -75,8 +75,8 @@
                 application.logout();
             }
         }
-        window.customElements.define(AppToolbar.is, AppToolbar);
 
+        window.customElements.define(AppToolbar.is, AppToolbar);
 
 
     </script>

@@ -79,19 +79,36 @@
                 margin-bottom: -24px;
             }
 
+            @media (max-width: 632px) {
+                :host {
+                    margin-top: 54px;
+                }
+
+                .character {
+                    margin-left: 12px;
+                    margin-right: 12px;
+                    margin-bottom: 12px;
+                }
+
+                .container {
+                    width: 100%;
+                }
+                .character-list-box {
+                    width: 100%;
+                }
+            }
         </style>
 
         <paper-material class="container center-box" elevation="3">
 
             <div hidden="[[create]]">
                 <div class="realm-title">
-                    <h4 style="display: inline-block">{{realm.name}}</h4>
+                    <h4 style="display: inline-block">{{realm.node}}</h4>
                     <iron-icon on-tap="realmlist"
                                icon="icons:reply"></iron-icon>
                 </div>
 
                 <mega-loader text="[[status]]" enabled="[[!loaded]]"></mega-loader>
-
 
                 <div class="character-list-box" hidden="[[!loaded]]">
                     <template is="dom-repeat" items="[[realm.characters]]" as="character">
@@ -113,6 +130,8 @@
 
                 </div>
             </div>
+
+            <paper-toast class="toast-success fit-bottom" id="toast" text="[[toastText]]"></paper-toast>
 
             <character-create id="creator" hidden="[[list]]" class="character-create">
             </character-create>
@@ -136,7 +155,7 @@
                     this.server = new RealmServer(this.realm);
                     this.$.creator.setServer(this.server);
                     this.showCharacters();
-                    this.realmtoken(realm);
+                    this.realmtoken();
                 });
 
                 application.onLogout(() => {
@@ -156,17 +175,70 @@
 
             }
 
-            realmtoken(realm) {
+            realmtoken() {
                 this.showLoading('Authenticating..');
                 new RealmRegistry().realmtoken({
                     accepted: (data) => {
                         this.realm.token = data.token;
-                        this.loadCharacters();
+                        this.loadRealmInfo();
                     },
-                    error: (error) => {
-                        application.error(error.text);
+                    error: (err) => {
+                        application.error(err.message);
                     }
-                }, this.realm.name);
+                }, this.realm.node);
+            }
+
+            loadRealmInfo() {
+                this.showLoading("Logging in..");
+                this.server.connect({
+                    accepted: (realm) => {
+                        this.realm = realm;
+                        application.realm = this.realm;
+                        this.loadMetadata();
+                    },
+                    error: (err) => {
+                        application.error(err.message);
+                    }
+                });
+            }
+
+            loadMetadata() {
+                this.showLoading("Loading metadata..");
+                let count = 3;
+                let latch = () => {
+                    count--;
+                    if (count === 0) {
+                        this.loadCharacters();
+                    }
+                };
+                let metadataError = (err) => {
+                    application.error(err.message);
+                };
+
+                this.server.spellinfo({
+                    accepted: (data) => {
+                        this.realm.spells = data.collection;
+                        application.realm.spells = this.realm.spells;
+                        latch();
+                    },
+                    error: metadataError
+                });
+                this.server.classinfo({
+                    accepted: (data) => {
+                        this.realm.classes = data.collection;
+                        application.realm.classes = this.realm.classes;
+                        latch();
+                    },
+                    error: metadataError
+                });
+                this.server.afflictioninfo({
+                    accepted: (data) => {
+                        this.realm.afflictions = data.collection;
+                        application.realm.afflictions = this.realm.afflictions;
+                        latch();
+                    },
+                    error: metadataError
+                });
             }
 
             loadCharacters() {
@@ -174,7 +246,6 @@
                 this.server.characterlist({
                     accepted: (data) => {
                         Object.assign(this.realm, data.realm);
-                        this.set('realm', this.realm);
                         this.set('realm.characters', data.characters);
                         this.showCharacters();
                         this.hideLoading();
@@ -224,13 +295,24 @@
                 application.showRealms();
             }
 
+            showToast(text) {
+                this.toastText = text;
+                this.$.toast.show();
+            }
+
             select(e) {
-                application.update({
-                            server: this.server,
-                            realm: this.realm,
-                            character: e.model.character});
+                if (this.realm.availableClasses.indexOf(e.model.character.className) >= 0) {
+                    application.selectCharacter({
+                        server: this.server,
+                        realm: this.realm,
+                        character: e.model.character
+                    });
+                } else {
+                    this.showToast("Sorry this class has been temporarily disabled.");
+                }
             }
         }
+
         window.customElements.define(CharacterList.is, CharacterList);
 
     </script>

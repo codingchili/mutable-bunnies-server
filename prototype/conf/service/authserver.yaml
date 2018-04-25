@@ -1,0 +1,10 @@
+---
+node: "authentication.node"
+storage: "com.codingchili.core.storage.IndexedMapPersisted"
+clientSecret: "WTUnGtKVlCUUXXjhJs90uFyR2BW17axorYEQddnEDBLOdsuT8wRBjdXarkaP0wxl8e+3tjyYRZfDd0P6ohgTiw=="
+global: "TWArV+8l8mi8lYg38HdcBaGhI1skJhv1EZ27l5cZtgVJ/ynFVSDMDfzoUrqivVCrOrgXEUa/6HbYcf4F468TUg=="
+logging:
+  properties: {}
+  domain: "authentication.node"
+  key: "lHe5TBxj+xV4auEP7MyNaqgUps/AvqWVIIHDAwBoiQWHXNPwcR/KIhH21xAa9ywVLXoGYcc6mmMiaqfJvZkQ7A=="
+  expiry: 1524823697

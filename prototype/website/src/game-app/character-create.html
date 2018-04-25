@@ -125,7 +125,7 @@
             .create-button {
                 position: absolute;
                 top: 32px;
-                right: 16px;
+                right: 64px;
                 width: 64px;
                 height: 64px;
             }
@@ -138,8 +138,87 @@
             }
 
             .class-stat {
-                font-color: #00ff00;
+                color: #00ff00;
                 font-size: medium;
+            }
+
+            .selected-class-image {
+                width: 80%;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+                opacity: 0.12;
+            }
+
+            @media (max-width: 632px) {
+                .class-image {
+                    width: 64px;
+                    top: 28px;
+                    left: 4px;
+                    position: absolute;
+                }
+
+                .character-name {
+                    position: relative;
+                    width: auto;
+                    left: unset;
+                    top: unset;
+                }
+
+                .create-button {
+                    height: 64px;
+                    margin-left: auto;
+                    margin-top: 48px;
+                    margin-right: auto;
+                    width: 100%;
+                    top: unset;
+                    right: unset;
+                }
+
+                .selected-class-image {
+                    margin-left: auto;
+                    margin-right: auto;
+                    width: 100%;
+                    display: block;
+                    height: 96px;
+                }
+
+                .class-name {
+                    width: 100%;
+                    text-align: center;
+                    margin-left: 0px;
+                }
+
+                .spell-image {
+                    width: 16px;
+                }
+
+                .spell {
+                    height: 16px;
+                    float: none;
+                }
+
+                .class-description {
+                    top: 32px;
+                    left: 72px;
+                    right: 34px;
+                    margin-left: 0px;
+                }
+
+                .tags {
+                    left: 0px;
+                    right: 0px;
+                    margin-left: 0px;
+                }
+
+                .character-class {
+                    margin-top: 8px;
+                    height: 158px;
+                }
+
+                .list {
+                    padding-bottom: 32px;
+                }
             }
 
         </style>
@@ -155,55 +234,57 @@
 
                 <div class="list select">
                     <template is="dom-repeat" items="{{realm.classes}}" as="playerclass">
-                        <paper-material elevation="3" class="character-class" on-tap="select">
-                            <paper-ripple></paper-ripple>
+                        <template is="dom-if" if="{{_available(playerclass)}}">
+                            <paper-material elevation="3" class="character-class" on-tap="select">
+                                <paper-ripple></paper-ripple>
 
-                            <div class="class-image">
-                                <img src="[[realm.resources]]/gui/class/[[playerclass.name]].svg">
-                                <paper-tooltip position="left">
-                                    <div class="class-stats">
-                                        <template is="dom-repeat" items="{{getStats(playerclass)}}" as="stats">
-                                            <div class="class-stat">
-                                                +[[stats.bonus]] [[stats.name]]
-                                            </div>
-                                        </template>
-                                    </div>
-                                </paper-tooltip>
-                            </div>
+                                <div class="class-image">
+                                    <img src="[[realm.resources]]/gui/class/[[playerclass.name]].svg">
+                                    <paper-tooltip position="left">
+                                        <div class="class-stats">
+                                            <template is="dom-repeat" items="{{getStats(playerclass)}}" as="stats">
+                                                <div class="class-stat">
+                                                    +[[stats.bonus]] [[stats.name]]
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </paper-tooltip>
+                                </div>
 
-                            <div class="class-name">[[playerclass.name]]</div>
-                            <div class="class-description">{{playerclass.description}}</div>
+                                <div class="class-name">[[playerclass.name]]</div>
+                                <div class="class-description">{{playerclass.description}}</div>
 
-                            <div class="spell-container">
-                                <template is="dom-repeat" items="{{playerclass.spells}}" as="spell">
-                                    <div class="spell">
-                                        <img src="{{realm.resources}}/gui/spell/{{spell}}.svg"
-                                             class="spell-image">
+                                <div class="spell-container">
+                                    <template is="dom-repeat" items="{{playerclass.spells}}" as="spell">
+                                        <div class="spell">
+                                            <img src="{{realm.resources}}/gui/spell/{{spell}}.svg"
+                                                 class="spell-image">
 
-                                        <paper-tooltip animation-delay="0" class="tooltip">
-                                            <div class="spell-name">spellName</div>
-                                            <div class="spell-description">spellDescription</div>
-                                        </paper-tooltip>
-                                    </div>
-                                </template>
-                            </div>
+                                            <paper-tooltip animation-delay="0" class="tooltip">
+                                                <div class="spell-name">[[spell]]</div>
+                                                <div class="spell-description">{{_getSpellDescription(spell)}}</div>
+                                            </paper-tooltip>
+                                        </div>
+                                    </template>
+                                </div>
 
-                            <div class="tags">
-                                <template is="dom-repeat" items="{{playerclass.weapons}}" as="weapon">
-                                    [[weapon]]&nbsp;
-                                </template>
-                                <template is="dom-repeat" items="{{playerclass.armors}}" as="armor">
-                                    [[armor]]&nbsp;
-                                </template>
-                            </div>
+                                <div class="tags">
+                                    <template is="dom-repeat" items="{{playerclass.weapons}}" as="weapon">
+                                        [[weapon]]&nbsp;
+                                    </template>
+                                    <template is="dom-repeat" items="{{playerclass.armors}}" as="armor">
+                                        [[armor]]&nbsp;
+                                    </template>
+                                </div>
 
-                            <div class="keywords">
-                                <template is="dom-repeat" items="{{playerclass.keywords}}" as="keyword">
-                                    {{keyword}}&nbsp;
-                                </template>
-                            </div>
+                                <div class="keywords">
+                                    <template is="dom-repeat" items="{{playerclass.keywords}}" as="keyword">
+                                        {{keyword}}&nbsp;
+                                    </template>
+                                </div>
 
-                        </paper-material>
+                            </paper-material>
+                        </template>
                     </template>
                 </div>
             </div>
@@ -218,7 +299,7 @@
                 <div class="list" style="padding-bottom:32px">
                     <paper-material elevation="0" class="character-class">
                         <img src="{{realm.resources}}/gui/class/{{selected.name}}.svg"
-                             class="class-image">
+                             class="selected-class-image">
 
                         <paper-input id="name" class="character-name" value="{{characterName}}"
                                      label="Name"
@@ -231,9 +312,7 @@
             </div>
         </div>
 
-        <paper-toast class="toast-success fit-bottom" id="toast-exists" text="Character already exists."></paper-toast>
-        <paper-toast class="toast-error fit-bottom" id="toast-name" text="Character name is required."></paper-toast>
-        <paper-toast class="toast-error fit-bottom" id="toast-creating" text="Creating character.."></paper-toast>
+        <paper-toast class="toast-success fit-bottom" id="toast" text="[[toastText]]"></paper-toast>
     </template>
 </dom-module>
 <script>
@@ -241,6 +320,7 @@
         ready() {
             super.ready();
             this.showSelect();
+            this.selected = {name: 'Hunter'};
 
             application.onRealmLoaded((realm) => {
                 this.set('realm', realm);
@@ -267,6 +347,24 @@
             return stats;
         }
 
+        _available(playerclass) {
+            for (let aClass of this.realm.availableClasses) {
+                if (aClass === playerclass.name) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        _getSpellDescription(spellId) {
+            let spell = this.realm.spells[spellId];
+            if (spell) {
+                return spell.description;
+            } else {
+                return "No description, possible overpowered.";
+            }
+        }
+
         showSelect() {
             this.set("selection", true);
             this.set("naming", false);
@@ -280,14 +378,14 @@
         }
 
         createCharacter(e) {
-            if (e.type == "tap" || e.keyCode == 13) {
+            if (e.type === "tap" || e.keyCode === 13) {
 
-                if (this.characterName.length == 0)
-                    this.$["toast-name"].open();
+                if (this.characterName.length === 0)
+                    this.showToast('Character name must be longer than that.');
                 else if (this.hasCharacter(this.characterName))
-                    this.$["toast-exists"].open();
+                    this.showToast('You already have a character with that name');
                 else {
-                    this.$["toast-creating"].open();
+                    this.showToast('Creating character ' + this.characterName + " ..");
 
                     this.server.create({
                         accepted: () => {
@@ -295,12 +393,21 @@
                             this.characterName = "";
                             this.showSelect();
                         },
-                        error: () => {
-                            application.error("Failed to connect to the authentication server for character creation.");
+                        error: (msg) => {
+                            if (msg.status === 'CONFLICT') {
+                                this.showToast('There is already a character with that name');
+                            } else {
+                                application.error("Failed to connect to the authentication server for character creation.");
+                            }
                         }
                     }, this.selected.name, this.characterName);
                 }
             }
+        }
+
+        showToast(text) {
+            this.toastText = text;
+            this.$.toast.open();
         }
 
         setServer(server) {
@@ -320,5 +427,6 @@
             application.publish("cancel-create", {});
         }
     }
+
     window.customElements.define(CharacterCreate.is, CharacterCreate);
 </script>

@@ -3,18 +3,9 @@ name: "poison"
 description: "Takes damage based on maximum health and increases over time."
 duration: 12
 interval: 0.5
-chance: 0.6
+chance: 0.5
 tick:
   jexl: |
-    if (!state['amp']) {
-      state['amp'] = 0.01;
-    } else {
-      state['amp'] = state['amp'] + 0.01;
-    }
-
-    damage = this.target.stats[Attribute.maxhealth] * (0.01 + state['amp']) + 500;
-
-    //log.accept('damage is ' + damage);
-    //log.accept('current health is = ' + this.target.stats[Attribute.health]);
-
+    damage = this.target.stats[Attribute.maxhealth] * 0.02;
+    damage = damage + this.source.stats[Attribute.dexterity] / 2;
     spells.damage(this.source, this.target, -damage, DamageType.poison);

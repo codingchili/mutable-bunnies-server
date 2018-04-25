@@ -1,7 +1,9 @@
 package com.codingchili.website.configuration;
 
 import com.codingchili.common.Strings;
+
 import com.codingchili.core.configuration.ServiceConfigurable;
+import com.codingchili.core.listener.ListenerSettings;
 
 /**
  * @author Robin Duda
@@ -14,6 +16,8 @@ public class WebserverSettings extends ServiceConfigurable {
     private String missingPage = "missing.html";
     private String resources = "website";
     private boolean gzip = false;
+    private boolean cache = true;
+    private ListenerSettings listener;
 
     public WebserverSettings() {
         super(PATH_WEBSERVER);
@@ -33,6 +37,35 @@ public class WebserverSettings extends ServiceConfigurable {
     public WebserverSettings setGzip(boolean gzip) {
         this.gzip = gzip;
         return this;
+    }
+
+    /**
+     * @return true if the vertx file cache is enabled.
+     */
+    public boolean isCache() {
+        return cache;
+    }
+
+    /**
+     * Set this to false for development to avoid serving stale resources.
+     * @param cache true if cache should be enabled.
+     */
+    public void setCache(boolean cache) {
+        this.cache = cache;
+    }
+
+    /**
+     * @return configuration for the listener.
+     */
+    public ListenerSettings getListener() {
+        return listener;
+    }
+
+    /**
+     * @param listener set the listener configuration.
+     */
+    public void setListener(ListenerSettings listener) {
+        this.listener = listener;
     }
 
     /**

@@ -16,11 +16,12 @@ import com.codingchili.core.logging.Level;
  */
 public class ActiveSpell {
     private static final String TICK = "tick";
-    private static final String CASTER = "caster";
+    private static final String SOURCE = "source";
     private static final String TARGET = "target";
     private static final String GAME = "game";
     private static final String ACTIVE = "active";
     private static final String SPELLS = "spells";
+    public static final String DAMAGE_TYPE = "DamageType";
     private SpellCycle cycle = SpellCycle.CASTING;
     private int progress = 0;
     private int timer;
@@ -79,13 +80,14 @@ public class ActiveSpell {
 
     private Bindings getBindings(GameContext game) {
         Bindings bindings = new Bindings();
-        bindings.put(CASTER, source);
+        bindings.put(SOURCE, source);
         bindings.put(TARGET, target);
         bindings.put(SPELLS, game.spells());
         bindings.put(GAME, game);
+        bindings.put(DAMAGE_TYPE, DamageType.class);
         bindings.put("log", (Consumer<String>) (line) -> {
             game.getLogger(getClass()).event("spell", Level.INFO)
-                    .put("name", spell.getName())
+                    .put("name", spell.getId())
                     .send();
         });
         bindings.put(ACTIVE, this);
