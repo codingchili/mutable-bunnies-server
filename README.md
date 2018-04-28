@@ -36,12 +36,12 @@ The purpose of the service part of the project is to provide implementations for
 ##### Great software :blue_heart:
 To make this project a reality we use only great software.
 
-- CQEngine primary persistence store.
-- Hazelcast for cluster discovery.
-- Vert.x for the backend (with chili-core)
-- Polymer for the website and game UI.
-- MagicaVoxel for artwork!
-- PIXI.js for client side rendering.
+- [CQEngine](https://github.com/npgall/cqengine) primary persistence store.
+- [Hazelcast](https://hazelcast.com/) for cluster discovery.
+- [Vert.x](https://vertx.io/) for the backend (with chili-core)
+- [Polymer](https://www.polymer-project.org/) for the website and game UI.
+- [MagicaVoxel](https://ephtracy.github.io/) for artwork!
+- [PIXI.js](http://www.pixijs.com/) for client side rendering.
 
 ##### Contributing :purple_heart:
 Do you have an idea for a spell? a new player class? an NPC? gameplay mechanics? story? anything really, we are open 24/7 for contributions. Just submit an issue or a PR.
