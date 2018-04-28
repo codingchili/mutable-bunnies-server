@@ -28,6 +28,26 @@ To run the project without having to build a zip and perform polymer builds:
 ## Background
 The purpose of the service part of the project is to provide implementations for use with game servers. Each service may be distributed on different hosts. Communication channels is provided by the core, with support for various transports and storage plugins. Breaking down the system into microservices improves maintainability, testability and ultimately, productivity.
 
+##### Audience :fire:
+* Game developers seeking to implement a 2D RPG multiplayer game.
+* Aspiring game developers with an interest in backend development.
+* Players who are into simplistic 2D MMORPG's.
+
+##### Great software :blue_heart:
+To make this project a reality we use only great software.
+
+- CQEngine primary persistence store.
+- Hazelcast for cluster discovery.
+- Vert.x for the backend (with chili-core)
+- Polymer for the website and game UI.
+- MagicaVoxel for artwork!
+- PIXI.js for client side rendering.
+
+##### Contributing :purple_heart:
+Do you have an idea for a spell? a new player class? an NPC? gameplay mechanics? story? anything really, we are open 24/7 for contributions. Just submit an issue or a PR.
+
+---
+
 ## Configuration
 Services following the official guidelines should place their configuration files in;
 - 'conf/services/' 
@@ -70,24 +90,6 @@ Some services comes with additional resources, these can be bundled within the j
 
 Patching is no longer a service - the webseed standard was not very well supported so support was dropped. We are aiming to create a browser based game primarily and will rely on a CDN to provide game resources. We want to avoid serving files over the cluster or machines that handles the website or the game state.
 
-Communication between services is done over the cluster, other available transports such as websock, tcp, udp and rest is available but not recommended unless a service is not able to join the cluster.
+Communication between services is done over the cluster, other available transports such as websock, tcp, udp and rest is available but not recommended unless a service is not able to join the cluster. Services that needs to authenticate another service should use the AuthenticationGenerator to generate pre-shared keys, secrets and generate tokens. This may be invoked from the standard launcher in chili-core, using the --generate commandline argument.
 
 All communication between services uses a text-protocol based on JSON for simplicity.
-
-###### Audience :fire:
-* Game developers seeking to implement a 2D RPG multiplayer game.
-* Aspiring game developers with an interest in backend development.
-* Players who are into simplistic 2D MMORPG's.
-
-##### Great software :blue_heart:
-To make this project a reality we use only great software.
-
-- CQEngine primary persistence store.
-- Hazelcast for cluster discovery.
-- Vert.x for the backend (with chili-core)
-- Polymer for the website and game UI.
-- MagicaVoxel for artwork!
-- PIXI.js for client side rendering.
-
-##### Contributing :purple_heart:
-Do you have an idea for a spell? a new player class? an NPC? gameplay mechanics? story? anything really, we are open 24/7 for contributions. Just submit an issue or a PR.
