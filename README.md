@@ -3,6 +3,7 @@
 A collection of game-oriented microservices that builds upon chili-core. One day it will be complete game.
 
 ![realm-list.png](https://raw.githubusercontent.com/codingchili/chili-game-ext/master/realm-list.png)
+Sample image of realm servers connected to the realm registry.
 
 ## Building
 
@@ -33,14 +34,25 @@ Services following the official guidelines should place their configuration file
 where conf is a directory in the same folder as the server jar.
 ```
 ├── conf/
+│   ├── system/
+│   │   ├── security.yaml
+│   │   ├── launcher.yaml
+│   │   ├── storage.yaml
+│   │   ├── system.yaml
 │   ├── services/
-│   │   ├── authserver.json
-│   │   ├── logserver.json
-│   │   ├── patchserver.json
-│   │   ├── realmserver.json
-│   │   ├── realmregistry.json
-│   │   ├── webserver.json
-│   │   ├── routingserver.json
+│   │   ├── authserver.yaml
+│   │   ├── logserver.yaml
+│   │   ├── realmserver.yaml
+│   │   ├── realmregistry.yaml
+│   │   ├── webserver.yaml
+│   │   ├── routingserver.yaml
+│   ├── realms/
+│   │   ├── realmName.yaml
+│   ├── game/
+│   │   ├── classes/
+│   │   ├── afflictions/
+│   │   ├── spells/
+│   │   ├── instances/
 ```
 Some services comes with additional resources, these can be bundled within the jar if moved to **src/main/resources**. This also applies to configuration files, it is however recommended that these are easily edited. 
 
@@ -51,18 +63,31 @@ Some services comes with additional resources, these can be bundled within the j
  * Instances: Handles game logic.
 * Realm registry: keeps track of active realms. 
 * Website: Provides an interface for account/character/realmlist.
-* Patching: Game updates through sendFile, webseed and BitTorrent.
 * Logging: Receives logging data from the other components.
-* Social: Achievements, chat, guilds.
-* Auction house: Handles asynchronous trading with orders/offers.
-* Serverstatus: Provides a quick overview of system uptime.
+* Social: Achievements, chat, guilds. (TBD)
+* Auction house: Handles asynchronous trading with orders/offers. (TBD)
+* Serverstatus: Provides a quick overview of system uptime. (TBD)
+
+Patching is no longer a service - the webseed standard was not very well supported so support was dropped. We are aiming to create a browser based game primarily and will rely on a CDN to provide game resources. We want to avoid serving files over the cluster or machines that handles the website or the game state.
 
 Communication between services is done over the cluster, other available transports such as websock, tcp, udp and rest is available but not recommended unless a service is not able to join the cluster.
 
 All communication between services uses a text-protocol based on JSON for simplicity.
 
-###### Audience
-* Game developers seeking to implement multiplayer from the start with minimal overhead.
-* Programmers seeking to create microservices productively in a very specific use case.
+###### Audience :fire:
+* Game developers seeking to implement a 2D RPG multiplayer game.
 * Aspiring game developers with an interest in backend development.
 * Players who are into simplistic 2D MMORPG's.
+
+##### Great software :blue_heart:
+To make this project a reality we use only great software.
+
+- CQEngine primary persistence store.
+- Hazelcast for cluster discovery.
+- Vert.x for the backend (with chili-core)
+- Polymer for the website and game UI.
+- MagicaVoxel for artwork!
+- PIXI.js for client side rendering.
+
+##### Contributing :purple_heart:
+Do you have an idea for a spell? a new player class? an NPC? gameplay mechanics? story? anything really, we are open 24/7 for contributions. Just submit an issue or a PR.
