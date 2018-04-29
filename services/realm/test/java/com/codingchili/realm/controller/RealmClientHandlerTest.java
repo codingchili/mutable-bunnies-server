@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeUnit;
 
+import com.codingchili.core.listener.Request;
 import com.codingchili.core.protocol.ResponseStatus;
 import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.protocol.exception.AuthorizationRequiredException;
@@ -76,28 +77,28 @@ public class RealmClientHandlerTest {
 
     @Test
     public void realmPingTest(TestContext test) {
-        handle(ID_PING, (response, status) -> {
+        // send a ping request without authentication.
+        handler.handle(RequestMock.get(ID_PING, (response, status) -> {
             test.assertEquals(ResponseStatus.ACCEPTED, status);
-        });
+        }, new JsonObject()));
     }
 
     @Test
     public void removeCharacter(TestContext test) {
         Async async = test.async();
 
-        handle(CLIENT_CHARACTER_REMOVE, (response, status) -> {
+        handleAuthenticated(CLIENT_CHARACTER_REMOVE, (response, status) -> {
             test.assertEquals(ResponseStatus.ACCEPTED, status);
             async.complete();
         }, new JsonObject()
-                .put(ID_CHARACTER, CHARACTER_NAME_DELETED)
-                .put(ID_TOKEN, getClientToken()));
+                .put(ID_CHARACTER, CHARACTER_NAME_DELETED));
     }
 
     @Test
     public void createCharacter(TestContext test) {
         Async async = test.async();
 
-        handle(CLIENT_CHARACTER_CREATE, (response, status) -> {
+        handleAuthenticated(CLIENT_CHARACTER_CREATE, (response, status) -> {
             test.assertEquals(ResponseStatus.ACCEPTED, status);
             async.complete();
         }, new JsonObject()
@@ -109,7 +110,7 @@ public class RealmClientHandlerTest {
     @Test
     public void failOverwriteExistingCharacter(TestContext test) {
         Async async = test.async();
-        handle(CLIENT_CHARACTER_CREATE, (response, status) -> {
+        handleAuthenticated(CLIENT_CHARACTER_CREATE, (response, status) -> {
             test.assertEquals(ResponseStatus.CONFLICT, status);
             async.complete();
         }, new JsonObject()
@@ -122,7 +123,7 @@ public class RealmClientHandlerTest {
     public void failToRemoveMissingCharacter(TestContext test) {
         Async async = test.async();
 
-        handle(CLIENT_CHARACTER_REMOVE, (response, status) -> {
+        handleAuthenticated(CLIENT_CHARACTER_REMOVE, (response, status) -> {
             test.assertEquals(ResponseStatus.ERROR, status);
             async.complete();
         }, new JsonObject()
@@ -134,87 +135,51 @@ public class RealmClientHandlerTest {
     public void listCharactersOnRealm(TestContext test) {
         Async async = test.async();
 
-        handle(CLIENT_CHARACTER_LIST, (response, status) -> {
+        handleAuthenticated(CLIENT_CHARACTER_LIST, (response, status) -> {
             test.assertEquals(ResponseStatus.ACCEPTED, status);
             test.assertTrue(characterInJsonArray(response.getJsonArray(ID_CHARACTERS)));
             async.complete();
-        }, new JsonObject()
-                .put(ID_TOKEN, getClientToken()));
+        }, new JsonObject());
     }
 
     private boolean characterInJsonArray(JsonArray characters) {
         Boolean found = false;
 
         for (int i = 0; i < characters.size(); i++) {
-            if (characters.getJsonObject(i).getString(ID_NAME).equals(RealmClientHandlerTest.CHARACTER_NAME))
+            if (characters.getJsonObject(i).getString(ID_NAME).equals(CHARACTER_NAME))
                 found = true;
         }
         return found;
     }
 
-    @Test
-    public void realmDataOnCharacterList(TestContext test) {
-        Async async = test.async();
-
-        handle(CLIENT_CHARACTER_LIST, (response, status) -> {
-            JsonObject realm = response.getJsonObject(ID_REALM);
-
-            test.assertEquals(ResponseStatus.ACCEPTED, status);
-            test.assertTrue(realm.containsKey(ID_NAME));
-            test.assertTrue(realm.containsKey(ID_CLASSES));
-            test.assertTrue(realm.containsKey(ID_AFFLICTIONS));
-
-            async.complete();
-        }, new JsonObject()
-                .put(ID_TOKEN, getClientToken()));
-    }
-
-    @Test
-    public void realmDataDoesNotIncludeTokenOnCharacterList(TestContext test) {
-        Async async = test.async();
-
-        handle(CLIENT_CHARACTER_LIST, (response, status) -> {
-            JsonObject realm = response.getJsonObject(ID_REALM);
-
-            test.assertEquals(ResponseStatus.ACCEPTED, status);
-            test.assertFalse(realm.containsKey(ID_AUTHENTICATION));
-            test.assertFalse(realm.containsKey(ID_TOKEN));
-
-            async.complete();
-        }, new JsonObject()
-                .put(ID_TOKEN, getClientToken()));
-    }
-
     @Test(expected = AuthorizationRequiredException.class)
     public void failListCharactersOnRealmWhenInvalidToken(TestContext test) {
-        handle(Strings.CLIENT_CHARACTER_LIST, (response, status) -> {
+        handler.handle(RequestMock.get(Strings.CLIENT_CHARACTER_LIST, (response, status) -> {
             test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
         }, new JsonObject()
-                .put(ID_TOKEN, Serializer.json(getInvalidClientToken())));
+                .put(ID_TOKEN, Serializer.json(getInvalidClientToken()))));
     }
 
     @Test(expected = AuthorizationRequiredException.class)
     public void failToCreateCharacterWhenInvalidToken(TestContext test) {
-        handle(Strings.CLIENT_CHARACTER_CREATE, (response, status) -> {
+        handler.handle(RequestMock.get(Strings.CLIENT_CHARACTER_CREATE, (response, status) -> {
             test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
         }, new JsonObject()
-                .put(ID_TOKEN, getInvalidClientToken()));
+                .put(ID_TOKEN, getInvalidClientToken())));
     }
 
     @Test(expected = AuthorizationRequiredException.class)
     public void failToRemoveCharacterWhenInvalidToken(TestContext test) {
-        handle(CLIENT_CHARACTER_REMOVE, (response, status) -> {
+        handler.handle(RequestMock.get(CLIENT_CHARACTER_REMOVE, (response, status) -> {
             test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
         }, new JsonObject()
-                .put(ID_TOKEN, getInvalidClientToken()));
+                .put(ID_TOKEN, getInvalidClientToken())));
     }
 
-    private void handle(String action, ResponseListener listener) {
-        handler.handle(RequestMock.get(action, listener, null));
-    }
-
-    private void handle(String action, ResponseListener listener, JsonObject data) {
-        handler.handle(RequestMock.get(action, listener, data));
+    private void handleAuthenticated(String action, ResponseListener listener, JsonObject data) {
+        Request request = RequestMock.get(action, listener, data);
+        request.connection().setProperty(ID_ACCOUNT, USERNAME);
+        handler.handle(request);
     }
 
     private JsonObject getInvalidClientToken() {
