@@ -42,14 +42,14 @@ public class RealmRegistryClientHandler implements CoreHandler {
         });
     }
 
-    private Role authenticate(Request request) {
-        boolean authorized = context.verifyClientToken(request.token());
-        return (authorized) ? Role.USER : PUBLIC;
-    }
-
     @Override
     public void handle(Request request) {
         protocol.get(request.route(), authenticate(request)).submit(new ClientRequest(request));
+    }
+
+    private Role authenticate(Request request) {
+        boolean authorized = context.verifyClientToken(request.token());
+        return (authorized) ? Role.USER : PUBLIC;
     }
 
     @Override

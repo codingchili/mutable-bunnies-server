@@ -26,6 +26,7 @@ import static com.codingchili.realmregistry.configuration.RealmRegistrySettings.
  */
 public class RegistryContext extends SystemContext implements ServiceContext {
     protected TokenFactory realmFactory;
+    protected TokenFactory clientFactory;
     protected AsyncRealmStore realmDB;
     private AtomicBoolean loading = new AtomicBoolean(false);
     private Queue<Handler<AsyncResult<AsyncRealmStore>>> waiting = new ConcurrentLinkedQueue<>();
@@ -35,6 +36,7 @@ public class RegistryContext extends SystemContext implements ServiceContext {
         super(core);
 
         this.realmFactory = new TokenFactory(service().getRealmSecret());
+        this.clientFactory = new TokenFactory(service().getClientSecret());
         this.logger = core.logger(getClass());
     }
 
@@ -61,11 +63,11 @@ public class RegistryContext extends SystemContext implements ServiceContext {
     }
 
     public boolean verifyRealmToken(Token token) {
-        return new TokenFactory(service().getRealmSecret()).verifyToken(token);
+        return realmFactory.verifyToken(token);
     }
 
     public boolean verifyClientToken(Token token) {
-        return new TokenFactory(service().getClientSecret()).verifyToken(token);
+        return clientFactory.verifyToken(token);
     }
 
     public RealmRegistrySettings service() {
@@ -100,5 +102,9 @@ public class RegistryContext extends SystemContext implements ServiceContext {
 
     public TokenFactory getRealmFactory() {
         return realmFactory;
+    }
+
+    public TokenFactory getClientFactory() {
+        return clientFactory;
     }
 }

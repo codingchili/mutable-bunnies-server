@@ -93,8 +93,10 @@ public class RealmRegistrySettings extends ServiceConfigurable {
 
     /**
      * @param clientSecret set the client tokens secret key.
+     * @return fluent.
      */
-    public void setClientSecret(byte[] clientSecret) {
+    public RealmRegistrySettings setClientSecret(byte[] clientSecret) {
         this.clientSecret = clientSecret;
+        return this;
     }
 }

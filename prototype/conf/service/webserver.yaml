@@ -2,15 +2,15 @@
 node: "website.node"
 startPage: "index.html"
 missingPage: "404.html"
-resources: website/
+resources: "website/"
 cache: false
 gzip: false
-global: "TWArV+8l8mi8lYg38HdcBaGhI1skJhv1EZ27l5cZtgVJ/ynFVSDMDfzoUrqivVCrOrgXEUa/6HbYcf4F468TUg=="
+global: "KxXYIkJ3AJpjyKwsYubLImgoj+gS8UyjoS5BV+88+tpJPWU0zlB1gTznUXyB/6qLFV5b9ZJe7ITtBvvTT5qSDA=="
 logging:
   properties: {}
   domain: "website.node"
-  key: "Np15pWlmS3gPw0JV4o6hfIeKLQToNX1tp/6AHTad6oNzSXcfSvnB4VyHplPlvWFdiS77uK1zQJHnpJJIFBNPLg=="
-  expiry: 1524823697
+  key: "y19Kj4JzLFlSRiV5TCWOpJ+F5buGzIMatTYy1VQeIkG6CUpP1fez0i34zfplErzXRqHJ/2uh8e6Ymx2opCuPPg=="
+  expiry: 1525552878
 listener:
   secure: true
   port: 443

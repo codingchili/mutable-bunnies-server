@@ -28,7 +28,14 @@ public class ContextMock extends RegistryContext {
 
     public ContextMock(CoreContext context) {
         super(context);
-        this.realmFactory = new TokenFactory(new RealmRegistrySettings().getRealmSecret());
+        this.realmFactory = new TokenFactory(service().getRealmSecret());
+    }
+
+    @Override
+    public RealmRegistrySettings service() {
+        return new RealmRegistrySettings()
+                .setRealmSecret("realms.secret".getBytes())
+                .setClientSecret("client.secret".getBytes());
     }
 
     @Override
@@ -47,9 +54,5 @@ public class ContextMock extends RegistryContext {
                     realmDB.put(Future.future(), realm);
                     handler.handle(Future.succeededFuture(realmDB));
                 });
-    }
-
-    public TokenFactory getClientFactory() {
-        return new TokenFactory(new RealmRegistrySettings().getClientSecret());
     }
 }

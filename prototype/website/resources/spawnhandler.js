@@ -67,26 +67,29 @@ window.SpawnHandler = class SpawnHandler {
         let vector = entity.vector;
 
         if (this.isPlayer(entity)) {
-            Object.assign(window.character, entity);
+            window.character = entity;
             this.camera.set(vector.x, vector.y);
             console.log('player creature loaded');
             console.log(entity);
         }
 
         assetLoader.load((sprite) => {
-            Object.assign(entity, sprite);
+            Object.assign(sprite, entity);
+            console.log('post-assign');
+            console.log(entity);
+            console.log(sprite);
             sprite.x = vector.x;
             sprite.y = vector.y;
             sprite.velocity = vector.velocity;
             sprite.direction = vector.direction;
             sprite.scale.x = 0.64;
             sprite.scale.y = 0.64;
-            sprite.id = entity.id;
             sprite.layer = 0;
+            sprite.id = entity.id;
             game.entities[entity.id] = sprite;
             game.stage.addChild(sprite);
 
-            if (this.isPlayer(entity)) {
+            if (this.isPlayer(sprite)) {
                 this.camera.focus(sprite);
             }
 

@@ -23,10 +23,10 @@ class RealmRequest implements RequestWrapper {
 
         if (data().containsKey(ID_REALM)) {
             realm = Serializer.unpack(data().getJsonObject(ID_REALM), RegisteredRealm.class);
-        }
 
-        if (data().containsKey(ID_TOKEN)) {
-            realm.setAuthentication(Serializer.unpack(data().getJsonObject(ID_TOKEN), Token.class));
+            if (data().containsKey(ID_TOKEN)) {
+                realm.setAuthentication(Serializer.unpack(data().getJsonObject(ID_TOKEN), Token.class));
+            }
         }
     }
 
@@ -36,7 +36,11 @@ class RealmRequest implements RequestWrapper {
     }
 
     public Token token() {
-        return realm.getAuthentication();
+        if (realm == null) {
+            return new Token();
+        } else {
+            return realm.getAuthentication();
+        }
     }
 
     public RegisteredRealm getRealm() {

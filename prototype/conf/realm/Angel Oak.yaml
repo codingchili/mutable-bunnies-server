@@ -33,12 +33,12 @@ listener:
 authentication:
   properties: {}
   domain: "Angel Oak.node"
-  key: "0Mn2qQm7btFZqDOOjHJMkx3Fnnkyyt49nEgQuU3Wq2RLcxJKiZkIe6QEBh6W5CY74MPRqhZfpoAAFJyWasV0ew=="
-  expiry: 1524823696
-secret: "Mz7ccFqlaiCDRYXK9IerQphZuk3IyEZXl7vzAGV0hkojCoh83eiQC+2x629SOLr133jSu43Gi6l64j0ot1ayeQ=="
-global: "TWArV+8l8mi8lYg38HdcBaGhI1skJhv1EZ27l5cZtgVJ/ynFVSDMDfzoUrqivVCrOrgXEUa/6HbYcf4F468TUg=="
+  key: "sndLJbA2ZKff3QcBlPgOj6WxJZMeosVXJAm+xARSOMQhloI3wpl3f49Ap2zCDYrtsLiWqmYxdrWy/BBmJtYY/w=="
+  expiry: 1525552877
+secret: "YejmZZnKDaKGv8DxuTvzKE26fiAJKWGwy7Ww0c8gVx4bb2kwIZGtfjM91skvIXk3kK8BkCJQlmkEkcYxtoZ02Q=="
+global: "KxXYIkJ3AJpjyKwsYubLImgoj+gS8UyjoS5BV+88+tpJPWU0zlB1gTznUXyB/6qLFV5b9ZJe7ITtBvvTT5qSDA=="
 logging:
   properties: {}
   domain: "Angel Oak.node"
-  key: "JzWTV2PHMdtNAZo1JDJdOUcnPuTCwQ0Bjgyew7QHuZvk+3GCjFlc/TmwgJt+vkf83HV0/FGyJxpKNQAhxWeyHQ=="
-  expiry: 1524823696
+  key: "P8MkDTL/wBhhnFOh37Vjgo4TtHskEFXHefRGjiPR16yIHcJk4V5JipQYPUixO7/a8jHePSqNLemVSdTltjy9jg=="
+  expiry: 1525552877

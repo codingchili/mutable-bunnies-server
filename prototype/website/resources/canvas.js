@@ -5,7 +5,7 @@ window.Canvas = class {
         this.stage = new PIXI.Container();
 
         this.renderer = PIXI.autoDetectRenderer(512, 512,
-            {antialias: false, transparent: false, resolution: 2, backgroundColor: 0x0, view: document.canvas}
+            {antialias: false, transparent: false, resolution: 1, backgroundColor: 0x0, view: document.canvas}
         );
 
         window.onresize = () => this.resize();

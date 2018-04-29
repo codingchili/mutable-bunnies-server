@@ -152,6 +152,41 @@ public class RealmClientHandlerTest {
         return found;
     }
 
+    @Test
+    public void getRealmInfo() {
+        // todo: verify no token.
+    }
+
+    @Test
+    public void getAfflictionInfo(){
+
+    }
+
+    @Test
+    public void getClassInfo() {
+
+    }
+
+    @Test
+    public void getSpellInfo() {
+
+    }
+
+    @Test
+    public void joinInstace() {
+
+    }
+
+    @Test
+    public void leaveInstance() {
+
+    }
+
+    @Test
+    public void joinMultipleInstancesFail() {
+        // verify it fails with the previous instance.
+    }
+
     @Test(expected = AuthorizationRequiredException.class)
     public void failListCharactersOnRealmWhenInvalidToken(TestContext test) {
         handler.handle(RequestMock.get(Strings.CLIENT_CHARACTER_LIST, (response, status) -> {
