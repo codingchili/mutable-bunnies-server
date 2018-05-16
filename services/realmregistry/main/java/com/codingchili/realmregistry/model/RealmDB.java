@@ -81,7 +81,8 @@ public class RealmDB implements AsyncRealmStore {
             Collection<RegisteredRealm> realms = map.result();
             if (map.succeeded() && realms.size() > 0) {
                 RegisteredRealm settings = realms.iterator().next();
-                future.handle(succeededFuture(new Token(new TokenFactory(getSecretBytes(settings)), domain)));
+                future.handle(succeededFuture(
+                        new Token(this.realms.context().tokens(getSecretBytes(settings)), domain)));
             } else {
                 future.handle(failedFuture(map.cause()));
             }

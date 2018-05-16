@@ -15,9 +15,10 @@ public class ScriptEngines {
     private static Map<String, Function<String, Scripted>> engines = new HashMap<>();
 
     static {
-        engines.put(JexlScript.NAME, JexlScript::new);
-        engines.put(JavaScript.NAME, JavaScript::new);
-        engines.put(NativeScript.NAME, NativeScript::new);
+        engines.put(JexlScript.TYPE, JexlScript::new);
+        engines.put(JavaScript.TYPE, JavaScript::new);
+        engines.put(NativeScript.TYPE, NativeScript::new);
+        engines.put(ReferencedScript.TYPE, ReferencedScript::new);
     }
 
     /**

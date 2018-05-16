@@ -126,7 +126,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
     }
 
     public boolean verifyToken(Token token) {
-        return new TokenFactory(realm().getTokenBytes()).verifyToken(token);
+        return tokens(realm().getTokenBytes()).verify(token);
     }
 
     public int updateRate() {

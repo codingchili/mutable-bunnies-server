@@ -50,11 +50,11 @@ public class AuthContext extends SystemContext implements ServiceContext {
     }
 
     public boolean verifyClientToken(Token token) {
-        return new TokenFactory(service().getClientSecret()).verifyToken(token);
+        return tokens(service().getClientSecret()).verify(token);
     }
 
     public Token signClientToken(String domain) {
-        return new Token(new TokenFactory(service().getClientSecret()), domain);
+        return new Token(tokens(service().getClientSecret()), domain);
     }
 
     public AuthenticationSettings service() {

@@ -23,7 +23,7 @@ public class ContextMock extends RealmContext {
     public ContextMock(CoreContext context) {
         super(context, () -> new RealmSettings()
                 .setNode("realmName")
-                .setAuthentication(new Token(new TokenFactory("s".getBytes()), "realmName")));
+                .setAuthentication(new Token(context.tokens("s".getBytes()), "realmName")));
 
         //super.realm()..add(new PlayableClass().setName("class.name"));
     }
@@ -35,7 +35,7 @@ public class ContextMock extends RealmContext {
     }
 
     public TokenFactory getClientFactory() {
-        return new TokenFactory(realm().getTokenBytes());
+        return tokens(realm().getTokenBytes());
     }
 
     @Override

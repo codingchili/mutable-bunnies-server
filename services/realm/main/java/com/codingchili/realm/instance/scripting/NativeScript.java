@@ -15,7 +15,7 @@ import com.codingchili.core.logging.Level;
  * A 'script' implementation that is written in java.
  */
 public class NativeScript implements Scripted {
-    public static final String NAME = "java";
+    public static final String TYPE = "java";
     private static Map<String, Function<Bindings, ?>> scripts = new HashMap<>();
     private String className;
 
@@ -56,7 +56,7 @@ public class NativeScript implements Scripted {
 
     @Override
     public String getEngine() {
-        return NAME;
+        return TYPE;
     }
 
     @Override

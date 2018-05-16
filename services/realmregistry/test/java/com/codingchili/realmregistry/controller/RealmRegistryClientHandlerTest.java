@@ -104,7 +104,7 @@ public class RealmRegistryClientHandlerTest {
     }
 
     private JsonObject getInvalidClientToken() {
-        return Serializer.json(new Token(new TokenFactory("invalid".getBytes()), "username"));
+        return Serializer.json(new Token(new TokenFactory(context, "invalid".getBytes()), "username"));
     }
 
     private void handle(String action, ResponseListener listener) {

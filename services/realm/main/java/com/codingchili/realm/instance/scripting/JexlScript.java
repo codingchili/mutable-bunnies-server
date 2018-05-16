@@ -8,7 +8,7 @@ import org.apache.commons.jexl2.*;
  * Serializable jexl script.
  */
 public class JexlScript implements Scripted {
-    public static final String NAME = "jexl";
+    public static final String TYPE = "jexl";
     private static JexlEngine jexlEngine = new JexlEngine();
     private Script script;
 
@@ -26,7 +26,7 @@ public class JexlScript implements Scripted {
 
     @Override
     public String getEngine() {
-        return NAME;
+        return TYPE;
     }
 
     @Override

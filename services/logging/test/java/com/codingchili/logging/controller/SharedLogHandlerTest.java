@@ -49,7 +49,7 @@ public class SharedLogHandlerTest {
         SystemContext system = new SystemContext();
         settings.setSecret(new byte[]{0x0});
         context = new LogContext(system, future);
-        factory = new TokenFactory(settings.getSecret());
+        factory = context.tokens(settings.getSecret());
     }
 
     @Before

@@ -11,7 +11,7 @@ import com.codingchili.core.context.CoreRuntimeException;
  */
 public class JavaScript implements Scripted {
     private static final ScriptEngineManager factory = new ScriptEngineManager();
-    public static final String NAME = "js";
+    public static final String TYPE = "js";
     private static final ScriptEngine engine = factory.getEngineByName("javascript");
     private CompiledScript compiled;
     private String source;
@@ -42,7 +42,7 @@ public class JavaScript implements Scripted {
 
     @Override
     public String getEngine() {
-        return NAME;
+        return TYPE;
     }
 
     @Override
