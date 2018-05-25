@@ -35,8 +35,8 @@ public class RegistryContext extends SystemContext implements ServiceContext {
     public RegistryContext(CoreContext core) {
         super(core);
 
-        this.realmFactory = tokens(service().getRealmSecret());
-        this.clientFactory = tokens(service().getClientSecret());
+        this.realmFactory = new TokenFactory(core, service().getRealmSecret());
+        this.clientFactory = new TokenFactory(core, service().getClientSecret());
         this.logger = core.logger(getClass());
     }
 
@@ -62,11 +62,11 @@ public class RegistryContext extends SystemContext implements ServiceContext {
         }
     }
 
-    public boolean verifyRealmToken(Token token) {
+    public Future<Void> verifyRealmToken(Token token) {
         return realmFactory.verify(token);
     }
 
-    public boolean verifyClientToken(Token token) {
+    public Future<Void> verifyClientToken(Token token) {
         return clientFactory.verify(token);
     }
 

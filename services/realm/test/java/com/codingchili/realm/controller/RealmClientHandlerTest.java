@@ -20,9 +20,7 @@ import java.util.concurrent.TimeUnit;
 import com.codingchili.core.listener.Request;
 import com.codingchili.core.protocol.ResponseStatus;
 import com.codingchili.core.protocol.Serializer;
-import com.codingchili.core.protocol.exception.AuthorizationRequiredException;
 import com.codingchili.core.security.Token;
-import com.codingchili.core.security.TokenFactory;
 import com.codingchili.core.testing.RequestMock;
 import com.codingchili.core.testing.ResponseListener;
 
@@ -39,23 +37,35 @@ public class RealmClientHandlerTest {
     private static final String CHARACTER_NAME_DELETED = "character-deleted";
     private static final String CHARACTER_NAME = "character";
     private static final String CLASS_NAME = "class.name";
+    private static final String ROUTE_CONNECT = "connect";
+    private static final String ROUTE_AFFLICTIONS = "afflictioninfo";
+    private static final String ROUTE_CLASSES = "classinfo";
+    private static final String ROUTE_SPELLS = "spellinfo";
+
     @Rule
     public Timeout timeout = new Timeout(5, TimeUnit.SECONDS);
+
     private AsyncCharacterStore characters;
-    private TokenFactory clientToken;
+    private JsonObject clientToken;
     private RealmClientHandler handler;
     private ContextMock context;
 
     @Before
     public void setUp(TestContext test) {
         Async async = test.async();
-        context = new ContextMock();
-        handler = new RealmClientHandler(context);
-        clientToken = context.getClientFactory();
 
-        this.characters = context.characters();
-        createCharacters(async);
-        handler.start(Future.future());
+        ContextMock.create().setHandler(mock -> {
+            context = mock.result();
+            handler = new RealmClientHandler(context);
+
+            Token token = new Token(USERNAME);
+            context.getClientFactory().hmac(token).setHandler(hmac -> {
+                clientToken = Serializer.json(token);
+                characters = context.characters();
+                createCharacters(async);
+                handler.start(Future.future());
+            });
+        });
     }
 
     @After
@@ -104,7 +114,7 @@ public class RealmClientHandlerTest {
         }, new JsonObject()
                 .put(ID_CHARACTER, CHARACTER_NAME + ".NEW")
                 .put(ID_CLASS, CLASS_NAME)
-                .put(ID_TOKEN, getClientToken()));
+                .put(ID_TOKEN, clientToken));
     }
 
     @Test
@@ -116,7 +126,7 @@ public class RealmClientHandlerTest {
         }, new JsonObject()
                 .put(ID_CHARACTER, CHARACTER_NAME)
                 .put(ID_CLASS, CLASS_NAME)
-                .put(ID_TOKEN, getClientToken()));
+                .put(ID_TOKEN, clientToken));
     }
 
     @Test
@@ -128,7 +138,7 @@ public class RealmClientHandlerTest {
             async.complete();
         }, new JsonObject()
                 .put(ID_CHARACTER, CHARACTER_NAME + ".MISSING")
-                .put(ID_TOKEN, getClientToken()));
+                .put(ID_TOKEN, clientToken));
     }
 
     @Test
@@ -153,41 +163,38 @@ public class RealmClientHandlerTest {
     }
 
     @Test
-    public void getRealmInfo() {
-        // todo: verify no token.
+    public void getRealmData(TestContext test) {
+        handleAuthenticated(ROUTE_CONNECT, (response, status) -> {
+            test.assertEquals(status, ResponseStatus.ACCEPTED);
+            test.assertFalse(response.isEmpty());
+        }, new JsonObject());
     }
 
     @Test
-    public void getAfflictionInfo(){
-
+    public void getAfflictionInfo(TestContext test){
+        handle(ROUTE_AFFLICTIONS, (response, status) -> {
+            test.assertEquals(status, ResponseStatus.ACCEPTED);
+            test.assertFalse(response.isEmpty());
+        }, new JsonObject());
     }
 
     @Test
-    public void getClassInfo() {
-
+    public void getClassInfo(TestContext test) {
+        handle(ROUTE_CLASSES, (response, status) -> {
+            test.assertEquals(status, ResponseStatus.ACCEPTED);
+            test.assertFalse(response.isEmpty());
+        }, new JsonObject());
     }
 
     @Test
-    public void getSpellInfo() {
-
+    public void getSpellInfo(TestContext test) {
+        handle(ROUTE_SPELLS, (response, status) -> {
+            test.assertEquals(status, ResponseStatus.ACCEPTED);
+            test.assertFalse(response.isEmpty());
+        }, new JsonObject());
     }
 
     @Test
-    public void joinInstace() {
-
-    }
-
-    @Test
-    public void leaveInstance() {
-
-    }
-
-    @Test
-    public void joinMultipleInstancesFail() {
-        // verify it fails with the previous instance.
-    }
-
-    @Test(expected = AuthorizationRequiredException.class)
     public void failListCharactersOnRealmWhenInvalidToken(TestContext test) {
         handler.handle(RequestMock.get(Strings.CLIENT_CHARACTER_LIST, (response, status) -> {
             test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
@@ -195,7 +202,7 @@ public class RealmClientHandlerTest {
                 .put(ID_TOKEN, Serializer.json(getInvalidClientToken()))));
     }
 
-    @Test(expected = AuthorizationRequiredException.class)
+    @Test
     public void failToCreateCharacterWhenInvalidToken(TestContext test) {
         handler.handle(RequestMock.get(Strings.CLIENT_CHARACTER_CREATE, (response, status) -> {
             test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
@@ -203,7 +210,7 @@ public class RealmClientHandlerTest {
                 .put(ID_TOKEN, getInvalidClientToken())));
     }
 
-    @Test(expected = AuthorizationRequiredException.class)
+    @Test
     public void failToRemoveCharacterWhenInvalidToken(TestContext test) {
         handler.handle(RequestMock.get(CLIENT_CHARACTER_REMOVE, (response, status) -> {
             test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
@@ -217,11 +224,11 @@ public class RealmClientHandlerTest {
         handler.handle(request);
     }
 
-    private JsonObject getInvalidClientToken() {
-        return Serializer.json(new Token(new TokenFactory(context, "invalid".getBytes()), "username"));
+    private void handle(String action, ResponseListener listener, JsonObject data) {
+        handler.handle(RequestMock.get(action, listener, data));
     }
 
-    private JsonObject getClientToken() {
-        return Serializer.json(new Token(clientToken, USERNAME));
+    private JsonObject getInvalidClientToken() {
+        return Serializer.json(new Token("username").setKey("bogus"));
     }
 }

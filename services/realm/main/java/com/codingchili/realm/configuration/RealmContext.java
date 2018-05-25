@@ -125,8 +125,9 @@ public class RealmContext extends SystemContext implements ServiceContext {
         return classes;
     }
 
-    public boolean verifyToken(Token token) {
-        return tokens(realm().getTokenBytes()).verify(token);
+    public Future<Void> verifyToken(Token token) {
+        TokenFactory factory = new TokenFactory(this, realm().getTokenBytes());
+        return factory.verify(token);
     }
 
     public int updateRate() {
@@ -192,11 +193,14 @@ public class RealmContext extends SystemContext implements ServiceContext {
 
     public void onPlayerJoin(PlayerCreature creature) {
         Scripted scripted = settings.get().getOnPlayerJoin();
-        Bindings bindings = new Bindings();
-        bindings.setSource(creature);
-        bindings.put("log", (Consumer<Object>) (object) -> {
-            System.out.println("source is: " + object.toString());
-        });
-        scripted.apply(bindings);
+
+        if (scripted != null) {
+            Bindings bindings = new Bindings();
+            bindings.setSource(creature);
+            bindings.put("log", (Consumer<Object>) (object) -> {
+                System.out.println("source is: " + object.toString());
+            });
+            scripted.apply(bindings);
+        }
     }
 }

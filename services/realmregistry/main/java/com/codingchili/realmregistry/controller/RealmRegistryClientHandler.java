@@ -18,7 +18,7 @@ import static com.codingchili.core.protocol.Role.PUBLIC;
  * Routing used to authenticate users and create/delete characters.
  */
 public class RealmRegistryClientHandler implements CoreHandler {
-    private final Protocol<ClientRequest> protocol = new Protocol<>();
+    private final Protocol<ClientRequest> protocol = new Protocol<ClientRequest>().authenticator(this::authenticate);
     private AsyncRealmStore realms;
     private RegistryContext context;
 
@@ -44,27 +44,29 @@ public class RealmRegistryClientHandler implements CoreHandler {
 
     @Override
     public void handle(Request request) {
-        protocol.get(request.route(), authenticate(request)).submit(new ClientRequest(request));
+        protocol.process(new ClientRequest(request));
     }
 
-    private Role authenticate(Request request) {
-        boolean authorized = context.verifyClientToken(request.token());
-        return (authorized) ? Role.USER : PUBLIC;
-    }
-
-    @Override
-    public String address() {
-        return NODE_REALM_CLIENTS;
+    private Future<Role> authenticate(Request request) {
+        Future<Role> future = Future.future();
+        context.verifyClientToken(request.token()).setHandler(authentication -> {
+           if (authentication.succeeded()) {
+               future.complete(Role.USER);
+           }  else {
+               future.complete(Role.PUBLIC);
+           }
+        });
+        return future;
     }
 
     private void realmToken(ClientRequest request) {
-        realms.signToken(result -> {
-            if (result.succeeded()) {
-                request.write(new TokenResponse(result.result()));
+        realms.signToken(request.realmName(), request.account()).setHandler(sign -> {
+            if (sign.succeeded()) {
+                request.write(new TokenResponse(sign.result()));
             } else {
                 request.error(new RealmMissingException());
             }
-        }, request.realmName(), request.account());
+        });
     }
 
     private void realmlist(Request request) {
@@ -75,5 +77,10 @@ public class RealmRegistryClientHandler implements CoreHandler {
                 request.error(result.cause());
             }
         });
+    }
+
+    @Override
+    public String address() {
+        return NODE_REALM_CLIENTS;
     }
 }

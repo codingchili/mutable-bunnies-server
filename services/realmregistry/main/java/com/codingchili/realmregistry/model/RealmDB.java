@@ -1,8 +1,7 @@
 package com.codingchili.realmregistry.model;
 
 import com.codingchili.common.RegisteredRealm;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
+import io.vertx.core.*;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -76,17 +75,27 @@ public class RealmDB implements AsyncRealmStore {
     }
 
     @Override
-    public void signToken(Handler<AsyncResult<Token>> future, String realm, String domain) {
+    public Future<Token> signToken(String realm, String domain) {
+        Future<Token> future = Future.future();
+
         realms.query(ID_NODE).equalTo(realm).execute(map -> {
             Collection<RegisteredRealm> realms = map.result();
             if (map.succeeded() && realms.size() > 0) {
                 RegisteredRealm settings = realms.iterator().next();
-                future.handle(succeededFuture(
-                        new Token(this.realms.context().tokens(getSecretBytes(settings)), domain)));
+                Token token = new Token(domain);
+                TokenFactory factory = new TokenFactory(this.realms.context(), getSecretBytes(settings));
+                factory.hmac(token).setHandler(done -> {
+                    if (done.succeeded()) {
+                        future.complete(token);
+                    } else {
+                        future.fail(done.cause());
+                    }
+                });
             } else {
-                future.handle(failedFuture(map.cause()));
+                future.fail(map.cause());
             }
         });
+        return future;
     }
 
     private byte[] getSecretBytes(RegisteredRealm registered) {

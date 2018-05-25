@@ -1,12 +1,5 @@
 package com.codingchili.realmregistry.controller;
 
-import com.codingchili.core.protocol.ResponseStatus;
-import com.codingchili.core.protocol.Serializer;
-import com.codingchili.core.protocol.exception.AuthorizationRequiredException;
-import com.codingchili.core.security.Token;
-import com.codingchili.core.testing.RequestMock;
-import com.codingchili.core.testing.ResponseListener;
-
 import com.codingchili.common.RegisteredRealm;
 import com.codingchili.realmregistry.ContextMock;
 import io.vertx.core.Future;
@@ -15,13 +8,17 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.Timeout;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeUnit;
+
+import com.codingchili.core.protocol.ResponseStatus;
+import com.codingchili.core.protocol.Serializer;
+import com.codingchili.core.protocol.exception.AuthorizationRequiredException;
+import com.codingchili.core.security.Token;
+import com.codingchili.core.testing.RequestMock;
+import com.codingchili.core.testing.ResponseListener;
 
 import static com.codingchili.common.Strings.*;
 
@@ -38,6 +35,7 @@ public class RealmRegistryHandlerTest {
     public Timeout timeout = new Timeout(5, TimeUnit.SECONDS);
     private RegisteredRealm realmconfig = new RegisteredRealm();
     private RealmRegistryHandler handler;
+    private JsonObject realmToken;
     private ContextMock mock;
 
     @Before
@@ -45,12 +43,17 @@ public class RealmRegistryHandlerTest {
         Async async = test.async();
         mock = new ContextMock();
         handler = new RealmRegistryHandler(mock);
-        realmconfig.setAuthentication(new Token(mock.getRealmFactory(), REALM_NAME));
-        realmconfig.setNode(REALM_NAME);
 
-        Future<Void> future = Future.future();
-        handler.start(future);
-        future.setHandler(done -> async.complete());
+        Token token = new Token(REALM_NAME);
+        mock.getRealmFactory().hmac(token).setHandler(hmac -> {
+            realmconfig.setAuthentication(token);
+            realmconfig.setNode(REALM_NAME);
+            realmToken = Serializer.json(token);
+
+            Future<Void> future = Future.future();
+            handler.start(future);
+            future.setHandler(done -> async.complete());
+        });
     }
 
     @After
@@ -58,23 +61,25 @@ public class RealmRegistryHandlerTest {
         mock.close(test.asyncAssertSuccess());
     }
 
-    @Test(expected = AuthorizationRequiredException.class)
+    @Test
     public void failRegisterRealmTest(TestContext test) {
         handle(REALM_UPDATE, (response, status) -> {
             test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
         });
     }
 
-    @Test(expected = AuthorizationRequiredException.class)
+    @Test
     public void failWithClientToken(TestContext test) {
-        Token token = new Token(mock.getClientFactory(), realmconfig.getNode());
-        realmconfig.setAuthentication(token);
+        Async async = test.async();
+        Token token = new Token(realmconfig.getNode());
+        mock.getClientFactory().hmac(token).setHandler(hmac -> {
 
-        handle(REALM_UPDATE, (response, status) -> {
-            test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
+            handle(REALM_UPDATE, (response, status) -> {
+                test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
+                async.complete();
+            }, new JsonObject()
+                .put(ID_TOKEN, Serializer.json(token)));
         });
-
-        realmconfig = new RegisteredRealm();
     }
 
     @Test
@@ -83,10 +88,10 @@ public class RealmRegistryHandlerTest {
             test.assertEquals(ResponseStatus.ACCEPTED, status);
         }, new JsonObject()
                 .put(ID_REALM, Serializer.json(realmconfig))
-                .put(ID_TOKEN, getToken()));
+                .put(ID_TOKEN, realmToken));
     }
 
-    @Test(expected = AuthorizationRequiredException.class)
+    @Test
     public void failUpdateRealmTest(TestContext test) {
         handle(REALM_UPDATE, (response, status) -> {
             test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
@@ -108,12 +113,12 @@ public class RealmRegistryHandlerTest {
     @Test
     public void failClientCloseMissingRealm(TestContext test) {
         handle(CLIENT_CLOSE, (response, status) -> {
-            test.assertEquals(ResponseStatus.ERROR, status);
+            test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
         }, new JsonObject()
-                .put(ID_TOKEN, getToken()));
+                .put(ID_TOKEN, realmToken));
     }
 
-    @Test(expected = AuthorizationRequiredException.class)
+    @Test
     public void failRealmClose(TestContext test) {
         handle(CLIENT_CLOSE, (response, status) -> {
             test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
@@ -127,14 +132,14 @@ public class RealmRegistryHandlerTest {
         });
     }
 
-    @Test(expected = AuthorizationRequiredException.class)
+    @Test
     public void failUpdateWhenInvalidToken(TestContext test) {
         handle(REALM_UPDATE, (response, status) -> {
             test.assertEquals(status, ResponseStatus.UNAUTHORIZED);
         });
     }
 
-    @Test(expected = AuthorizationRequiredException.class)
+    @Test
     public void failCloseWhenInvalidToken(TestContext test) {
         handle(CLIENT_CLOSE, (response, status) -> {
             test.assertEquals(status, ResponseStatus.UNAUTHORIZED);
@@ -142,14 +147,10 @@ public class RealmRegistryHandlerTest {
     }
 
     private void handle(String action, ResponseListener listener) {
-        handle(action, listener, null);
+        handle(action, listener, new JsonObject());
     }
 
     private void handle(String action, ResponseListener listener, JsonObject data) {
         handler.handle(RequestMock.get(action, listener, data));
-    }
-
-    private JsonObject getToken() {
-        return Serializer.json(new Token(mock.getRealmFactory(), REALM_NAME));
     }
 }

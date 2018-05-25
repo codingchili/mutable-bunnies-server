@@ -18,7 +18,6 @@ import com.codingchili.core.protocol.ResponseStatus;
 import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.protocol.exception.AuthorizationRequiredException;
 import com.codingchili.core.security.Token;
-import com.codingchili.core.security.TokenFactory;
 import com.codingchili.core.testing.RequestMock;
 import com.codingchili.core.testing.ResponseListener;
 
@@ -37,15 +36,22 @@ public class RealmRegistryClientHandlerTest {
     public Timeout timeout = new Timeout(10, TimeUnit.SECONDS);
     private RealmRegistryClientHandler handler;
     private ContextMock context;
+    private JsonObject clientToken;
 
     @Before
     public void setUp(TestContext test) {
         Async async = test.async();
+
+        Token token = new Token(USERNAME);
         context = new ContextMock();
-        handler = new RealmRegistryClientHandler(context);
-        Future<Void> future = Future.future();
-        handler.start(future);
-        future.setHandler(done -> async.complete());
+
+        context.getClientFactory().hmac(token).setHandler(hmac -> {
+            clientToken = Serializer.json(token);
+            handler = new RealmRegistryClientHandler(context);
+            Future<Void> future = Future.future();
+            handler.start(future);
+            future.setHandler(done -> async.complete());
+        });
     }
 
     @After
@@ -80,15 +86,11 @@ public class RealmRegistryClientHandlerTest {
 
             async.complete();
         }, new JsonObject()
-                .put(ID_TOKEN, getClientToken())
+                .put(ID_TOKEN, clientToken)
                 .put(ID_REALM, REALM_NAME));
     }
 
-    private JsonObject getClientToken() {
-        return Serializer.json(new Token(context.getClientFactory(), USERNAME));
-    }
-
-    @Test(expected = AuthorizationRequiredException.class)
+    @Test
     public void failCreateRealmTokenWhenInvalidToken(TestContext test) {
         handle(Strings.CLIENT_REALM_TOKEN, (response, status) -> {
             test.assertEquals(ResponseStatus.UNAUTHORIZED, status);
@@ -104,11 +106,11 @@ public class RealmRegistryClientHandlerTest {
     }
 
     private JsonObject getInvalidClientToken() {
-        return Serializer.json(new Token(new TokenFactory(context, "invalid".getBytes()), "username"));
+        return Serializer.json(new Token("hey").setKey("xxx"));
     }
 
     private void handle(String action, ResponseListener listener) {
-        handle(action, listener, new JsonObject().put(ID_TOKEN, getClientToken()));
+        handle(action, listener, new JsonObject().put(ID_TOKEN, clientToken));
     }
 
     private void handle(String action, ResponseListener listener, JsonObject data) {

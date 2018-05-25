@@ -32,6 +32,10 @@ class ClientRequest implements RequestWrapper {
     }
 
     public Token token() {
-        return Serializer.unpack(data().getJsonObject(ID_TOKEN), Token.class);
+        if (data().containsKey(ID_TOKEN)) {
+            return Serializer.unpack(data().getJsonObject(ID_TOKEN), Token.class);
+        } else {
+            return new Token().setExpiry(0);
+        }
     }
 }

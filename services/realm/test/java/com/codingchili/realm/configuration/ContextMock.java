@@ -15,17 +15,31 @@ import com.codingchili.core.storage.SharedMap;
  * Context mock for realms.
  */
 public class ContextMock extends RealmContext {
+    private static RealmSettings realmSettings = new RealmSettings();
 
     public ContextMock() {
         this(new SystemContext());
     }
 
     public ContextMock(CoreContext context) {
-        super(context, () -> new RealmSettings()
-                .setNode("realmName")
-                .setAuthentication(new Token(context.tokens("s".getBytes()), "realmName")));
+        super(context, () -> realmSettings);
+    }
 
-        //super.realm()..add(new PlayableClass().setName("class.name"));
+    public static Future<ContextMock> create() {
+        Future<ContextMock> future = Future.future();
+        ContextMock context = new ContextMock();
+
+        TokenFactory factory = new TokenFactory(context, "s".getBytes());
+        Token token = new Token("realmName");
+
+        factory.hmac(token).setHandler(hmac -> {
+            realmSettings.setNode(token.getDomain());
+            realmSettings.setAuthentication(token);
+            future.complete(context);
+        });
+
+
+        return future;
     }
 
     @Override
@@ -35,7 +49,7 @@ public class ContextMock extends RealmContext {
     }
 
     public TokenFactory getClientFactory() {
-        return tokens(realm().getTokenBytes());
+        return new TokenFactory(this, realm().getTokenBytes());
     }
 
     @Override

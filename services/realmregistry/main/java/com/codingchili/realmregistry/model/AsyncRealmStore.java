@@ -3,8 +3,7 @@ package com.codingchili.realmregistry.model;
 import com.codingchili.core.security.Token;
 
 import com.codingchili.common.RegisteredRealm;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
+import io.vertx.core.*;
 
 import java.util.List;
 
@@ -25,11 +24,11 @@ public interface AsyncRealmStore {
     /**
      * Sign an user authentication token with a realms secret.
      *
-     * @param future    callback
      * @param realmName handler of the realm that should sign the token.
      * @param domain    the domain (username) in which the token is valid.
+     * @return callback
      */
-    void signToken(Handler<AsyncResult<Token>> future, String realmName, String domain);
+    Future<Token> signToken(String realmName, String domain);
 
     /**
      * Get all information available about a realm.

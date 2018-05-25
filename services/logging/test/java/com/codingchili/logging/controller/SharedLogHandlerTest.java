@@ -1,6 +1,7 @@
 package com.codingchili.logging.controller;
 
 import com.codingchili.common.Strings;
+
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.context.SystemContext;
 import com.codingchili.core.files.Configurations;
@@ -11,6 +12,7 @@ import com.codingchili.core.security.Token;
 import com.codingchili.core.security.TokenFactory;
 import com.codingchili.core.testing.RequestMock;
 import com.codingchili.core.testing.ResponseListener;
+
 import com.codingchili.logging.configuration.LogContext;
 import com.codingchili.logging.configuration.LogServerSettings;
 import io.vertx.core.Future;
@@ -37,7 +39,7 @@ import static com.codingchili.core.configuration.CoreStrings.*;
 public class SharedLogHandlerTest {
     private static final int MESSAGE_COUNT = 20;
     @Rule
-    public Timeout timeout = new Timeout(5, TimeUnit.SECONDS);
+    public Timeout timeout = new Timeout(50000, TimeUnit.SECONDS);
     AbstractLogHandler handler;
     LogContext context;
     private TokenFactory factory;
@@ -49,7 +51,7 @@ public class SharedLogHandlerTest {
         SystemContext system = new SystemContext();
         settings.setSecret(new byte[]{0x0});
         context = new LogContext(system, future);
-        factory = context.tokens(settings.getSecret());
+        factory = new TokenFactory(context, settings.getSecret());
     }
 
     @Before
@@ -70,11 +72,13 @@ public class SharedLogHandlerTest {
     public void logMessage(TestContext test) {
         Async async = test.async();
 
-        for (int i = 0; i < MESSAGE_COUNT; i++) {
-            handle(Strings.PROTOCOL_LOGGING, (response, status) -> {
-            }, messageWithToken());
-        }
-
+        Token token = new Token("domain");
+        factory.hmac(token).setHandler(done -> {
+            for (int i = 0; i < MESSAGE_COUNT; i++) {
+                handle(Strings.PROTOCOL_LOGGING, (response, status) -> {
+                }, messageWithToken(token));
+            }
+        });
         context.periodic(() -> 20, "", event -> {
             context.storage().size(size -> {
                 if (size.result() == MESSAGE_COUNT) {
@@ -89,13 +93,14 @@ public class SharedLogHandlerTest {
         handler.handle(RequestMock.get(action, listener, data));
     }
 
-    private JsonObject messageWithToken() {
-        return getLogMessage().put(ID_TOKEN, Serializer.json(new Token(factory, "domain")));
+    private JsonObject messageWithToken(Token token) {
+        return getLogMessage().put(ID_TOKEN, Serializer.json(token));
     }
 
-    JsonObject getLogMessage() {
-        return new JsonObject().put(ID_MESSAGE, new ClientLogHandlerTest.LogMessageGenerator(null, getClass())
-                .event("test-event", Level.WARNING).put("unique", UUID.randomUUID().toString()).toJson());
+    protected JsonObject getLogMessage() {
+        return new JsonObject()
+                .put(ID_MESSAGE, new ClientLogHandlerTest.LogMessageGenerator(null, getClass())
+                        .event("test-event", Level.WARNING).put("unique", UUID.randomUUID().toString()).toJson());
     }
 
     class LogMessageGenerator extends DefaultLogger {

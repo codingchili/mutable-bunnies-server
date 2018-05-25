@@ -32,11 +32,10 @@ public class FasterBusListener implements CoreListener {
     public void start(Future<Void> start) {
         FasterRealmInstanceCodec.initialize(core);
 
-        RequestProcessor processor = new RequestProcessor(core, handler);
         core.bus().consumer(handler.address(), msg -> {
             // wrap in a new RequestMessage to support using the event bus for request-response
             // and to avoid handling failures in multiple channels (bus + direct request reference).
-            processor.submit(() -> new InstanceRequest(msg));
+            handler.handle(new InstanceRequest(msg));
         });
         handler.start(start);
     }

@@ -1,18 +1,13 @@
 package com.codingchili.authentication.configuration;
 
-import com.codingchili.authentication.model.AccountDB;
-import com.codingchili.authentication.model.AccountMapping;
-import com.codingchili.authentication.model.AsyncAccountStore;
-import com.codingchili.core.context.CoreContext;
-import com.codingchili.core.context.ServiceContext;
-import com.codingchili.core.context.SystemContext;
+import com.codingchili.authentication.model.*;
+import io.vertx.core.Future;
+
+import com.codingchili.core.context.*;
 import com.codingchili.core.files.Configurations;
 import com.codingchili.core.logging.Logger;
-import com.codingchili.core.security.Account;
-import com.codingchili.core.security.Token;
-import com.codingchili.core.security.TokenFactory;
+import com.codingchili.core.security.*;
 import com.codingchili.core.storage.StorageLoader;
-import io.vertx.core.Future;
 
 import static com.codingchili.authentication.configuration.AuthenticationSettings.PATH_AUTHSERVER;
 import static com.codingchili.common.Strings.*;
@@ -49,12 +44,13 @@ public class AuthContext extends SystemContext implements ServiceContext {
         return accounts;
     }
 
-    public boolean verifyClientToken(Token token) {
-        return tokens(service().getClientSecret()).verify(token);
+    public Future<Void> verifyClientToken(Token token) {
+        return new TokenFactory(this, service().getClientSecret()).verify(token);
     }
 
-    public Token signClientToken(String domain) {
-        return new Token(tokens(service().getClientSecret()), domain);
+    public Future<Token> signClientToken(String domain) {
+        Token token = new Token(domain);
+        return new TokenFactory(this, service().getClientSecret()).hmac(token).map(token);
     }
 
     public AuthenticationSettings service() {

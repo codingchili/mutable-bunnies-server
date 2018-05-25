@@ -159,17 +159,17 @@ public class RealmClientHandler implements CoreHandler {
         request.write(context.realm().toMetadata());
     }
 
-    @Api
+    @Api(PUBLIC)
     public void classinfo(RealmRequest request) {
         request.write(context.classes().toBuffer());
     }
 
-    @Api
+    @Api(PUBLIC)
     public void spellinfo(RealmRequest request) {
         request.write(context.spells().toBuffer());
     }
 
-    @Api
+    @Api(PUBLIC)
     public void afflictioninfo(RealmRequest request) {
         request.write(context.afflictions().toBuffer());
     }
@@ -191,21 +191,27 @@ public class RealmClientHandler implements CoreHandler {
 
     @Override
     public void handle(Request request) {
-        protocol.get(request.route(), authenticator(request)).submit(new RealmRequest(request));
+        protocol.process(new RealmRequest(request));
     }
 
-    private Role authenticator(Request request) {
+    @Authenticator
+    public Future<Role> authenticator(Request request) {
+        Future<Role> future = Future.future();
+
         // websockets are persistent: only need to verify users token once.
         if ((request.connection().getProperty(ID_ACCOUNT).isPresent())) {
-            return Role.USER;
+            future.complete(Role.USER);
         } else {
             Token token = request.token();
-            if (context.verifyToken(token)) {
-                request.connection().setProperty(ID_ACCOUNT, token.getDomain());
-                return Role.USER;
-            } else {
-                return Role.PUBLIC;
-            }
+            context.verifyToken(token).setHandler(verify -> {
+               if (verify.succeeded()) {
+                   request.connection().setProperty(ID_ACCOUNT, token.getDomain());
+                   future.complete(Role.USER);
+               } else {
+                   future.complete(Role.PUBLIC);
+               }
+            });
         }
+        return future;
     }
 }

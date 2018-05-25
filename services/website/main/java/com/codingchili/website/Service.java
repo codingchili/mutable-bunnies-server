@@ -47,7 +47,7 @@ public class Service implements CoreService {
                 .setIndexPage(settings.getStartPage())
                 .setWebRoot(settings.getResources()));
 
-        HttpServerOptions options = settings.getListener().getHttpOptions(core)
+        HttpServerOptions options = settings.getListener().getHttpOptions()
                 .setCompressionSupported(settings.getGzip());
 
         core.vertx().createHttpServer(options)

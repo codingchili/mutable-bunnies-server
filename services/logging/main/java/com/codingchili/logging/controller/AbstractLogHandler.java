@@ -5,6 +5,7 @@ import com.codingchili.core.listener.Request;
 import com.codingchili.core.logging.ConsoleLogger;
 import com.codingchili.core.protocol.Protocol;
 import com.codingchili.core.protocol.exception.HandlerMissingException;
+
 import com.codingchili.logging.configuration.LogContext;
 import com.codingchili.logging.model.StorageLogger;
 
@@ -38,12 +39,7 @@ abstract class AbstractLogHandler implements CoreHandler {
 
     @Override
     public void handle(Request request) {
-        try {
-            protocol.get(request.route()).submit(request);
-        } catch (HandlerMissingException e) {
-            console.onHandlerMissing(request.target(), request.route());
-            store.onHandlerMissing(request.target(), request.route());
-        }
+        protocol.process(request);
     }
 
     @Override

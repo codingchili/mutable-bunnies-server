@@ -132,6 +132,6 @@ public class RealmInstanceHandler implements CoreHandler {
 
     @Override
     public void handle(Request request) {
-        protocol.get(request.route()).submit(request);
+        protocol.process(request);
     }
 }

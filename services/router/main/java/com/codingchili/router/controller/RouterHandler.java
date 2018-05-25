@@ -18,8 +18,10 @@ import static com.codingchili.core.configuration.CoreStrings.PROTOCOL_CONNECTION
  * Adds target filtering to the BusRouter.
  */
 public class RouterHandler extends BusRouter {
-    private final Protocol<Request> protocol = new Protocol<>();
     private RouterContext context;
+    private final Protocol<Request> protocol = new Protocol<Request>()
+            .setRole(Role.PUBLIC)
+            .routeMapper(Request::target);
 
     public RouterHandler(RouterContext context) {
         this.context = context;
@@ -33,7 +35,7 @@ public class RouterHandler extends BusRouter {
 
             request.data().put(PROTOCOL_CONNECTION, request.connection().remote());
 
-            protocol.get(request.target(), Role.USER).submit(request);
+            protocol.process(request);
         } else {
             request.error(new AuthorizationRequiredException(
                     String.format("Requested target '%s' and route '%s' is not allowed.",

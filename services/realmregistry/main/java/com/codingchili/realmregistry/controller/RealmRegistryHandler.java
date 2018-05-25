@@ -11,8 +11,7 @@ import java.time.Instant;
 import com.codingchili.core.configuration.CoreStrings;
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
-import com.codingchili.core.protocol.Protocol;
-import com.codingchili.core.protocol.Role;
+import com.codingchili.core.protocol.*;
 
 import static com.codingchili.common.Strings.NODE_AUTHENTICATION_REALMS;
 
@@ -28,7 +27,8 @@ public class RealmRegistryHandler implements CoreHandler {
     public RealmRegistryHandler(RegistryContext context) {
         this.context = context;
 
-        protocol.use(Strings.REALM_UPDATE, this::update)
+        protocol.authenticator(this::authenticate)
+                .use(Strings.REALM_UPDATE, this::update)
                 .use(Strings.CLIENT_CLOSE, this::disconnected)
                 .use(CoreStrings.ID_PING, Request::accept, Role.PUBLIC);
     }
@@ -45,14 +45,21 @@ public class RealmRegistryHandler implements CoreHandler {
         });
     }
 
-    private Role authenticate(Request request) {
-        boolean authorized = context.verifyRealmToken(request.token());
-        return (authorized) ? Role.USER : Role.PUBLIC;
-    }
-
     @Override
     public void handle(Request request) {
-        protocol.get(request.route(), authenticate(request)).submit(new RealmRequest(request));
+        protocol.process(new RealmRequest(request));
+    }
+
+    private Future<Role> authenticate(Request request) {
+        Future<Role> future = Future.future();
+        context.verifyRealmToken(request.token()).setHandler(authenticated -> {
+           if (authenticated.succeeded()) {
+               future.complete(Role.USER);
+           }  else {
+               future.complete(Role.PUBLIC);
+           }
+        });
+        return future;
     }
 
     private void update(RealmRequest request) {

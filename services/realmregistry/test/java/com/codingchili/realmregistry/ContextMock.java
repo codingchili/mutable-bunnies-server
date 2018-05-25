@@ -1,21 +1,17 @@
 package com.codingchili.realmregistry;
 
-import com.codingchili.core.context.CoreContext;
-import com.codingchili.core.context.StorageContext;
-import com.codingchili.core.context.SystemContext;
-import com.codingchili.core.security.Token;
-import com.codingchili.core.security.TokenFactory;
-import com.codingchili.core.storage.PrivateMap;
-import com.codingchili.core.storage.StorageLoader;
-
 import com.codingchili.common.RegisteredRealm;
 import com.codingchili.realmregistry.configuration.RealmRegistrySettings;
 import com.codingchili.realmregistry.configuration.RegistryContext;
 import com.codingchili.realmregistry.model.AsyncRealmStore;
 import com.codingchili.realmregistry.model.RealmDB;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
+import io.vertx.core.*;
+
+import com.codingchili.core.context.*;
+import com.codingchili.core.security.Token;
+import com.codingchili.core.security.TokenFactory;
+import com.codingchili.core.storage.PrivateMap;
+import com.codingchili.core.storage.StorageLoader;
 
 /**
  * @author Robin Duda
@@ -28,7 +24,7 @@ public class ContextMock extends RegistryContext {
 
     public ContextMock(CoreContext context) {
         super(context);
-        this.realmFactory = context.tokens(service().getRealmSecret());
+        this.realmFactory = new TokenFactory(context, service().getRealmSecret());
     }
 
     @Override
@@ -47,12 +43,18 @@ public class ContextMock extends RegistryContext {
                 .build(result -> {
                     this.realmDB = new RealmDB(result.result());
 
-                    RegisteredRealm realm = new RegisteredRealm()
-                            .setNode("realmName")
-                            .setAuthentication(new Token(tokens("s".getBytes()), "realmName"));
 
-                    realmDB.put(Future.future(), realm);
-                    handler.handle(Future.succeededFuture(realmDB));
+                    TokenFactory factory = new TokenFactory(this, "s".getBytes());
+                    Token token = new Token("realmName");
+
+                    factory.hmac(token).setHandler(hmac -> {
+                        RegisteredRealm realm = new RegisteredRealm()
+                                .setNode("realmName")
+                                .setAuthentication(token);
+
+                        realmDB.put(Future.future(), realm);
+                        handler.handle(Future.succeededFuture(realmDB));
+                    });
                 });
     }
 }
