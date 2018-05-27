@@ -8,19 +8,19 @@ import com.codingchili.realm.instance.model.spells.SpellTarget;
  * Request from a client to cast a spell.
  */
 public class SpellCastRequest {
-    private SpellTarget target;
+    private SpellTarget spellTarget;
     private String spellName;
 
-    public SpellTarget getTarget() {
-        return target;
+    public SpellTarget getSpellTarget() {
+        return spellTarget;
     }
 
     public String getSpellName() {
         return spellName;
     }
 
-    public void setTarget(SpellTarget target) {
-        this.target = target;
+    public void setSpellTarget(SpellTarget spellTarget) {
+        this.spellTarget = spellTarget;
     }
 
     public void setSpellName(String spellName) {

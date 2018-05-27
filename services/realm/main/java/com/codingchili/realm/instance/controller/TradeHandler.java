@@ -11,7 +11,7 @@ import com.codingchili.core.listener.*;
 /**
  * @author Robin Duda
  */
-public class TradeHandler implements Receiver<Request> {
+public class TradeHandler implements SubReceiver {
     private Creature initiator;
     private Creature other;
     private Collection<Item> initiatorItems;
@@ -37,10 +37,5 @@ public class TradeHandler implements Receiver<Request> {
 
     public void complete(Creature creature) {
         // both entities completes the trade.
-    }
-
-    @Override
-    public void handle(Request request) {
-        // todo check event type.
     }
 }

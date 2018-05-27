@@ -14,7 +14,7 @@ import com.codingchili.core.protocol.Api;
  *
  * Handles movement within the game world.
  */
-public class MovementHandler implements Receiver<Request> {
+public class MovementHandler implements SubReceiver {
     private MovementEngine engine;
 
     /**
@@ -28,10 +28,5 @@ public class MovementHandler implements Receiver<Request> {
     public void move(InstanceRequest request) {
         MovementEvent movement = request.raw(MovementEvent.class);
         engine.update(movement.getVector(), request.target());
-    }
-
-    @Override
-    public void handle(Request request) {
-        //
     }
 }

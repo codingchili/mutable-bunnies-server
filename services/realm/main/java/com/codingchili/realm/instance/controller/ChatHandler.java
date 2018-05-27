@@ -18,7 +18,7 @@ import static com.codingchili.core.configuration.CoreStrings.ID_MESSAGE;
 /**
  * @author Robin Duda
  */
-public class ChatHandler implements Receiver<Request> {
+public class ChatHandler implements SubReceiver {
     private GameContext game;
 
     public ChatHandler(GameContext game) {
@@ -43,10 +43,5 @@ public class ChatHandler implements Receiver<Request> {
         }
 
         game.publish(new ChatEvent(game.getById(request.target()), message));
-    }
-
-    @Override
-    public void handle(Request request) {
-        // what is this for?
     }
 }

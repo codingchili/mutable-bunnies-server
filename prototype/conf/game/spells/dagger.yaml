@@ -1,9 +1,9 @@
 ---
 id: "dagger"
-description: "Applies poison to the target."
-cooldown: 5.0
-casttime: 0.5
-charges: 3
+description: "Strikes nearby targets with a dagger dealing ${this.character.stats.strength / 2} direct damage."
+cooldown: 2.0
+casttime: 0.0
+charges: 5
 target: caster
 onCastBegin:
   jexl:
@@ -15,6 +15,7 @@ onCastComplete:
   jexl: |
     log.accept('casting dagger completed');
 
+    damage = source.stats[Attribute.strength] / 2 * -1;
     for (creature : game.creatures().all()) {
-      spells.damage(source, creature, -10, DamageType.physical);
+      spells.damage(source, creature, damage, DamageType.physical);
     }

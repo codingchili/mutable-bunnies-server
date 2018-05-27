@@ -12,8 +12,8 @@ public class WoodenSword extends Item {
         name = "wooden DAGGr";
         description = "watch out for splinters.";
 
-        stats.update(Attribute.strength, 4);
-        stats.update(Attribute.attackpower, 15);
+        stats.update(Attribute.strength, 1);
+        stats.update(Attribute.attackpower, 5);
         stats.update(Attribute.attackspeed, 2);
         stats.set(Attribute.health, 1.1f);
 
@@ -23,7 +23,6 @@ public class WoodenSword extends Item {
 
         /*onHit = "afflictions.add(source, 'haste')";
         onDamaged = "afflictions.add(target, 'poison')";*/
-
     }
 
     public static void main(String[] args) {

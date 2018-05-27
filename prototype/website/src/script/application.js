@@ -3,6 +3,10 @@
  *
  * Used to pass application-level events between components.
  */
+
+// development.
+localStorage.clear();
+
 class Application {
     
     constructor() {
@@ -12,7 +16,6 @@ class Application {
     authenticated(authentication) {
         application.token = authentication.token;
         application.account = authentication.account;
-        console.log(application.token);
         application.view('realm-list');
         application.publish('onAuthentication', application);
     }

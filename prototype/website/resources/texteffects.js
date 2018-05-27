@@ -105,7 +105,7 @@ class TextEffects {
     }
 
     physical(target, event) {
-        textEffects.hitText(target, '-' + event.value, {
+        textEffects.hitText(target, event.value, {
             begin: '#ff1800',
             end: '#ff0f00',
         });
@@ -120,7 +120,7 @@ class TextEffects {
     }
 
     magic(target, event) {
-        textEffects.hitText(target, '-' + event.value, {
+        textEffects.hitText(target, event.value, {
             begin: '#ff03f5',
             end: '#ff00cf',
         });
@@ -135,7 +135,7 @@ class TextEffects {
     }
 
     trueDamage(target, event) {
-        textEffects.hitText(target, '-' + event.value, {
+        textEffects.hitText(target, event.value, {
             begin: '#ffeaf9',
             end: '#ff0702',
         });

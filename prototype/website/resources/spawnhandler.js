@@ -67,7 +67,6 @@ window.SpawnHandler = class SpawnHandler {
         let vector = entity.vector;
 
         if (this.isPlayer(entity)) {
-            window.character = entity;
             this.camera.set(vector.x, vector.y);
             console.log('player creature loaded');
             console.log(entity);
@@ -90,6 +89,7 @@ window.SpawnHandler = class SpawnHandler {
             game.stage.addChild(sprite);
 
             if (this.isPlayer(sprite)) {
+                application.character = sprite;
                 this.camera.focus(sprite);
             }
 

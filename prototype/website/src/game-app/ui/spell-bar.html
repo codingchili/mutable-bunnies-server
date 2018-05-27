@@ -1,5 +1,6 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
 
 <!--
     @author Robin Duda
@@ -41,6 +42,37 @@
                 top: 40px;
             }
 
+            .title {
+                font-size: 2.0em;
+            }
+
+            .description {
+                margin-top: 12px;
+                display: block;
+                font-size: larger;
+            }
+
+            .target {
+                color: #00b0ff;
+            }
+
+            .cooldown {
+                color: #00b0ff;
+            }
+
+            .casttime {
+                color: #00b0ff;
+            }
+
+            .spell-info {
+                width: 246px;
+            }
+
+            .info-table {
+                margin-top: 12px;
+                width: 100%;
+            }
+
             @media (max-width: 632px) {
                 :host {
                     bottom: 48px;
@@ -52,14 +84,28 @@
         <paper-material elevation="3" class="interface-box">
             <template is="dom-repeat" items="{{spells}}" as="spell">
                 <template is="dom-if" if="{{_learned(spell)}}">
-                    <!-- in hint -->
-                    <!-- [[spell.id]]-->
+                    <div on-click="_cast">
+                        <img class="spell-icon" src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
+                        <paper-tooltip class="spell-info" animation-delay="0" position="top">
+                            <span class="title">[[spell.id]]</span>
 
-                    <!-- in hint -->
-                    <!--[[spell.description]]-->
+                            <table class="info-table">
+                                <tr>
+                                    <th>Cooldown</th>
+                                    <th>Cast</th>
+                                    <th>Target</th>
+                                </tr>
+                                <tr style="text-align: center;">
+                                    <td class="cooldown">[[spell.cooldown]]s</td>
+                                    <td class="casttime">[[spell.casttime]]s</td>
+                                    <td class="target">[[spell.target]]</td>
+                                </tr>
+                            </table>
 
-                    <!-- lower opacity on cooldown -->
-                    <img class="spell-icon" src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
+                            <span class="description">{{_description(spell)}}</span>
+
+                        </paper-tooltip>
+                    </div>
 
                     <!-- cooldown, hide otherwise. -->
                     <paper-progress class="cooldown-bar transiting" min="0" max="[[character.stats.nextlevel]]"
@@ -92,8 +138,19 @@
                 }, 1000);
             }
 
+            _description(spell) {
+                // ?
+                return eval('`' + spell.description + "`");
+            }
+
+            _cast(event) {
+                server.cast((casted) => {
+                    console.log(casted);
+                }, event.model.spell.id, {});
+            }
+
             _learned(spell) {
-                return application.character.spells.learned.indexOf(spell.id) >= 0;
+                return this.character.spells.learned.indexOf(spell.id) >= 0;
             }
         }
 

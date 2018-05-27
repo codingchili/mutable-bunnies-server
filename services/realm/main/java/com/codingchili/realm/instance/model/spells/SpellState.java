@@ -23,7 +23,7 @@ public class SpellState {
         casted.put(spell.getId(), cooldownEndsAt);
         gcd = now + GCD_MS;
 
-        charges.compute(spell.getId(), (id, count) -> count -= 1);
+        charges.compute(spell.getId(), (id, count) -> (count == null) ? 0 : (count -= 1));
     }
 
     public boolean cooldown(Spell spell) {
@@ -48,7 +48,7 @@ public class SpellState {
 
     private boolean charges(Spell spell) {
         if (spell.charges == 1) {
-            return true; // do not care about charges if non-recharging.
+            return false; // no charges available for consumption.
         }
         charges.putIfAbsent(spell.id, 0);
         return (charges.get(spell.getId()) > 0);

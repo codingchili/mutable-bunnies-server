@@ -49,6 +49,13 @@ class RealmServer {
         });
     }
 
+    cast(callback, spellName, spellTarget) {
+        this.connection.send(callback, 'cast', {
+            spellName: spellName,
+            spellTarget: spellTarget
+        });
+    }
+
     leave() {
         this.connection.send({
             accepted: () => {

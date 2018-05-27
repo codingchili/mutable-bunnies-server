@@ -56,6 +56,10 @@ public class Bindings extends HashMap<String, Object> {
         return (Stats) get(STATS);
     }
 
+    public Map<String, Object> getState() {
+        return (Map<String, Object>) get(STATE);
+    }
+
     public GameContext getContext() {
         return (GameContext) get(CONTEXT);
     }

@@ -3,15 +3,15 @@ package com.codingchili.realm.instance.controller;
 import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.model.entity.*;
 import com.codingchili.realm.instance.model.requests.SpellCastRequest;
+import com.codingchili.realm.instance.model.requests.SpellCastResponse;
 import com.codingchili.realm.instance.model.spells.SpellEngine;
+import com.codingchili.realm.instance.model.spells.SpellResult;
 import com.codingchili.realm.instance.transport.InstanceRequest;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.codingchili.core.context.CoreRuntimeException;
-import com.codingchili.core.listener.Receiver;
-import com.codingchili.core.listener.Request;
 import com.codingchili.core.protocol.Api;
 import com.codingchili.core.protocol.Serializer;
 
@@ -20,7 +20,7 @@ import com.codingchili.core.protocol.Serializer;
  * <p>
  * A spell handler to handle spell info and spell casting requests.
  */
-public class SpellHandler implements Receiver<Request> {
+public class SpellHandler implements SubReceiver {
     private GameContext game;
     private SpellEngine spells;
 
@@ -52,16 +52,12 @@ public class SpellHandler implements Receiver<Request> {
     public void cast(InstanceRequest request) {
         SpellCastRequest cast = Serializer.unpack(request.data(), SpellCastRequest.class);
         Creature caster = game.getById(request.target());
-        request.write(spells.cast(caster, cast.getTarget(), cast.getSpellName()));
+        SpellResult result = spells.cast(caster, cast.getSpellTarget(), cast.getSpellName());
+        request.write(new SpellCastResponse(result));
     }
 
     @Api
     public void spell(InstanceRequest request) {
         request.write(spells.getSpellByName(request.data().getString("spellName")));
-    }
-
-    @Override
-    public void handle(Request request) {
-        //
     }
 }

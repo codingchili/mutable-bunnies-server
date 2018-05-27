@@ -3,6 +3,7 @@ package com.codingchili.realm.instance.model.spells;
 import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.model.entity.Creature;
 import com.codingchili.realm.instance.model.events.SpellCycle;
+import com.codingchili.realm.instance.model.stats.Attribute;
 import com.codingchili.realm.instance.scripting.Bindings;
 
 import java.util.function.Consumer;
@@ -11,7 +12,7 @@ import com.codingchili.core.logging.Level;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * A spell that is being casted or has been casted.
  */
 public class ActiveSpell {
@@ -47,13 +48,21 @@ public class ActiveSpell {
         if (spell.onCastProgress != null) {
             Bindings bindings = getBindings(game);
             bindings.put(TICK, tick);
-            spell.onCastProgress.apply(bindings);
+            try {
+                spell.onCastProgress.apply(bindings);
+            } catch (Throwable e) {
+                game.getLogger(getClass()).onError(e);
+            }
         }
     }
 
     public void onCastCompleted(GameContext game) {
         if (spell.onCastComplete != null) {
-            spell.onCastComplete.apply(getBindings(game));
+            try {
+                spell.onCastComplete.apply(getBindings(game));
+            } catch (Throwable e) {
+                game.getLogger(getClass()).onError(e);
+            }
         }
     }
 
@@ -90,6 +99,7 @@ public class ActiveSpell {
                     .put("name", spell.getId())
                     .send();
         });
+        bindings.setAttribute(Attribute.class);
         bindings.put(ACTIVE, this);
         return bindings;
     }

@@ -30,7 +30,7 @@ public class ReferencedScript implements Scripted {
 
     static {
         // loads all script in the game/scripts folder.
-        StartupListener.subscibe(core -> {
+        StartupListener.subscribe(core -> {
             Logger logger = core.logger(ReferencedScript.class);
 
             if (!initialized.getAndSet(true)) {

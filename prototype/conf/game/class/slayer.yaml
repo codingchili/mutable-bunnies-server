@@ -17,7 +17,7 @@ spells:
   - "blood rage"
   - "axe swing"
 stats:
-  strength: 20
+  strength: 14
   intelligence: 5
   wisdom: 5
   constitution: 10
