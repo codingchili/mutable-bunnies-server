@@ -5,8 +5,6 @@ import com.codingchili.realm.instance.model.events.MovementEvent;
 import com.codingchili.realm.instance.model.spells.MovementEngine;
 import com.codingchili.realm.instance.transport.InstanceRequest;
 
-import com.codingchili.core.listener.Receiver;
-import com.codingchili.core.listener.Request;
 import com.codingchili.core.protocol.Api;
 
 /**
@@ -14,7 +12,7 @@ import com.codingchili.core.protocol.Api;
  *
  * Handles movement within the game world.
  */
-public class MovementHandler implements SubReceiver {
+public class MovementHandler implements GameHandler {
     private MovementEngine engine;
 
     /**

@@ -61,21 +61,25 @@ public class SpellState {
                 int cooldown = GameContext.secondsToTicks(spell.getCooldown());
 
                 if (spell.charges > 1 && currentTick % cooldown == 0) {
-                    charges.compute(spellName, (key, charges) -> {
-
-                        if (charges == null) {
-                            charges = 0;
-                        }
-
-                        if (charges < spell.charges) {
-                            return charges + 1;
-                        } else {
-                            return charges;
-                        }
-                    });
+                    charge(spell);
                 }
             });
         }
+    }
+
+    public void charge(Spell spell) {
+        charges.compute(spell.getId(), (key, charges) -> {
+
+            if (charges == null) {
+                charges = 0;
+            }
+
+            if (charges < spell.charges) {
+                return charges + 1;
+            } else {
+                return charges;
+            }
+        });
     }
 
     public Collection<String> getLearned() {

@@ -1,27 +1,26 @@
 package com.codingchili.realm.instance.model.items;
 
-import com.codingchili.realm.instance.scripting.Scripted;
 import com.codingchili.realm.instance.model.stats.Stats;
+import com.codingchili.realm.instance.scripting.Scripted;
+
+import java.util.UUID;
 
 /**
  * @author Robin Duda
+ *
+ * Model of an item, which may be usable, equippable of consumable.
  */
-public class Item {
+public class Item extends ItemType {
+    private String id = UUID.randomUUID().toString();
     protected String name = "no name";
     protected String description = "no description.";
-    protected Slot slot = Slot.none;
-    protected WeaponType weapon = WeaponType.none;
-    protected ArmorType armor = ArmorType.none;
     protected Stats stats = new Stats();
+    protected Scripted onDamaged = null;
+    protected Scripted onHit = null;
+    protected Integer quantity = 1;
 
-    // todo: convert to references to hit effects/ item use scripts.
-    // this will be better for serialization, storage and balance changes.
-    protected Scripted onHit = null; // jexl script or reference to affliction?
-    protected Scripted onDamaged = null; // jexl script or reference to affliction?
-    protected Scripted onUse = null; // jexl script consume item etc.
-
-
-    protected Recipe recipe = new Recipe();
+    // todo: needs a cooldown?
+    protected Scripted onUse = null;
 
     public Boolean isUsable() {
         return (onUse != null);
@@ -43,28 +42,12 @@ public class Item {
         this.name = name;
     }
 
-    public Slot getSlot() {
-        return slot;
-    }
-
-    public void setSlot(Slot slot) {
-        this.slot = slot;
-    }
-
     public Stats getStats() {
         return stats;
     }
 
     public void setStats(Stats stats) {
         this.stats = stats;
-    }
-
-    public Recipe getRecipe() {
-        return recipe;
-    }
-
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
     }
 
     public Scripted getOnHit() {
@@ -83,19 +66,31 @@ public class Item {
         this.onDamaged = onDamaged;
     }
 
-    public WeaponType getWeapon() {
-        return weapon;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setWeapon(WeaponType weapon) {
-        this.weapon = weapon;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
-    public ArmorType getArmor() {
-        return armor;
+    public String getId() {
+        return id;
     }
 
-    public void setArmor(ArmorType armor) {
-        this.armor = armor;
+    public Item setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof Item) &&
+                ((Item) (obj)).getId().equals(id);
     }
 }

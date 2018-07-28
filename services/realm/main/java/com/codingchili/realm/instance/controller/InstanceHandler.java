@@ -36,10 +36,11 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
 
         game = new GameContext(context);
 
-        protocol.annotated(new MovementHandler(game));
-        protocol.annotated(new TradeHandler(game));
-        protocol.annotated(new SpellHandler(game));
-        protocol.annotated(new ChatHandler(game));
+        protocol.annotated(new MovementHandler(game))
+                .annotated(new TradeHandler(game))
+                .annotated(new SpellHandler(game))
+                .annotated(new ChatHandler(game))
+                .annotated(new InventoryHandler(game));
     }
 
     @Api

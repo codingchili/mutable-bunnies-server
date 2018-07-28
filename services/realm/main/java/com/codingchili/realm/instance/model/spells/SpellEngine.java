@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class SpellEngine {
     private Map<Creature, ActiveSpell> casting = new ConcurrentHashMap<>();
-    private Collection<ActiveSpell> passive = new ConcurrentLinkedQueue<>();
+    private Collection<ActiveSpell> active = new ConcurrentLinkedQueue<>();
     private Collection<Projectile> projectiles = new ConcurrentLinkedQueue<>();
     private Grid<Creature> creatures;
     private AfflictionDB afflictions;
@@ -57,6 +57,10 @@ public class SpellEngine {
         Optional<Spell> spell = spells.getByName(spellName);
 
         if (spell.isPresent()) {
+
+            // todo handle item casts?
+            // learned = learned or equipped?
+
             if (caster.getSpells().learned(spellName)) {
                 if (caster.getSpells().cooldown(spell.get())) {
                     return SpellResult.COOLDOWN;
@@ -122,6 +126,17 @@ public class SpellEngine {
      */
     public void afflict(Creature source, String affliction) {
         afflict(source, source, affliction);
+    }
+
+    /**
+     * Adds a charge to the spell with the given name if not at max charges.
+     * @param caster the caster to add the charge to.
+     * @param spellName the name of the spell to add a charge to.
+     */
+    public void charge(Creature caster, String spellName) {
+        spells.getByName(spellName).ifPresent(spell -> {
+            caster.getSpells().charge(spell);
+        });
     }
 
     /**
@@ -211,9 +226,10 @@ public class SpellEngine {
         game.publish(new DamageEvent(target, value, type).setSource(source));
 
         if (target.getStats().get(Attribute.health) < 0) {
-            // todo: if the player is already dead: dont kill it AGAIN.
-            // prevent healing/damaging dead targets, remove afflictions etc.v
             game.publish(new DeathEvent(target, source));
+
+            // despawn the player: requires the player to issue a "join" to get respawned.
+            game.remove(target);
         }
     }
 
@@ -250,7 +266,7 @@ public class SpellEngine {
                 casting.onCastCompleted(game);
 
                 // the spell is casted: stay active until the spell expires.
-                passive.add(casting);
+                active.add(casting);
                 return true;
             } else {
                 if (casting.shouldTick(tick)) {
@@ -262,9 +278,8 @@ public class SpellEngine {
     }
 
     // execute spell effects for spells that have been casted successfully.
-
     private void updateActiveSpells() {
-        passive.removeIf(spell -> {
+        active.removeIf(spell -> {
             if (spell.active()) {
 
                 if (spell.shouldTick(tick)) {
@@ -277,8 +292,8 @@ public class SpellEngine {
             }
         });
     }
-    // updates all projectiles.
 
+    // updates all projectiles.
     private void updateProjectiles() {
         projectiles.removeIf(Projectile::tick);
     }

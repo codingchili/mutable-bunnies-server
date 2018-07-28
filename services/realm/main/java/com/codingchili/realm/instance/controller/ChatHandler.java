@@ -2,14 +2,11 @@ package com.codingchili.realm.instance.controller;
 
 import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.model.events.ChatEvent;
-import com.codingchili.realm.instance.model.events.EventType;
 import com.codingchili.realm.instance.model.spells.SpellResult;
 import com.codingchili.realm.instance.model.spells.SpellTarget;
 import com.codingchili.realm.instance.transport.InstanceRequest;
 import io.vertx.core.json.JsonObject;
 
-import com.codingchili.core.listener.Receiver;
-import com.codingchili.core.listener.Request;
 import com.codingchili.core.protocol.Api;
 
 import static com.codingchili.core.configuration.CoreStrings.ID_MESSAGE;
@@ -18,7 +15,7 @@ import static com.codingchili.core.configuration.CoreStrings.ID_MESSAGE;
 /**
  * @author Robin Duda
  */
-public class ChatHandler implements SubReceiver {
+public class ChatHandler implements GameHandler {
     private GameContext game;
 
     public ChatHandler(GameContext game) {

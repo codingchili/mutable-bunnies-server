@@ -48,7 +48,7 @@ public interface Entity extends Storable, Receiver<Event> {
     /**
      * Called after loading the creature to set the context.
      *
-     * @param context the game context.
+     * @param game the game context.
      */
-    void setContext(GameContext context);
+    void setContext(GameContext game);
 }

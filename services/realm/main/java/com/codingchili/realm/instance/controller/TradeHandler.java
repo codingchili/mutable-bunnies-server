@@ -6,12 +6,10 @@ import com.codingchili.realm.instance.model.items.Item;
 
 import java.util.Collection;
 
-import com.codingchili.core.listener.*;
-
 /**
  * @author Robin Duda
  */
-public class TradeHandler implements SubReceiver {
+public class TradeHandler implements GameHandler {
     private Creature initiator;
     private Creature other;
     private Collection<Item> initiatorItems;

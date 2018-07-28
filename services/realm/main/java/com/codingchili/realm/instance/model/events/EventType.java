@@ -15,5 +15,7 @@ public enum EventType {
     shutdown,
     damage,
     save,
-    any
+    equip_item,
+    use_item,
+    drop_item, unequip_item, loot_item, loot_list, any
 }

@@ -2,6 +2,7 @@ package com.codingchili.realm.instance.model.entity;
 
 import com.codingchili.realm.instance.model.events.Event;
 
+import com.codingchili.core.listener.Receiver;
 import com.codingchili.core.protocol.Protocol;
 import com.codingchili.core.protocol.RoleMap;
 
@@ -12,10 +13,15 @@ import com.codingchili.core.protocol.RoleMap;
  */
 public class EventProtocol extends Protocol<Event> {
 
-    public EventProtocol() {}
-
-    public EventProtocol(Entity entity) {
+    public EventProtocol() {
         setRole(RoleMap.get(RoleMap.PUBLIC));
-        annotated(entity);
+    }
+
+    /**
+     * @param handler a receiver to handle events for this events protocol.
+     */
+    public EventProtocol(Receiver<Event> handler) {
+        setRole(RoleMap.get(RoleMap.PUBLIC));
+        annotated(handler);
     }
 }

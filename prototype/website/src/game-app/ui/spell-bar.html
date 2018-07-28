@@ -42,6 +42,12 @@
                 top: 40px;
             }
 
+            paper-progress {
+                --paper-progress-transition-duration: 0.08s;
+                --paper-progress-transition-timing-function: default;
+                --paper-progress-transition-transition-delay: 0s;
+            }
+
             .title {
                 font-size: 2.0em;
             }
@@ -79,6 +85,7 @@
                 }
             }
 
+
         </style>
 
         <paper-material elevation="3" class="interface-box">
@@ -112,6 +119,12 @@
                                     value="[[character.stats.experience]]"></paper-progress>
                 </template>
             </template>
+
+            <template is="dom-if" if="[[casting]]">
+                <paper-progress class="casting-bar transiting" min="[[startCast]]" max="[[endCast]]"
+                                value="[[castProgress]]"></paper-progress>
+            </template>
+
         </paper-material>
 
     </template>
@@ -136,16 +149,26 @@
                     this.notifyPath("spells");
                     this.notifySplices("spells");
                 }, 1000);
+
+                setInterval(() => {
+                    this.castProgress = new Date().getTime();
+                    if (this.castProgress > this.endCast) {
+                        this.casting = false;
+                    }
+                }, 50);
             }
 
             _description(spell) {
-                // ?
-                return eval('`' + spell.description + "`");
+                return eval('`' + spell.description + '`');
             }
 
             _cast(event) {
+            console.log(event.model.spell);
                 server.cast((casted) => {
                     console.log(casted);
+                    this.startCast = new Date().getTime();
+                    this.endCast = new Date().getTime() + (event.model.spell.casttime * 1000);
+                    this.casting = true;
                 }, event.model.spell.id, {});
             }
 
@@ -155,5 +178,6 @@
         }
 
         window.customElements.define(SpellBar.is, SpellBar);
+
     </script>
 </dom-module>

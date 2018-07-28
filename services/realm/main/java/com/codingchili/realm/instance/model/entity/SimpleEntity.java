@@ -10,7 +10,7 @@ import java.util.*;
  * @author Robin Duda
  */
 public abstract class SimpleEntity implements Entity {
-    protected transient GameContext context;
+    protected transient GameContext game;
     protected transient EventProtocol protocol = new EventProtocol(this);
     private String id = UUID.randomUUID().toString();
     protected Map<String, Object> attributes = new HashMap<>();
@@ -18,8 +18,8 @@ public abstract class SimpleEntity implements Entity {
     protected Vector vector = new Vector();
 
     @Override
-    public void setContext(GameContext context) {
-        this.context = context;
+    public void setContext(GameContext game) {
+        this.game = game;
     }
 
     @Override

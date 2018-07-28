@@ -11,5 +11,8 @@ public enum Broadcast {
     PARTITION,
 
     // publish to all entities in the instance: join/leave events.
-    GLOBAL
+    GLOBAL,
+
+    // event will not be broadcast at all - use if event is only used for direct messages.
+    NONE
 }

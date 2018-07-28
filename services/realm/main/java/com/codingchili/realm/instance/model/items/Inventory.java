@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.codingchili.core.context.CoreRuntimeException;
+
 /**
  * @author Robin Duda
  * <p>
@@ -16,34 +18,30 @@ public class Inventory implements Serializable {
     public static Inventory EMPTY = new Inventory();
 
     private Map<Slot, Item> equipped = new ConcurrentHashMap<>();
-    private List<Item> items = new ArrayList<>();
+    private Set<Item> items = new HashSet<>();
     private Stats stats = new Stats();
     private Integer space;
     private Integer currency = 1;
 
-    {
-        items.add(new WoodenSword());
-        equip(0);
+    /**
+     * Updates the equipped stats after changing equipped items.
+     */
+    public void update() {
+        stats.clear();
+        equipped.forEach((slot, equipped) -> stats.apply(equipped.getStats()));
     }
 
-    public void equip(int index) {
-
-        // todo: must check if allowed to equip.
-
-        if (index <= items.size()) {
-            Item item = items.get(index);
-
-            if (!item.getSlot().equals(Slot.none)) {
-                if (equipped.containsKey(item.getSlot())) {
-                    items.add(equipped.replace(item.getSlot(), item));
-                } else {
-                    equipped.put(item.slot, item);
-                }
-                items.remove(item);
+    /**
+     * @param id the id of the item to retrieve.
+     * @return the item if found, throws if not found.
+     */
+    public Item getById(String id) {
+        for (Item item : items) {
+            if (item.getId().equals(id)) {
+                return item;
             }
         }
-        stats.clear();
-        equipped.forEach((slot, item) -> stats = stats.apply(item.getStats()));
+        throw new CoreRuntimeException(String.format("Item with id '%d' does not exist.", id));
     }
 
     public void add(Item item) {
@@ -62,7 +60,7 @@ public class Inventory implements Serializable {
         return equipped;
     }
 
-    public void setEquipped(HashMap<Slot, Item> equipped) {
+    public void setEquipped(Map<Slot, Item> equipped) {
         this.equipped = equipped;
     }
 
@@ -74,11 +72,11 @@ public class Inventory implements Serializable {
         this.space = space;
     }
 
-    public List<Item> getItems() {
+    public Set<Item> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(Set<Item> items) {
         this.items = items;
     }
 

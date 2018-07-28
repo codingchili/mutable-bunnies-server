@@ -20,7 +20,7 @@ import com.codingchili.core.protocol.Serializer;
  * <p>
  * A spell handler to handle spell info and spell casting requests.
  */
-public class SpellHandler implements SubReceiver {
+public class SpellHandler implements GameHandler {
     private GameContext game;
     private SpellEngine spells;
 

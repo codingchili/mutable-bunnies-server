@@ -2,6 +2,7 @@ package com.codingchili.realm.instance.context;
 
 import com.codingchili.realm.instance.model.entity.*;
 import com.codingchili.realm.instance.model.events.*;
+import com.codingchili.realm.instance.model.items.InventoryEngine;
 import com.codingchili.realm.instance.model.spells.MovementEngine;
 import com.codingchili.realm.instance.model.spells.SpellEngine;
 import com.codingchili.realm.model.ClassDB;
@@ -35,8 +36,11 @@ public class GameContext {
     private InstanceContext instance;
     private Grid<Creature> creatures;
     private Grid<Entity> structures;
+
     private SpellEngine spells;
     private MovementEngine movement;
+    private InventoryEngine inventory;
+
     private ClassDB classes;
     private Long currentTick = 0L;
 
@@ -52,6 +56,7 @@ public class GameContext {
         ticker(structures::update, 5);
 
         this.spells = new SpellEngine(this);
+        this.inventory = new InventoryEngine(this);
         this.movement = new MovementEngine(this);
 
         instance.periodic(() -> TICK_INTERVAL_MS, instance.address(), this::tick);
@@ -123,6 +128,10 @@ public class GameContext {
         return movement;
     }
 
+    public InventoryEngine inventory() {
+        return inventory;
+    }
+
     public void close() {
         closed.set(true);
         publish(new ShutdownEvent());
@@ -153,28 +162,26 @@ public class GameContext {
     private void addNew(Entity entity) {
         entity.setContext(this);
         publish(new SpawnEvent().setEntities(entity));
-        subscribe(entity);
+        subscribe(entity.getId(), entity.protocol());
     }
 
     public void remove(Entity entity) {
         creatures.remove(entity.getId());
         structures.remove(entity.getId());
-        unsubscribe(entity);
+        unsubscribe(entity.getId());
         publish(new SpawnEvent().setEntities(entity).setType(DESPAWN));
     }
 
-    private void unsubscribe(Entity entity) {
-        listeners.forEach((key, value) -> value.remove(entity.getId()));
+    private void unsubscribe(String subscriberId) {
+        listeners.forEach((key, value) -> value.remove(subscriberId));
     }
 
-    public EventProtocol subscribe(Entity entity) {
-        EventProtocol protocol = entity.protocol();
-
+    public EventProtocol subscribe(String subscriberId, EventProtocol protocol) {
         protocol.available().stream()
                 .map(EventType::valueOf)
                 .forEach(event -> {
                     listeners.computeIfAbsent(event, (key) -> new ConcurrentHashMap<>());
-                    listeners.get(event).put(entity.getId(), protocol);
+                    listeners.get(event).put(subscriberId, protocol);
                 });
         return protocol;
     }

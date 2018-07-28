@@ -10,7 +10,7 @@ import com.codingchili.realm.instance.model.entity.SimpleCreature;
 public class Npc extends SimpleCreature {
 
     @Override
-    public void setContext(GameContext context) {
-        super.setContext(context);
+    public void setContext(GameContext game) {
+        super.setContext(game);
     }
 }

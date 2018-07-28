@@ -10,7 +10,7 @@ import com.codingchili.core.listener.Request;
  * are not mounted on a listener directly. The root handler will invoke this receiver
  * from its own handle method.
  */
-public interface SubReceiver extends Receiver<Request> {
+public interface GameHandler extends Receiver<Request> {
 
     @Override
     default void handle(Request request) {

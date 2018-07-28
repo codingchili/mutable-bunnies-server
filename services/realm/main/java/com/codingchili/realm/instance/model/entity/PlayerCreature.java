@@ -60,8 +60,8 @@ public class PlayerCreature extends SimpleCreature {
     }
 
     @Override
-    public void setContext(GameContext context) {
-        Optional<PlayableClass> theClass = context.classes().getByName(className);
+    public void setContext(GameContext game) {
+        Optional<PlayableClass> theClass = game.classes().getByName(className);
 
         if (theClass.isPresent()) {
             stats = theClass.get().getStats();
@@ -77,13 +77,13 @@ public class PlayerCreature extends SimpleCreature {
 
         // learn all enabled spells for the current class for now.
         this.spells.getLearned().addAll(theClass.get().getSpells().stream()
-                .filter(context.spells()::exists)
+                .filter(game.spells()::exists)
                 .collect(Collectors.toList()));
 
         logins++;
-        this.context = context;
+        this.game = game;
 
-        context.getInstance().onPlayerJoin(this);
+        game.getInstance().onPlayerJoin(this);
         protocol.annotated(this);
 
         for (EventType type : EventType.values()) {
@@ -119,15 +119,15 @@ public class PlayerCreature extends SimpleCreature {
     @Override
     public void handle(Event event) {
         UpdateMessage update = new UpdateMessage(event, account);
-        context.getInstance().sendRealm(update).setHandler(done -> {
+        game.getInstance().sendRealm(update).setHandler(done -> {
             if (done.failed()) {
-                context.getLogger(getClass()).onError(done.cause());
+                game.getLogger(getClass()).onError(done.cause());
             }
         });
     }
 
     private void onError(String msg) {
-        context.getLogger(getClass())
+        game.getLogger(getClass())
                 .event("disconnect")
                 .put("account", account)
                 .put("character", getName())

@@ -1,6 +1,7 @@
 package com.codingchili.realm.instance.model.items;
 
 import com.codingchili.realm.instance.model.stats.Attribute;
+import com.codingchili.realm.instance.scripting.ReferencedScript;
 import org.apache.commons.jexl2.*;
 
 import com.codingchili.core.protocol.Serializer;
@@ -8,7 +9,7 @@ import com.codingchili.core.protocol.Serializer;
 public class WoodenSword extends Item {
     {
         slot = Slot.weapon;
-        weapon = WeaponType.sword2h;
+        weaponType = WeaponType.sword2h;
         name = "wooden DAGGr";
         description = "watch out for splinters.";
 
@@ -17,12 +18,7 @@ public class WoodenSword extends Item {
         stats.update(Attribute.attackspeed, 2);
         stats.set(Attribute.health, 1.1f);
 
-        recipe.add("wood", 5);
-        recipe.add("iron dagger", 1);
-        recipe.tool("wooden DAGGr");
-
-        /*onHit = "afflictions.add(source, 'haste')";
-        onDamaged = "afflictions.add(target, 'poison')";*/
+        onUse = new ReferencedScript("heal");
     }
 
     public static void main(String[] args) {
