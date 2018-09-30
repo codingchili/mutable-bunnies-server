@@ -22,6 +22,7 @@ public abstract class SimpleEntity implements Entity {
         this.game = game;
     }
 
+    @JsonIgnore
     @Override
     public EventProtocol protocol() {
         return protocol;

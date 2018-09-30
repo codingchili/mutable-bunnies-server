@@ -1,11 +1,11 @@
 ---
 node: "authentication.node"
 storage: "com.codingchili.core.storage.IndexedMapPersisted"
-clientSecret: "w0jRu2wfJP/EdOnZqm6OHykX5hWRDCf8CtJrD914DWcTW/AJV6dqqqBM6DvrX92Tlu137owpIJ92q4LvmpD69w=="
-global: "hrZM846Qlzunzkyg+xfOuD4IknikG4UKUjWi1eEx1/B1GGQ5Iu4nSCd6bmGGWIr8dNMD0YGbU7kNICodZC6yow=="
+clientSecret: "pxSgbvmLdOygriLCz8wAlTqlI+fQK5BAHYYdrwXeq6aOhIdyfviGNc1uLjGFHANece8MC0t1h9Q8BeNCp1ZbjA=="
+global: "/8G1yxe3yB6dN1lEQdGRGiMHnpbf3onXOBH1DUSUnx5FizqEGgqLY65cZa9imMpVSTmzi6MU9JMTgDx/kMGTJA=="
 logging:
   properties:
     type: "HmacSHA512"
   domain: "authentication.node"
-  key: "T5a9soneLlcjL8DGfMdzmZnb+tEp6RMvuxwxefQkmsxxDPDWo5bFLIPVAsqCn3hiR7rth6m+09n0J5TQedpVTw=="
-  expiry: 1527877746
+  key: "59mM2PmD/p2+6fLT9ngMc19Cotk7ffDCUd3oZbHDb/shKigpc2H0QZlAnt0SFgTxa95XWZpwn8uK+CkLreoP+g=="
+  expiry: 1537005943

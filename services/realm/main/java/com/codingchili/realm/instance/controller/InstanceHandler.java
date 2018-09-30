@@ -10,14 +10,12 @@ import io.vertx.core.Future;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import com.codingchili.core.context.DeploymentAware;
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
 import com.codingchili.core.protocol.*;
 
-import static com.codingchili.common.Strings.*;
 import static com.codingchili.core.protocol.RoleMap.PUBLIC;
 
 /**
@@ -39,7 +37,7 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
         protocol.annotated(new MovementHandler(game))
                 .annotated(new TradeHandler(game))
                 .annotated(new SpellHandler(game))
-                .annotated(new ChatHandler(game))
+                .annotated(new DialogHandler(game))
                 .annotated(new InventoryHandler(game));
     }
 

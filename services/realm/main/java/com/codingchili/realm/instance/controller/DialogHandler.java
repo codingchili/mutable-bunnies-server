@@ -15,10 +15,10 @@ import static com.codingchili.core.configuration.CoreStrings.ID_MESSAGE;
 /**
  * @author Robin Duda
  */
-public class ChatHandler implements GameHandler {
+public class DialogHandler implements GameHandler {
     private GameContext game;
 
-    public ChatHandler(GameContext game) {
+    public DialogHandler(GameContext game) {
         this.game = game;
     }
 
@@ -40,5 +40,10 @@ public class ChatHandler implements GameHandler {
         }
 
         game.publish(new ChatEvent(game.getById(request.target()), message));
+    }
+
+    @Api
+    public void talk(InstanceRequest request) {
+
     }
 }

@@ -1,10 +1,10 @@
 ---
 node: "social.node"
 message: "hello world!!!"
-global: "hrZM846Qlzunzkyg+xfOuD4IknikG4UKUjWi1eEx1/B1GGQ5Iu4nSCd6bmGGWIr8dNMD0YGbU7kNICodZC6yow=="
+global: "/8G1yxe3yB6dN1lEQdGRGiMHnpbf3onXOBH1DUSUnx5FizqEGgqLY65cZa9imMpVSTmzi6MU9JMTgDx/kMGTJA=="
 logging:
   properties:
     type: "HmacSHA512"
   domain: "social.node"
-  key: "ud3THDpFCD5PvtNxuIvynrFTEC4fx6+lu+o40ZuZROJEzsmtbeNr0+/C2Z3KN7hWGVzvjb+RiHOK3KYzPDWfwg=="
-  expiry: 1527877746
+  key: "U7fq57IaklQKWjgoev0aeIW76A6Pq4wNa1V6BTfn2P1N9GKcroRjtNwAvoA35qxLbkQKTDnFxFPITKBZGa6+Bg=="
+  expiry: 1537005943

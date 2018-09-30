@@ -6,8 +6,7 @@ import io.vertx.core.Future;
 
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
-import com.codingchili.core.protocol.Protocol;
-import com.codingchili.core.protocol.Role;
+import com.codingchili.core.protocol.*;
 import com.codingchili.core.security.Account;
 
 import static com.codingchili.common.Strings.*;
@@ -39,8 +38,8 @@ public class ClientHandler implements CoreHandler {
         protocol.process(new ClientLogin(request));
     }
 
-    private Future<Role> authenticate(Request request) {
-        Future<Role> future = Future.future();
+    private Future<RoleType> authenticate(Request request) {
+        Future<RoleType> future = Future.future();
         context.verifyClientToken(request.token()).setHandler(verify -> {
             if (verify.succeeded()) {
                 future.complete(Role.USER);

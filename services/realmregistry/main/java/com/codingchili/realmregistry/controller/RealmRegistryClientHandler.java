@@ -6,8 +6,7 @@ import io.vertx.core.Future;
 
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
-import com.codingchili.core.protocol.Protocol;
-import com.codingchili.core.protocol.Role;
+import com.codingchili.core.protocol.*;
 
 import static com.codingchili.common.Strings.*;
 import static com.codingchili.core.protocol.Role.PUBLIC;
@@ -18,7 +17,8 @@ import static com.codingchili.core.protocol.Role.PUBLIC;
  * Routing used to authenticate users and create/delete characters.
  */
 public class RealmRegistryClientHandler implements CoreHandler {
-    private final Protocol<ClientRequest> protocol = new Protocol<ClientRequest>().authenticator(this::authenticate);
+    private final Protocol<ClientRequest> protocol = new Protocol<ClientRequest>()
+            .authenticator(this::authenticate);
     private AsyncRealmStore realms;
     private RegistryContext context;
 
@@ -47,8 +47,8 @@ public class RealmRegistryClientHandler implements CoreHandler {
         protocol.process(new ClientRequest(request));
     }
 
-    private Future<Role> authenticate(Request request) {
-        Future<Role> future = Future.future();
+    private Future<RoleType> authenticate(Request request) {
+        Future<RoleType> future = Future.future();
         context.verifyClientToken(request.token()).setHandler(authentication -> {
            if (authentication.succeeded()) {
                future.complete(Role.USER);

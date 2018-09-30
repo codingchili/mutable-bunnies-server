@@ -15,6 +15,7 @@ public class Item extends ItemType {
     protected String name = "no name";
     protected String description = "no description.";
     protected Stats stats = new Stats();
+    protected ItemRarity rarity = ItemRarity.COMMON;
     protected Scripted onDamaged = null;
     protected Scripted onHit = null;
     protected Integer quantity = 1;
@@ -81,6 +82,14 @@ public class Item extends ItemType {
     public Item setId(String id) {
         this.id = id;
         return this;
+    }
+
+    public ItemRarity getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(ItemRarity rarity) {
+        this.rarity = rarity;
     }
 
     @Override

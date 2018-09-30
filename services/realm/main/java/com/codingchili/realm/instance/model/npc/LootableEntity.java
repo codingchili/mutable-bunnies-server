@@ -1,9 +1,10 @@
-package com.codingchili.realm.instance.model.items;
+package com.codingchili.realm.instance.model.npc;
 
 import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.model.entity.*;
 import com.codingchili.realm.instance.model.entity.Vector;
 import com.codingchili.realm.instance.model.events.ListEntityLootEvent;
+import com.codingchili.realm.instance.model.items.Item;
 
 import java.util.*;
 
@@ -19,13 +20,18 @@ import com.codingchili.core.context.CoreRuntimeException;
  */
 public class LootableEntity extends SimpleEntity {
     private static final int LOOT_DECAY_TIME = GameContext.secondsToTicks(600);
-    private Set<Creature> subscribers = new HashSet<>();
+    private Set<String> subscribers = new HashSet<>();
     private List<Item> items;
 
 
     public LootableEntity(Vector vector, List<Item> items) {
         this.vector = vector;
         this.items = items;
+    }
+
+    @Override
+    public void setContext(GameContext game) {
+        super.setContext(game);
 
         game.ticker(ticker -> {
             game.remove(this);
@@ -35,7 +41,7 @@ public class LootableEntity extends SimpleEntity {
 
     public void subscribe(Creature source) {
         source.handle(createEvent());
-        subscribers.add(source);
+        subscribers.add(source.getId());
     }
 
     public Item takeItem(String itemId) {
@@ -59,8 +65,8 @@ public class LootableEntity extends SimpleEntity {
         ListEntityLootEvent event = createEvent();
 
         subscribers.removeIf(subscriber -> {
-            if (game.creatures().exists(subscriber.getId())) {
-                subscriber.handle(event);
+            if (game.creatures().exists(subscriber)) {
+                game.getById(subscriber).handle(event);
                 return false;
             } else {
                 // subscriber not available - unsubscribe.

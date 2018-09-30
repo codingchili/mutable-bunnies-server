@@ -50,7 +50,7 @@ public class SpellHandler implements GameHandler {
 
     @Api
     public void cast(InstanceRequest request) {
-        SpellCastRequest cast = Serializer.unpack(request.data(), SpellCastRequest.class);
+        SpellCastRequest cast = request.raw(SpellCastRequest.class);
         Creature caster = game.getById(request.target());
         SpellResult result = spells.cast(caster, cast.getSpellTarget(), cast.getSpellName());
         request.write(new SpellCastResponse(result));

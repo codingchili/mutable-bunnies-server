@@ -1,6 +1,6 @@
 ---
 node: "Angel Oak"
-host: "localhost"
+host: "192.168.10.183"
 version: 1
 size: 5000
 resources: "/resources/"
@@ -34,13 +34,13 @@ authentication:
   properties:
     type: "HmacSHA512"
   domain: "Angel Oak.node"
-  key: "0Z/sCBxk5K12/tzc33rEiJGpp9exFPEbFYEOYdxN7+7vnFwAe5HBGEoVeD69Wo+Q6hyZAwDZ7q/l9coUe4c0UQ=="
-  expiry: 1527877746
-secret: "gt8rOj5CgN25ch5AOM/qIU/wwEA0w6ZPya+yLHzzmrbjyzKy4Bp8CY999Gpa9b2hCQ8Ual0xrAd5aV2ao/0S9Q=="
-global: "hrZM846Qlzunzkyg+xfOuD4IknikG4UKUjWi1eEx1/B1GGQ5Iu4nSCd6bmGGWIr8dNMD0YGbU7kNICodZC6yow=="
+  key: "FWKQzwGiuUYju/4AGQNaRYZjRfGhvoc+LFOjg13wb84nKb3tpq0GfS9fwthpIo3duZtfkSVe8AoC3mDdGwWaFA=="
+  expiry: 1537005943
+secret: "rtsGn5EOK+c44k7g/e/7Xv/sWO2GTav/6n84paMRcx9c6cPpy++4dJV/72zOmhBqMtl337YU3NmTgsnrT9Kvyg=="
+global: "/8G1yxe3yB6dN1lEQdGRGiMHnpbf3onXOBH1DUSUnx5FizqEGgqLY65cZa9imMpVSTmzi6MU9JMTgDx/kMGTJA=="
 logging:
   properties:
     type: "HmacSHA512"
   domain: "Angel Oak.node"
-  key: "jlSZchDVgMUev7/ZHoknvPY+zdPZgWHzR/2ZE3ZKtPu8qi/+MUreIajorprkJiPkCPY0VoDyW31WzNJ6cyHKzQ=="
-  expiry: 1527877746
+  key: "zwZ7VyhF0m9quFxNqOD2tdR7HUTFMGspSxGg2j2FAGmhVI2r57cUxlqZ3tE0gehKorG0c8eHJH1u71Q5Fbp/nw=="
+  expiry: 1537005943

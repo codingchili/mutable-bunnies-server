@@ -4,9 +4,9 @@ package com.codingchili.realm.instance.model.items;
  * @author Robin Duda
  */
 public class ItemType {
-    protected Slot slot;
-    protected ArmorType armorType;
-    protected WeaponType weaponType;
+    protected Slot slot = Slot.none;
+    protected ArmorType armorType = ArmorType.none;
+    protected WeaponType weaponType = WeaponType.none;
 
     public Slot getSlot() {
         return slot;

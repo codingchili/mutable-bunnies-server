@@ -3,6 +3,7 @@ package com.codingchili.realm.instance.model.items;
 import com.codingchili.realm.instance.context.GameContext;
 import com.codingchili.realm.instance.model.entity.Creature;
 import com.codingchili.realm.instance.model.events.*;
+import com.codingchili.realm.instance.model.npc.LootableEntity;
 import com.codingchili.realm.instance.model.spells.SpellTarget;
 import com.codingchili.realm.instance.scripting.Bindings;
 

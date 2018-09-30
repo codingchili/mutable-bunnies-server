@@ -11,12 +11,12 @@ elastic:
           time:
             type: "date"
   enabled: false
-secret: "W03iF5pjNUjPPbjshMHt+kvdgOgnlAmOKR1ChVCfYixyM9pbS+6qAWetwX2mwSXgnIQT/9VZPHidNNaFs4NoyA=="
+secret: "fwSWw7iYLCHhkHNbOsDiqahrYFUeYjUBPruKmrGoyc2D2jWHclS32P5p9r1zlZg2L+yhCJrNz2AWQmktalOl2Q=="
 console: false
-global: "hrZM846Qlzunzkyg+xfOuD4IknikG4UKUjWi1eEx1/B1GGQ5Iu4nSCd6bmGGWIr8dNMD0YGbU7kNICodZC6yow=="
+global: "/8G1yxe3yB6dN1lEQdGRGiMHnpbf3onXOBH1DUSUnx5FizqEGgqLY65cZa9imMpVSTmzi6MU9JMTgDx/kMGTJA=="
 logging:
   properties:
     type: "HmacSHA512"
   domain: "logging.node"
-  key: "trbmvGaMHR2rrx4rvzN7OpfC+hhFP2wkldLpVycyOPlimCayB7xH3zn7qZlyRgprzBxwE+/QpUO0RIy30+zS1A=="
-  expiry: 1527877746
+  key: "ff3wnWs8GTvfCaSZ9PanFQwd5Ztu5YXBi6qjWvvzF6bMcrHkyUL24AfvETLwX73XYmr0V+K9nXKQQ1LgBp75Ew=="
+  expiry: 1537005943

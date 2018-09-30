@@ -10,8 +10,9 @@ public class WoodenSword extends Item {
     {
         slot = Slot.weapon;
         weaponType = WeaponType.sword2h;
-        name = "wooden DAGGr";
-        description = "watch out for splinters.";
+        name = "Wooden Dagger";
+        description = "Watch out for splinters.";
+        rarity = ItemRarity.RARE;
 
         stats.update(Attribute.strength, 1);
         stats.update(Attribute.attackpower, 5);

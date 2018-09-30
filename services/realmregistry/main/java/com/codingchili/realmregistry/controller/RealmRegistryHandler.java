@@ -50,8 +50,8 @@ public class RealmRegistryHandler implements CoreHandler {
         protocol.process(new RealmRequest(request));
     }
 
-    private Future<Role> authenticate(Request request) {
-        Future<Role> future = Future.future();
+    private Future<RoleType> authenticate(Request request) {
+        Future<RoleType> future = Future.future();
         context.verifyRealmToken(request.token()).setHandler(authenticated -> {
            if (authenticated.succeeded()) {
                future.complete(Role.USER);
