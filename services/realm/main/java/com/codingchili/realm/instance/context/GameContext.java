@@ -42,6 +42,7 @@ public class GameContext {
     private InventoryEngine inventory;
 
     private ClassDB classes;
+    private Logger logger;
     private Long currentTick = 0L;
 
     public GameContext(InstanceContext instance) {
@@ -51,6 +52,7 @@ public class GameContext {
         this.creatures = new Grid<>(width);
         this.structures = new Grid<>(width);
         this.classes = new ClassDB(instance);
+        this.logger = instance.logger(getClass());
 
         ticker(creatures::update, 1);
         ticker(structures::update, 5);
@@ -96,13 +98,18 @@ public class GameContext {
                         }
                     }
                 } else {
-                    done.cause().printStackTrace();
+                    logger.onError(done.cause());
                 }
                 processing.set(false);
             });
         }
     }
 
+
+    /**
+     * @param runnable queues the runnable asynchornously to be executed in the next update.
+     * @return fluent.
+     */
     public GameContext queue(Runnable runnable) {
         queue.add(runnable);
         return this;
@@ -191,11 +198,8 @@ public class GameContext {
 
         String type = event.getRoute().toString();
 
-        // todo: bulk updates, ClientReceivable with multiple recipient: realm server can encode once per bulk.
-
         switch (event.getBroadcast()) {
             case PARTITION:
-                // todo implement network partitioning.
             case GLOBAL:
                 scoped.values().forEach(listener -> listener.get(type).submit(event));
                 break;
@@ -240,6 +244,6 @@ public class GameContext {
     }
 
     public static double ticksToSeconds(int ticks) {
-        return (ticks * TICK_INTERVAL_MS) / 1000;
+        return (ticks * TICK_INTERVAL_MS) / 1000.0;
     }
 }

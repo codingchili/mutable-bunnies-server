@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import com.codingchili.core.context.CoreRuntimeException;
 import com.codingchili.core.protocol.Api;
-import com.codingchili.core.protocol.Serializer;
 
 /**
  * @author Robin Duda

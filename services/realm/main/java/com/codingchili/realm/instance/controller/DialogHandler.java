@@ -44,6 +44,6 @@ public class DialogHandler implements GameHandler {
 
     @Api
     public void talk(InstanceRequest request) {
-
+        // talk to an npc, starts a new dialog?
     }
 }

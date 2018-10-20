@@ -38,36 +38,35 @@ public class InventoryHandler implements GameHandler {
         inventory.spawnLoot(game.getById(death.getTargetId()));
     }
 
-
-    @Api(route = "equip_item")
-    public void equip(InstanceRequest request) {
+    @Api
+    public void equip_item(InstanceRequest request) {
         inventory.equip(creature(request), request.raw(EquipItemEvent.class).getItemId());
     }
 
-    @Api(route = "unequip_item")
-    public void unequip(InstanceRequest request) {
+    @Api
+    public void unequip_item(InstanceRequest request) {
         inventory.unequip(creature(request), request.raw(UnequipItemEvent.class).getSlot());
     }
 
-    @Api(route = "use_item")
-    public void use(InstanceRequest request) {
+    @Api
+    public void use_item(InstanceRequest request) {
         UseItemEvent event = request.raw(UseItemEvent.class);
         inventory.use(creature(request), event.getTarget(), event.getItemId());
     }
 
-    @Api(route = "drop_item")
-    public void drop(InstanceRequest request) {
+    @Api
+    public void drop_item(InstanceRequest request) {
         inventory.drop(creature(request), request.raw(DropItemEvent.class).getItemId());
     }
 
-    @Api(route = "loot_items")
-    public void loot(InstanceRequest request) {
+    @Api
+    public void loot_items(InstanceRequest request) {
         LootEntityEvent event = request.raw(LootEntityEvent.class);
         inventory.takeLoot(creature(request), event.getTargetId(), event.getItemId());
     }
 
-    @Api(route = "loot_list")
-    public void listLoot(InstanceRequest request) {
+    @Api
+    public void loot_list(InstanceRequest request) {
         ListEntityLootEvent event = request.raw(ListEntityLootEvent.class);
         inventory.listLoot(creature(request), event.getTargetId());
     }

@@ -1,0 +1,9 @@
+---
+name: "Tutor"
+description: "Find your way."
+class: "slayer"
+inventory: []
+dialog:
+  name: "tutor"
+  # handlers and filters? named options.
+  handler: ""
