@@ -162,6 +162,10 @@ public class SpellEngine {
      */
     public void energy(Creature target, int amount) {
         target.getStats().update(Attribute.energy, amount);
+        // notify the creature about updated event.
+        // todo: what if we sent a supplier here, to avoid creating objects for
+        // those who don't listen to an event?
+        target.handle(new EntityUpdateEvent(target));
     }
 
     /**
@@ -201,6 +205,7 @@ public class SpellEngine {
     public Optional<Spell> getSpellByName(String spellName) {
         return spells.getByName(spellName);
     }
+
 
     /**
      * Checks if the given spell name is registered in the spell engine.

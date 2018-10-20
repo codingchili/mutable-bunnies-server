@@ -14,6 +14,9 @@ class TextEffects {
 
         server.connection.setHandler('damage', event => {
             let target = game.lookup(event.targetId);
+
+            event.value = event.value.toFixed(1);
+
             this.effects[event.damage](target, event);
             target.stats.health += event.value;
         });

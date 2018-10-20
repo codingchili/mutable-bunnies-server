@@ -127,10 +127,6 @@ public class InventoryEngine {
     public void spawnLoot(Creature source) {
         Inventory inventory = source.getInventory();
 
-        // todo: figure out some logic for if players are allowed to keep certain objects.
-        // todo: some items may break?
-        // todo: some method of binding items? blocks trade/dropping.
-
         ArrayList<Item> loot = new ArrayList<>();
         loot.addAll(inventory.getItems());
         loot.addAll(inventory.getEquipped().values());

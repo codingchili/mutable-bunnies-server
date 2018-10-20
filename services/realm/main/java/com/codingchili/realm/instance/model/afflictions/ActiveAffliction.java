@@ -97,10 +97,20 @@ public class ActiveAffliction {
         this.affliction = affliction;
     }
 
+    public String getSourceId() {
+        return source.getId();
+    }
+
+    public String getTargetId() {
+        return target.getId();
+    }
+
+    @JsonIgnore
     public Creature getSource() {
         return source;
     }
 
+    @JsonIgnore
     public Creature getTarget() {
         return target;
     }

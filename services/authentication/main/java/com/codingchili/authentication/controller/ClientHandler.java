@@ -11,7 +11,6 @@ import com.codingchili.core.security.Account;
 
 import static com.codingchili.common.Strings.*;
 import static com.codingchili.core.protocol.Role.PUBLIC;
-import static com.codingchili.core.protocol.Role.USER;
 
 /**
  * @author Robin Duda

@@ -6,4 +6,5 @@ casttime: 2.0
 target: caster
 onCastComplete:
   jexl: |
-    spells.afflict(source, 'regeneration')
+    spells.afflict(source, 'regeneration');
+    spells.energy(source, -10);

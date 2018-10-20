@@ -4,13 +4,16 @@ import com.codingchili.common.Strings;
 import com.codingchili.realm.configuration.*;
 import com.codingchili.realm.controller.*;
 import com.codingchili.realm.model.RealmNotUniqueException;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
+import org.objenesis.strategy.InstantiatorStrategy;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -87,24 +90,24 @@ public class Service implements CoreService {
                     rc.listener(() -> new FasterBusListener().handler(new RealmInstanceHandler(rc)))
                             .setHandler(instances -> {
 
-                        if (instances.succeeded()) {
-                            // deploy handler for incoming messages from clients.
-                            rc.listener(() -> listener).setHandler(deploy -> {
-                                if (deploy.failed()) {
-                                    rc.onDeployRealmFailure(realm.get().getNode());
-                                    throw new RuntimeException(deploy.cause());
-                                }
-                            }).setHandler(clients -> {
-                                if (clients.succeeded()) {
-                                    future.complete();
+                                if (instances.succeeded()) {
+                                    // deploy handler for incoming messages from clients.
+                                    rc.listener(() -> listener).setHandler(deploy -> {
+                                        if (deploy.failed()) {
+                                            rc.onDeployRealmFailure(realm.get().getNode());
+                                            throw new RuntimeException(deploy.cause());
+                                        }
+                                    }).setHandler(clients -> {
+                                        if (clients.succeeded()) {
+                                            future.complete();
+                                        } else {
+                                            future.fail(clients.cause());
+                                        }
+                                    });
                                 } else {
-                                    future.fail(clients.cause());
+                                    future.fail(instances.cause());
                                 }
                             });
-                        } else {
-                            future.fail(instances.cause());
-                        }
-                    });
 
                 } else {
                     future.fail(new RealmNotUniqueException());
