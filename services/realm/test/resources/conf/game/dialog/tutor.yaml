@@ -1,5 +1,5 @@
 ---
-name: "tutor"
+id: "tutor"
 start: "welcome"
 # button for next line: line separator in text?
 # next not defined: exit transition?
@@ -7,25 +7,25 @@ options:
   welcome:
     text: "Welcome. I Am tutor."
     next:
-    - option: "test1"
-      response: "Take me to test 1."
-    - option: "test2"
-      response: "Take me to test 2."
-    - option: "test3"
-      response: "Take me to test 3."
+        - option: "test1"
+          response: "Take me to test 1."
+        - option: "test2"
+          response: "Take me to test 2."
+        - option: "test3"
+          response: "Take me to test 3."
   test1:
     text: "welcome to test 1."
     filter:
-      javascript: "false;"
+      js: "false;"
   test2:
     text: "welcome to test 2."
     filter:
-      javascript: "true;"
+      js: "true;"
     handler:
-      javascript: |
+      js: |
         log('user selected option test2.');
   test3:
     text: "welcome to test 3."
     next:
-    - option: "welcome"
-      response: "Who are you again?"
+      - option: "welcome"
+        response: "Who are you again?"

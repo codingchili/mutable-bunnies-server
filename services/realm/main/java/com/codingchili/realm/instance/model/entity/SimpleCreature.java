@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Robin Duda
+ *
+ * basic class for creatures.
  */
 public abstract class SimpleCreature extends SimpleEntity implements Creature {
     private transient Stats calculated = new Stats();

@@ -164,7 +164,7 @@ public class Grid<T extends Entity> {
      * @param vector a vector that exists in the grid, adjacent entities are selected.
      * @return adjacent entities to the given vector.
      */
-    public Collection<T> adjacent(Vector vector) {
+    public Set<T> adjacent(Vector vector) {
         Set<T> set = new HashSet<>();
 
         vector.cells(cellSize, gridWidth).forEach(bucket ->

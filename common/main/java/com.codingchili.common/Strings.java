@@ -36,6 +36,8 @@ public abstract class Strings extends CoreStrings {
     public static final String REALM_UPDATE = "realm.update";
 
     public static final String ID_CHARACTER = "character";
+    public static final String ID_LOG = "log";
+    public static final String ID_NAME = "name";
     public static final String ID_CHARACTERS = "characters";
     public static final String ID_PLAYERCLASS = "className";
     public static final String ID_ACCOUNT = "account";

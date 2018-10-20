@@ -10,6 +10,9 @@ import java.util.function.Consumer;
 
 import com.codingchili.core.logging.Level;
 
+import static com.codingchili.common.Strings.ID_LOG;
+import static com.codingchili.common.Strings.ID_NAME;
+
 /**
  * @author Robin Duda
  * <p>
@@ -94,9 +97,9 @@ public class ActiveSpell {
         bindings.put(SPELLS, game.spells());
         bindings.put(GAME, game);
         bindings.put(DAMAGE_TYPE, DamageType.class);
-        bindings.put("log", (Consumer<String>) (line) -> {
+        bindings.put(ID_LOG, (Consumer<String>) (line) -> {
             game.getLogger(getClass()).event("spell", Level.INFO)
-                    .put("name", spell.getId())
+                    .put(ID_NAME, spell.getId())
                     .send();
         });
         bindings.setAttribute(Attribute.class);

@@ -16,4 +16,6 @@ public interface GameHandler extends Receiver<Request> {
     default void handle(Request request) {
         // sub-receivers will be handled by the parent handler.
     }
+
+    default void onPlayerLeave(String id) {}
 }

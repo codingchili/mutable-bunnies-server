@@ -8,8 +8,7 @@ import com.codingchili.realm.instance.model.events.*;
 import com.codingchili.realm.instance.transport.InstanceRequest;
 import io.vertx.core.Future;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.codingchili.core.context.DeploymentAware;
 import com.codingchili.core.listener.CoreHandler;
@@ -26,6 +25,7 @@ import static com.codingchili.core.protocol.RoleMap.PUBLIC;
 @Roles(PUBLIC)
 public class InstanceHandler implements CoreHandler, DeploymentAware {
     private final Protocol<Request> protocol = new Protocol<>(this);
+    private Set<GameHandler> handlers = new HashSet<>();
     private InstanceContext context;
     private GameContext game;
 
@@ -34,11 +34,13 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
 
         game = new GameContext(context);
 
-        protocol.annotated(new MovementHandler(game))
-                .annotated(new TradeHandler(game))
-                .annotated(new SpellHandler(game))
-                .annotated(new DialogHandler(game))
-                .annotated(new InventoryHandler(game));
+        handlers.add(new MovementHandler(game));
+        handlers.add(new TradeHandler(game));
+        handlers.add(new SpellHandler(game));
+        handlers.add(new DialogHandler(game));
+        handlers.add(new InventoryHandler(game));
+
+        handlers.forEach(protocol::annotated);
     }
 
     @Api
@@ -67,6 +69,9 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
         LeaveMessage leave = request.raw(LeaveMessage.class);
         PlayerCreature player = game.getById(leave.getPlayerName());
         player.getVector().setVelocity(0);
+
+        handlers.forEach(h -> h.onPlayerLeave(player.getId()));
+
         game.remove(player);
         game.getInstance().sendRealm(new SavePlayerMessage(player));
         context.onPlayerLeave(leave);

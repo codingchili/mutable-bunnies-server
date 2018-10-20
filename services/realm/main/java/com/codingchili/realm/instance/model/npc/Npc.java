@@ -13,4 +13,8 @@ public class Npc extends SimpleCreature {
     public void setContext(GameContext game) {
         super.setContext(game);
     }
+
+    public String getDialogId() {
+        return "tutor";
+    }
 }

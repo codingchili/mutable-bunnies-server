@@ -24,7 +24,7 @@ import static com.codingchili.core.configuration.CoreStrings.ID_COUNT;
 public class SpellDB implements MetadataStore<Spell> {
     private static final String CONF_PATH = "conf/game/spells/";
     private static final String SPELL_LOAD = "spell.load";
-    private static AtomicBoolean initialized = new AtomicBoolean(false);
+    private static final AtomicBoolean initialized = new AtomicBoolean(false);
     private static Map<String, Spell> spells = new HashMap<>();
     private static Buffer cache;
     private Logger logger;

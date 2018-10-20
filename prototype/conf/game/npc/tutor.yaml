@@ -2,8 +2,9 @@
 name: "Tutor"
 description: "Find your way."
 class: "slayer"
+dialog: "tutor"
+stats:
+  level: 20
 inventory: []
-dialog:
-  name: "tutor"
-  # handlers and filters? named options.
-  handler: ""
+tick: |
+          log('tutor tick');
