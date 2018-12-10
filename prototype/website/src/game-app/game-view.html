@@ -25,12 +25,25 @@
             }
 
             #canvas {
+                animation: fadein 0.6s ease 1;
                 position: absolute;
                 width: 100%;
                 height: 100%;
             }
 
+            @keyframes fadein{
+
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+
             #interface {
+                animation: fadein 0.6s ease 1;
                 position: absolute;
                 z-index: 100;
                 width: 100%;

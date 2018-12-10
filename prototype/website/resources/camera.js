@@ -1,22 +1,15 @@
 window.Camera = class Camera {
 
-    // should follow projectiles.
-    // could follow other players.
-    // implement some screen shake.
-
     constructor() {
-        this.player = {};
-        this.x = 500;
-        this.y = 500;
-        this.player.x = 0;
-        this.player.y = 0;
+        this.x = -2000;
+        this.y = -2000;
+        this.following = {x: this.x, y: this.y};
 
         let last = performance.now();
 
         game.ticker(() => {
             let delta = performance.now() - last;
-            // camera smoothing etc.
-            let target = this._getTarget(this.player.x, this.player.y);
+            let target = this._getTarget(this.following.x, this.following.y);
 
             let deltaX = (this.x - target.x);
             let deltaY = (this.y - target.y);
@@ -25,7 +18,6 @@ window.Camera = class Camera {
             this.y -= deltaY * 0.064 * (delta / Game.MS_PER_FRAME);
 
             this.cull(game.stage.children);
-
             last = performance.now();
         });
     }
@@ -39,15 +31,15 @@ window.Camera = class Camera {
     }
 
     shake() {
-        let player = this.player;
-        this.player = {x: player.x, y: player.y};
-        this.player.x += 300;
+        let start = this.following;
+        this.following = {x: start.x + 300, y: start.y};
+
         setTimeout(() => {
-            this.player.x = player.x - 300;
+            this.following.x = start.x - 300;
             setTimeout(() => {
-                this.player.x = player.x + 300;
+                this.following.x = start.x + 300;
                 setTimeout(() => {
-                    this.player = player;
+                    this.following = start;
                 }, 165);
             }, 165);
         }, 165);
@@ -59,9 +51,9 @@ window.Camera = class Camera {
      * @param y the y coordinate of the object to focus.
      */
     set(x, y) {
-        let target = this._getTarget(x, y);
-        this.y = target.y;
-        this.x = target.x;
+        this.following = this._getTarget(x, y);
+        this.y = this.following.y;
+        this.x = this.following.x;
     }
 
     _getTarget(x, y) {
@@ -71,8 +63,8 @@ window.Camera = class Camera {
         return target;
     }
 
-    focus(player) {
-        this.player = player;
+    focus(target) {
+        this.following = target;
     }
 
     cull(sprites) {
@@ -100,4 +92,4 @@ window.Camera = class Camera {
             sprite.visible = visible;
         }
     }
-}
+};

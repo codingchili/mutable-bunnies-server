@@ -66,12 +66,6 @@ window.SpawnHandler = class SpawnHandler {
     spawn(entity) {
         let vector = entity.vector;
 
-        if (this.isPlayer(entity)) {
-            this.camera.set(vector.x, vector.y);
-            console.log('player creature loaded');
-            console.log(entity);
-        }
-
         assetLoader.load((sprite) => {
             Object.assign(sprite, entity);
             console.log('post-assign');
@@ -90,7 +84,10 @@ window.SpawnHandler = class SpawnHandler {
 
             if (this.isPlayer(sprite)) {
                 application.character = sprite;
+                this.camera.set(vector.x, vector.y);
                 this.camera.focus(sprite);
+
+                // todo: fade in?
             }
 
             // for now: always assume its a player who spawns.
@@ -109,4 +106,4 @@ window.SpawnHandler = class SpawnHandler {
         game.stage.removeChild(entity);
         game.entities[entity.id] = null;
     }
-}
+};
