@@ -37,6 +37,14 @@ public class ActiveDialog {
         this.cursor = dialog.get(dialog.getStart());
     }
 
+    public Creature source() {
+        return bindings.getSource();
+    }
+
+    public Creature target() {
+        return bindings.getTarget();
+    }
+
     public String text() {
         return cursor.getText();
     }

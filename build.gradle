@@ -97,10 +97,10 @@ task archivePrototype(type: Zip, dependsOn: [subprojects.jar, polymer]) {
     }
 
     into('lib') {
-        from(project('common').configurations.compile)
-        from(project('services').configurations.compile)
-        from(project('common').jar)
-        from(project('services').subprojects.jar)
+        from(project(':common').configurations.compile)
+        from(project(':services').configurations.compile)
+        from(project(':common').jar)
+        from(project(':services').subprojects.jar)
     }
 }
 

@@ -16,13 +16,13 @@ options:
   test1:
     text: "welcome to test 1."
     filter:
-      javascript: "false;"
+      js: "false;"
   test2:
     text: "welcome to test 2."
     filter:
-      javascript: "true;"
+      js: "true;"
     handler:
-      javascript: |
+      js: |
         log('user selected option test2.');
   test3:
     text: "welcome to test 3."

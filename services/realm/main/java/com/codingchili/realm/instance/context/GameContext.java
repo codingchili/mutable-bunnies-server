@@ -3,6 +3,7 @@ package com.codingchili.realm.instance.context;
 import com.codingchili.realm.instance.model.entity.*;
 import com.codingchili.realm.instance.model.events.*;
 import com.codingchili.realm.instance.model.items.InventoryEngine;
+import com.codingchili.realm.instance.model.npc.DialogEngine;
 import com.codingchili.realm.instance.model.spells.MovementEngine;
 import com.codingchili.realm.instance.model.spells.SpellEngine;
 import com.codingchili.realm.model.ClassDB;
@@ -40,6 +41,7 @@ public class GameContext {
     private SpellEngine spells;
     private MovementEngine movement;
     private InventoryEngine inventory;
+    private DialogEngine dialogs;
 
     private ClassDB classes;
     private Logger logger;
@@ -60,6 +62,7 @@ public class GameContext {
         this.spells = new SpellEngine(this);
         this.inventory = new InventoryEngine(this);
         this.movement = new MovementEngine(this);
+        this.dialogs = new DialogEngine(this);
 
         instance.periodic(() -> TICK_INTERVAL_MS, instance.address(), this::tick);
     }
@@ -129,6 +132,10 @@ public class GameContext {
 
     public SpellEngine spells() {
         return spells;
+    }
+
+    public DialogEngine dialogs() {
+        return dialogs;
     }
 
     public MovementEngine movement() {

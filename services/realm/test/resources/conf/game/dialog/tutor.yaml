@@ -3,6 +3,7 @@ id: "tutor"
 start: "welcome"
 # button for next line: line separator in text?
 # next not defined: exit transition?
+# todo: no text -> dialog closed by npc.
 options:
   welcome:
     text: "Welcome. I Am tutor."
