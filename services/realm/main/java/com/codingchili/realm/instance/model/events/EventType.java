@@ -14,6 +14,7 @@ public enum EventType {
     chat,
     shutdown,
     damage,
+    stats,
     save,
     equip_item,
     use_item,

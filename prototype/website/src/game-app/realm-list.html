@@ -377,6 +377,14 @@
             this.pingAll();
 
             this.set("realms", this.realms);
+
+            if (application.development.selectFirstRealm) {
+                this.select({
+                    model: {
+                        realm: this.realms[0]
+                    }
+                });
+            }
         }
 
         refresh(realmlist) {

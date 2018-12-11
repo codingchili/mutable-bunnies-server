@@ -44,7 +44,7 @@
 
             paper-progress {
                 --paper-progress-transition-duration: 0.08s;
-                --paper-progress-transition-timing-function: default;
+                --paper-progress-transition-timing-function: linear;
                 --paper-progress-transition-transition-delay: 0s;
             }
 
@@ -90,7 +90,7 @@
 
         <paper-material elevation="3" class="interface-box">
             <template is="dom-repeat" items="{{spells}}" as="spell">
-                <template is="dom-if" if="{{_learned(spell)}}">
+                <template is="dom-if" if="{{_learned(spell, character)}}">
                     <div on-click="_cast">
                         <img class="spell-icon" src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
                         <paper-tooltip class="spell-info" animation-delay="0" position="top">
@@ -121,8 +121,8 @@
             </template>
 
             <template is="dom-if" if="[[casting]]">
-                <paper-progress class="casting-bar transiting" min="[[startCast]]" max="[[endCast]]"
-                                value="[[castProgress]]"></paper-progress>
+                <paper-progress id="cast-progress" class="casting-bar transiting" min="0" max="200"
+                                value="0"></paper-progress>
             </template>
 
         </paper-material>
@@ -137,25 +137,16 @@
 
             constructor() {
                 super();
+                this.spells = [];
 
-                this.spells = [{"id": "hello"}];
+                application.onCharacterLoaded(player => {
+                    this.character = player;
+                });
 
-                setInterval(() => {
-                    this.spells = application.realm.spells;
-                    this.character = application.character;
-                    this.set("realm", application.realm);
-                    this.set("spells", application.realm.spells);
-                    this.notifyPath("realm");
-                    this.notifyPath("spells");
-                    this.notifySplices("spells");
-                }, 1000);
-
-                setInterval(() => {
-                    this.castProgress = new Date().getTime();
-                    if (this.castProgress > this.endCast) {
-                        this.casting = false;
-                    }
-                }, 50);
+                application.onRealmLoaded(realm => {
+                    this.realm = realm;
+                    this.spells = realm.spells;
+                });
             }
 
             _description(spell) {
@@ -163,16 +154,33 @@
             }
 
             _cast(event) {
-            console.log(event.model.spell);
+                console.log(event.model.spell);
                 server.cast((casted) => {
                     console.log(casted);
-                    this.startCast = new Date().getTime();
-                    this.endCast = new Date().getTime() + (event.model.spell.casttime * 1000);
+                    /*this.startCast = new Date().getTime();
+                    this.endCast = new Date().getTime() + (event.model.spell.casttime * 1000);*/
                     this.casting = true;
+
+                    Polymer.RenderStatus.afterNextRender(this, () => {
+                        let progress = this.shadowRoot.querySelector('#cast-progress')
+
+                        progress.value = 200;
+                        progress.style.setProperty(
+                            '--paper-progress-transition-duration',
+                            event.model.spell.casttime + 's'
+                        );
+
+                        setTimeout(() => {
+                            this.casting = false;
+                            progress.value = 0;
+                        }, event.model.spell.casttime * 1000);
+                    });
+
                 }, event.model.spell.id, {});
             }
 
             _learned(spell) {
+                console.log('!! check learned ' + JSON.stringify(spell));
                 return this.character.spells.learned.indexOf(spell.id) >= 0;
             }
         }

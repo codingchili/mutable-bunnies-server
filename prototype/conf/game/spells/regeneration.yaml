@@ -4,6 +4,8 @@ description: "Heals over 14s for 1% of maximum health (${this.character.stats.ma
 cooldown: 8.0
 casttime: 2.0
 target: caster
+onCastBegin:
+  spells.energy(source, -10);
 onCastComplete:
   jexl: |
     spells.afflict(source, 'regeneration');

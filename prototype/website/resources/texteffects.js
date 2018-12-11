@@ -12,13 +12,30 @@ class TextEffects {
             'poison': this.poison
         };
 
+        server.connection.setHandler('stats', event => {
+            let target = game.lookup(event.targetId);
+            target.stats = event.stats;
+
+            if (target.isPlayer) {
+                application.characterUpdate(target);
+            }
+        });
+
         server.connection.setHandler('damage', event => {
             let target = game.lookup(event.targetId);
 
-            event.value = event.value.toFixed(1);
-
-            this.effects[event.damage](target, event);
             target.stats.health += event.value;
+
+            if (target.isPlayer) {
+                console.log('target isPlayer');
+                console.log(target);
+                application.characterUpdate(target);
+            } else {
+                console.log('target NOT isPlayer');
+            }
+
+            event.value = event.value.toFixed(1);
+            this.effects[event.damage](target, event);
         });
 
         game.ticker(() => {

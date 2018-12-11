@@ -193,7 +193,6 @@
                 this.server.connect({
                     accepted: (realm) => {
                         this.realm = realm;
-                        application.realm = this.realm;
                         this.loadMetadata();
                     },
                     error: (err) => {
@@ -209,6 +208,9 @@
                     count--;
                     if (count === 0) {
                         this.loadCharacters();
+                        console.log('loaded realm?');
+                        console.log(this.realm);
+                        application.realmLoaded(this.realm);
                     }
                 };
                 let metadataError = (err) => {
@@ -218,7 +220,6 @@
                 this.server.spellinfo({
                     accepted: (data) => {
                         this.realm.spells = data.collection;
-                        application.realm.spells = this.realm.spells;
                         latch();
                     },
                     error: metadataError
@@ -226,7 +227,6 @@
                 this.server.classinfo({
                     accepted: (data) => {
                         this.realm.classes = data.collection;
-                        application.realm.classes = this.realm.classes;
                         latch();
                     },
                     error: metadataError
@@ -234,7 +234,6 @@
                 this.server.afflictioninfo({
                     accepted: (data) => {
                         this.realm.afflictions = data.collection;
-                        application.realm.afflictions = this.realm.afflictions;
                         latch();
                     },
                     error: metadataError
@@ -249,7 +248,6 @@
                         this.set('realm.characters', data.characters);
                         this.showCharacters();
                         this.hideLoading();
-                        application.realmLoaded(this.realm);
                     },
                     unauthorized: (data) => {
                         application.error('The authentication server rejected the realm token when listing characters.');

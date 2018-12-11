@@ -119,15 +119,19 @@
             constructor() {
                 super();
 
-                setInterval(() => {
-                    this.character = application.character;
-                    this.realm = application.realm;
-                    this.set("character", application.character);
+                application.onCharacterUpdate(character => {
+                    this.set("character", character);
                     this.notifyPath("character");
                     this.notifyPath("character.stats");
-                    this.notifySplices("character");
-                    this.notifySplices("character.stats");
-                }, 1000);
+                });
+
+                application.onCharacterLoaded(character => {
+                    this.character = character;
+                });
+
+                application.onRealmLoaded(realm => {
+                    this.realm = realm;
+                });
             }
         }
 

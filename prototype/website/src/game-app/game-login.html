@@ -94,6 +94,10 @@
             // development.
             this.username = 'admin';
             this.password = 'admin';
+
+            if (application.development.autologin) {
+                this.submit({keyCode: 13})
+            }
         }
 
         authenticate(e) {

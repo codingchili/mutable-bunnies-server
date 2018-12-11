@@ -16,6 +16,7 @@
             }
 
             .interface-box {
+                cursor: pointer;
                 position: absolute;
                 top: 16px;
                 right: 16px;
@@ -28,8 +29,8 @@
             }
         </style>
 
-        <paper-material elevation="3" class="interface-box">
-            <iron-icon icon="icons:close" class="menu-icon" on-click="_characters"></iron-icon>
+        <paper-material elevation="3" class="interface-box" on-click="_characters">
+            <iron-icon icon="icons:close" class="menu-icon"></iron-icon>
         </paper-material>
 
     </template>

@@ -8,6 +8,7 @@ import com.codingchili.realm.instance.model.entity.Creature;
 import com.codingchili.realm.instance.model.entity.Grid;
 import com.codingchili.realm.instance.model.events.*;
 import com.codingchili.realm.instance.model.stats.Attribute;
+import com.codingchili.realm.instance.model.stats.Stats;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -57,9 +58,6 @@ public class SpellEngine {
         Optional<Spell> spell = spells.getByName(spellName);
 
         if (spell.isPresent()) {
-
-            // todo handle item casts?
-            // learned = learned or equipped?
 
             if (caster.getSpells().learned(spellName)) {
                 if (caster.getSpells().cooldown(spell.get())) {
@@ -159,13 +157,24 @@ public class SpellEngine {
      *
      * @param target the target to reduce the available energy of.
      * @param amount the amount of energy to deduct.
+     * @return true if the energy was available and consumed, otherwise false.
      */
-    public void energy(Creature target, int amount) {
-        target.getStats().update(Attribute.energy, amount);
-        // notify the creature about updated event.
-        // todo: what if we sent a supplier here, to avoid creating objects for
-        // those who don't listen to an event?
-        target.handle(new EntityUpdateEvent(target));
+    public boolean energy(Creature target, int amount) {
+        Stats stats = target.getBaseStats();
+
+        if (amount < 0 && stats.get(Attribute.energy) < amount) {
+            // cannot update energy to negative values.
+            return false;
+        } else {
+            if (amount > stats.get(Attribute.maxenergy)) {
+                // prevent updating over maximum.
+                amount = (int) stats.get(Attribute.maxenergy);
+            }
+
+            stats.update(Attribute.energy, amount);
+            target.handle(new StatsUpdateEvent(target));
+            return true;
+        }
     }
 
     /**

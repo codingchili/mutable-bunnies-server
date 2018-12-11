@@ -83,17 +83,12 @@ window.SpawnHandler = class SpawnHandler {
             game.stage.addChild(sprite);
 
             if (this.isPlayer(sprite)) {
-                application.character = sprite;
+                sprite.isPlayer = true;
+                application.characterLoaded(sprite);
                 this.camera.set(vector.x, vector.y);
                 this.camera.focus(sprite);
-
-                // todo: fade in?
             }
 
-            // for now: always assume its a player who spawns.
-            // in the future this can be anything including nodes, strucutres nps.
-            // chr.png should be more complex: and made up of multiple parts and
-            // programmatically animated.
         }, "chr.png").begin();
     }
 
