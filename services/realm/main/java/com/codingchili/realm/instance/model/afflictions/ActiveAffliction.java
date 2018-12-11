@@ -22,6 +22,7 @@ import static com.codingchili.core.configuration.CoreStrings.ID_NAME;
  * Maps an active affliction onto an entity.
  */
 public class ActiveAffliction {
+    private transient Bindings bindings;
     private Map<String, Object> state = new HashMap<>(); // used by scripts to store data.
     private Stats stats = new Stats();
     private Affliction affliction;
@@ -72,19 +73,22 @@ public class ActiveAffliction {
     }
 
     private Bindings getBindings(GameContext context) {
-        return new Bindings()
-                .setContext(context)
-                .setState(state)
-                .set("spells", context.spells())
-                .set("source", source)
-                .set("target", target)
-                .set("DamageType", DamageType.class)
-                .set("log", (Consumer<Object>) (message) -> {
-                    context.getLogger(getClass()).event("affliction", Level.INFO)
-                            .put("name", affliction.getName())
-                            .send(message.toString());
-                })
-                .setAttribute(Attribute.class);
+        if (bindings == null) {
+            bindings = new Bindings()
+                    .setContext(context)
+                    .setState(state)
+                    .set("spells", context.spells())
+                    .set("source", source)
+                    .set("target", target)
+                    .set("DamageType", DamageType.class)
+                    .set("log", (Consumer<Object>) (message) -> {
+                        context.getLogger(getClass()).event("affliction", Level.INFO)
+                                .put("name", affliction.getName())
+                                .send(message.toString());
+                    })
+                    .setAttribute(Attribute.class);
+        }
+        return bindings;
     }
 
     public Affliction getAffliction() {

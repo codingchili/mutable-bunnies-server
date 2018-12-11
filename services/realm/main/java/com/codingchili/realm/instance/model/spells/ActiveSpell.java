@@ -25,8 +25,8 @@ public class ActiveSpell {
     private static final String GAME = "game";
     private static final String ACTIVE = "active";
     private static final String SPELLS = "spells";
-    public static final String DAMAGE_TYPE = "DamageType";
-    private Bindings bindings = null;
+    private static final String DAMAGE_TYPE = "DamageType";
+    private transient Bindings bindings = null;
     private SpellCycle cycle = SpellCycle.CASTING;
     private int progress = 0;
     private int timer;
