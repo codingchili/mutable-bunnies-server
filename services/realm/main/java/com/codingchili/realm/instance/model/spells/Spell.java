@@ -120,6 +120,7 @@ public class Spell implements Storable, Configurable {
         return onCastBegin;
     }
 
+    @JsonProperty("onCastBegin")
     public void setOnCastBegin(Scripted onCastBegin) {
         this.onCastBegin = onCastBegin;
     }

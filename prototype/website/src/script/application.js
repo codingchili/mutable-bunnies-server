@@ -4,13 +4,35 @@
  * Used to pass application-level events between components.
  */
 
-// development.
-localStorage.clear();
-
 class Application {
     
     constructor() {
+        this.development = {
+            autologin: true,
+            selectFirstRealm: true,
+            clearCache: true,
+            rightClick: true
+        };
+
         this.handlers = {};
+
+        if (this.development.clearCache) {
+            localStorage.clear();
+        }
+    }
+
+    realmLoaded(realm) {
+        application.realm = realm;
+        application.publish('onRealmLoaded', realm);
+    }
+
+    characterLoaded(character) {
+        application.character = character;
+        application.publish('onCharacterLoaded', character);
+    }
+
+    characterUpdate(character) {
+        application.publish('onCharacterUpdate', character);
     }
 
     authenticated(authentication) {
@@ -35,10 +57,6 @@ class Application {
     logout() {
         application.publish('onLogout', {});
         application.showLogin();
-    }
-
-    realmLoaded(event) {
-        application.publish('onRealmLoaded', event);
     }
 
     selectCharacter(event) {
@@ -78,11 +96,30 @@ class Application {
     }
 
     onRealmLoaded(callback) {
+        if (application.realm) {
+            console.log('realm loaded: notifying');
+            callback(application.realm);
+        } else {
+            console.log('not loaded: await.');
+        }
+
         application.subscribe('onRealmLoaded', callback);
     }
 
     onCharacterSelect(callback) {
         application.subscribe('onCharacterSelect', callback);
+    }
+
+    onCharacterLoaded(callback) {
+        if (application.character) {
+            callback(application.character);
+        }
+
+        application.subscribe('onCharacterLoaded', callback);
+    }
+
+    onCharacterUpdate(callback) {
+        application.subscribe('onCharacterUpdate', callback);
     }
 
     onGameStart(callback) {

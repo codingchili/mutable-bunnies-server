@@ -67,8 +67,8 @@ public class PlayerCreature extends SimpleCreature {
             stats = theClass.get().getStats();
 
             // todo: we must persist SOME attributes without the CLASS attributes.
-            stats.set(Attribute.energy, 50);
-            stats.set(Attribute.health, 20);
+            stats.set(Attribute.energy, 200);
+            stats.set(Attribute.health, 50);
             stats.set(Attribute.experience, 35);
             stats.set(Attribute.nextlevel, 500);
         } else {

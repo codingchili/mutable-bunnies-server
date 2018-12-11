@@ -26,6 +26,7 @@ public class ActiveSpell {
     private static final String ACTIVE = "active";
     private static final String SPELLS = "spells";
     public static final String DAMAGE_TYPE = "DamageType";
+    private Bindings bindings = null;
     private SpellCycle cycle = SpellCycle.CASTING;
     private int progress = 0;
     private int timer;
@@ -91,19 +92,21 @@ public class ActiveSpell {
     }
 
     private Bindings getBindings(GameContext game) {
-        Bindings bindings = new Bindings();
-        bindings.put(SOURCE, source);
-        bindings.put(TARGET, target);
-        bindings.put(SPELLS, game.spells());
-        bindings.put(GAME, game);
-        bindings.put(DAMAGE_TYPE, DamageType.class);
-        bindings.put(ID_LOG, (Consumer<String>) (line) -> {
-            game.getLogger(getClass()).event("spell", Level.INFO)
-                    .put(ID_NAME, spell.getId())
-                    .send();
-        });
-        bindings.setAttribute(Attribute.class);
-        bindings.put(ACTIVE, this);
+        if (bindings == null) {
+            bindings = new Bindings();
+            bindings.put(SOURCE, source);
+            bindings.put(TARGET, target);
+            bindings.put(SPELLS, game.spells());
+            bindings.put(GAME, game);
+            bindings.put(DAMAGE_TYPE, DamageType.class);
+            bindings.put(ID_LOG, (Consumer<String>) (line) -> {
+                game.getLogger(getClass()).event("spell", Level.INFO)
+                        .put(ID_NAME, spell.getId())
+                        .send();
+            });
+            bindings.setAttribute(Attribute.class);
+            bindings.put(ACTIVE, this);
+        }
         return bindings;
     }
 

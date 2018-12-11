@@ -46,7 +46,7 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
 
         // these depend on the current stats.
         current.set(Attribute.maxhealth, current.get(Attribute.constitution) * 10);
-        current.set(Attribute.maxenergy, current.get(Attribute.dexterity) * 20);
+        current.set(Attribute.maxenergy, current.get(Attribute.dexterity) * 20 + 100);
 
         return current;
     }

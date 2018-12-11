@@ -37,8 +37,6 @@ public class ActiveAffliction {
         this.affliction = affliction;
         this.ticks = GameContext.secondsToTicks(affliction.duration);
         this.interval = GameContext.secondsToTicks(affliction.interval);
-
-        System.out.println("created affliction for " + ticks + " number of ticks.");
     }
 
     public Stats modify(GameContext context) {

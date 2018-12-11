@@ -17,10 +17,10 @@
                 bottom: 16px;
                 left: 50%;
                 transform: translateX(-50%);
+                width: 326px;
             }
 
             .interface-box {
-                left: -50%;
                 display: block;
                 background-color: #000000;
                 opacity: 0.84;
@@ -40,6 +40,20 @@
                 margin-left: 4px;
                 position: absolute;
                 top: 40px;
+            }
+
+            #cast-progress {
+                --paper-progress-active-color: #fc00fc;
+                --paper-progress-container-color: rgba(182, 0, 170, 0.2);
+                --paper-progress-height: 16px;
+
+                position: absolute;
+                width: 100%;
+                opacity: 0.84;
+                margin-top: 4px;
+                top: -32px;
+                display: inline;
+                background-color: #000000;
             }
 
             paper-progress {
@@ -120,12 +134,12 @@
                 </template>
             </template>
 
-            <template is="dom-if" if="[[casting]]">
-                <paper-progress id="cast-progress" class="casting-bar transiting" min="0" max="200"
-                                value="0"></paper-progress>
-            </template>
-
         </paper-material>
+
+        <template is="dom-if" if="[[casting]]">
+            <paper-progress id="cast-progress" class="casting-bar transiting" min="0" max="200"
+                            value="0"></paper-progress>
+        </template>
 
     </template>
     <script>
@@ -154,15 +168,16 @@
             }
 
             _cast(event) {
+                if (this.casting) {
+                    return;
+                }
+
                 console.log(event.model.spell);
                 server.cast((casted) => {
-                    console.log(casted);
-                    /*this.startCast = new Date().getTime();
-                    this.endCast = new Date().getTime() + (event.model.spell.casttime * 1000);*/
                     this.casting = true;
 
                     Polymer.RenderStatus.afterNextRender(this, () => {
-                        let progress = this.shadowRoot.querySelector('#cast-progress')
+                        let progress = this.shadowRoot.querySelector('#cast-progress');
 
                         progress.value = 200;
                         progress.style.setProperty(

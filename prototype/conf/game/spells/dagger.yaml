@@ -1,16 +1,13 @@
 ---
 id: "dagger"
-description: "Strikes nearby targets with a dagger dealing ${this.character.stats.strength / 2} direct damage."
-cooldown: 2.0
-casttime: 0.0
+description: "Strikes nearby targets with a daggur dealing ${this.character.stats.strength / 2} direct damage."
+cooldown: 1.0
+casttime: 0.25
 charges: 5
 target: caster
 onCastBegin:
-  jexl:
-    //spells.energy(caster, -35);
-    //log.accept('onCastBegin!');
-
-    return true;
+  js:
+    spells.energy(source, -15);
 onCastComplete:
   jexl: |
     log.accept('casting dagger completed');
