@@ -20,10 +20,12 @@
             }
 
             .interface-box {
-                /*left: -50%;*/
-                display: block;
                 background-color: #000000;
                 opacity: 0.84;
+            }
+
+            #frame {
+                display: block;
                 height: 84px;
             }
 
@@ -91,9 +93,54 @@
                 }
             }
 
+            #afflictions {
+                margin-left: 48px;
+            }
+
+            .affliction-icon {
+                max-width: 24px;
+                max-height: 24px;
+            }
+
+            @keyframes fadein {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .affliction {
+                width: 24px;
+                padding: 4px;
+                height: 24px;
+                margin: 8px 16px 16px;
+                animation: fadein 0.6s ease 1;
+            }
+
+            .duration {
+                color: #00b0ff;
+            }
+
+            .info-table {
+                margin-top: 12px;
+                width: 100%;
+            }
+
+            .title {
+                font-size: 2.0em;
+            }
+
+            .description {
+                margin-top: 12px;
+                display: block;
+                font-size: larger;
+            }
+
         </style>
 
-        <paper-material elevation="3" class="interface-box">
+        <paper-material elevation="3" id="frame" class="interface-box">
             <span class="level">[[character.stats.level]]</span>
             <span class="name">[[character.name]]</span>
             <img class="portrait" src="[[realm.resources]]/gui/class/[[character.className]].svg">
@@ -108,9 +155,35 @@
                             value="[[character.stats.experience]]"></paper-progress>
         </paper-material>
 
+        <div id="afflictions">
+            <template is="dom-repeat" items="{{afflictions}}" as="affliction">
+                <div class="affliction interface-box">
+                    <img src="[[realm.resources]]/gui/status/[[affliction.name]].svg" class="affliction-icon"
+                         alt="affliction">
+
+                    <!-- todo: can be reused as an element. -->
+                    <paper-tooltip class="spell-info" animation-delay="0" position="bottom">
+                        <span class="title">[[affliction.name]]</span>
+
+                        <table class="info-table">
+                            <tr>
+                                <th>Duration</th>
+                            </tr>
+                            <tr style="text-align: center;">
+                                <!-- todo: format HH/MM/SS + update -->
+                                <td class="duration">[[affliction.duration]]s</td>
+                            </tr>
+                        </table>
+
+                        <span class="description">{{_description(affliction)}}</span>
+                    </paper-tooltip>
+                </div>
+            </template>
+        </div>
+
     </template>
     <script>
-        class PlayerStatus extends Polymer.Element {
+        class PlayerStatus extends Polymer.MutableData(Polymer.Element) {
 
             static get is() {
                 return 'player-status';
@@ -118,11 +191,26 @@
 
             constructor() {
                 super();
+                this.afflictions = [];
+
+                setInterval(() => {
+                    if (this.afflictions.length > 0) {
+                        console.log('afflicions in the house!');
+                    }
+
+                    /* does not work: afflictions not readable here? */
+                    console.log(this.afflictions);
+                    for (let i = 0; i < this.afflictions; i++) {
+                        this.set(`afflictions.${i}.duration`, this.afflictions[i].duration - 1);
+                        console.log(this.afflictions[i].duration);
+                    }
+                }, 1000);
 
                 application.onCharacterUpdate(character => {
+                    this.afflictions = [];
                     this.set("character", character);
-                    this.notifyPath("character");
-                    this.notifyPath("character.stats");
+                    this.afflictions = character.afflictions.list;
+                    this.notifyPath("afflictions");
                 });
 
                 application.onCharacterLoaded(character => {
@@ -132,6 +220,10 @@
                 application.onRealmLoaded(realm => {
                     this.realm = realm;
                 });
+            }
+
+            _description(affliction) {
+                return eval('`' + affliction.description + '`');
             }
         }
 

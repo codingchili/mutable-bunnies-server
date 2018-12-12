@@ -171,8 +171,6 @@
                 if (this.casting) {
                     return;
                 }
-
-                console.log(event.model.spell);
                 server.cast((casted) => {
                     this.casting = true;
 
@@ -195,7 +193,6 @@
             }
 
             _learned(spell) {
-                console.log('!! check learned ' + JSON.stringify(spell));
                 return this.character.spells.learned.indexOf(spell.id) >= 0;
             }
         }
