@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class Bindings extends HashMap<String, Object> {
     private static final String CONTEXT = "context";
-        private static final String ATTRIBUTE = "Attribute";
+    private static final String ATTRIBUTE = "Attribute";
     private static final String AFFLICTION = "affliction";
     private static final String STATS = "stats";
     private static final String SOURCE = "source";

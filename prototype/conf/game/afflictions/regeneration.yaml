@@ -1,7 +1,7 @@
 ---
 name: "regeneration"
-description: "Heals over time."
-duration: 16
+description: "Heals increasingly over time."
+duration: 60
 interval: 2
 chance: 1.0
 tick:

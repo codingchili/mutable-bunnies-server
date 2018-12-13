@@ -1,6 +1,9 @@
 ---
 name: "haste"
+duration: 60.0
 description: "Casting time and cooldowns reduced by 20%."
 modifier:
   jexl: |
-    stats[attribute.haste] = target.stats[attribute.haste] * 1.20;
+    log.accept(Attribute);
+    log.accept(Attribute.movement);
+    stats[Attribute.movement] = 12.0;

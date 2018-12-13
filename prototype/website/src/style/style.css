@@ -32,6 +32,10 @@ iron-icon:hover {
 
 paper-tooltip {
     --paper-tooltip-background: black;
+
+    --paper-tooltip-animation: {
+        animation-timing-function: ease;
+    }
 }
 
 header-toolbar, footer-template {
