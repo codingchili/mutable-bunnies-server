@@ -42,18 +42,40 @@
                 top: 40px;
             }
 
-            #cast-progress {
-                --paper-progress-active-color: #fc00fc;
-                --paper-progress-container-color: rgba(182, 0, 170, 0.2);
-                --paper-progress-height: 16px;
+            @keyframes fadein {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
 
+            #casting-progress {
                 position: absolute;
-                width: 100%;
                 opacity: 0.84;
                 margin-top: 4px;
-                top: -32px;
+                top: -36px;
                 display: inline;
+                width: 100%;
+                animation: 0.6s fadein ease 1;
+            }
+
+            #casting-progress-bar {
+                --paper-progress-active-color: #fc00fc;
+                --paper-progress-container-color: rgba(182, 0, 170, 0.2);
+                --paper-progress-height: 24px;
                 background-color: #000000;
+                width: 100%;
+            }
+
+            #casting-progress-title {
+                display: block;
+                width: 100%;
+                text-align: center;
+                position: absolute;
+                margin-top: -22px;
+                font-size: small;
             }
 
             paper-progress {
@@ -105,7 +127,7 @@
         <paper-material elevation="3" class="interface-box">
             <template is="dom-repeat" items="{{spells}}" as="spell">
                 <template is="dom-if" if="{{_learned(spell, character)}}">
-                    <div on-click="_cast">
+                    <div on-click="_onCast">
                         <img class="spell-icon" src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
                         <paper-tooltip class="spell-info" animation-delay="0" position="top">
                             <span class="title">[[spell.id]]</span>
@@ -137,8 +159,12 @@
         </paper-material>
 
         <template is="dom-if" if="[[casting]]">
-            <paper-progress id="cast-progress" class="casting-bar transiting" min="0" max="200"
-                            value="0"></paper-progress>
+            <div id="casting-progress">
+                <paper-progress id="casting-progress-bar" class="casting-bar transiting" min="0" max="200"
+                                value="0">
+                </paper-progress>
+                <span id="casting-progress-title">casting [[spellId]]</span>
+            </div>
         </template>
 
     </template>
@@ -151,10 +177,18 @@
 
             constructor() {
                 super();
+                this.hotkeys = ['q', 'e', 'r', 'f', 'x', 'c', 'v'];
                 this.spells = [];
 
                 application.onCharacterLoaded(player => {
                     this.character = player;
+
+                    inputManager.onKeysListener({
+                        down: (key) => {
+                            let spellName = this.character.spells.learned[this.hotkeys.indexOf(key)];
+                            this._cast(this._getSpellById(spellName));
+                        }
+                    }, this.hotkeys);
                 });
 
                 application.onRealmLoaded(realm => {
@@ -163,33 +197,46 @@
                 });
             }
 
+            _getSpellById(spellName) {
+                for (let i = 0; i < this.spells.length; i++) {
+                    if (this.spells[i].id === spellName) {
+                        return this.spells[i];
+                    }
+                }
+            }
+
             _description(spell) {
                 return eval('`' + spell.description + '`');
             }
 
-            _cast(event) {
+            _onCast(event) {
+                this._cast(event.model.spell);
+            }
+
+            _cast(spell) {
                 if (this.casting) {
                     return;
                 }
                 server.cast((casted) => {
                     this.casting = true;
+                    this.spellId = spell.id;
 
                     Polymer.RenderStatus.afterNextRender(this, () => {
-                        let progress = this.shadowRoot.querySelector('#cast-progress');
+                        let progress = this.shadowRoot.querySelector('#casting-progress-bar');
 
-                        progress.value = 200;
+                        progress.value = 300;
                         progress.style.setProperty(
                             '--paper-progress-transition-duration',
-                            event.model.spell.casttime + 's'
+                            spell.casttime + 's'
                         );
 
                         setTimeout(() => {
                             this.casting = false;
                             progress.value = 0;
-                        }, event.model.spell.casttime * 1000);
+                        }, spell.casttime * 1000);
                     });
 
-                }, event.model.spell.id, {});
+                }, spell.id, {});
             }
 
             _learned(spell) {

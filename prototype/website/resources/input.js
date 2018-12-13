@@ -15,32 +15,35 @@ class InputManager {
 
     onKeysListener(callback, keys) {
         for (let key of keys) {
-            this.keyUpListeners[key] = this.keyUpListeners[key] || [];
-            let listeners = this.keyUpListeners[key];
-            listeners.push(callback);
 
-            this.keyDownListeners[key] = this.keyDownListeners[key] || [];
-            listeners = this.keyDownListeners[key];
-            listeners.push(callback);
+            if (callback.up) {
+                this.keyUpListeners[key] = this.keyUpListeners[key] || [];
+                this.keyUpListeners[key].push(callback);
+            }
+
+            if (callback.down) {
+                this.keyDownListeners[key] = this.keyDownListeners[key] || [];
+                this.keyDownListeners[key].push(callback);
+            }
         }
     }
 
     _onKeyUp(e) {
-        this.keys[e.keyCode] = false;
+        this.keys[e.key] = false;
 
-        if (this.keyUpListeners[e.keyCode]) {
-            for (let listener of this.keyUpListeners[e.keyCode]) {
-                listener.up(e.keyCode);
+        if (this.keyUpListeners[e.key]) {
+            for (let listener of this.keyUpListeners[e.key]) {
+                listener.up(e.key);
             }
         }
     }
 
     _onKeyDown(e) {
-        if (!this.keys[e.keyCode]) {
-            this.keys[e.keyCode] = true;
-            if (this.keyUpListeners[e.keyCode]) {
-                for (let listener of this.keyDownListeners[e.keyCode]) {
-                    listener.down(e.keyCode);
+        if (!this.keys[e.key]) {
+            this.keys[e.key] = true;
+            if (this.keyDownListeners[e.key]) {
+                for (let listener of this.keyDownListeners[e.key]) {
+                    listener.down(e.key);
                 }
             }
         }

@@ -96,6 +96,7 @@
             #afflictions {
                 margin-left: 62px;
                 display: flex;
+                flex-wrap: wrap;
             }
 
             .affliction-icon {
@@ -202,19 +203,23 @@
                 }, 1000);
 
                 application.onCharacterUpdate(character => {
-                    this.afflictions = [];
-                    this.set("character", character);
-                    this.afflictions = character.afflictions.list;
-                    this.notifyPath("afflictions");
+                    this._updatePlayerState(character);
                 });
 
                 application.onCharacterLoaded(character => {
-                    this.character = character;
+                    this._updatePlayerState(character);
                 });
 
                 application.onRealmLoaded(realm => {
                     this.realm = realm;
                 });
+            }
+
+            _updatePlayerState(character) {
+                this.character = character;
+                this.afflictions = [];
+                this.afflictions = character.afflictions.list;
+                this.notifyPath("afflictions");
             }
 
             _description(affliction) {

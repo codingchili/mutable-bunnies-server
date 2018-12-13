@@ -1,7 +1,7 @@
-const UP = 87; //38;
-const LEFT = 65; // 37;
-const DOWN = 83; // 40;
-const RIGHT = 68; // 39;
+const UP = 'w'; //38;
+const LEFT = 'a'; // 37;
+const DOWN = 's'; // 40;
+const RIGHT = 'd'; // 39;
 
 window.MovementHandler = class MovementHandler {
 
@@ -18,7 +18,7 @@ window.MovementHandler = class MovementHandler {
             down: (key) => {
                 this._sendUpdate();
             }
-        }, [UP, LEFT, DOWN, RIGHT]);
+        }, [UP, RIGHT, LEFT, DOWN]);
     }
 
     _update() {
