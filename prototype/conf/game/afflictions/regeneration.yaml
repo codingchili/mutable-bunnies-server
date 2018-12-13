@@ -13,4 +13,4 @@ tick:
     }
     // heal for 1pct of the targets max health.
     amount = target.stats[Attribute.maxhealth] * state['amp'];
-    spells.damage(source, target, amount, DamageType.heal);
+    spells.heal(target, amount);
