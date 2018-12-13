@@ -194,15 +194,8 @@
                 this.afflictions = [];
 
                 setInterval(() => {
-                    if (this.afflictions.length > 0) {
-                        console.log('afflicions in the house!');
-                    }
-
-                    /* does not work: afflictions not readable here? */
-                    console.log(this.afflictions);
-                    for (let i = 0; i < this.afflictions; i++) {
+                    for (let i = 0; i < this.afflictions.length; i++) {
                         this.set(`afflictions.${i}.duration`, this.afflictions[i].duration - 1);
-                        console.log(this.afflictions[i].duration);
                     }
                 }, 1000);
 
