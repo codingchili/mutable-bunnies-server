@@ -1,7 +1,7 @@
 package com.codingchili.realm.controller;
 
-import com.codingchili.realm.instance.transport.FasterRealmInstanceCodec;
-import com.codingchili.realm.instance.transport.InstanceRequest;
+import com.codingchili.instance.transport.FasterRealmInstanceCodec;
+import com.codingchili.instance.transport.InstanceRequest;
 import io.vertx.core.Future;
 
 import java.util.function.Supplier;

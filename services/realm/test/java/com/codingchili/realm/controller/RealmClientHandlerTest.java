@@ -2,7 +2,7 @@ package com.codingchili.realm.controller;
 
 import com.codingchili.common.Strings;
 import com.codingchili.realm.configuration.ContextMock;
-import com.codingchili.realm.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.realm.model.AsyncCharacterStore;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;

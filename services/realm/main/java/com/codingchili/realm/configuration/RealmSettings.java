@@ -1,8 +1,8 @@
 package com.codingchili.realm.configuration;
 
 import com.codingchili.common.RegisteredRealm;
-import com.codingchili.realm.instance.context.InstanceSettings;
-import com.codingchili.realm.instance.scripting.Scripted;
+import com.codingchili.instance.context.InstanceSettings;
+import com.codingchili.instance.scripting.Scripted;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.vertx.core.json.JsonObject;
@@ -29,6 +29,7 @@ public class RealmSettings extends AttributeConfigurable {
     private Set<String> availableClasses = new HashSet<>();
     private ListenerSettings listener = new ListenerSettings();
     private Scripted onPlayerJoin;
+    private Scripted levelScaling;
     private Token authentication;
     private String resources;
     private String version;
@@ -36,9 +37,9 @@ public class RealmSettings extends AttributeConfigurable {
     private String node;
     private String host;
     private Boolean trusted;
+    private int players = 0;
     private long updated;
     private int size;
-    private int players = 0;
 
     /**
      * Checks if an overridden resource exist in PATH_GAME_OVERRIDE for the
@@ -217,6 +218,20 @@ public class RealmSettings extends AttributeConfigurable {
     private RealmSettings setVersion(String version) {
         this.version = version;
         return this;
+    }
+
+    /**
+     * @return the script algorithm for determining the experience required for the next level.
+     */
+    public Scripted getLevelScaling() {
+        return levelScaling;
+    }
+
+    /**
+     * @param levelScaling the algorithm used to calculate required experience for the next level.
+     */
+    public void setLevelScaling(Scripted levelScaling) {
+        this.levelScaling = levelScaling;
     }
 
     /**

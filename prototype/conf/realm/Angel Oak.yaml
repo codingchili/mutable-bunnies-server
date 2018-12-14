@@ -15,6 +15,9 @@ availableClasses:
 - "Druid"
 - "Assassin"
 - "Hunter"
+levelScaling:
+  js: |
+    source.stats[Attribute.level] * 50.0 + 100.0;
 onPlayerJoin:
   js: |
     if (source.instance == null) {

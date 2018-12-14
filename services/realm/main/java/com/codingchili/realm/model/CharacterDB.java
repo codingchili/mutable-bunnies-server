@@ -1,7 +1,7 @@
 package com.codingchili.realm.model;
 
 import com.codingchili.core.storage.AsyncStorage;
-import com.codingchili.realm.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.entity.PlayerCreature;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;

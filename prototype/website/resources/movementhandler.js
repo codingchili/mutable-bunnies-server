@@ -26,8 +26,17 @@ window.MovementHandler = class MovementHandler {
         for (let key in game.entities) {
             let entity = game.lookup(key);
             if (entity) {
-                entity.x += Math.sin(entity.direction) * entity.velocity * (delta / Game.MS_PER_FRAME);
-                entity.y += Math.cos(entity.direction) * entity.velocity * (delta / Game.MS_PER_FRAME);
+
+                entity.acceleration = entity.acceleration || 1;
+
+                if (entity.acceleration < 1.0) {
+                    entity.acceleration += 0.01;
+                }
+
+                console.log(entity.acceleration);
+
+                entity.x += Math.sin(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_FRAME);
+                entity.y += Math.cos(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_FRAME);
             }
         }
         this.last = performance.now();
@@ -86,9 +95,12 @@ window.MovementHandler = class MovementHandler {
 
     _handle(event) {
         let entity = game.lookup(event.creatureId);
+
+        entity.acceleration = 0.4;
         entity.x = event.vector.x;
         entity.y = event.vector.y;
+
         entity.velocity = event.vector.velocity;
         entity.direction = event.vector.direction;
     }
-}
+};

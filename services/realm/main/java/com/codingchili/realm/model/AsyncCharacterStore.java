@@ -1,6 +1,6 @@
 package com.codingchili.realm.model;
 
-import com.codingchili.realm.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.entity.PlayerCreature;
 import io.vertx.core.*;
 
 import java.util.Collection;

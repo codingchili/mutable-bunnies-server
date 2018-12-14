@@ -1,7 +1,7 @@
 package com.codingchili.realm.model;
 
 import com.codingchili.common.Strings;
-import com.codingchili.realm.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.entity.PlayerCreature;
 
 import java.util.Collection;
 

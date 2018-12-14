@@ -1,12 +1,13 @@
 package com.codingchili.realm.configuration;
 
 import com.codingchili.realm.controller.RealmRequest;
-import com.codingchili.realm.instance.context.InstanceSettings;
-import com.codingchili.realm.instance.model.afflictions.AfflictionDB;
-import com.codingchili.realm.instance.model.entity.PlayerCreature;
-import com.codingchili.realm.instance.model.spells.SpellDB;
-import com.codingchili.realm.instance.scripting.Bindings;
-import com.codingchili.realm.instance.scripting.Scripted;
+import com.codingchili.instance.context.InstanceSettings;
+import com.codingchili.instance.model.afflictions.AfflictionDB;
+import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.spells.SpellDB;
+import com.codingchili.instance.model.stats.Attribute;
+import com.codingchili.instance.scripting.Bindings;
+import com.codingchili.instance.scripting.Scripted;
 import com.codingchili.realm.model.*;
 import io.vertx.core.Future;
 
@@ -197,6 +198,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
         if (scripted != null) {
             Bindings bindings = new Bindings();
             bindings.setSource(creature);
+            bindings.setAttribute(Attribute.class);
             bindings.put("log", (Consumer<Object>) (object) -> {
                 System.out.println("source is: " + object.toString());
             });

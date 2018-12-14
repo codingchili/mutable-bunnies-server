@@ -1,8 +1,8 @@
 package com.codingchili.realm.model;
 
-import com.codingchili.realm.instance.context.CachedResponse;
-import com.codingchili.realm.instance.model.MetadataStore;
-import com.codingchili.realm.instance.model.entity.PlayableClass;
+import com.codingchili.instance.context.CachedResponse;
+import com.codingchili.instance.model.MetadataStore;
+import com.codingchili.instance.model.entity.PlayableClass;
 import io.vertx.core.buffer.Buffer;
 
 import java.nio.file.Path;

@@ -1,10 +1,10 @@
 package com.codingchili.realm.controller;
 
 import com.codingchili.realm.configuration.RealmContext;
-import com.codingchili.realm.instance.model.entity.PlayerCreature;
-import com.codingchili.realm.instance.model.events.JoinMessage;
-import com.codingchili.realm.instance.model.events.LeaveMessage;
-import com.codingchili.realm.instance.transport.FasterRealmInstanceCodec;
+import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.events.JoinMessage;
+import com.codingchili.instance.model.events.LeaveMessage;
+import com.codingchili.instance.transport.FasterRealmInstanceCodec;
 import com.codingchili.realm.model.*;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.*;

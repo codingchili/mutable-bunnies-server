@@ -4,10 +4,10 @@ import com.codingchili.core.files.ConfigurationFactory;
 import com.codingchili.core.files.exception.NoSuchResourceException;
 import com.codingchili.core.protocol.Serializer;
 
-import com.codingchili.realm.instance.model.entity.PlayerCreature;
-import com.codingchili.realm.instance.model.entity.PlayableClass;
-import com.codingchili.realm.instance.model.items.Inventory;
-import com.codingchili.realm.instance.model.afflictions.AfflictionList;
+import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.entity.PlayableClass;
+import com.codingchili.instance.model.items.Inventory;
+import com.codingchili.instance.model.afflictions.AfflictionList;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.Timeout;

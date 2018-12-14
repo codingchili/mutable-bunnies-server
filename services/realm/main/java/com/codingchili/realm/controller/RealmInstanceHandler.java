@@ -1,11 +1,11 @@
 package com.codingchili.realm.controller;
 
 import com.codingchili.realm.configuration.RealmContext;
-import com.codingchili.realm.instance.context.InstanceContext;
-import com.codingchili.realm.instance.context.InstanceSettings;
-import com.codingchili.realm.instance.controller.InstanceHandler;
-import com.codingchili.realm.instance.model.events.SavePlayerMessage;
-import com.codingchili.realm.instance.transport.InstanceRequest;
+import com.codingchili.instance.context.InstanceContext;
+import com.codingchili.instance.context.InstanceSettings;
+import com.codingchili.instance.controller.InstanceHandler;
+import com.codingchili.instance.model.events.SavePlayerMessage;
+import com.codingchili.instance.transport.InstanceRequest;
 import com.codingchili.realm.model.RealmUpdate;
 import com.codingchili.realm.model.UpdateResponse;
 import io.vertx.core.CompositeFuture;
@@ -52,7 +52,6 @@ public class RealmInstanceHandler implements CoreHandler {
 
     @Api(route = ANY)
     public void any(InstanceRequest request) {
-        // handles any else request..?
         Connection connection = context.connections().get(request.target());
         if (connection != null) {
             try {
