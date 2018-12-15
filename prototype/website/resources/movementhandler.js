@@ -2,6 +2,8 @@ const UP = 'w'; //38;
 const LEFT = 'a'; // 37;
 const DOWN = 's'; // 40;
 const RIGHT = 'd'; // 39;
+const ACCELERATION_START = 0.4;
+const ACCELERATION_STEP = (1 - ACCELERATION_START) / Game.secondsToTicks(0.5);
 
 window.MovementHandler = class MovementHandler {
 
@@ -30,10 +32,10 @@ window.MovementHandler = class MovementHandler {
                 entity.acceleration = entity.acceleration || 1;
 
                 if (entity.acceleration < 1.0) {
-                    entity.acceleration += 0.01;
+                    entity.acceleration += (ACCELERATION_STEP * (delta / Game.MS_PER_FRAME));
+                } else {
+                    entity.acceleration = 1.0;
                 }
-
-                console.log(entity.acceleration);
 
                 entity.x += Math.sin(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_FRAME);
                 entity.y += Math.cos(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_FRAME);
@@ -96,7 +98,10 @@ window.MovementHandler = class MovementHandler {
     _handle(event) {
         let entity = game.lookup(event.creatureId);
 
-        entity.acceleration = 0.4;
+        if (entity.velocity === 0) {
+            entity.acceleration = 0.4;
+        }
+
         entity.x = event.vector.x;
         entity.y = event.vector.y;
 

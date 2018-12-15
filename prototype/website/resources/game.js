@@ -1,5 +1,13 @@
 window.Game = class Game extends Canvas {
 
+    static ticksToSeconds(ticks) {
+        return (ticks * this.MS_PER_FRAME) / 1000.0;
+    }
+
+    static secondsToTicks(seconds) {
+        return (seconds * 1000) / this.MS_PER_FRAME;
+    }
+
     static get MS_PER_FRAME() {
         return 16;
     }
@@ -93,6 +101,6 @@ window.Game = class Game extends Canvas {
             requestAnimationFrame(() => this.loop());
         }
     }
-}
+};
 
 var game = new Game();

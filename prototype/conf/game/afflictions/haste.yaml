@@ -6,4 +6,4 @@ modifier:
   jexl: |
     log.accept(Attribute);
     log.accept(Attribute.movement);
-    stats[Attribute.movement] = 12.0;
+    stats[Attribute.movement] = 6.0;

@@ -1,5 +1,7 @@
 package com.codingchili.instance.model.entity;
 
+import com.codingchili.instance.context.GameContext;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +15,10 @@ import java.util.Set;
  * - used to cast spells.
  */
 public class Vector {
-    private float velocity = 0.01f;
+    public static final float ACCELERATION_BASE = 0.4f;
+    private static final float ACCELERATION_STEP = (1 - ACCELERATION_BASE) / GameContext.secondsToTicks(0.5);
+    private transient float acceleration = 1.0f;
+    private float velocity = 0.0f;
     private float direction = 0.0f;
     private int size = 24;
     private float x = -1;
@@ -34,6 +39,15 @@ public class Vector {
 
     public Vector setY(float y) {
         this.y = y;
+        return this;
+    }
+
+    public float getAcceleration() {
+        return acceleration;
+    }
+
+    public Vector setAcceleration(float acceleration) {
+        this.acceleration = acceleration;
         return this;
     }
 
@@ -74,12 +88,12 @@ public class Vector {
      */
     public Vector copy() {
         return new Vector()
+                .setAcceleration(acceleration)
                 .setVelocity(velocity)
                 .setDirection(direction)
                 .setSize(size)
                 .setX(x).setY(y);
     }
-
 
     /**
      * Returns the cells that the vector is placed in.
@@ -101,7 +115,14 @@ public class Vector {
      * Moves the vector in its direction given its velocity.
      */
     public void forward() {
-        x += Math.sin(direction) * velocity;
-        y += Math.cos(direction) * velocity;
+
+        if (acceleration < 1) {
+            acceleration += ACCELERATION_STEP;
+        } else {
+            acceleration = 1.0f;
+        }
+
+        x += Math.sin(direction) * (velocity * acceleration);
+        y += Math.cos(direction) * (velocity * acceleration);
     }
 }

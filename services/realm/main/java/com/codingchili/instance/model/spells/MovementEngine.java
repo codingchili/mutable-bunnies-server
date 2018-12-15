@@ -35,11 +35,15 @@ public class MovementEngine {
         Vector current = creature.getVector();
         current.setDirection(vector.getDirection());
 
+        if (current.getVelocity() == 0) {
+            current.setAcceleration(Vector.ACCELERATION_BASE);
+        }
+
         // make sure the player cannot arbitrarily update movement.
         if (vector.getVelocity() == 0) {
             current.setVelocity(0);
         } else {
-            current.setVelocity(creature.getStats().get(Attribute.movement));
+            current.setVelocity(Math.min(creature.getStats().get(Attribute.movement), vector.getVelocity()));
         }
         MovementEvent event = new MovementEvent(current, creatureId);
         game.publish(event);
