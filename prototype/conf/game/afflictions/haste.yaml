@@ -5,4 +5,3 @@ description: "Casting time and cooldowns reduced by 20%."
 modifier:
   jexl: |
     stats[Attribute.movement] = stats[Attribute.movement] * 1.4F;
-    log.accept('wowza indeed.');

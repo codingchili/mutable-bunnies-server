@@ -16,10 +16,10 @@ availableClasses:
 - "Assassin"
 - "Hunter"
 levelScaling:
-  js: |
-    source.stats[Attribute.level] * 50.0 + 100.0;
+  jexl: |
+    source.stats[Attribute.level] * 80 + 100;
 onPlayerJoin:
-  js: |
+  jexl: |
     if (source.instance == null) {
       // this will reset the vector when joining the instance.
 

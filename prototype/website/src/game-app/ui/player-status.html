@@ -27,12 +27,13 @@
             #frame {
                 display: block;
                 height: 84px;
+                z-index: 999;
             }
 
             .portrait {
                 height: 42px;
                 margin-top: 4px;
-                margin-left: 8px;
+                margin-left: 10px;
             }
 
             .name {
@@ -46,15 +47,17 @@
 
             .health-bar {
                 margin-left: 64px;
+                padding: 4px;
                 width: 338px;
                 --paper-progress-active-color: #8c0006;
                 --paper-progress-container-color: #8c000632;
             }
 
             .energy-bar {
-                left: 64px;
+                margin-left: 64px;
                 width: 338px;
-                top: 14px;
+                margin-top: 6px;
+                padding: 4px;
                 --paper-progress-active-color: #4db6ac;
                 --paper-progress-container-color: #4db6ac32;
             }
@@ -69,11 +72,24 @@
             }
 
             .exp-bar {
-                width: 48px;
-                top: 10px;
-                left: 8px;
+                width: 46px;
+                margin-top: -11px;
+                padding: 4px;
+                margin-left: 6px;
                 --paper-progress-active-color: #b6a500;
                 --paper-progress-container-color: #b6a50032;
+            }
+
+            .health-bar > paper-progress {
+                width: 100%;
+            }
+
+            .energy-bar > paper-progress {
+                width: 100%;
+            }
+
+            .exp-bar > paper-progress {
+                width: 100%;
             }
 
             @media (max-width: 632px) {
