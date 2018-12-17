@@ -61,7 +61,7 @@ public class ReferencedScript implements Scripted {
     private static void loadScriptAt(CoreContext core, File file) {
         try {
             String name = file.getName();
-            String scriptType = name.substring(name.indexOf(".") + 1, name.length());
+            String scriptType = name.substring(name.indexOf(".") + 1);
             Scripted script = ScriptEngines.script(
                     new String(Files.readAllBytes(file.toPath())), scriptType);
             add(name, script);

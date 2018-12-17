@@ -148,14 +148,29 @@
             <span class="name">[[character.name]]</span>
             <img class="portrait" src="[[realm.resources]]/gui/class/[[character.className]].svg">
 
-            <paper-progress class="health-bar transiting" min="0" max="[[character.stats.maxhealth]]"
-                            value="[[character.stats.health]]"></paper-progress>
+            <div class="health-bar">
+                <paper-tooltip class="spell-info" animation-delay="0" position="bottom">
+                    <span>[[character.stats.health]] / [[character.stats.maxhealth]]</span>
+                </paper-tooltip>
+                <paper-progress class="transiting" min="0" max="[[character.stats.maxhealth]]"
+                                value="[[character.stats.health]]"></paper-progress>
+            </div>
 
-            <paper-progress class="energy-bar transiting" min="0" max="[[character.stats.maxenergy]]"
-                            value="[[character.stats.energy]]"></paper-progress>
+            <div class="energy-bar">
+                <paper-tooltip class="spell-info" animation-delay="0" position="bottom">
+                    <span>[[character.stats.energy]] / [[character.stats.maxenergy]]</span>
+                </paper-tooltip>
+                <paper-progress class="transiting" min="0" max="[[character.stats.maxenergy]]"
+                                value="[[character.stats.energy]]"></paper-progress>
+            </div>
 
-            <paper-progress class="exp-bar transiting" min="0" max="[[character.stats.nextlevel]]"
-                            value="[[character.stats.experience]]"></paper-progress>
+            <div class="exp-bar">
+                <paper-tooltip class="spell-info" animation-delay="0" position="bottom">
+                    <span>[[character.stats.experience]] / [[character.stats.nextlevel]]</span>
+                </paper-tooltip>
+                <paper-progress class="transiting" min="0" max="[[character.stats.nextlevel]]"
+                                value="[[character.stats.experience]]"></paper-progress>
+            </div>
         </paper-material>
 
         <div id="afflictions">

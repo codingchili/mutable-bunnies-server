@@ -4,6 +4,5 @@ duration: 60.0
 description: "Casting time and cooldowns reduced by 20%."
 modifier:
   jexl: |
-    log.accept(Attribute);
-    log.accept(Attribute.movement);
-    stats[Attribute.movement] = 6.0;
+    stats[Attribute.movement] = stats[Attribute.movement] * 1.4F;
+    log.accept('wowza indeed.');

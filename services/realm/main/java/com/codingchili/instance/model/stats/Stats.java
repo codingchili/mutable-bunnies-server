@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Stats is a form of attribute values that may be applied to a
  * character or an item.
  */
-public class Stats extends ConcurrentHashMap<Attribute, Float> {
+public class Stats extends ConcurrentHashMap<Attribute, Double> {
 
     /**
      * Adds the given value to the attribute if existing or sets it if not.
@@ -17,8 +17,8 @@ public class Stats extends ConcurrentHashMap<Attribute, Float> {
      * @param points the amount to modify, may be negative.
      * @return fluent.
      */
-    public Stats update(Attribute type, float points) {
-        float current = getOrDefault(type, 0f) + points;
+    public Stats update(Attribute type, double points) {
+        double current = getOrDefault(type, 0.0) + points;
         put(type, current);
         return this;
     }
@@ -30,7 +30,7 @@ public class Stats extends ConcurrentHashMap<Attribute, Float> {
      * @param value the value to set.
      * @return fluent.
      */
-    public Stats set(Attribute type, float value) {
+    public Stats set(Attribute type, double value) {
         put(type, value);
         return this;
     }
@@ -41,8 +41,8 @@ public class Stats extends ConcurrentHashMap<Attribute, Float> {
      * @param attribute the attribute to retrieve the value of.
      * @return the value of the given attribute, default 0.
      */
-    public float get(Attribute attribute) {
-        return getOrDefault(attribute, 0f);
+    public double get(Attribute attribute) {
+        return getOrDefault(attribute, 0.0);
     }
 
     /**
@@ -51,7 +51,7 @@ public class Stats extends ConcurrentHashMap<Attribute, Float> {
      * @param attribute the attribute to update.
      * @param value     the value to set if none exists.
      */
-    public void setDefault(Attribute attribute, float value) {
+    public void setDefault(Attribute attribute, double value) {
         putIfAbsent(attribute, value);
     }
 

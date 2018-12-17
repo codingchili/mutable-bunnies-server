@@ -1,5 +1,6 @@
 package com.codingchili.instance.controller.dialog;
 
+import com.codingchili.instance.context.*;
 import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.realm.configuration.RealmSettings;
 import com.codingchili.instance.controller.DialogHandler;

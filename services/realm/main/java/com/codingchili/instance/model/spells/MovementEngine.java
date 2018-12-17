@@ -43,7 +43,7 @@ public class MovementEngine {
         if (vector.getVelocity() == 0) {
             current.setVelocity(0);
         } else {
-            current.setVelocity(Math.min(creature.getStats().get(Attribute.movement), vector.getVelocity()));
+            current.setVelocity((float) Math.min(creature.getStats().get(Attribute.movement), vector.getVelocity()));
         }
         MovementEvent event = new MovementEvent(current, creatureId);
         game.publish(event);

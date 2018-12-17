@@ -19,6 +19,7 @@ public class ScriptEngines {
         engines.put(JavaScript.TYPE, JavaScript::new);
         engines.put(NativeScript.TYPE, NativeScript::new);
         engines.put(ReferencedScript.TYPE, ReferencedScript::new);
+        engines.put(GroovyScript.TYPE, GroovyScript::new);
     }
 
     /**

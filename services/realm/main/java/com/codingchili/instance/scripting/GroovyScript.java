@@ -7,18 +7,18 @@ import com.codingchili.core.context.CoreRuntimeException;
 /**
  * @author Robin Duda
  *
- * Provides scripting support for javascript.
+ * Provides script support for groovy - requires groovy jsr on classpath.
  */
-public class JavaScript implements Scripted {
+public class GroovyScript implements Scripted {
     private static final ScriptEngineManager factory = new ScriptEngineManager();
-    public static final String TYPE = "js";
-    private static final ScriptEngine engine = factory.getEngineByName("javascript");
+    private static final ScriptEngine engine = factory.getEngineByName("groovy");
+    public static final String TYPE = "groovy";
     private CompiledScript compiled;
     private String source;
 
-    public JavaScript(String source) {
-        this.source = source;
+    public GroovyScript(String source) {
         try {
+            this.source = source;
             this.compiled = ((Compilable) engine).compile(source);
         } catch (ScriptException e) {
             throw new CoreRuntimeException(e.getMessage());

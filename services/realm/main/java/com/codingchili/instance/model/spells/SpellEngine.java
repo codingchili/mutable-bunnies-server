@@ -184,9 +184,9 @@ public class SpellEngine {
      * @param target the target to apply the health to.
      * @param value  the amount of health to apply, may not exceed the max health of the being.
      */
-    public void heal(Creature target, float value) {
-        float max = target.getStats().get(Attribute.maxhealth);
-        float current = target.getBaseStats().get(Attribute.health);
+    public void heal(Creature target, double value) {
+        double max = target.getStats().get(Attribute.maxhealth);
+        double current = target.getBaseStats().get(Attribute.health);
 
         if (current + value > max) {
             value = Math.max(0, max - current);

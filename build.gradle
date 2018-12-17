@@ -1,16 +1,12 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
 apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'maven'
 
-project.version = "1.0.39"
+project.version = "1.1.0"
 project.group = 'com.github.codingchili.chili-game-ext'
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'idea'
 
     version = rootProject.version
     group = rootProject.group
