@@ -62,8 +62,8 @@
             }
 
             #casting-progress-bar {
-                --paper-progress-active-color: #fc00fc;
-                --paper-progress-container-color: rgba(182, 0, 170, 0.2);
+                --paper-progress-active-color: rgba(205, 205, 205, 0.25);
+                --paper-progress-container-color: rgba(0, 0, 0, 0.25);
                 --paper-progress-height: 24px;
                 background-color: #000000;
                 width: 100%;
@@ -224,6 +224,7 @@
                     Polymer.RenderStatus.afterNextRender(this, () => {
                         let progress = this.shadowRoot.querySelector('#casting-progress-bar');
 
+                        progress.style.visibility = 'visible';
                         progress.value = 300;
                         progress.style.setProperty(
                             '--paper-progress-transition-duration',
@@ -232,6 +233,7 @@
 
                         setTimeout(() => {
                             this.casting = false;
+                            progress.style.visibility = 'hidden';
                             progress.value = 0;
                         }, spell.casttime * 1000);
                     });

@@ -42,7 +42,6 @@ window.Game = class Game extends Canvas {
         this.movementHandler = new MovementHandler();
         this.chatHandler = new ChatHandler();
 
-
         this.fps = 0;
         setInterval(() => {
             this.fps = 0;
