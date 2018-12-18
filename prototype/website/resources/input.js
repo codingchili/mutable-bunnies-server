@@ -4,7 +4,7 @@ class InputManager {
         this.keyDownListeners = {};
         this.keyUpListeners = {};
         this.keys = {};
-
+        this.blocked = false;
 
         this.onDownCallback = this._onKeyDown.bind(this);
         this.onUpCallback = this._onKeyUp.bind(this);
@@ -15,7 +15,6 @@ class InputManager {
 
     onKeysListener(callback, keys) {
         for (let key of keys) {
-
             if (callback.up) {
                 this.keyUpListeners[key] = this.keyUpListeners[key] || [];
                 this.keyUpListeners[key].push(callback);
@@ -28,12 +27,26 @@ class InputManager {
         }
     }
 
+    block() {
+        this.blocked = true;
+    }
+
+    unblock() {
+        this.blocked = false;
+    }
+
+    isBlocked() {
+        return this.blocked;
+    }
+
     _onKeyUp(e) {
         this.keys[e.key] = false;
 
         if (this.keyUpListeners[e.key]) {
             for (let listener of this.keyUpListeners[e.key]) {
-                listener.up(e.key);
+                if (!this.blocked) {
+                    listener.up(e.key);
+                }
             }
         }
     }
@@ -43,7 +56,9 @@ class InputManager {
             this.keys[e.key] = true;
             if (this.keyDownListeners[e.key]) {
                 for (let listener of this.keyDownListeners[e.key]) {
-                    listener.down(e.key);
+                    if (!this.blocked) {
+                        listener.down(e.key);
+                    }
                 }
             }
         }

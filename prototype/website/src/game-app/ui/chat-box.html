@@ -100,21 +100,39 @@
                 this.set("message", "");
 
                 this._setHandler();
+
+                this.$.message.addEventListener('blur', () => {
+                    inputManager.unblock();
+                }, true);
+
+                this.$.message.addEventListener('focus', () => {
+                    inputManager.block();
+                }, true);
+
+                inputManager.onKeysListener({
+                    down: () => {
+                        if (this.shadowRoot.activeElement !== this.$.message) {
+                            this.$.message.focus();
+                        }
+                    }
+                }, ['Enter']);
+
                 application.onScriptsLoaded(() => {
                     this._setHandler();
                 });
             }
 
             _setHandler() {
-                window.chatHandler.onChatMessage(msg => {
+                chatHandler.onChatMessage(msg => {
                     this.add(msg);
                 });
             }
 
             send() {
                 if (this.message.length !== 0) {
-                    window.chatHandler.send(this.message);
+                    chatHandler.send(this.message);
                     this.set("message", "");
+                    this.$.message.blur();
                 }
             }
 
@@ -128,8 +146,11 @@
             }
 
             submit(event) {
-                if (event.keyCode === 13)
+                if (event.key === 'Enter')
                     this.send();
+                if (event.key === 'Escape') {
+                    this.$.message.blur();
+                }
             }
         }
 
