@@ -7,9 +7,9 @@ cooldown: 4.0
 casttime: 2.0
 target: caster
 onCastBegin:
-  js:
-    spells.energy(source, -10);
+  jexl:
+    return spells.energy(source, -10);
 onCastComplete:
-  js: |
+  jexl: |
     spells.afflict(source, 'regeneration');
     spells.afflict(source, 'haste');

@@ -2,6 +2,7 @@ class TextEffects {
 
     constructor() {
         this.counters = [];
+        this.last = performance.now();
         this.effects = {
             'physical': this.physical,
             'heal': this.heal,
@@ -72,6 +73,8 @@ class TextEffects {
     }
 
     update() {
+        let delta = (performance.now() - this.last) / Game.MS_PER_FRAME;
+
         for (let i = 0; i < this.counters.length; i++) {
             let counter = this.counters[i];
 
@@ -80,22 +83,22 @@ class TextEffects {
                 continue;
             }
 
-            counter.ttl--;
+            counter.ttl -= 1;
 
             if (counter.ttl <= 0 && counter.alpha <= 0) {
                 game.stage.removeChild(counter);
                 this.counters.splice(i, 1);
             } else {
                 counter.speed *= counter.slowdown;
-                counter.x += counter.speed * Math.cos(counter.dir);
-                counter.y += counter.speed * Math.sin(counter.dir);
+                counter.x += counter.speed * Math.cos(counter.dir) * delta;
+                counter.y += counter.speed * Math.sin(counter.dir) * delta;
 
                 if (counter.ttl > 0) {
-                    counter.alpha += counter.fade_in;
+                    counter.alpha += counter.fade_in * delta;
                 }
 
                 if (counter.ttl < 0) {
-                    counter.alpha -= counter.fade_out;
+                    counter.alpha -= counter.fade_out * delta;
                 }
 
                 if (counter.alpha > 1.0) {
@@ -106,6 +109,7 @@ class TextEffects {
                 }
             }
         }
+        this.last = performance.now();
     }
 
     hitText(target, text, options) {
@@ -134,10 +138,10 @@ class TextEffects {
         counter.offset = target.width / 2;
         counter.x = target.x - (counter.width / 2) + (target.width / 2) + counter.offset * Math.cos(counter.dir);
         counter.y = target.y + (target.height / 2) - (counter.height / 2) + counter.offset * Math.sin(counter.dir);
-        counter.alpha = 0.0;
+        counter.alpha = 0.18;
         counter.speed = 2.56;
         counter.slowdown = 0.925;
-        counter.fade_in = 0.02;
+        counter.fade_in = 0.04;
         counter.fade_out = 0.015;
         counter.layer = 5;
 
@@ -201,7 +205,7 @@ class TextEffects {
             begin: event.color1 || '#ffd8f7',
             end: event.color2 || '#ffe6eb',
             float: true,
-            ttl: 295
+            ttl: Game.secondsToTicks(1.4)
         });
     }
 }
