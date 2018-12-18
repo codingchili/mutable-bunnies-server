@@ -109,14 +109,6 @@
                     inputManager.block();
                 }, true);
 
-                inputManager.onKeysListener({
-                    down: () => {
-                        if (this.shadowRoot.activeElement !== this.$.message) {
-                            this.$.message.focus();
-                        }
-                    }
-                }, ['Enter']);
-
                 application.onScriptsLoaded(() => {
                     this._setHandler();
                 });
@@ -126,6 +118,15 @@
                 chatHandler.onChatMessage(msg => {
                     this.add(msg);
                 });
+                
+                inputManager.onKeysListener({
+                    down: () => {
+                        if (this.shadowRoot.activeElement !== this.$.message) {
+                            this.$.message.focus();
+                        }
+                    }
+                }, ['Enter']);
+
             }
 
             send() {

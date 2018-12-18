@@ -35,10 +35,6 @@ class InputManager {
         this.blocked = false;
     }
 
-    isBlocked() {
-        return this.blocked;
-    }
-
     _onKeyUp(e) {
         this.keys[e.key] = false;
 

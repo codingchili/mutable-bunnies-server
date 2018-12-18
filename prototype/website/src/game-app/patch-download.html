@@ -135,8 +135,6 @@
 
             <mega-loader class="loader" text="[[status]]" enabled="[[!downloading]]"></mega-loader>
 
-            <mega-loader></mega-loader>
-
         </paper-material>
 
         <iron-ajax id="patchLoader" url="[[realm.resources]]/metadata.json" handle-as="json"
@@ -208,6 +206,7 @@
                         character: this.character,
                         patch: this.patch,
                         status: (text) => {
+                            this.set("downloading", false);
                             this.set("status", text);
                         }
                     });
