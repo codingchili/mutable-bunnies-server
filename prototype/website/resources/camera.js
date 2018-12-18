@@ -1,6 +1,8 @@
 window.Camera = class Camera {
 
     constructor() {
+        this.smoothing = 0.064;
+        this.clipping = 4;
         this.x = -2000;
         this.y = -2000;
         this.following = {x: this.x, y: this.y};
@@ -14,8 +16,13 @@ window.Camera = class Camera {
             let deltaX = (this.x - target.x);
             let deltaY = (this.y - target.y);
 
-            this.x -= deltaX * 0.064 * (delta / Game.MS_PER_FRAME);
-            this.y -= deltaY * 0.064 * (delta / Game.MS_PER_FRAME);
+            if (Math.abs(deltaX) > this.clipping) {
+                this.x -= deltaX * (this.smoothing * (delta / Game.MS_PER_FRAME));
+            }
+
+            if (Math.abs(deltaY) > this.clipping) {
+                this.y -= deltaY * (this.smoothing * (delta / Game.MS_PER_FRAME));
+            }
 
             this.cull(game.stage.children);
             last = performance.now();
