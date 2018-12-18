@@ -90,7 +90,7 @@ public class PlayerCreature extends SimpleCreature {
             stats.setDefault(Attribute.health, getStats().get(Attribute.maxhealth));
             stats.setDefault(Attribute.energy, getStats().get(Attribute.maxenergy));
             stats.setDefault(Attribute.experience, 15.0f);
-            stats.setDefault(Attribute.level, 0);
+            stats.setDefault(Attribute.level, 1);
 
             stats.set(Attribute.nextlevel, scaling.apply(bindings));
         } else {

@@ -115,7 +115,7 @@
                         <paper-material elevation="2" class="character" on-tap="select">
                             <paper-ripple></paper-ripple>
                             <paper-tooltip animation-delay="0" class="tooltip">
-                                <span class="tooltip-text">{{character.className}} Lv.{{character.level}}</span>
+                                <span class="tooltip-text">{{character.className}} Lv.{{character.stats.level}}</span>
                             </paper-tooltip>
                             <iron-icon on-tap="removeCharacter"
                                        icon="icons:close" class="character-remove"></iron-icon>
