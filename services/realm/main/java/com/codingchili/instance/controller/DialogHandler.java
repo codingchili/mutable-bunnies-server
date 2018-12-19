@@ -4,10 +4,14 @@ import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.dialog.DialogRequest;
 import com.codingchili.instance.model.events.ChatEvent;
 import com.codingchili.instance.model.npc.DialogEngine;
+import com.codingchili.instance.model.npc.ListeningPerson;
+import com.codingchili.instance.model.npc.TalkingPerson;
 import com.codingchili.instance.model.spells.SpellResult;
 import com.codingchili.instance.model.spells.SpellTarget;
 import com.codingchili.instance.transport.InstanceRequest;
 import io.vertx.core.json.JsonObject;
+
+import java.util.Random;
 
 import com.codingchili.core.protocol.Api;
 
@@ -43,6 +47,16 @@ public class DialogHandler implements GameHandler {
                     new SpellTarget().setTargetId(request.target()), message.split(" ")[1]);
             response.put("spellResult", result);
             request.write(response);
+        }
+
+        if (message.startsWith("/spawn")) {
+            TalkingPerson talking = new TalkingPerson();
+            talking.getVector()
+                .setX(300 + new Random().nextInt(300))
+                .setY(300 + new Random().nextInt(300));
+
+            game.add(talking);
+
         }
 
         game.publish(new ChatEvent(game.getById(request.target()), message));

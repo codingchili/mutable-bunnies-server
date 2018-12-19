@@ -36,6 +36,11 @@ window.SpawnHandler = class SpawnHandler {
             tree2.layer = 0;
             tree2.scale.x = 0.3;
             tree2.scale.y = 0.3;
+
+            sprite.interactive = true;
+            sprite.buttonMode = true;
+            sprite.anchor.set(0.5);
+
             game.stage.addChild(tree2);
         }, "tree.png");
 
@@ -80,6 +85,14 @@ window.SpawnHandler = class SpawnHandler {
             sprite.layer = 0;
             sprite.id = entity.id;
             game.entities[entity.id] = sprite;
+
+            sprite.interactive = true;
+            sprite.buttonMode = true;
+
+            sprite.on('pointerdown', () => {
+                console.log('on dude');
+            });
+
             game.stage.addChild(sprite);
 
             if (this.isPlayer(sprite)) {

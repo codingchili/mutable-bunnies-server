@@ -2,18 +2,35 @@ window.Canvas = class {
 
     constructor() {
         this.app = new PIXI.Application();
-        this.stage = new PIXI.Container();
+        this.stage = this.app.stage;//new PIXI.Container();
+        this.stage.interactive = true;
+
+        this.stage.click = () => {
+            console.log('wowza');
+        };
+
+        this.stage.on('pointerdown', () => {
+            console.log('wowza indeed');
+        });
 
         this.renderer = PIXI.autoDetectRenderer(512, 512,
-            {antialias: false, transparent: false, resolution: 1, backgroundColor: 0x0, view: document.canvas}
-        );
+            {antialias: false, transparent: false, resolution: 1, backgroundColor: 0x0}
+        );//view: document.canvas
 
+        if (!document.getElementById('canvas')) {
+            document.body.appendChild(this.renderer.view);
+        }
+        this.renderer.view.id = 'canvas';
+        this.renderer.view.style.animation = "fadein 1.2s ease-in 1";
+
+        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
         window.onresize = () => this.resize();
         this.resize();
     }
 
     shutdown() {
         this.app.destroy(true);
+        document.body.removeChild(this.renderer.view);
     }
 
     resize() {

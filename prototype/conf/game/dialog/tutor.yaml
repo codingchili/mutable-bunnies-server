@@ -20,10 +20,10 @@ options:
   test2:
     text: "welcome to test 2."
     filter:
-      js: "true;"
+      jexl: "return true;"
     handler:
-      js: |
-        log('user selected option test2.');
+      jexl: |
+        log.accept('user selected option test2.');
   test3:
     text: "welcome to test 3."
     next:
