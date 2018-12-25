@@ -17,7 +17,6 @@ import com.codingchili.core.protocol.Serializer;
 public class FasterRealmInstanceCodec<S, R> implements MessageCodec<S, R> {
     private static final AtomicBoolean initialized = new AtomicBoolean(false);
     private static final String codecName = FasterRealmInstanceCodec.class.getSimpleName();
-    ;
 
     /**
      * Initializes codecs used for realm-instance communication.

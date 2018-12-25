@@ -1,9 +1,10 @@
 package com.codingchili.instance.model.entity;
 
-import com.codingchili.instance.context.GameContext;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.codingchili.instance.context.GameContext;
 
 /**
  * @author Robin Duda
@@ -17,6 +18,7 @@ import java.util.Set;
 public class Vector {
     public static final float ACCELERATION_BASE = 0.4f;
     private static final float ACCELERATION_STEP = (1 - ACCELERATION_BASE) / GameContext.secondsToTicks(0.5);
+    private transient List<Integer> buckets = new ArrayList<>();
     private transient float acceleration = 1.0f;
     private float velocity = 0.0f;
     private float direction = 0.0f;
@@ -102,8 +104,8 @@ public class Vector {
      * @param gridWidth the size of the grid.
      * @return cell numbers that this vector exists within.
      */
-    public Set<Integer> cells(final int cellSize, final int gridWidth) {
-        Set<Integer> buckets = new HashSet<>();
+    public Collection<Integer> cells(final int cellSize, final int gridWidth) {
+        buckets.clear();
         buckets.add(Math.round(((x + size) / cellSize) + ((y / cellSize) * gridWidth)));
         buckets.add(Math.round(((x - size) / cellSize) + ((y / cellSize) * gridWidth)));
         buckets.add(Math.round((x / cellSize) + (((y + size) / cellSize) * gridWidth)));

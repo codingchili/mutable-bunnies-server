@@ -4,7 +4,7 @@
   "builds": [
     {
       "js": {
-        "minify": false
+        "minify": true
       },
       "css": {
         "minify": true

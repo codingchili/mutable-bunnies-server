@@ -72,19 +72,13 @@ public class AfflictionState {
      * @param game the game context to send updates to.
      */
     public void removeIf(Predicate<ActiveAffliction> predicate, GameContext game) {
-        AtomicBoolean removed = new AtomicBoolean(false);
-
         list.removeIf((affliction) -> {
             if (predicate.test(affliction)) {
-                removed.set(true);
+                update(game);
                 return true;
             }
             return false;
         });
-
-        if (removed.get()) {
-            update(game);
-        }
     }
 
     public void update(GameContext game) {

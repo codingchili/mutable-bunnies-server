@@ -51,7 +51,7 @@ public class Service implements CoreService {
                 .setCompressionSupported(settings.getGzip());
 
         core.vertx().createHttpServer(options)
-                .requestHandler(router::accept)
+                .requestHandler(router)
                 .listen(settings.getListener().getPort(), untyped(start));
     }
 }

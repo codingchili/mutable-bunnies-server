@@ -14,6 +14,7 @@ import com.codingchili.core.storage.Storable;
  * @author Robin Duda
  */
 public class Affliction implements Storable {
+    private static transient Random random = new Random();
     protected String name = "missing name";
     protected String description = "missing description";
     protected Float duration = 8.0f;
@@ -41,7 +42,7 @@ public class Affliction implements Storable {
 
     public <T> T tick(Bindings bindings) {
         if (tick != null && interval > 0) {
-            if (chance == 1.0f || new Random().nextFloat() < chance) {
+            if (chance == 1.0f || random.nextFloat() < chance) {
                 return tick.apply(bindings);
             }
         }

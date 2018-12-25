@@ -56,6 +56,7 @@ public class Bindings extends HashMap<String, Object> {
         return (Stats) get(STATS);
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getState() {
         return (Map<String, Object>) get(STATE);
     }
