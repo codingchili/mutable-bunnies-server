@@ -9,6 +9,8 @@ import com.codingchili.instance.model.entity.Grid;
 import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
+import com.codingchili.instance.scripting.Bindings;
+import com.codingchili.instance.scripting.Scripted;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -128,13 +130,50 @@ public class SpellEngine {
 
     /**
      * Adds a charge to the spell with the given name if not at max charges.
-     * @param caster the caster to add the charge to.
+     *
+     * @param caster    the caster to add the charge to.
      * @param spellName the name of the spell to add a charge to.
      */
     public void charge(Creature caster, String spellName) {
         spells.getByName(spellName).ifPresent(spell -> {
             caster.getSpells().charge(spell);
         });
+    }
+
+    /**
+     * Adds some experience points to the given target.
+     *
+     * @param target the receiver of the experience points.
+     * @param amount the number of experience points to add.
+     */
+    public void experience(Creature target, int amount) {
+        Stats stats = target.getBaseStats();
+
+        while (amount > 0) {
+            Double current  = stats.get(Attribute.experience);
+            Double next = stats.get(Attribute.nextlevel) - current;
+
+            if (next.intValue() < amount) {
+                amount -= next.intValue();
+                stats.update(Attribute.level, 1);
+                stats.set(Attribute.experience, 0);
+                stats.set(Attribute.nextlevel, getNextLevelExp(target));
+            } else {
+                stats.update(Attribute.experience, amount);
+                amount = 0;
+            }
+        }
+        target.handle(new StatsUpdateEvent(target));
+    }
+
+    private Double getNextLevelExp(Creature target) {
+        Bindings bindings = new Bindings()
+                .setSource(target)
+                .setAttribute(Attribute.class);
+
+        Scripted script = game.instance().realm().getLevelScaling();
+
+        return script.apply(bindings);
     }
 
     /**
