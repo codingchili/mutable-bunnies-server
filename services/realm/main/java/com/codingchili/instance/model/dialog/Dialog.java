@@ -1,5 +1,9 @@
 package com.codingchili.instance.model.dialog;
 
+import com.codingchili.instance.model.entity.Entity;
+import com.codingchili.instance.scripting.Bindings;
+import com.codingchili.instance.scripting.Scripted;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +19,7 @@ import java.util.Map;
  */
 public class Dialog {
     private Map<String, Option> options = new HashMap<>();
+    private Scripted enabled;
     private String id;
     private String start;
 
@@ -44,5 +49,25 @@ public class Dialog {
 
     public Option get(String optionKey) {
         return options.get(optionKey);
+    }
+
+    public Scripted getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Scripted enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean enabled(Entity source, Entity target) {
+        if (enabled != null) {
+            return enabled.apply(
+                    new Bindings()
+                            .setSource(source)
+                            .setTarget(target)
+            );
+        } else {
+            return true;
+        }
     }
 }

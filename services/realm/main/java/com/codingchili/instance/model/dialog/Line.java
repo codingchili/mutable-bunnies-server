@@ -6,22 +6,22 @@ package com.codingchili.instance.model.dialog;
  * A line is a response from the player to a dialog from an NPC.
  */
 public class Line {
-    private String option;
-    private String response;
+    private String id;
+    private String text;
 
-    public String getOption() {
-        return option;
+    public String getId() {
+        return id;
     }
 
-    public void setOption(String option) {
-        this.option = option;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getResponse() {
-        return response;
+    public String getText() {
+        return text;
     }
 
-    public void setResponse(String response) {
-        this.response = response;
+    public void setText(String text) {
+        this.text = text;
     }
 }

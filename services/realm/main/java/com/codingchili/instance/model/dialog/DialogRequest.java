@@ -15,7 +15,6 @@ public class DialogRequest implements Event {
     private Set<Line> lines = new HashSet<>();
     private String text;
     private String targetId;
-    private String sourceId;
     private String next;
     private boolean end;
 
@@ -24,7 +23,6 @@ public class DialogRequest implements Event {
         request.text = dialog.text();
         request.end = dialog.isEnded();
         request.lines = dialog.lines();
-        request.sourceId = dialog.source().getId();
         request.targetId = dialog.target().getId();
         return request;
     }
@@ -60,14 +58,6 @@ public class DialogRequest implements Event {
 
     public boolean getEnd() {
         return end;
-    }
-
-    public String getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
     }
 
     public String getTargetId() {

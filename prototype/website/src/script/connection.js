@@ -56,16 +56,18 @@ class Connection {
         this.onConnectHandlers.push(connected);
     }
 
-    send(callback, route, data) {
+    send(route, data, callback) {
         data = data || {};
         data.route = route;
 
-        this.setHandler(route, callback);
+        if (callback) {
+            this.setHandler(route, callback);
+        }
 
         if (this.open) {
             this.ws.send(JSON.stringify(data));
         } else {
-            this.onConnected(() => this.send(callback, route, data));
+            this.onConnected(() => this.send(route, data, callback));
         }
     }
 

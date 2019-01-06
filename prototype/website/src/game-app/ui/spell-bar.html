@@ -183,7 +183,7 @@
                 application.onCharacterLoaded(player => {
                     this.character = player;
 
-                    inputManager.onKeysListener({
+                    input.onKeysListener({
                         down: (key) => {
                             let spellName = this.character.spells.learned[this.hotkeys.indexOf(key)];
                             this._cast(this._getSpellById(spellName));

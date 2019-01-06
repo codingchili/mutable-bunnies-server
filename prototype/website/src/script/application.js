@@ -91,6 +91,14 @@ class Application {
         application.subscribe('onError', callback);
     }
 
+    dialogEvent(dialog) {
+        application.publish('dialog', dialog);
+    }
+
+    onDialogEvent(callback) {
+        application.subscribe('dialog', callback);
+    }
+
     onLogout(callback) {
         application.subscribe('onLogout', callback);
     }

@@ -2,6 +2,7 @@ package com.codingchili.instance.model.dialog;
 
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -49,13 +50,13 @@ public class DialogDB {
         }
     }
 
-    public Dialog getById(String id) {
+    public Optional<Dialog> getById(String id) {
         Dialog dialog = dialogs.get(id);
 
         if (dialog != null) {
-            return dialog;
+            return Optional.of(dialog);
         } else {
-            throw new NoSuchDialogException(id);
+            return Optional.empty();
         }
     }
 }

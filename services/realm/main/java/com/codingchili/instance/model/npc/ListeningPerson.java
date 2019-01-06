@@ -12,6 +12,11 @@ import com.codingchili.core.protocol.Api;
 public class ListeningPerson extends SimpleCreature {
     public static int called = 0;
 
+    {
+        vector.setX(300);
+        vector.setY(200);
+    }
+
     public ListeningPerson() {
         super();
         // to be loaded from template.
@@ -24,10 +29,15 @@ public class ListeningPerson extends SimpleCreature {
 
     // npcs/structures can listen for events.
 
-    @Api(route = "CHAT")
+    @Api(route = "chat")
     public void chatevent(ChatEvent event) {
         //   ChatEvent CHAT = ChatEvent.class.cast(event);
         //     System.out.println(CHAT.getText());
         called += 1;
+        System.out.println(event.getText());
+
+        if (!event.getSource().equals(getId())) {
+            game.dialogs().say(getId(), "hi there " + game.getById(event.getSource()).getName());
+        }
     }
 }

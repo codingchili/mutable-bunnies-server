@@ -81,9 +81,9 @@ public class PlayerCreature extends SimpleCreature {
 
         if (theClass.isPresent()) {
             Scripted scaling = game.instance().realm().getLevelScaling();
-            Bindings bindings = new Bindings();
-            bindings.setSource(this);
-            bindings.setAttribute(Attribute.class);
+            Bindings bindings = new Bindings()
+                    .setSource(this)
+                    .setAttribute(Attribute.class);
 
             stats.set(Attribute.maxhealth, getStats().get(Attribute.constitution) * 10);
             stats.set(Attribute.maxenergy, getStats().get(Attribute.dexterity) * 20 + 100);

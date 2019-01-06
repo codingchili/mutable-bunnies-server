@@ -4,6 +4,7 @@ import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.dialog.*;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.entity.Vector;
+import com.codingchili.instance.model.events.ChatEvent;
 import io.vertx.core.Future;
 
 import java.util.*;
@@ -16,7 +17,8 @@ import java.util.*;
  */
 public class DialogEngine {
     private static final int DIALOG_RANGE = 128;
-    public static final String HANDLER_DIALOG = "dialog";
+    private static final String DIALOG_ID = "DIALOG_ID";
+    private static final String MISSING = "undefined";
     private Map<String, ActiveDialog> dialogs = new HashMap<>();
     private DialogDB dialogDB;
     private GameContext game;
@@ -35,10 +37,10 @@ public class DialogEngine {
      * @param request a request to alter state of the dialog.
      * @return the current state of the dialog.
      */
-    public Future<ActiveDialog> say(DialogRequest request) {
-        ActiveDialog active = dialogs.get(request.getSource());
+    public Future<ActiveDialog> say(DialogRequest request, String sourceId) {
+        ActiveDialog active = dialogs.get(sourceId);
 
-        if (active != null) {
+            if (active != null) {
             active.say(request.getNext());
 
             if (active.isEnded()) {
@@ -58,55 +60,32 @@ public class DialogEngine {
      * target does not support dialogs, is out of range or
      * if the dialog used by the target was not found.
      */
-    public Future<ActiveDialog> start(DialogRequest request) {
-        Creature source = game.getById(request.getSourceId());
+    public Future<ActiveDialog> start(DialogRequest request, String sourceId) {
+        Creature source = game.getById(sourceId);
         Creature target = game.getById(request.getTargetId());
 
-        // todo protocol.available is not the same as interactions?
-        // todo: interactions can has properties or read from property map?
-        // don't use the handler approach because it doesn't handle result well?
+        String dialogId = (String) target.getAttributes().getOrDefault(DIALOG_ID, MISSING);
 
-        // or interactions with configuration?
-        /*target.getInteractions().contains("dialog") {
-            target.getAttributes().get("DIALOG")
-        }*/
+        // allow interaction with both other creatures and entities.
+        if (targetInRange(source, target)) {
+            Optional<Dialog> dialog = dialogDB.getById(dialogId);
 
-        target.handle(request);
+            if (dialog.isPresent()) {
+                Dialog loaded = dialog.get();
 
-        Vector vector = source.getVector().copy()
-                .setSize(DIALOG_RANGE);
-
-        if (game.creatures().radius(vector).contains(target)) {
-            // how to? register a default handler on the NPC with name "dialog", to
-            // be returned as an interaction to the player? this is good because
-            // the handler only lives in configuration not on the entity object.
-            Optional<String> dialogId = DialogBehaviour.getDialog(target);
-
-            // todo: move this part into the create handler
-            // todo: in here: send an event to the handler.
-            // this is the EXT way. messages and handlers.
-
-            if (dialogId.isPresent()) {
-                Dialog dialog = dialogDB.getById(dialogId.get());
-                ActiveDialog active = new ActiveDialog(game, dialog, source, target);
-                dialogs.put(request.getSourceId(), active);
-                return Future.succeededFuture(active);
+                if (loaded.enabled(source, target)) {
+                    ActiveDialog active = new ActiveDialog(game, dialog.get(), source, target);
+                    dialogs.put(sourceId, active);
+                    return Future.succeededFuture(active);
+                } else {
+                    return Future.failedFuture(new DialogTargetBusyException());
+                }
             } else {
-                return Future.failedFuture(new NoCreatureDialogException(request.getTargetId()));
+                return Future.failedFuture(new NoSuchDialogException(dialogId));
             }
         } else {
-            return Future.failedFuture(new DialogTargetOutOfRangeException(request.getTargetId()));
+            return Future.failedFuture(new DialogTargetOutOfRangeException(target.getId()));
         }
-    }
-
-    /**
-     * Registers a dialog handler on the given entity.
-     *
-     * @param entity   the entity to register the dialog handler on.
-     * @param dialogId the id of the dialog to use.
-     */
-    public void register(Entity entity, String dialogId) {
-        //entity.protocol().use(HANDLER_DIALOG, (event) -> start(event.getSource(), dialogId));
     }
 
     /**
@@ -114,7 +93,36 @@ public class DialogEngine {
      *
      * @param id of the initiating entity.
      */
-    public void close(String id) {
+    public void leave(String id) {
         dialogs.remove(id);
+    }
+
+    /**
+     * Registers a dialog handler on the given entity.
+     *
+     * @param target   the entity to register the dialog handler on.
+     * @param dialogId the id of the dialog to use.
+     */
+    public void register(Entity target, String dialogId) {
+        target.getInteractions().add(Interaction.DIALOG);
+        target.getAttributes().put(DIALOG_ID, dialogId);
+    }
+
+    private boolean targetInRange(Entity source, Entity target) {
+        Vector vector = source.getVector().copy()
+                .setSize(DIALOG_RANGE);
+
+        return game.creatures().radius(vector).contains(target) ||
+                game.entities().radius(vector).contains(target);
+    }
+
+    /**
+     * Emits a chat message from the given creature.
+     *
+     * @param target  the talking entity.
+     * @param message the text of the message to send.
+     */
+    public void say(String target, String message) {
+        game.publish(new ChatEvent(game.getById(target), message));
     }
 }

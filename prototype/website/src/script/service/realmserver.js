@@ -9,63 +9,64 @@ class RealmServer {
     }
 
     connect(callback) {
-        this.connection.send(callback, 'connect', {
+        this.connection.send('connect', {
             token: this.realm.token
-        });
+        }, callback);
     }
 
     characterlist(callback) {
-        this.connection.send(callback, 'character.list');
+        this.connection.send('character.list', {}, callback);
     }
 
     afflictioninfo(callback) {
-        this.connection.send(callback, 'afflictioninfo');
+        this.connection.send('afflictioninfo', {}, callback);
     }
 
     spellinfo(callback) {
-        this.connection.send(callback, 'spellinfo');
+        this.connection.send('spellinfo', {}, callback);
     }
 
     classinfo(callback) {
-        this.connection.send(callback, 'classinfo');
+        this.connection.send('classinfo', {}, callback);
     }
 
     create(callback, className, characterName) {
-        this.connection.send(callback, 'character.create', {
+        this.connection.send('character.create', {
             className: className,
             character: characterName
-        });
+        }, callback);
     }
 
     remove(callback, characterName) {
-        this.connection.send(callback, 'character.remove', {
+        this.connection.send('character.remove', {
             character: characterName
-        });
+        }, callback);
     }
 
     join(callback, characterName) {
-        this.connection.send(callback, 'join', {
+        this.connection.send('join', {
             character: characterName
-        });
+        }, callback);
     }
 
     cast(callback, spellName, spellTarget) {
-        this.connection.send(callback, 'cast', {
+        this.connection.send('cast', {
             spellName: spellName,
             spellTarget: spellTarget
-        });
+        }, callback);
     }
 
     leave() {
-        this.connection.send({
+        this.connection.send('leave', {}, {
             accepted: () => {
                 // disconnected successfully.
+                console.log('on player leave')
             },
             error: (e) => {
                 // failed to disconnect gracefully.
                 application.error(e.message);
             }
-        }, 'leave');
+        });
     }
 
     close() {

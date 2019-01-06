@@ -19,7 +19,7 @@ window.Game = class Game extends Canvas {
 
         server.join({
             accepted: (resp) => {
-                this.spawnHandler.handle(resp);
+                this.spawner.handle(resp);
                 done.accepted();
             },
             error: (resp) => {
@@ -31,16 +31,17 @@ window.Game = class Game extends Canvas {
     onScriptShutdown() {
         if (game) {
             game.shutdown();
-            inputManager.shutdown();
+            input.shutdown();
         }
         server.leave();
     }
 
     init() {
         this.camera = new Camera();
-        this.spawnHandler = new SpawnHandler(this.camera);
-        this.movementHandler = new MovementHandler();
-        this.chatHandler = new ChatHandler();
+        this.spawner = new SpawnHandler(this.camera);
+        this.movement = new MovementHandler();
+        this.chat = new ChatHandler();
+        this.dialogs = new DialogHandler();
 
         this.fps = 0;
         setInterval(() => {

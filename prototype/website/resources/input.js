@@ -1,4 +1,4 @@
-class InputManager {
+window. InputManager = class InputManager {
 
     constructor() {
         this.keyDownListeners = {};
@@ -74,9 +74,9 @@ class InputManager {
         } else {
             pressed = this.keys[keys];
         }
-        return pressed;
+        return !(this.blocked) && pressed;
     }
 
-}
+};
 
-var inputManager = new InputManager();
+var input = new InputManager();

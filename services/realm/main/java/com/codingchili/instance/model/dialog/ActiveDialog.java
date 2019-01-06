@@ -2,6 +2,7 @@ package com.codingchili.instance.model.dialog;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.Creature;
+import com.codingchili.instance.model.entity.Entity;
 import com.codingchili.instance.scripting.Bindings;
 
 import java.util.Set;
@@ -22,12 +23,13 @@ public class ActiveDialog {
     private Option cursor;
 
     /**
-     * @param dialog
-     * @param source
-     * @param target
+     * @param dialog the dialog to be used.
+     * @param source the dialog initiator.
+     * @param target the dialog holder.
      */
-    public ActiveDialog(GameContext game, Dialog dialog, Creature source, Creature target) {
+    public ActiveDialog(GameContext game, Dialog dialog, Entity source, Entity target) {
         this.bindings = new Bindings()
+                .setContext(game)
                 .set(ID_LOG, (Consumer<String>) this::log)
                 .setSource(source)
                 .setTarget(target);
@@ -54,7 +56,7 @@ public class ActiveDialog {
     }
 
     /**
-     * @param optionKey
+     * @param optionKey the key name for the response.
      */
     public void say(String optionKey) {
         Option option = dialog.get(optionKey);
@@ -68,18 +70,18 @@ public class ActiveDialog {
     }
 
     /**
-     * @return
+     * @return the available steps.
      */
     public Set<Line> lines() {
         return cursor.getNext().stream()
-                .filter(next -> dialog.get(next.getOption()).isAvailable(bindings))
+                .filter(next -> dialog.get(next.getId()).isAvailable(bindings))
                 .collect(Collectors.toSet());
     }
 
     /**
-     * @return
+     * @return true if the dialog has ended.
      */
     public boolean isEnded() {
-        return cursor.getNext().isEmpty();
+        return cursor.getNext().isEmpty() || cursor.getText() == null;
     }
 }

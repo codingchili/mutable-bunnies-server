@@ -12,10 +12,11 @@ import java.util.*;
 public abstract class SimpleEntity implements Entity {
     protected transient GameContext game;
     protected transient EventProtocol protocol = new EventProtocol(this);
+    protected transient Set<String> interactions = new HashSet<>();
     private String id = UUID.randomUUID().toString();
     protected Map<String, Object> attributes = new HashMap<>();
     protected String name = "<no name>";
-    protected com.codingchili.instance.model.entity.Vector vector = new com.codingchili.instance.model.entity.Vector();
+    protected Vector vector = new Vector();
 
     @Override
     public void setContext(GameContext game) {
@@ -55,8 +56,9 @@ public abstract class SimpleEntity implements Entity {
         return name;
     }
 
-    public void setName(String name) {
+    public Entity setName(String name) {
         this.name = name;
+        return this;
     }
 
     @Override
@@ -68,10 +70,9 @@ public abstract class SimpleEntity implements Entity {
         this.id = id;
     }
 
-    @JsonIgnore
     @Override
     public Set<String> getInteractions() {
-        return protocol.available();
+        return interactions;
     }
 
     @Override

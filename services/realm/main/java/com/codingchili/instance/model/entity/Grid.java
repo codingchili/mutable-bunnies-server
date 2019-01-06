@@ -23,7 +23,6 @@ public class Grid<T extends Entity> {
      */
     public Grid(int width) {
         this.gridWidth = width;
-        this.cellSize = Math.max(width / 256, 256);
     }
 
     /**
@@ -35,7 +34,7 @@ public class Grid<T extends Entity> {
     public Grid<T> update(Ticker ticker) {
         Map<Integer, List<T>> buffer = new HashMap<>();
         entities.values().forEach((entity) -> {
-            entity.getVector().cells(cellSize, gridWidth).forEach(id -> {
+            entity.getVector().cells(cellSize).forEach(id -> {
                 List<T> list = buffer.computeIfAbsent(id, key -> new ArrayList<>());
                 list.add(entity);
             });
@@ -146,18 +145,25 @@ public class Grid<T extends Entity> {
      * @return entities that exists within the given radius.
      */
     public Set<T> radius(Vector vector) {
-        return adjacent(vector).stream().filter(entity -> {
+        Set<T> results = new HashSet<>();
 
-            // check the distance from the given vector to entities in adjacent buckets.
-            int distance = (int) Math.hypot(
-                    entity.getVector().getX() - vector.getX(),
-                    entity.getVector().getY() - vector.getY());
+        vector.cells(cellSize).forEach(bucket -> {
 
-            // consider large entities.
-            int max = vector.getSize() + entity.getVector().getSize();
+            cells.getOrDefault(bucket, Collections.emptyList()).forEach(entity -> {
+                // check the distance from the given vector to entities in adjacent buckets.
+                int distance = (int) Math.hypot(
+                        entity.getVector().getX() - vector.getX(),
+                        entity.getVector().getY() - vector.getY());
 
-            return (distance < max);
-        }).collect(Collectors.toSet());
+                // consider large entities.
+                int max = vector.getSize() + entity.getVector().getSize();
+
+                if (distance < max) {
+                    results.add(entity);
+                }
+            });
+        });
+        return results;
     }
 
     /**
@@ -167,8 +173,9 @@ public class Grid<T extends Entity> {
     public Set<T> adjacent(Vector vector) {
         Set<T> set = new HashSet<>();
 
-        vector.cells(cellSize, gridWidth).forEach(bucket ->
-                set.addAll(cells.getOrDefault(bucket, Collections.emptyList())));
+        vector.cells(cellSize).forEach(bucket -> {
+            set.addAll(cells.getOrDefault(bucket, Collections.emptyList()));
+        });
 
         return set;
     }

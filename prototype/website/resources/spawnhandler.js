@@ -73,9 +73,6 @@ window.SpawnHandler = class SpawnHandler {
 
         assetLoader.load((sprite) => {
             Object.assign(sprite, entity);
-            console.log('post-assign');
-            console.log(entity);
-            console.log(sprite);
             sprite.x = vector.x;
             sprite.y = vector.y;
             sprite.velocity = vector.velocity;
@@ -90,7 +87,7 @@ window.SpawnHandler = class SpawnHandler {
             sprite.buttonMode = true;
 
             sprite.on('pointerdown', () => {
-                console.log('on dude');
+                game.dialogs.start(entity.id);
             });
 
             game.stage.addChild(sprite);

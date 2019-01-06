@@ -101,15 +101,15 @@ public class Vector {
      * Returns the cells that the vector is placed in.
      *
      * @param cellSize  the size of the cells.
-     * @param gridWidth the size of the grid.
      * @return cell numbers that this vector exists within.
      */
-    public Collection<Integer> cells(final int cellSize, final int gridWidth) {
+    public Collection<Integer> cells(final int cellSize) {
         buckets.clear();
-        buckets.add(Math.round(((x + size) / cellSize) + ((y / cellSize) * gridWidth)));
-        buckets.add(Math.round(((x - size) / cellSize) + ((y / cellSize) * gridWidth)));
-        buckets.add(Math.round((x / cellSize) + (((y + size) / cellSize) * gridWidth)));
-        buckets.add(Math.round((x / cellSize) + (((y - size) / cellSize) * gridWidth)));
+        // todo: handle cells that cover more than two cells! if cellSize < size perform some loop.
+        buckets.add(Math.round(((x + size) / cellSize) + ((y / cellSize))));
+        buckets.add(Math.round(((x - size) / cellSize) + ((y / cellSize))));
+        buckets.add(Math.round((x / cellSize) + (((y + size) / cellSize))));
+        buckets.add(Math.round((x / cellSize) + (((y - size) / cellSize))));
         return buckets;
     }
 

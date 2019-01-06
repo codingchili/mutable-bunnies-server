@@ -14,6 +14,7 @@ class TextEffects {
         };
 
         server.connection.setHandler('affliction', event => {
+            let current = game;
             let target = game.lookup(event.targetId);
 
             let affliction = (({name, description, duration}) => ({name, description, duration}))(event);
@@ -24,12 +25,14 @@ class TextEffects {
             setTimeout(() => {
                 let afflictions = target.afflictions.list;
 
-                for (let i = 0; i < afflictions.length; i++) {
-                    if (afflictions[i].id === affliction.id) {
-                        target.afflictions.list.splice(i, 1);
+                if (current.isPlaying) {
+                    for (let i = 0; i < afflictions.length; i++) {
+                        if (afflictions[i].id === affliction.id) {
+                            target.afflictions.list.splice(i, 1);
 
-                        if (target.isPlayer) {
-                            application.characterUpdate(target);
+                            if (target.isPlayer) {
+                                application.characterUpdate(target);
+                            }
                         }
                     }
                 }

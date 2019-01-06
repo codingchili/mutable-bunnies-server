@@ -13,7 +13,7 @@ window.MovementHandler = class MovementHandler {
         this.last = performance.now();
         game.ticker(() => this._update());
 
-        inputManager.onKeysListener({
+        input.onKeysListener({
             up: (key) => {
                 this._sendUpdate();
             },
@@ -58,41 +58,41 @@ window.MovementHandler = class MovementHandler {
         let direction = 0;
         let velocity = 0;
 
-        if (inputManager.isPressed([LEFT, UP, RIGHT, DOWN])) {
+        if (input.isPressed([LEFT, UP, RIGHT, DOWN])) {
             // max velocity - its possible to request to move slower than max movement speed.
             velocity = 999.0;
         }
 
-        if (inputManager.isPressed(LEFT)) {
+        if (input.isPressed(LEFT)) {
             direction = 270;
-            if (inputManager.isPressed(DOWN)) {
+            if (input.isPressed(DOWN)) {
                 direction += 30;
             }
-            if (inputManager.isPressed(UP)) {
+            if (input.isPressed(UP)) {
                 direction -= 30;
             }
-        } else if (inputManager.isPressed(UP)) {
+        } else if (input.isPressed(UP)) {
             direction = 180;
-            if (inputManager.isPressed(RIGHT)) {
+            if (input.isPressed(RIGHT)) {
                 direction -= 60;
             }
-        } else if (inputManager.isPressed(RIGHT)) {
+        } else if (input.isPressed(RIGHT)) {
             direction = 90;
-            if (inputManager.isPressed(DOWN)) {
+            if (input.isPressed(DOWN)) {
                 direction -= 30;
             }
-        } else if (inputManager.isPressed(DOWN)) {
+        } else if (input.isPressed(DOWN)) {
             direction = 0;
         }
 
         direction = direction * Math.PI / 180;
 
-        server.connection.send((event) => this._onMovement(event), 'move', {
+        server.connection.send('move', {
             vector: {
                 direction: direction,
                 velocity: velocity
-            }
-        });
+            },
+        }, (event) => this._onMovement(event), );
     }
 
     _handle(event) {

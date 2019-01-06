@@ -3,7 +3,7 @@ package com.codingchili.instance.context;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.items.InventoryEngine;
-import com.codingchili.instance.model.npc.DialogEngine;
+import com.codingchili.instance.model.npc.*;
 import com.codingchili.instance.model.spells.MovementEngine;
 import com.codingchili.instance.model.spells.SpellEngine;
 import com.codingchili.realm.model.ClassDB;
@@ -63,6 +63,10 @@ public class GameContext {
         this.dialogs = new DialogEngine(this);
 
         instance.periodic(() -> TICK_INTERVAL_MS, instance.address(), this::tick);
+
+
+        add(new TalkingPerson().setName("Lilith the NPC"));
+        //add(new ListeningPerson());
     }
 
     private void tick(Long timer) {

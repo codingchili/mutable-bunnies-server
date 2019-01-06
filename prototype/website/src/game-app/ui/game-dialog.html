@@ -1,0 +1,172 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-progress/paper-progress.html">
+
+<!--
+    @author Robin Duda
+    Realm chat.
+ -->
+
+<dom-module id="game-dialog">
+    <link rel="import" href="../../style/theme.css" type="css">
+    <link rel="import" href="../../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+            }
+
+            #dialog {
+                pointer-events:auto;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                min-width: 428px;
+                z-index: 999;
+            }
+
+            .interface-box {
+                background-color: #000000;
+                opacity: 0.84;
+            }
+
+            span {
+                padding: 0.28rem;
+            }
+
+            .dialog-entity {
+                margin-top: 8px;
+                padding-left: 16px;
+                display: block;
+                color: var(--paper-grey-300);
+            }
+
+            .dialog-text {
+                display: block;
+                padding-left: 16px;
+                height: 76px;
+                color: var(--paper-grey-300);
+            }
+
+            .dialog-option {
+                display: block;
+            }
+
+            .dialog-option:hover {
+                color: #ff00cc;
+                cursor: pointer;
+            }
+
+            .dialog-option-list {
+                list-style-type: none;
+            }
+
+            #dialog-close {
+                position: absolute;
+                right: 8px;
+                top: 8px;
+            }
+
+            @keyframes fadein {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 0.64;
+                }
+            }
+
+            #container {
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                position: absolute;
+                display: none;
+                pointer-events: all;
+                z-index: 500;
+            }
+
+            #overlay {
+                width: 100%;
+                height: 100%;
+                z-index: 500;
+                background-color: black;
+                opacity: 0.64;
+                animation: fadein 1.2s ease 1;
+                pointer-events: none;
+            }
+        </style>
+
+        <div id="container">
+            <div id="overlay"></div>
+
+            <paper-material elevation="3" class="interface-box" id="dialog">
+                <iron-icon icon="icons:close" id="dialog-close" on-click="_stop"></iron-icon>
+
+                <span class="dialog-entity">[[entity]]</span>
+                <span class="dialog-text">[[text]]</span>
+
+                <ul class="dialog-option-list">
+                    <template is="dom-repeat" items="[[lines]]" as="line">
+                        <li><span class="dialog-option" on-click="_select">[[_parse(line.text)]]</span></li>
+                    </template>
+                </ul>
+
+            </paper-material>
+        </div>
+    </template>
+    <script>
+        class GameDialog extends Polymer.MutableData(Polymer.Element) {
+
+            static get is() {
+                return 'game-dialog';
+            }
+
+            constructor() {
+                super();
+                this.player = {};
+                this.entity = '';
+                this.text = '';
+                this.lines = [];
+
+                application.onCharacterLoaded(character => {
+                    this.player = character;
+                });
+
+                application.onDialogEvent(dialog => {
+                    // call update instead of start.
+                    this._update(dialog);
+                });
+            }
+
+            _update(dialog) {
+                if (dialog.end && !dialog.text) {
+                    // automatically close the dialog if there is no text in the end node.
+                    this._stop();
+                } else {
+                    this.entity = game.lookup(dialog.targetId).name;
+                    this.text = this._parse(dialog.text);
+                    this.lines = dialog.lines;
+                    this.$.container.style.display = 'block';
+                }
+            }
+
+            _parse(text) {
+                let player = this.player;
+                return eval("`" + text + "`");
+            }
+
+            _stop() {
+                this.$.container.style.display = 'none';
+                game.dialogs.end();
+            }
+
+            _select(e) {
+                game.dialogs.say(e.model.line.id);
+            }
+        }
+
+        window.customElements.define(GameDialog.is, GameDialog);
+    </script>
+</dom-module>

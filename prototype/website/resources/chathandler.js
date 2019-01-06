@@ -29,12 +29,12 @@ window.ChatHandler = class ChatHandler {
             }
         } else {
             msg = this.color1 + this.color2 + msg;
-            server.connection.send({
+            server.connection.send('chat', {
+                message: msg
+            }, {
                 accepted: (msg) => {
                     this._onChatMessage(msg);
                 }
-            }, 'chat', {
-                message: msg
             });
         }
     }

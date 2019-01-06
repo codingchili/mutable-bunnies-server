@@ -1,31 +1,54 @@
 ---
-name: "tutor"
+id: "tutor"
 start: "welcome"
-# button for next line: line separator in text?
-# next not defined: exit transition?
+enabled:
+  jexl:
+    return !target.attributes['insulted'];
 options:
   welcome:
-    text: "Welcome. I Am tutor."
+    text: "Welcome, ${player.name}. I am your island guide."
     next:
-    - option: "test1"
-      response: "Take me to test 1."
-    - option: "test2"
-      response: "Take me to test 2."
-    - option: "test3"
-      response: "Take me to test 3."
-  test1:
-    text: "welcome to test 1."
+    - id: "greeting"
+      text: "Nice to meet you."
+    - id: "buff"
+      text: "May I have the buff of haste?"
+    - id: "heal"
+      text: "I am in need of some healing."
+    - id: "quest"
+      text: "[complete quest] island expedition"
+    - id: "insult"
+      text: "I am a master adventurer and you are a noob."
+  greeting:
+    text: "Likewise."
     filter:
-      js: "false;"
-  test2:
-    text: "welcome to test 2."
+      jexl: "return true;"
+  buff:
     filter:
       jexl: "return true;"
     handler:
       jexl: |
-        log.accept('user selected option test2.');
-  test3:
-    text: "welcome to test 3."
+        context.spells().afflict(source, 'haste');
+  heal:
+    text: "Enjoy some health."
+    handler:
+      jexl: |
+        context.spells().heal(source, 20.0);
+    filter: 
+        jexl: "return true;"
     next:
-    - option: "welcome"
-      response: "Who are you again?"
+    - id: "welcome"
+      text: "Who are you again?"
+  quest:
+    text: "You have completed your first quest! Enjoy 500 experience points."
+    filter:
+      jexl: |
+        return source.attributes['quest#1'] == null;
+    handler:
+      jexl: |
+        source.attributes['quest#1'] = true;
+        context.spells().experience(source, 500);
+  insult:
+    text: "Shut up ${player.name}, you're only level ${player.stats['level']} pfft."
+    handler:
+      jexl: |
+        target.attributes['insulted'] = true;

@@ -102,11 +102,11 @@
                 this._setHandler();
 
                 this.$.message.addEventListener('blur', () => {
-                    inputManager.unblock();
+                    input.unblock();
                 }, true);
 
                 this.$.message.addEventListener('focus', () => {
-                    inputManager.block();
+                    input.block();
                 }, true);
 
                 application.onScriptsLoaded(() => {
@@ -119,7 +119,7 @@
                     this.add(msg);
                 });
                 
-                inputManager.onKeysListener({
+                input.onKeysListener({
                     down: () => {
                         if (this.shadowRoot.activeElement !== this.$.message) {
                             this.$.message.focus();

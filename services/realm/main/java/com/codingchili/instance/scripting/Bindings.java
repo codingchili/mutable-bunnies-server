@@ -3,6 +3,7 @@ package com.codingchili.instance.scripting;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.afflictions.Affliction;
 import com.codingchili.instance.model.entity.Creature;
+import com.codingchili.instance.model.entity.Entity;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
 
@@ -69,12 +70,12 @@ public class Bindings extends HashMap<String, Object> {
         return (Affliction) get(AFFLICTION);
     }
 
-    public Bindings setSource(Creature source) {
+    public Bindings setSource(Entity source) {
         put(SOURCE, source);
         return this;
     }
 
-    public Bindings setTarget(Creature target) {
+    public Bindings setTarget(Entity target) {
         put(TARGET, target);
         return this;
     }

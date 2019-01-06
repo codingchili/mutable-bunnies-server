@@ -6,6 +6,7 @@
     "canvas.js",
     "game.js",
     "input.js",
+    "dialog.js",
     "texteffects.js",
     "assetloader.js",
     "spawnhandler.js",
