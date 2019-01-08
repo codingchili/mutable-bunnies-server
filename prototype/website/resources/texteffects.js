@@ -59,11 +59,8 @@ class TextEffects {
             target.stats.health += event.value;
 
             if (target.isPlayer) {
-                console.log('target isPlayer');
                 console.log(target);
                 application.characterUpdate(target);
-            } else {
-                console.log('target NOT isPlayer');
             }
 
             event.value = event.value.toFixed(1);

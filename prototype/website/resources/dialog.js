@@ -32,7 +32,6 @@ window.DialogHandler = class DialogHandler {
     }
 
     end() {
-        console.log('sending end event');
         server.connection.send('end');
         input.unblock();
     }
