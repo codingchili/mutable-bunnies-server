@@ -28,10 +28,12 @@ window. InputManager = class InputManager {
     }
 
     block() {
+        console.log('input blocked');
         this.blocked = true;
     }
 
     unblock() {
+        console.log('unblock input');
         this.blocked = false;
     }
 

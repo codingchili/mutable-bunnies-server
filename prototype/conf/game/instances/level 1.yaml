@@ -16,3 +16,6 @@ onPlayerJoin:
       source.vector.x = spawn.x;
       source.vector.y = spawn.y;
     }
+onStartup:
+  jexl: |
+    context.npcs().spawn("Illicit Lilith");

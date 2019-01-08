@@ -1,11 +1,14 @@
 package com.codingchili.instance.context;
 
+import com.codingchili.instance.model.dialog.DialogEngine;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.items.InventoryEngine;
 import com.codingchili.instance.model.npc.*;
 import com.codingchili.instance.model.spells.MovementEngine;
 import com.codingchili.instance.model.spells.SpellEngine;
+import com.codingchili.instance.scripting.Bindings;
+import com.codingchili.instance.scripting.Scripted;
 import com.codingchili.realm.model.ClassDB;
 import io.vertx.core.impl.ConcurrentHashSet;
 
@@ -40,6 +43,7 @@ public class GameContext {
     private MovementEngine movement;
     private InventoryEngine inventory;
     private DialogEngine dialogs;
+    private NpcEngine npcs;
 
     private ClassDB classes;
     private Logger logger;
@@ -61,12 +65,19 @@ public class GameContext {
         this.inventory = new InventoryEngine(this);
         this.movement = new MovementEngine(this);
         this.dialogs = new DialogEngine(this);
+        this.npcs = new NpcEngine(this);
+
+        initialize(instance.settings());
 
         instance.periodic(() -> TICK_INTERVAL_MS, instance.address(), this::tick);
+    }
 
+    private void initialize(InstanceSettings settings) {
+        Scripted startup = settings.getOnStartup();
 
-        add(new TalkingPerson().setName("Lilith the NPC"));
-        //add(new ListeningPerson());
+        if (startup != null) {
+            startup.apply(new Bindings().setContext(this));
+        }
     }
 
     private void tick(Long timer) {
@@ -112,7 +123,7 @@ public class GameContext {
 
 
     /**
-     * @param runnable queues the runnable asynchornously to be executed in the next update.
+     * @param runnable queues the runnable asynchronously to be executed in the next update.
      * @return fluent.
      */
     public GameContext queue(Runnable runnable) {
@@ -148,6 +159,10 @@ public class GameContext {
         return inventory;
     }
 
+    public NpcEngine npcs() {
+        return npcs;
+    }
+
     public void close() {
         closed.set(true);
         publish(new ShutdownEvent());
@@ -158,11 +173,13 @@ public class GameContext {
     }
 
     public void setTicker(Ticker ticker) {
-        if (ticker.get() > 0) {
-            tickers.add(ticker);
-        } else {
-            tickers.remove(ticker);
-        }
+        queue(() -> {
+            if (ticker.get() > 0) {
+                tickers.add(ticker);
+            } else {
+                tickers.remove(ticker);
+            }
+        });
     }
 
     public void add(Creature creature) {

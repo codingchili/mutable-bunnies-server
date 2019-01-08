@@ -2,7 +2,7 @@ package com.codingchili.instance.controller;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.dialog.DialogRequest;
-import com.codingchili.instance.model.npc.DialogEngine;
+import com.codingchili.instance.model.dialog.DialogEngine;
 import com.codingchili.instance.model.npc.TalkingPerson;
 import com.codingchili.instance.model.spells.SpellResult;
 import com.codingchili.instance.model.spells.SpellTarget;

@@ -34,6 +34,7 @@ public class Grid<T extends Entity> {
     public Grid<T> update(Ticker ticker) {
         Map<Integer, List<T>> buffer = new HashMap<>();
         entities.values().forEach((entity) -> {
+
             entity.getVector().cells(cellSize).forEach(id -> {
                 List<T> list = buffer.computeIfAbsent(id, key -> new ArrayList<>());
                 list.add(entity);

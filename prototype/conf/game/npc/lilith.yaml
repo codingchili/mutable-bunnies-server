@@ -1,0 +1,18 @@
+---
+name: "Illicit Lilith"
+description: "Malevolent. Angry. Spirit."
+dialog: "tutor"
+point:
+  direction: 0.0
+  size: 24
+  x: 624.0
+  y: 325.0
+stats:
+  health: 1000.0
+  maxhealth: 1000.0
+spawn:
+  jexl: "return true;"
+death:
+  jexl: "return true;"
+tick:
+  jexl: "return true;"

@@ -5,6 +5,7 @@ import com.codingchili.instance.context.InstanceContext;
 import com.codingchili.instance.model.entity.Entity;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.events.*;
+import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.transport.InstanceRequest;
 import io.vertx.core.Future;
 

@@ -9,9 +9,14 @@ window.DialogHandler = class DialogHandler {
         server.connection.setHandler('dialog', (event) => this._onDialog(event));
     }
 
-    _onDialog(e) {
-        application.dialogEvent(e);
-        input.block();
+    _onDialog(dialog) {
+        application.dialogEvent(dialog);
+
+        if (dialog.end) {
+            input.unblock();
+        } else {
+            input.block();
+        }
     }
 
     start(targetId) {
@@ -27,6 +32,7 @@ window.DialogHandler = class DialogHandler {
     }
 
     end() {
+        console.log('sending end event');
         server.connection.send('end');
         input.unblock();
     }

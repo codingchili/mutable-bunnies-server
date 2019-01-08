@@ -1,8 +1,6 @@
 package com.codingchili.instance.model.entity;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import com.codingchili.instance.context.GameContext;
 
@@ -20,6 +18,7 @@ public class Vector {
     private static final float ACCELERATION_STEP = (1 - ACCELERATION_BASE) / GameContext.secondsToTicks(0.5);
     private transient List<Integer> buckets = new ArrayList<>();
     private transient float acceleration = 1.0f;
+    private transient boolean dirty = false;
     private float velocity = 0.0f;
     private float direction = 0.0f;
     private int size = 24;
@@ -32,6 +31,7 @@ public class Vector {
 
     public Vector setX(float x) {
         this.x = x;
+        this.dirty = true;
         return this;
     }
 
@@ -41,6 +41,7 @@ public class Vector {
 
     public Vector setY(float y) {
         this.y = y;
+        this.dirty = true;
         return this;
     }
 
@@ -104,12 +105,16 @@ public class Vector {
      * @return cell numbers that this vector exists within.
      */
     public Collection<Integer> cells(final int cellSize) {
-        buckets.clear();
+        if (velocity > 0 || dirty) {
+            dirty = false;
+            List<Integer> cells = new ArrayList<>();
+            cells.add(Math.round(((x + size) / cellSize) + ((y / cellSize))));
+            cells.add(Math.round(((x - size) / cellSize) + ((y / cellSize))));
+            cells.add(Math.round((x / cellSize) + (((y + size) / cellSize))));
+            cells.add(Math.round((x / cellSize) + (((y - size) / cellSize))));
+            buckets = cells;
+        }
         // todo: handle cells that cover more than two cells! if cellSize < size perform some loop.
-        buckets.add(Math.round(((x + size) / cellSize) + ((y / cellSize))));
-        buckets.add(Math.round(((x - size) / cellSize) + ((y / cellSize))));
-        buckets.add(Math.round((x / cellSize) + (((y + size) / cellSize))));
-        buckets.add(Math.round((x / cellSize) + (((y - size) / cellSize))));
         return buckets;
     }
 

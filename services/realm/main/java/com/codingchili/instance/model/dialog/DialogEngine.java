@@ -1,4 +1,4 @@
-package com.codingchili.instance.model.npc;
+package com.codingchili.instance.model.dialog;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.dialog.*;

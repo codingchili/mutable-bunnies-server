@@ -142,7 +142,6 @@
 
             _update(dialog) {
                 if (dialog.end && !dialog.text) {
-                    // automatically close the dialog if there is no text in the end node.
                     this._stop();
                 } else {
                     this.entity = game.lookup(dialog.targetId).name;

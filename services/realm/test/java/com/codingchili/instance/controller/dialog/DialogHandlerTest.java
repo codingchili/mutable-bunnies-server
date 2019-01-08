@@ -5,7 +5,6 @@ import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.realm.configuration.RealmSettings;
 import com.codingchili.instance.controller.DialogHandler;
 import com.codingchili.instance.model.dialog.DialogRequest;
-import com.codingchili.instance.model.npc.DialogPerson;
 import com.codingchili.instance.model.npc.TalkingPerson;
 import com.codingchili.instance.transport.InstanceRequest;
 import io.vertx.ext.unit.junit.VertxUnitRunner;

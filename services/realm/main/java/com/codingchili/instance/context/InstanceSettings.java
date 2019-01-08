@@ -6,6 +6,7 @@ import com.codingchili.instance.model.SpawnPoint;
 import com.codingchili.instance.model.entity.Node;
 import com.codingchili.instance.model.npc.Npc;
 import com.codingchili.instance.model.entity.Portal;
+import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class InstanceSettings implements Configurable {
     private List<Node> nodes = new ArrayList<>();
     private List<Npc> npc = new ArrayList<>();
     private List<SpawnPoint> spawns = new ArrayList<>();
+    private Scripted onStartup;
     private Scripted onPlayerJoin;
     private String name = "default";
     private int limit = 0;
@@ -73,6 +75,20 @@ public class InstanceSettings implements Configurable {
      */
     public void setOnPlayerJoin(Scripted onPlayerJoin) {
         this.onPlayerJoin = onPlayerJoin;
+    }
+
+    /**
+     * @return the script to run on startup.
+     */
+    public Scripted getOnStartup() {
+        return onStartup;
+    }
+
+    /**
+     * @param onStartup the script to run on startup.
+     */
+    public void setOnStartup(Scripted onStartup) {
+        this.onStartup = onStartup;
     }
 
     /**
