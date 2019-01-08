@@ -1,6 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 
 <!--
     @author Robin Duda
@@ -29,13 +30,13 @@
             }
         </style>
 
-        <paper-material elevation="3" class="interface-box" on-click="_characters">
+        <paper-material elevation="3" class="interface-box" on-down="_characters">
             <iron-icon icon="icons:close" class="menu-icon"></iron-icon>
         </paper-material>
 
     </template>
     <script>
-        class GameMenu extends Polymer.Element {
+        class GameMenu extends Polymer.GestureEventListeners(Polymer.Element) {
 
             static get is() {
                 return 'game-menu';

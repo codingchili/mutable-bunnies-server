@@ -1,6 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 
 <!--
     @author Robin Duda
@@ -102,14 +103,14 @@
             <div id="overlay"></div>
 
             <paper-material elevation="3" class="interface-box" id="dialog">
-                <iron-icon icon="icons:close" id="dialog-close" on-click="_stop"></iron-icon>
+                <iron-icon icon="icons:close" id="dialog-close" on-down="_stop"></iron-icon>
 
                 <span class="dialog-entity">[[entity]]</span>
                 <span class="dialog-text">[[text]]</span>
 
                 <ul class="dialog-option-list">
                     <template is="dom-repeat" items="[[lines]]" as="line">
-                        <li><span class="dialog-option" on-click="_select">[[_parse(line.text)]]</span></li>
+                        <li><span class="dialog-option" on-down="_select">[[_parse(line.text)]]</span></li>
                     </template>
                 </ul>
 
@@ -117,7 +118,7 @@
         </div>
     </template>
     <script>
-        class GameDialog extends Polymer.MutableData(Polymer.Element) {
+        class GameDialog extends Polymer.GestureEventListeners(Polymer.Element) {
 
             static get is() {
                 return 'game-dialog';

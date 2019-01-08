@@ -11,6 +11,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 <link rel="import" href="mega-loader.html">
 
 <!--
@@ -200,8 +201,8 @@
 
 
             <paper-tabs id="tabs" selected="{{page}}" no-slide link>
-                <paper-tab on-tap="trusted">Public</paper-tab>
-                <paper-tab on-tap="untrusted">Private</paper-tab>
+                <paper-tab on-down="trusted">Public</paper-tab>
+                <paper-tab on-down="untrusted">Private</paper-tab>
             </paper-tabs>
 
             <div hidden="{{trustedservers}}" class="mod-warning">
@@ -210,18 +211,18 @@
             </div>
 
             <div class="titles">
-                <paper-button class="name-title" on-tap="order" data-args="name">Name</paper-button>
-                <paper-button class="type" on-tap="order" data-args="type">Type</paper-button>
-                <paper-button class="reset" on-tap="order" data-args="lifetime">Reset</paper-button>
-                <paper-button class="players" on-tap="order" data-args="players">Players</paper-button>
-                <paper-button class="ping" on-tap="order" data-args="ping">Ping</paper-button>
+                <paper-button class="name-title" on-down="order" data-args="name">Name</paper-button>
+                <paper-button class="type" on-down="order" data-args="type">Type</paper-button>
+                <paper-button class="reset" on-down="order" data-args="lifetime">Reset</paper-button>
+                <paper-button class="players" on-down="order" data-args="players">Players</paper-button>
+                <paper-button class="ping" on-down="order" data-args="ping">Ping</paper-button>
             </div>
 
             <mega-loader class="loader" text="Loading realms.." enabled="[[loading]]"></mega-loader>
 
             <div class="list">
                 <template is="dom-repeat" items="{{realms}}" as="realm" sort="{{sort}}">
-                    <paper-material class="item noselect status" on-tap="select" hidden="{{realm.hidden}}"
+                    <paper-material class="item noselect status" on-down="select" hidden="{{realm.hidden}}"
                                     elevation="0">
                         <paper-ripple></paper-ripple>
                         <div class="name">
@@ -261,7 +262,7 @@
 </dom-module>
 
 <script>
-    class RealmList extends Polymer.Element {
+    class RealmList extends Polymer.GestureEventListeners(Polymer.Element) {
 
         static get is() {
             return 'realm-list';

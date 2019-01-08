@@ -1,21 +1,16 @@
 window.Canvas = class {
 
     constructor() {
-        this.app = new PIXI.Application();
-        this.stage = this.app.stage;//new PIXI.Container();
-        this.stage.interactive = true;
-
-        this.stage.click = () => {
-            console.log('wowza');
-        };
-
-        this.stage.on('pointerdown', () => {
-            console.log('wowza indeed');
+        this.app = new PIXI.Application({
+            antialias: false,
+            transparent: false,
+            resolution: 1,
+            backgroundColor: 0x0
         });
 
-        this.renderer = PIXI.autoDetectRenderer(512, 512,
-            {antialias: false, transparent: false, resolution: 1, backgroundColor: 0x0}
-        );//view: document.canvas
+        this.stage = this.app.stage;
+        this.stage.interactive = true;
+        this.renderer = this.app.renderer;
 
         if (!document.getElementById('canvas')) {
             document.body.appendChild(this.renderer.view);
@@ -29,8 +24,8 @@ window.Canvas = class {
     }
 
     shutdown() {
-        this.app.destroy(true);
         document.body.removeChild(this.renderer.view);
+        this.app.destroy(true);
     }
 
     resize() {

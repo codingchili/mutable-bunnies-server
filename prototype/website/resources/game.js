@@ -15,8 +15,6 @@ window.Game = class Game extends Canvas {
     onScriptsLoaded(done) {
         game.init();
 
-        console.log('init game');
-
         server.join({
             accepted: (resp) => {
                 this.spawner.handle(resp);

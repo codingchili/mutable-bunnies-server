@@ -1,6 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 
 <!--
     @author Robin Duda
@@ -127,7 +128,7 @@
         <paper-material elevation="3" class="interface-box">
             <template is="dom-repeat" items="{{spells}}" as="spell">
                 <template is="dom-if" if="{{_learned(spell, character)}}">
-                    <div on-click="_onCast">
+                    <div on-down="_onCast">
                         <img class="spell-icon" src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
                         <paper-tooltip class="spell-info" animation-delay="0" position="top">
                             <span class="title">[[spell.id]]</span>
@@ -169,7 +170,7 @@
 
     </template>
     <script>
-        class SpellBar extends Polymer.Element {
+        class SpellBar extends Polymer.GestureEventListeners(Polymer.Element) {
 
             static get is() {
                 return 'spell-bar';

@@ -37,8 +37,9 @@ window.SpawnHandler = class SpawnHandler {
             tree2.scale.x = 0.3;
             tree2.scale.y = 0.3;
 
-            sprite.interactive = true;
-            sprite.buttonMode = true;
+            // if interactions available
+            /*sprite.interactive = true;
+            sprite.buttonMode = true;*/
             sprite.anchor.set(0.5);
 
             game.stage.addChild(tree2);
@@ -83,12 +84,14 @@ window.SpawnHandler = class SpawnHandler {
             sprite.id = entity.id;
             game.entities[entity.id] = sprite;
 
-            sprite.interactive = true;
-            sprite.buttonMode = true;
+            if (sprite.interactions.length > 0) {
+                sprite.interactive = true;
+                sprite.buttonMode = true;
 
-            sprite.on('pointerdown', () => {
-                game.dialogs.start(entity.id);
-            });
+                sprite.on('pointerdown', () => {
+                    game.dialogs.start(entity.id);
+                });
+            }
 
             game.stage.addChild(sprite);
 

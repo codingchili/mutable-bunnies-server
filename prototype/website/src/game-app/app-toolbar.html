@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 <!--
     @author Robin Duda
     Polymer element for use as a footer.
@@ -40,16 +41,16 @@
         </style>
 
         <paper-material class="header" elevation="3">
-            <iron-icon icon="icons:home" on-tap="_home"></iron-icon>
+            <iron-icon icon="icons:home" on-down="_home"></iron-icon>
 
             <template is="dom-if" if="[[loggedin]]">
-                <iron-icon style="float:right;" icon="icons:close" on-tap="_logout"></iron-icon>
+                <iron-icon style="float:right;" icon="icons:close" on-down="_logout"></iron-icon>
             </template>
         </paper-material>
 
     </template>
     <script>
-        class AppToolbar extends Polymer.Element {
+        class AppToolbar extends Polymer.GestureEventListeners(Polymer.Element) {
 
             static get is() {
                 return 'app-toolbar';

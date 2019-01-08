@@ -7,6 +7,7 @@
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 <link rel="import" href="character-create.html">
 <link rel="import" href="mega-loader.html">
 
@@ -104,7 +105,7 @@
             <div hidden="[[create]]">
                 <div class="realm-title">
                     <h4 style="display: inline-block">{{realm.node}}</h4>
-                    <iron-icon on-tap="realmlist"
+                    <iron-icon on-down="realmlist"
                                icon="icons:reply"></iron-icon>
                 </div>
 
@@ -117,7 +118,7 @@
                             <paper-tooltip animation-delay="0" class="tooltip">
                                 <span class="tooltip-text">{{character.className}} Lv.{{character.stats.level}}</span>
                             </paper-tooltip>
-                            <iron-icon on-tap="removeCharacter"
+                            <iron-icon on-down="removeCharacter"
                                        icon="icons:close" class="character-remove"></iron-icon>
                             <img src="{{realm.resources}}/gui/class/{{character.className}}.svg"
                                  class="class-image">
@@ -140,7 +141,7 @@
 
     </template>
     <script>
-        class CharacterList extends Polymer.Element {
+        class CharacterList extends Polymer.GestureEventListeners(Polymer.Element) {
 
             static get is() {
                 return 'character-list';
@@ -208,8 +209,6 @@
                     count--;
                     if (count === 0) {
                         this.loadCharacters();
-                        console.log('loaded realm?');
-                        console.log(this.realm);
                         application.realmLoaded(this.realm);
                     }
                 };

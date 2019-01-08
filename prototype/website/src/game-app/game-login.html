@@ -9,6 +9,7 @@
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 
 <!--
     @author Robin Duda
@@ -64,7 +65,7 @@
                              on-keydown="submit" id="password-repeat"></paper-input>
                 <paper-input value="{{email}}" label="Email (optional)" on-keydown="submit"></paper-input>
 
-                <paper-button class="register flex" on-tap="showLoginForm">Back</paper-button>
+                <paper-button class="register flex" on-down="showLoginForm">Back</paper-button>
                 <paper-button raised class="primary flex" on-tap="register">Register</paper-button>
             </div>
 
@@ -80,7 +81,7 @@
 </dom-module>
 
 <script>
-    class GameLogin extends Polymer.Element {
+    class GameLogin extends Polymer.GestureEventListeners(Polymer.Element) {
 
         static get is() {
             return 'game-login';
