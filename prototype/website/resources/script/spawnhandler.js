@@ -12,17 +12,17 @@ window.SpawnHandler = class SpawnHandler {
                 let startX = z * (sprite.width / 2);
                 let startY = z * (sprite.height / 2 - 14);
                 for (let i = 0; i < 30; i++) {
-                    let ground = new PIXI.Sprite(PIXI.loader.resources["background_snow.png"].texture);
+                    let ground = new PIXI.Sprite(PIXI.loader.resources["game/map/background_snow.png"].texture);
                     ground.x = (sprite.width / 2) * i + startX;
                     ground.y = (-sprite.height / 2 + 14) * i + startY;
                     ground.layer = -1;
                     game.stage.addChild(ground);
                 }
             }
-        }, "background_snow.png");
+        }, "game/map/background_snow.png");
 
         assetLoader.load((sprite) => {
-            let tree = new PIXI.Sprite(PIXI.loader.resources["tree.png"].texture);
+            let tree = new PIXI.Sprite(PIXI.loader.resources["game/map/tree.png"].texture);
             tree.x = 300;
             tree.y = 275;
             tree.scale.x = 0.2;
@@ -30,7 +30,7 @@ window.SpawnHandler = class SpawnHandler {
             tree.layer = 0;
             game.stage.addChild(tree);
 
-            let tree2 = new PIXI.Sprite(PIXI.loader.resources["tree.png"].texture);
+            let tree2 = new PIXI.Sprite(PIXI.loader.resources["game/map/tree.png"].texture);
             tree2.x = 375;
             tree2.y = 300;
             tree2.layer = 0;
@@ -43,7 +43,7 @@ window.SpawnHandler = class SpawnHandler {
             sprite.anchor.set(0.5);
 
             game.stage.addChild(tree2);
-        }, "tree.png");
+        }, "game/map/tree.png");
 
         assetLoader.begin();
     }
@@ -102,7 +102,7 @@ window.SpawnHandler = class SpawnHandler {
                 this.camera.focus(sprite);
             }
 
-        }, "chr.png").begin();
+        }, "game/character/chr.png").begin();
     }
 
     isPlayer(entity) {

@@ -33,7 +33,7 @@ class Patcher {
     update(worker) {
         this.worker = worker;
 
-        if (this.patch.version == this.getVersion()) {
+        if (this.patch.version === this.getVersion()) {
             this.patch.files = this.getFiles(worker);
             this.worker.completed();
         } else {
@@ -49,7 +49,7 @@ class Patcher {
     }
 
     isUpToDate(version) {
-        return this.getVersion() == version;
+        return this.getVersion() === version;
     }
 
     getVersion() {
@@ -101,7 +101,7 @@ class Patcher {
                  save[key] = file;
                  i++;
 
-                 if (i == Object.keys(patch.files).length) {
+                 if (i === Object.keys(patch.files).length) {
                     localStorage.setItem("files@" + this.url, JSON.stringify(save));
                  }
              };
@@ -131,7 +131,7 @@ class Patcher {
         function countdown(file) {
             patch.size += file.size;
             latch--;
-            if (latch == 0) {
+            if (latch === 0) {
                 done();
             }
         }
@@ -139,11 +139,11 @@ class Patcher {
         Object.keys(patch.files).forEach((key, index) => {
            let file = patch.files[key];
 
-           if (file.size == undefined) {
+           if (file.size === undefined) {
                let xhr = new XMLHttpRequest();
                xhr.open("HEAD", this.url + key, true);
                xhr.onreadystatechange = () => {
-                   if (xhr.readyState == 2) {
+                   if (xhr.readyState === 2) {
                        file.size = parseInt(xhr.getResponseHeader("Content-Length"));
                        countdown(file);
                    }

@@ -1,24 +1,21 @@
 {
-  "version": "1.3.0",
+  "version": "1.3.1",
   "name": "Swift jaegerbars",
   "executable": [
-    "pixi.js",
-    "canvas.js",
-    "game.js",
-    "input.js",
-    "dialog.js",
-    "texteffects.js",
-    "assetloader.js",
-    "spawnhandler.js",
-    "chathandler.js",
-    "movementhandler.js",
-    "camera.js"
+    "script/pixi.js",
+    "script/canvas.js",
+    "script/game.js",
+    "script/input.js",
+    "script/dialog.js",
+    "script/texteffects.js",
+    "script/assetloader.js",
+    "script/spawnhandler.js",
+    "script/chathandler.js",
+    "script/movementhandler.js",
+    "script/camera.js"
   ],
   "files": {
-    "chr.png": {},
-    "chr0.png": {},
-    "chr1.png": {},
-    "tree.png": {},
-    "background_snow.png": {}
+    "game/character/chr.png": {},
+    "game/map/background_snow.png": {}
   }
 }

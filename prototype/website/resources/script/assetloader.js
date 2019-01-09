@@ -25,14 +25,14 @@ class AssetLoader {
 
         let loader = PIXI.loader.pre((res, next) => {
             // load files that has been loaded by the patcher.
-            if (patch.files[res.url] != undefined) {
+            if (patch.files[res.url] !== undefined) {
                 res.xhr = patch.files[res.url].xhr;
                 res.xhrType = 'blob';
                 res.data = patch.files[res.url].data;
                 res.complete();
             } else {
                 // if not loaded by patcher perform on-demand xhr load.
-                res.url = "/resources/" + res.url;
+                res.url = application.realm.resources + "/" + res.url;
             }
             next();
         });
