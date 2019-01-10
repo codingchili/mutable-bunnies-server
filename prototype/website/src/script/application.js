@@ -5,7 +5,7 @@
  */
 
 class Application {
-    
+
     constructor() {
         this.development = {
             autologin: true,
@@ -46,6 +46,14 @@ class Application {
         application.publish('onLogout', {});
         application.view('error-dialog');
         application.publish('onError', {text: error, callback: application.showLogin});
+
+        if (game) {
+            try {
+                game.shutdown();
+            } catch (e) {
+                console.log(e);
+            }
+        }
     }
 
     selectRealm(realm) {
