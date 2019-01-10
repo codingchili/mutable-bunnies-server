@@ -35,6 +35,8 @@ window.Canvas = class {
         this.renderer.view.style.left = "0px";
         this.renderer.view.style.right = "0px";
         this.renderer.view.style.bottom = "0px";
+        this.renderer.view.ondragstart = () => false;
+        this.renderer.view.ondrop = () => false;
         this.renderer.autoResize = true;
         this.renderer.resize(window.innerWidth, window.innerHeight);
     }
