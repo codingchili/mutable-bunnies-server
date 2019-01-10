@@ -84,7 +84,7 @@ public class DialogEngine {
                 return Future.failedFuture(new NoSuchDialogException(dialogId));
             }
         } else {
-            return Future.failedFuture(new DialogTargetOutOfRangeException(target.getId()));
+            return Future.failedFuture(new DialogTargetOutOfRangeException());
         }
     }
 

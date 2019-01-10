@@ -21,10 +21,6 @@ window.MovementHandler = class MovementHandler {
                 this._update();
             }
         }, [UP, RIGHT, LEFT, DOWN]);
-
-        application.onDialogEvent(() => {
-            this._send(0, 0);
-        });
     }
 
     _tick() {

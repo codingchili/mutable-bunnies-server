@@ -6,7 +6,17 @@
 window.DialogHandler = class DialogHandler {
 
     constructor() {
-        server.connection.setHandler('dialog', (event) => this._onDialog(event));
+
+        server.connection.setHandler('dialog', (event) => {
+            this._onDialog(event);
+            game.movement._send(0, 0);
+        });
+
+        server.connection.setHandler('talk', {
+            error: (event) => {
+                texts.chat(game.lookup(application.character.id), {text: event.message});
+            }
+        });
     }
 
     _onDialog(dialog) {

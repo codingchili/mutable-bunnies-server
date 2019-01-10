@@ -157,14 +157,14 @@ class TextEffects {
     }
 
     physical(target, event) {
-        textEffects.hitText(target, event.value, {
+        texts.hitText(target, event.value, {
             begin: '#ff1800',
             end: '#ff0f00',
         });
     }
 
     heal(target, event) {
-        textEffects.hitText(target, '+' + event.value, {
+        texts.hitText(target, '+' + event.value, {
             begin: '#06ff00',
             end: '#13ff01',
             float: true
@@ -172,14 +172,14 @@ class TextEffects {
     }
 
     magic(target, event) {
-        textEffects.hitText(target, event.value, {
+        texts.hitText(target, event.value, {
             begin: '#ff03f5',
             end: '#ff00cf',
         });
     }
 
     experience(target, event) {
-        textEffects.hitText(target, '+' + event.value, {
+        texts.hitText(target, '+' + event.value, {
             begin: '#ffc200',
             end: '#ffc200',
             float: true
@@ -187,21 +187,21 @@ class TextEffects {
     }
 
     trueDamage(target, event) {
-        textEffects.hitText(target, event.value, {
+        texts.hitText(target, event.value, {
             begin: '#ffeaf9',
             end: '#ff0702',
         });
     }
 
     poison(target, event) {
-        textEffects.hitText(target, event.value, {
+        texts.hitText(target, event.value, {
             begin: '#ffcc00',
             end: '#0bb001',
         });
     }
 
     chat(target, event) {
-        textEffects.hitText(target, event.text, {
+        texts.hitText(target, event.text, {
             begin: event.color1 || '#ffd8f7',
             end: event.color2 || '#ffe6eb',
             float: true,
@@ -210,4 +210,4 @@ class TextEffects {
     }
 }
 
-var textEffects = new TextEffects();
+var texts = new TextEffects();

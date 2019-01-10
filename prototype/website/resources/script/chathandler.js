@@ -9,7 +9,7 @@ window.ChatHandler = class ChatHandler {
 
         this.onChatMessage((msg) => {
             if (msg.text) {
-                textEffects.chat(game.lookup(msg.source), this._parseColors(msg));
+                texts.chat(game.lookup(msg.source), this._parseColors(msg));
             }
         });
     }
