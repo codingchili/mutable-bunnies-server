@@ -62,7 +62,7 @@ public class SpellEngine {
         if (spell.isPresent()) {
 
             if (caster.getSpells().learned(spellName)) {
-                if (caster.getSpells().cooldown(spell.get())) {
+                if (caster.getSpells().isOnCooldown(spell.get())) {
                     return SpellResult.COOLDOWN;
                 } else {
                     ActiveSpell active = new ActiveSpell(spell.get())
@@ -136,7 +136,7 @@ public class SpellEngine {
      */
     public void charge(Creature caster, String spellName) {
         spells.getByName(spellName).ifPresent(spell -> {
-            caster.getSpells().charge(spell);
+            caster.getSpells().isCharged(spell);
         });
     }
 

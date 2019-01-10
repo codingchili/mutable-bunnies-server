@@ -9,14 +9,28 @@ import java.util.*;
  * @author Robin Duda
  * <p>
  * Spell state that is stored on creatures, handles cooldowns and spell charges.
+ * <p>
+ * charges - charges can be consumed instead of waiting for a spells cooldown to pass.
+ * cooldown - the amount of milliseconds that needs to pass before a spell can be cast again.
+ * global cooldown - the amount of milliseconds that needs to pass between casting a spell -
+ * this applies even if there are charges available for the given spell.
+ * <p>
+ * Unix epochs are used to set the cooldown and gcd. It is up to the caller to determine
+ * if the point in time has passed. This is better than using a boolean because the delay of
+ * the network does not affect the cooldown/gcd state (clients are kept in sync more accurately.)
  */
 public class SpellState {
-    private static final Integer GCD_MS = 250; // todo: externalize.
+    private static final Integer GCD_MS = 250;
     private Set<String> learned = new HashSet<>();
     private Map<String, Long> casted = new HashMap<>();
     private Map<String, Integer> charges = new HashMap<>();
     private Long gcd = 0L;
 
+    /**
+     * Consumes a charge for the given spell if available - otherwise puts the spell on cooldown.
+     *
+     * @param spell the spell to be put on cooldown.
+     */
     public void setCooldown(Spell spell) {
         long now = Instant.now().toEpochMilli();
         long cooldownEndsAt = now + (1000 * spell.getCooldown().longValue());
@@ -26,9 +40,17 @@ public class SpellState {
         charges.compute(spell.getId(), (id, count) -> (count == null) ? 0 : (count -= 1));
     }
 
-    public boolean cooldown(Spell spell) {
-        if (!gcd()) {
-            if (charges(spell)) {
+    /**
+     * Checks if a spell is on cooldown - a spell is on cooldown if the global cooldown is active,
+     * if there are no charges available and finally if the spell was last put on cooldown within
+     * the configured cooldown for the spell.
+     *
+     * @param spell the spell to check if it is on cooldown.
+     * @return true if the spell is on cooldown and cannot be casted.
+     */
+    public boolean isOnCooldown(Spell spell) {
+        if (!isOnGCD()) {
+            if (charges(spell) > 0) {
                 // disregard cooldown if there are charges available.
                 return false;
             } else {
@@ -42,18 +64,48 @@ public class SpellState {
         }
     }
 
-    private boolean gcd() {
+    private boolean isOnGCD() {
         return System.currentTimeMillis() < gcd;
     }
 
-    private boolean charges(Spell spell) {
-        if (spell.charges == 1) {
-            return false; // no charges available for consumption.
-        }
-        charges.putIfAbsent(spell.id, 0);
-        return (charges.get(spell.getId()) > 0);
+    /**
+     * @return the epoch in milliseconds of when the last activated global cooldown ends.
+     * this point in time could have already passed.
+     */
+    public Long gcd() {
+        return gcd;
     }
 
+    /**
+     * Returns the point in time when the given spells cooldown ended.
+     *
+     * @param spell the spell to get the cooldown for.
+     * @return the epoch in milliseconds when the last cooldown of this spell ended.
+     */
+    public long cooldown(Spell spell) {
+        return casted.getOrDefault(spell.getId(), 0L);
+    }
+
+    /**
+     * Check the number of available charges for the given spell.
+     *
+     * @param spell the spell to check how many charges are available.
+     * @return an integer indicating number of charges available.
+     */
+    public int charges(Spell spell) {
+        if (spell.charges == 1) {
+            return 1; // no charges available for consumption.
+        }
+        charges.putIfAbsent(spell.id, 0);
+        return charges.get(spell.getId());
+    }
+
+    /**
+     * Processes the current cooldown and generates new charges if enough time has passed.
+     *
+     * @param spells      a reference to the spell database.
+     * @param currentTick a reference to the current tick.
+     */
     public void tick(SpellDB spells, long currentTick) {
         for (String spellName : learned) {
 
@@ -61,13 +113,19 @@ public class SpellState {
                 int cooldown = GameContext.secondsToTicks(spell.getCooldown());
 
                 if (spell.charges > 1 && currentTick % cooldown == 0) {
-                    charge(spell);
+                    isCharged(spell);
                 }
             });
         }
     }
 
-    public void charge(Spell spell) {
+    /**
+     * Adds a charge for the given spell - has no effect if the owner of the spell-state
+     * has not learned the spell.
+     *
+     * @param spell the spell to add a charge for.
+     */
+    public void isCharged(Spell spell) {
         charges.compute(spell.getId(), (key, charges) -> {
 
             if (charges == null) {
@@ -82,26 +140,45 @@ public class SpellState {
         });
     }
 
+    /**
+     * @return a set of ID's of the spells that has been learned.
+     */
     public Collection<String> getLearned() {
         return learned;
     }
 
+    /**
+     * @param spellSet a set of spells to set as learned.
+     * @return fluent.
+     */
     public SpellState setLearned(Set<String> spellSet) {
         learned = spellSet;
         return this;
     }
 
-    public SpellState addLearned(String spell) {
-        learned.add(spell);
+    /**
+     * @param spellId the id of the spell to add as a learned spell.
+     * @return fluent.
+     */
+    public SpellState addLearned(String spellId) {
+        learned.add(spellId);
         return this;
     }
 
-    public SpellState setNotLearned(String spellName) {
-        learned.remove(spellName);
+    /**
+     * @param spellId the id of the spell to unlearn.
+     * @return fluent.
+     */
+    public SpellState setNotLearned(String spellId) {
+        learned.remove(spellId);
         return this;
     }
 
-    public boolean learned(String spell) {
-        return learned.contains(spell);
+    /**
+     * @param spellId the id of a spell to check if it has been learned.
+     * @return fluent.
+     */
+    public boolean learned(String spellId) {
+        return learned.contains(spellId);
     }
 }

@@ -1,18 +1,19 @@
 package com.codingchili.instance.model.events;
 
-import com.codingchili.instance.model.spells.ActiveSpell;
-import com.codingchili.instance.model.spells.SpellTarget;
+import com.codingchili.instance.model.spells.*;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * Emitted when a new spell is casted.
  */
 public class SpellCastEvent implements Event {
+    private SpellState state;
     private ActiveSpell spell;
 
     public SpellCastEvent(ActiveSpell spell) {
         this.spell = spell;
+        this.state = spell.getSource().getSpells();
     }
 
     public String getSpell() {
@@ -34,6 +35,18 @@ public class SpellCastEvent implements Event {
 
     public Float getCastTime() {
         return spell.getSpell().getCasttime();
+    }
+
+    public int getCharges() {
+        return state.charges(spell.getSpell());
+    }
+
+    public long getCooldown() {
+        return state.cooldown(spell.getSpell());
+    }
+
+    public long getGcd() {
+        return state.gcd();
     }
 
     @Override
