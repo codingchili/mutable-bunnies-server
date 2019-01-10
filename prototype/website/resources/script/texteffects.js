@@ -68,11 +68,11 @@ class TextEffects {
         });
 
         game.ticker(() => {
-            this.update();
+            this._update();
         });
     }
 
-    update() {
+    _update() {
         let delta = (performance.now() - this.last) / Game.MS_PER_FRAME;
 
         for (let i = 0; i < this.counters.length; i++) {
@@ -112,7 +112,7 @@ class TextEffects {
         this.last = performance.now();
     }
 
-    hitText(target, text, options) {
+    _create(target, text, options) {
         let style = new PIXI.TextStyle({
             fontFamily: 'Verdana',
             fontSize: 12,
@@ -127,7 +127,6 @@ class TextEffects {
         let counter = new PIXI.Text(text, style);
         counter.dir = (6.14 / 360) * Math.random() * 360;
 
-        // if event.critical
         if (options.critical) {
             style.fontSize = 16;
             counter.ttl = options.ttl || 120;
@@ -157,14 +156,14 @@ class TextEffects {
     }
 
     physical(target, event) {
-        texts.hitText(target, event.value, {
+        texts._create(target, event.value, {
             begin: '#ff1800',
             end: '#ff0f00',
         });
     }
 
     heal(target, event) {
-        texts.hitText(target, '+' + event.value, {
+        texts._create(target, '+' + event.value, {
             begin: '#06ff00',
             end: '#13ff01',
             float: true
@@ -172,14 +171,14 @@ class TextEffects {
     }
 
     magic(target, event) {
-        texts.hitText(target, event.value, {
+        texts._create(target, event.value, {
             begin: '#ff03f5',
             end: '#ff00cf',
         });
     }
 
     experience(target, event) {
-        texts.hitText(target, '+' + event.value, {
+        texts._create(target, '+' + event.value, {
             begin: '#ffc200',
             end: '#ffc200',
             float: true
@@ -187,25 +186,25 @@ class TextEffects {
     }
 
     trueDamage(target, event) {
-        texts.hitText(target, event.value, {
+        texts._create(target, event.value, {
             begin: '#ffeaf9',
             end: '#ff0702',
         });
     }
 
     poison(target, event) {
-        texts.hitText(target, event.value, {
+        texts._create(target, event.value, {
             begin: '#ffcc00',
             end: '#0bb001',
         });
     }
 
     chat(target, event) {
-        texts.hitText(target, event.text, {
+        texts._create(target, event.text, {
             begin: event.color1 || '#ffd8f7',
             end: event.color2 || '#ffe6eb',
             float: true,
-            ttl: Game.secondsToTicks(1.4)
+            ttl: Game.secondsToTicks(2.2)
         });
     }
 }
