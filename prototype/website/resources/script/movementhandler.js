@@ -11,19 +11,23 @@ window.MovementHandler = class MovementHandler {
         server.connection.setHandler('move', (event) => this._onMovement(event));
 
         this.last = performance.now();
-        game.ticker(() => this._update());
+        game.ticker(() => this._tick());
 
         input.onKeysListener({
             up: (key) => {
-                this._sendUpdate();
+                this._update();
             },
             down: (key) => {
-                this._sendUpdate();
+                this._update();
             }
         }, [UP, RIGHT, LEFT, DOWN]);
+
+        application.onDialogEvent(() => {
+            this._send(0, 0);
+        });
     }
 
-    _update() {
+    _tick() {
         let delta = performance.now() - this.last;
         for (let key in game.entities) {
             let entity = game.lookup(key);
@@ -54,7 +58,7 @@ window.MovementHandler = class MovementHandler {
         }
     }
 
-    _sendUpdate() {
+    _update() {
         let direction = 0;
         let velocity = 0;
 
@@ -86,7 +90,10 @@ window.MovementHandler = class MovementHandler {
         }
 
         direction = direction * Math.PI / 180;
+        this._send(direction, velocity);
+    }
 
+    _send(direction, velocity) {
         server.connection.send('move', {
             vector: {
                 direction: direction,

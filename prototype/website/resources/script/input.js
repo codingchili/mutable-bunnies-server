@@ -11,6 +11,11 @@ window. InputManager = class InputManager {
         // some extra variables because binding 'this' inline will produce different fn references.
         document.body.addEventListener('keydown', this.onDownCallback);
         document.body.addEventListener('keyup', this.onUpCallback);
+
+        window.onblur = () => {
+            game.movement._send(0, 0);
+            this.keys = {};
+        };
     }
 
     onKeysListener(callback, keys) {
