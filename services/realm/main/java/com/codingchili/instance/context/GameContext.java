@@ -202,7 +202,9 @@ public class GameContext {
         creatures.remove(entity.getId());
         structures.remove(entity.getId());
         unsubscribe(entity.getId());
-        publish(new SpawnEvent().setEntities(entity).setType(SpawnEvent.SpawnType.DESPAWN));
+        publish(new SpawnEvent()
+                .setEntities(entity)
+                .setType(SpawnEvent.SpawnType.DESPAWN));
     }
 
     private void unsubscribe(String subscriberId) {

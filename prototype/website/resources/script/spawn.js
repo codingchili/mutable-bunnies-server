@@ -4,17 +4,14 @@ window.SpawnHandler = class SpawnHandler {
         this.camera = camera;
 
         server.connection.setHandler('death', event => {
-            console.log('uh oh death');
-            console.log(event);
-            this.death(game.lookup(event.targetId));
+            this.death(game.lookup(event.targetId), game.lookup(event.sourceId));
         });
 
         server.connection.setHandler('spawn', event => {
-            console.log('GOT SPAWN EVENT');
             this.handle(event);
         });
 
-       /* assetLoader.load((sprite) => {
+        assetLoader.load((sprite) => {
             for (let z = 0; z < 30; z++) {
                 let startX = z * (sprite.width / 2);
                 let startY = z * (sprite.height / 2 - 14);
@@ -26,7 +23,7 @@ window.SpawnHandler = class SpawnHandler {
                     game.stage.addChild(ground);
                 }
             }
-        }, "game/map/background_snow.png");*/
+        }, "game/map/background_snow.png");
 
         assetLoader.load((sprite) => {
             let tree = new PIXI.Sprite(PIXI.loader.resources["game/map/tree.png"].texture);
@@ -69,15 +66,18 @@ window.SpawnHandler = class SpawnHandler {
                 this.spawn(entity);
             }
             if (event.spawn === 'DESPAWN') {
-                this.despawn(entity);
+                this.despawn(game.lookup(entity.id));
             }
         }
     }
 
     spawn(entity) {
         let vector = entity.vector;
-        console.log('spawn:');
-        console.log(entity);
+
+        if (entity.interactions.includes('loot')) {
+            // no supported yet.
+            return false;
+        }
 
         assetLoader.load((sprite) => {
             Object.assign(sprite, entity);
@@ -92,7 +92,7 @@ window.SpawnHandler = class SpawnHandler {
             sprite.id = entity.id;
             game.entities[entity.id] = sprite;
 
-            if (sprite.interactions.length > 0) {
+            if (sprite.interactions.includes('dialog')) {
                 sprite.interactive = true;
                 sprite.buttonMode = true;
 
@@ -109,7 +109,6 @@ window.SpawnHandler = class SpawnHandler {
                 this.camera.set(vector.x, vector.y);
                 this.camera.focus(sprite);
             }
-
         }, "game/character/chr.png").begin();
     }
 
@@ -117,19 +116,19 @@ window.SpawnHandler = class SpawnHandler {
         return entity.account === application.token.domain;
     }
 
-    death(entity) {
-        this.despawn(entity);
-
-        if (entity.isPlayer) {
-            console.log('hahahahahahahhahahahahahahahah')
+    death(target, source) {
+        if (target.isPlayer) {
+            game.scriptShutdown();
+            application.scriptShutdown();
+            application.showCharacters();
+        } else {
+            console.log(`kapow kapow, chat msg? at ${target.x}, {$target.y}`);
+            game.texts.chat(target, `${source.name} is undone.`);
         }
     }
 
     despawn(entity) {
-        entity = game.lookup(entity.id);
         game.stage.removeChild(entity);
-        console.log('desspawn');
-        console.log(entity);
         delete game.entities[entity.id];
     }
 };

@@ -148,7 +148,7 @@
                 margin-left: auto;
                 margin-right: auto;
                 display: block;
-                opacity: 0.12;
+                opacity: 0.22;
             }
 
             @media (max-width: 632px) {
@@ -299,8 +299,11 @@
 
                 <div class="list" style="padding-bottom:32px">
                     <paper-material elevation="0" class="character-class">
-                        <img src="{{realm.resources}}/gui/class/{{selected.name}}.svg"
-                             class="selected-class-image">
+
+                        <template is="dom-if" if="[[selected]]">
+                            <img src="{{realm.resources}}/gui/class/{{selected.name}}.svg"
+                                 class="selected-class-image">
+                        </template>
 
                         <paper-input id="name" class="character-name" value="{{characterName}}"
                                      label="Name"
@@ -321,10 +324,14 @@
         ready() {
             super.ready();
             this.showSelect();
-            this.selected = {name: 'Hunter'};
+            this.selected = false;//{name: 'Hunter'};
 
             application.onRealmLoaded((realm) => {
                 this.set('realm', realm);
+                this.spells = {};
+                realm.spells.forEach(spell => {
+                    this.spells[spell.id] = spell;
+                })
             });
         }
 
@@ -358,9 +365,9 @@
         }
 
         _getSpellDescription(spellId) {
-            let spell = this.realm.spells[spellId];
+            let spell = this.spells[spellId];
             if (spell) {
-                return spell.description;
+                return this.spells[spellId].description;
             } else {
                 return "No description, possible overpowered.";
             }

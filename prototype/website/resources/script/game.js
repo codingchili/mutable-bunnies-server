@@ -28,12 +28,14 @@ window.Game = class Game extends Canvas {
         application.gameLoaded();
     }
 
-    onScriptShutdown() {
+    scriptShutdown() {
         if (game) {
             game.shutdown();
             input.shutdown();
         }
-        server.leave();
+        if (game.lookup(application.character.id)) {
+            server.leave();
+        }
     }
 
     init() {
@@ -75,8 +77,8 @@ window.Game = class Game extends Canvas {
     }
 
     shutdown() {
-        super.shutdown();
         this.isPlaying = false;
+        super.shutdown();
     }
 
     lookup(id) {
@@ -88,18 +90,17 @@ window.Game = class Game extends Canvas {
     }
 
     loop() {
-        this.stage.children.sort(this.depthCompare);
-
-        this.fps++;
-
-        this.stage.x = this.camera.getX();
-        this.stage.y = this.camera.getY();
-
-        //Render the stage to see the animation
-        this.renderer.render(this.stage);
-
         //Loop this function at 60 frames per second
         if (this.isPlaying) {
+            this.stage.children.sort(this.depthCompare);
+
+            this.fps++;
+
+            this.stage.x = this.camera.getX();
+            this.stage.y = this.camera.getY();
+
+            //Render the stage to see the animation
+            this.renderer.render(this.stage);
             requestAnimationFrame(() => this.loop());
         }
     }

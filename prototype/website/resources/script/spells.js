@@ -9,16 +9,18 @@ window.Spells = class Spells  {
             console.log(cast);
             let now = new Date().getTime();
 
-            if (cast.cycle === 'CASTED') {
-                if (now < cast.gcd) {
-                    this.gcd(cast.gcd - now);
-                }
+            if (game.lookup(cast.source).isPlayer) {
+                if (cast.cycle === 'CASTED') {
+                    if (now < cast.gcd) {
+                        this.gcd(cast.gcd - now);
+                    }
 
-                if (now < cast.cooldown) {
-                    this.cooldown(cast.spell, cast.cooldown - now);
+                    if (now < cast.cooldown) {
+                        this.cooldown(cast.spell, cast.cooldown - now);
+                    }
                 }
+                this.charge(cast.spell, cast.charges);
             }
-            this.charge(cast.spell, cast.charges);
         });
     }
 

@@ -1,4 +1,3 @@
-
 // may load multiple resources at once: but resources added after the load call starts
 class AssetLoader {
 
@@ -38,17 +37,15 @@ class AssetLoader {
         });
 
         let isAllLoaded = true;
-        for (let i in this.processing) {
-            let asset = this.processing[i];
-            if (PIXI.loader.resources[asset.assetName]) {
-                // already loaded: call the callback instantly..
-                let sprite = new PIXI.Sprite(PIXI.loader.resources[asset.assetName].texture);
-                asset.callback(sprite);
-            } else {
+
+        this.processing.forEach((asset) => {
+            let resource = PIXI.loader.resources[asset.assetName];
+            if (!resource) {
                 loader.add(asset.assetName);
                 isAllLoaded = false;
             }
-        }
+        });
+
         // if all the assets are loaded - make sure to mark as complete.
         if (isAllLoaded) {
             this.loading = false;

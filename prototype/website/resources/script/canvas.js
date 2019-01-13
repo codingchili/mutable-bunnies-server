@@ -24,7 +24,12 @@ window.Canvas = class {
     }
 
     shutdown() {
-        document.body.removeChild(this.renderer.view);
+        try {
+            window.onresize = () => {};
+            document.body.removeChild(this.renderer.view);
+        } catch (e) {
+            console.log(e);
+        }
         this.app.destroy(true);
     }
 

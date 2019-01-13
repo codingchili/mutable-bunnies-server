@@ -114,12 +114,8 @@ class Application {
 
     onRealmLoaded(callback) {
         if (application.realm) {
-            console.log('realm loaded: notifying');
             callback(application.realm);
-        } else {
-            console.log('not loaded: await.');
         }
-
         application.subscribe('onRealmLoaded', callback);
     }
 

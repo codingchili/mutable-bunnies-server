@@ -65,9 +65,15 @@ class Connection {
         }
 
         if (this.open) {
-            this.ws.send(JSON.stringify(data));
+            if (this.ws.readyState === this.ws.OPEN) {
+                this.ws.send(JSON.stringify(data));
+            } else {
+                application.error("connection to server closed.");
+            }
         } else {
-            this.onConnected(() => this.send(route, data, callback));
+            if (!this.clientClosed) {
+                this.onConnected(() => this.send(route, data, callback));
+            }
         }
     }
 
