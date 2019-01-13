@@ -106,6 +106,7 @@ window.SpawnHandler = class SpawnHandler {
             if (this.isPlayer(sprite)) {
                 sprite.isPlayer = true;
                 application.characterLoaded(sprite);
+                game.setPlayer(sprite);
                 this.camera.set(vector.x, vector.y);
                 this.camera.focus(sprite);
             }
@@ -122,8 +123,7 @@ window.SpawnHandler = class SpawnHandler {
             application.scriptShutdown();
             application.showCharacters();
         } else {
-            console.log(`kapow kapow, chat msg? at ${target.x}, {$target.y}`);
-            game.texts.chat(target, `${source.name} is undone.`);
+            game.chat.add({'text': `${target.name} was undone by ${source.name}`, 'source': target.id});
         }
     }
 

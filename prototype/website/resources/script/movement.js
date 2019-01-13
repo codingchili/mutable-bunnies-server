@@ -1,15 +1,15 @@
-const UP = 'w'; //38;
-const LEFT = 'a'; // 37;
-const DOWN = 's'; // 40;
-const RIGHT = 'd'; // 39;
+const UP = 'w';
+const LEFT = 'a';
+const DOWN = 's';
+const RIGHT = 'd';
+const RUN_TOGGLE = 'z';
 const ACCELERATION_START = 0.4;
 const ACCELERATION_STEP = (1 - ACCELERATION_START) / Game.secondsToTicks(0.5);
 
 window.MovementHandler = class MovementHandler {
 
     constructor() {
-        server.connection.setHandler('move', (event) => this._onMovement(event));
-
+        this.run = true;
         this.last = performance.now();
         game.ticker(() => this._tick());
 
@@ -18,9 +18,14 @@ window.MovementHandler = class MovementHandler {
                 this._update();
             },
             down: (key) => {
+                if (key === RUN_TOGGLE) {
+                    this.run = !this.run;
+                }
                 this._update();
             }
-        }, [UP, RIGHT, LEFT, DOWN]);
+        }, [UP, RIGHT, LEFT, DOWN, RUN_TOGGLE]);
+
+        server.connection.setHandler('move', (event) => this._onMovement(event));
     }
 
     _tick() {
@@ -57,10 +62,10 @@ window.MovementHandler = class MovementHandler {
     _update() {
         let direction = 0;
         let velocity = 0;
+        let max = game.player.stats.movement * (this.run ? 1.0 : 0.6);
 
         if (input.isPressed([LEFT, UP, RIGHT, DOWN])) {
-            // max velocity - its possible to request to move slower than max movement speed.
-            velocity = 999.0;
+            velocity = max;
         }
 
         if (input.isPressed(LEFT)) {
@@ -95,7 +100,7 @@ window.MovementHandler = class MovementHandler {
                 direction: direction,
                 velocity: velocity
             },
-        }, (event) => this._onMovement(event), );
+        }, (event) => this._onMovement(event),);
     }
 
     _handle(event) {

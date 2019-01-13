@@ -99,8 +99,6 @@
                 this.set("messages", []);
                 this.set("message", "");
 
-                this._setHandler();
-
                 this.$.message.addEventListener('blur', () => {
                     input.unblock();
                 }, true);
@@ -109,13 +107,13 @@
                     input.block();
                 }, true);
 
-                application.onScriptsLoaded(() => {
+                application.onGameLoaded(() => {
                     this._setHandler();
                 });
             }
 
             _setHandler() {
-                chatHandler.onChatMessage(msg => {
+                game.chat.onChatMessage(msg => {
                     this.add(msg);
                 });
                 
@@ -131,7 +129,7 @@
 
             send() {
                 if (this.message.length !== 0) {
-                    chatHandler.send(this.message);
+                    game.chat.send(this.message);
                     this.set("message", "");
                     this.$.message.blur();
                 }

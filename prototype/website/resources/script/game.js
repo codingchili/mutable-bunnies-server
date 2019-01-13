@@ -76,6 +76,10 @@ window.Game = class Game extends Canvas {
             return 0;
     }
 
+    setPlayer(player) {
+        this.player = player;
+    }
+
     shutdown() {
         this.isPlaying = false;
         super.shutdown();

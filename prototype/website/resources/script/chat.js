@@ -39,6 +39,10 @@ window.ChatHandler = class ChatHandler {
         }
     }
 
+    add(msg) {
+        this._onChatMessage(msg);
+    }
+
     _parseColors(msg) {
         let colors = /(#[0-9a-z]*)/mgi;
         msg.color1 = colors.exec(msg.text);
@@ -63,6 +67,4 @@ window.ChatHandler = class ChatHandler {
     onChatMessage(callback) {
         this.callbacks.push(callback);
     }
-}
-
-var chatHandler = new ChatHandler();
+};

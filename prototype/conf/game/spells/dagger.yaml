@@ -14,5 +14,7 @@ onCastComplete:
 
     damage = source.stats[Attribute.strength] * -1;
     for (creature : game.creatures().all()) {
-      spells.damage(source, creature, damage, DamageType.physical);
+      if (!creature.equals(source)) {
+        spells.damage(source, creature, damage, DamageType.physical);
+      }
     }
