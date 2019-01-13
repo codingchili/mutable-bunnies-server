@@ -31,13 +31,13 @@ window.SpawnHandler = class SpawnHandler {
             tree.y = 275;
             tree.scale.x = 0.2;
             tree.scale.y = 0.2;
-            tree.layer = 0;
+            tree.layer = 1;
             game.stage.addChild(tree);
 
             let tree2 = new PIXI.Sprite(PIXI.loader.resources["game/map/tree.png"].texture);
             tree2.x = 375;
             tree2.y = 300;
-            tree2.layer = 0;
+            tree2.layer = 1;
             tree2.scale.x = 0.3;
             tree2.scale.y = 0.3;
 
@@ -88,7 +88,7 @@ window.SpawnHandler = class SpawnHandler {
             sprite.direction = vector.direction;
             sprite.scale.x = 0.64;
             sprite.scale.y = 0.64;
-            sprite.layer = 0;
+            sprite.layer = 1;
             sprite.id = entity.id;
             game.entities[entity.id] = sprite;
 

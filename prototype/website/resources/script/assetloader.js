@@ -2,6 +2,8 @@
 class AssetLoader {
 
     constructor() {
+        this.callbacks = [];
+        this.completers = [];
         this.loading = false;
         this.queue = [];
     }
@@ -11,8 +13,14 @@ class AssetLoader {
         return this;
     }
 
-    begin() {
+    begin(callback) {
+        if (callback) {
+            this.callbacks.push(callback);
+        }
+
         if (!this.loading) {
+            this.completers = this.callbacks;
+            this.callbacks = [];
             this.processQueue();
         }
     }
@@ -31,7 +39,10 @@ class AssetLoader {
                 res.complete();
             } else {
                 // if not loaded by patcher perform on-demand xhr load.
-                res.url = application.realm.resources + "/" + res.url;
+                if (!res.resolved) {
+                    res.url = application.realm.resources + res.url;
+                    res.resolved = true;
+                }
             }
             next();
         });
@@ -48,19 +59,33 @@ class AssetLoader {
 
         // if all the assets are loaded - make sure to mark as complete.
         if (isAllLoaded) {
-            this.loading = false;
+            this.completed();
         }
 
         loader.load(() => {
             for (let i in this.processing) {
                 let current = this.processing[i];
-                let sprite = new PIXI.Sprite(PIXI.loader.resources[current.assetName].texture);
-                current.callback(sprite);
+                let resource;
+
+                if (current.assetName.endsWith('.json')) {
+                    resource = PIXI.loader.resources[current.assetName].data;
+                } else {
+                    resource = new PIXI.Sprite(PIXI.loader.resources[current.assetName].texture);
+                }
+                current.callback(resource);
             }
             this.loading = false;
             if (this.queue.length > 0) {
+                this.completed();
                 this.processQueue();
             }
+        });
+    }
+
+    completed() {
+        this.loading = false;
+        this.completers.forEach((completer) => {
+            completer();
         });
     }
 }

@@ -1,0 +1,55 @@
+{
+  "sprites": ["game/particle.png"],
+  "layer": 5,
+  "alpha": {
+    "start": 0.13,
+    "end": 0.49
+  },
+  "scale": {
+    "start": 2,
+    "end": 0.1,
+    "minimumScaleMultiplier": 1
+  },
+  "color": {
+    "start": "#ff6179",
+    "end": "#ff4747"
+  },
+  "speed": {
+    "start": 2,
+    "end": 1,
+    "minimumSpeedMultiplier": 1
+  },
+  "acceleration": {
+    "x": 0,
+    "y": 0
+  },
+  "maxSpeed": 0,
+  "startRotation": {
+    "min": 0,
+    "max": 360
+  },
+  "noRotation": true,
+  "rotationSpeed": {
+    "min": 0,
+    "max": 0
+  },
+  "lifetime": {
+    "min": 4,
+    "max": 2.5
+  },
+  "blendMode": "normal",
+  "frequency": 0.05,
+  "emitterLifetime": -1,
+  "maxParticles": 1000,
+  "pos": {
+    "x": 0.5,
+    "y": 0.5
+  },
+  "addAtBack": false,
+  "spawnType": "circle",
+  "spawnCircle": {
+    "x": 0,
+    "y": 0,
+    "r": 200
+  }
+}

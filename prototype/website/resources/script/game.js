@@ -46,6 +46,7 @@ window.Game = class Game extends Canvas {
         this.dialogs = new DialogHandler();
         this.spells = new Spells();
         this.texts = new TextEffects();
+        this.particles = new Particles();
 
         this.fps = 0;
         setInterval(() => {
