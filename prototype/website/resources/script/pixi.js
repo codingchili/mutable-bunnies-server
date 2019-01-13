@@ -1,6 +1,6 @@
 /*!
- * pixi.js - v4.8.4
- * Compiled Tue, 18 Dec 2018 22:25:55 UTC
+ * pixi.js - v4.8.5
+ * Compiled Mon, 07 Jan 2019 15:50:28 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -8422,7 +8422,7 @@ exports.__esModule = true;
  * @name VERSION
  * @type {string}
  */
-var VERSION = exports.VERSION = '4.8.4';
+var VERSION = exports.VERSION = '4.8.5';
 
 /**
  * Two Pi.
@@ -12383,7 +12383,7 @@ var GraphicsData = function () {
 
 
   GraphicsData.prototype.clone = function clone() {
-    return new GraphicsData(this.lineWidth, this.lineColor, this.lineAlpha, this.fillColor, this.fillAlpha, this.fill, this.nativeLines, this.shape);
+    return new GraphicsData(this.lineWidth, this.lineColor, this.lineAlpha, this.fillColor, this.fillAlpha, this.fill, this.nativeLines, this.shape, this.lineAlignment);
   };
 
   /**
@@ -15907,6 +15907,28 @@ var Rectangle = function () {
         this.width = x2 - x1;
         this.y = y1;
         this.height = y2 - y1;
+    };
+
+    /**
+     * Enlarges rectangle that way its corners lie on grid
+     *
+     * @param {number} [resolution=1] resolution
+     * @param {number} [eps=0.001] precision
+     */
+
+
+    Rectangle.prototype.ceil = function ceil() {
+        var resolution = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+        var eps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.001;
+
+        var x2 = Math.ceil((this.x + this.width - eps) * resolution) / resolution;
+        var y2 = Math.ceil((this.y + this.height - eps) * resolution) / resolution;
+
+        this.x = Math.floor((this.x + eps) * resolution) / resolution;
+        this.y = Math.floor((this.y + eps) * resolution) / resolution;
+
+        this.width = x2 - this.x;
+        this.height = y2 - this.y;
     };
 
     _createClass(Rectangle, [{
@@ -20834,6 +20856,9 @@ var RenderTarget = function () {
 
 
   RenderTarget.prototype.destroy = function destroy() {
+    if (this.frameBuffer.stencil) {
+      this.gl.deleteRenderbuffer(this.frameBuffer.stencil);
+    }
     this.frameBuffer.destroy();
 
     this.frameBuffer = null;
@@ -32837,7 +32862,7 @@ DisplayObject.prototype._renderCachedWebGL = function _renderCachedWebGL(rendere
 
     this._initCachedDisplayObject(renderer);
 
-    this._cacheData.sprite._transformID = -1;
+    this._cacheData.sprite.transform._worldID = this.transform._worldID;
     this._cacheData.sprite.worldAlpha = this.worldAlpha;
     this._cacheData.sprite._renderWebGL(renderer);
 };
@@ -32876,6 +32901,8 @@ DisplayObject.prototype._initCachedDisplayObject = function _initCachedDisplayOb
         bounds.pad(padding);
     }
 
+    bounds.ceil(core.settings.RESOLUTION);
+
     // for now we cache the current renderTarget that the webGL renderer is currently using.
     // this could be more elegent..
     var cachedRenderTarget = renderer._activeRenderTarget;
@@ -32884,7 +32911,7 @@ DisplayObject.prototype._initCachedDisplayObject = function _initCachedDisplayOb
 
     // this renderTexture will be used to store the cached DisplayObject
 
-    var renderTexture = core.RenderTexture.create(bounds.width | 0, bounds.height | 0);
+    var renderTexture = core.RenderTexture.create(bounds.width, bounds.height);
 
     var textureCacheId = 'cacheAsBitmap_' + (0, _utils.uid)();
 
@@ -32962,8 +32989,7 @@ DisplayObject.prototype._renderCachedCanvas = function _renderCachedCanvas(rende
     this._initCachedDisplayObjectCanvas(renderer);
 
     this._cacheData.sprite.worldAlpha = this.worldAlpha;
-
-    this._cacheData.sprite.renderCanvas(renderer);
+    this._cacheData.sprite._renderCanvas(renderer);
 };
 
 // TODO this can be the same as the webGL verison.. will need to do a little tweaking first though..
@@ -32988,7 +33014,9 @@ DisplayObject.prototype._initCachedDisplayObjectCanvas = function _initCachedDis
 
     var cachedRenderTarget = renderer.context;
 
-    var renderTexture = core.RenderTexture.create(bounds.width | 0, bounds.height | 0);
+    bounds.ceil(core.settings.RESOLUTION);
+
+    var renderTexture = core.RenderTexture.create(bounds.width, bounds.height);
 
     var textureCacheId = 'cacheAsBitmap_' + (0, _utils.uid)();
 
@@ -33017,7 +33045,7 @@ DisplayObject.prototype._initCachedDisplayObjectCanvas = function _initCachedDis
     renderer.context = cachedRenderTarget;
 
     this.renderCanvas = this._renderCachedCanvas;
-    this._calculateBounds = this._calculateCachedBounds;
+    this.calculateBounds = this._calculateCachedBounds;
 
     this._mask = null;
     this.filterArea = null;
@@ -33052,7 +33080,10 @@ DisplayObject.prototype._initCachedDisplayObjectCanvas = function _initCachedDis
  * @private
  */
 DisplayObject.prototype._calculateCachedBounds = function _calculateCachedBounds() {
+    this._bounds.clear();
+    this._cacheData.sprite.transform._worldID = this.transform._worldID;
     this._cacheData.sprite._calculateBounds();
+    this._lastBoundsID = this._boundsID;
 };
 
 /**
@@ -36962,8 +36993,8 @@ var InteractionManager = function (_EventEmitter) {
                 if (typeof touch.pointerType === 'undefined') touch.pointerType = 'touch';
                 if (typeof touch.pointerId === 'undefined') touch.pointerId = touch.identifier || 0;
                 if (typeof touch.pressure === 'undefined') touch.pressure = touch.force || 0.5;
-                touch.twist = 0;
-                touch.tangentialPressure = 0;
+                if (typeof touch.twist === 'undefined') touch.twist = 0;
+                if (typeof touch.tangentialPressure === 'undefined') touch.tangentialPressure = 0;
                 // TODO: Remove these, as layerX/Y is not a standard, is deprecated, has uneven
                 // support, and the fill ins are not quite the same
                 // offsetX/Y might be okay, but is not the same as clientX/Y when the canvas's top
@@ -36987,8 +37018,8 @@ var InteractionManager = function (_EventEmitter) {
                 if (typeof event.pointerType === 'undefined') event.pointerType = 'mouse';
                 if (typeof event.pointerId === 'undefined') event.pointerId = MOUSE_POINTER_ID;
                 if (typeof event.pressure === 'undefined') event.pressure = 0.5;
-                event.twist = 0;
-                event.tangentialPressure = 0;
+                if (typeof event.twist === 'undefined') event.twist = 0;
+                if (typeof event.tangentialPressure === 'undefined') event.tangentialPressure = 0;
 
                 // mark the mouse event as normalized, just so that we know we did it
                 event.isNormalized = true;
