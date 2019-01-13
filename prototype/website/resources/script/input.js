@@ -13,7 +13,9 @@ window. InputManager = class InputManager {
         document.body.addEventListener('keyup', this.onUpCallback);
 
         window.onblur = () => {
-            game.movement._send(0, 0);
+            if (game.isPlaying) {
+                game.movement._send(0, 0);
+            }
             this.keys = {};
         };
     }

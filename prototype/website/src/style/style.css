@@ -32,6 +32,7 @@ iron-icon:hover {
 
 paper-tooltip {
     z-index: 999;
+    --paper-tooltip-opacity: 1.0;
     --paper-tooltip-background: black;
     --paper-tooltip-animation: {
         animation-timing-function: ease;

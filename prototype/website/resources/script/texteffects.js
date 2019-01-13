@@ -1,4 +1,4 @@
-class TextEffects {
+window.TextEffects = class TextEffects {
 
     constructor() {
         this.counters = [];
@@ -59,7 +59,6 @@ class TextEffects {
             target.stats.health += event.value;
 
             if (target.isPlayer) {
-                console.log(target);
                 application.characterUpdate(target);
             }
 
@@ -156,14 +155,14 @@ class TextEffects {
     }
 
     physical(target, event) {
-        texts._create(target, event.value, {
+        game.texts._create(target, event.value, {
             begin: '#ff1800',
             end: '#ff0f00',
         });
     }
 
     heal(target, event) {
-        texts._create(target, '+' + event.value, {
+        game.texts._create(target, '+' + event.value, {
             begin: '#06ff00',
             end: '#13ff01',
             float: true
@@ -171,14 +170,14 @@ class TextEffects {
     }
 
     magic(target, event) {
-        texts._create(target, event.value, {
+        game.texts._create(target, event.value, {
             begin: '#ff03f5',
             end: '#ff00cf',
         });
     }
 
     experience(target, event) {
-        texts._create(target, '+' + event.value, {
+        game.texts._create(target, '+' + event.value, {
             begin: '#ffc200',
             end: '#ffc200',
             float: true
@@ -186,27 +185,25 @@ class TextEffects {
     }
 
     trueDamage(target, event) {
-        texts._create(target, event.value, {
+        game.texts._create(target, event.value, {
             begin: '#ffeaf9',
             end: '#ff0702',
         });
     }
 
     poison(target, event) {
-        texts._create(target, event.value, {
+        game.texts._create(target, event.value, {
             begin: '#ffcc00',
             end: '#0bb001',
         });
     }
 
     chat(target, event) {
-        texts._create(target, event.text, {
+        game.texts._create(target, event.text, {
             begin: event.color1 || '#ffd8f7',
             end: event.color2 || '#ffe6eb',
             float: true,
             ttl: Game.secondsToTicks(2.2)
         });
     }
-}
-
-var texts = new TextEffects();
+};

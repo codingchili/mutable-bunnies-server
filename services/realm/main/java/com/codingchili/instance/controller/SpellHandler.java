@@ -52,7 +52,7 @@ public class SpellHandler implements GameHandler {
         SpellCastRequest cast = request.raw(SpellCastRequest.class);
         Creature caster = game.getById(request.target());
         SpellResult result = spells.cast(caster, cast.getSpellTarget(), cast.getSpellName());
-        request.write(new SpellCastResponse(result));
+        request.write(new SpellCastResponse(result, cast));
     }
 
     @Api

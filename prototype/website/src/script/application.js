@@ -11,7 +11,8 @@ class Application {
             autologin: true,
             selectFirstRealm: true,
             clearCache: true,
-            rightClick: true
+            rightClick: true,
+            logEvents: false
         };
 
         this.handlers = {};
@@ -47,7 +48,7 @@ class Application {
         application.view('error-dialog');
         application.publish('onError', {text: error, callback: application.showLogin});
 
-        if (game) {
+        if (game !== undefined) {
             try {
                 game.shutdown();
             } catch (e) {
@@ -138,11 +139,10 @@ class Application {
         application.subscribe('onCharacterUpdate', callback);
     }
 
-    onGameStart(callback) {
-        application.subscribe('onGameStart', callback);
-    }
-
     onScriptsLoaded(callback) {
+        if (this.scripts) {
+            callback();
+        }
         application.subscribe('onScriptsLoaded', callback);
     }
 
@@ -151,10 +151,25 @@ class Application {
     }
 
     scriptsLoaded() {
+        this.scripts = true;
         application.publish('onScriptsLoaded', {});
     }
 
+    onGameLoaded(callback) {
+        if (this.game) {
+            callback();
+        }
+        this.subscribe('onGameLoaded', callback);
+    }
+
+    gameLoaded() {
+        this.game = true;
+        this.publish('onGameLoaded');
+    }
+
     scriptShutdown() {
+        this.game = false;
+        this.scripts = false;
         application.publish('onScriptShutdown', {});
     }
 
@@ -207,7 +222,10 @@ class Application {
     }
 
     publish(event, data) {
-        console.log('publishing event: ' + event);
+        if (application.development.logEvents) {
+            console.log(`publishing event ${event}`);
+        }
+
         if (this.handlers[event])
             for (let subscriber = 0; subscriber < this.handlers[event].length; subscriber++)
                 this.handlers[event][subscriber](data);

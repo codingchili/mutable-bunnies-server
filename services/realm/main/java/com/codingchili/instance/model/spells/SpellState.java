@@ -37,7 +37,7 @@ public class SpellState {
         casted.put(spell.getId(), cooldownEndsAt);
         gcd = now + GCD_MS;
 
-        charges.compute(spell.getId(), (id, count) -> (count == null) ? 0 : (count -= 1));
+        charges.compute(spell.getId(), (id, count) -> (count == null || count == 0) ? 0 : (count -= 1));
     }
 
     /**
@@ -93,9 +93,6 @@ public class SpellState {
      * @return an integer indicating number of charges available.
      */
     public int charges(Spell spell) {
-        if (spell.charges == 1) {
-            return 1; // no charges available for consumption.
-        }
         charges.putIfAbsent(spell.id, 0);
         return charges.get(spell.getId());
     }
@@ -113,7 +110,7 @@ public class SpellState {
                 int cooldown = GameContext.secondsToTicks(spell.getCooldown());
 
                 if (spell.charges > 1 && currentTick % cooldown == 0) {
-                    isCharged(spell);
+                    charge(spell);
                 }
             });
         }
@@ -125,7 +122,7 @@ public class SpellState {
      *
      * @param spell the spell to add a charge for.
      */
-    public void isCharged(Spell spell) {
+    public void charge(Spell spell) {
         charges.compute(spell.getId(), (key, charges) -> {
 
             if (charges == null) {

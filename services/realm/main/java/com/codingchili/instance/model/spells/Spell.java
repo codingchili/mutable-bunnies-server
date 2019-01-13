@@ -18,7 +18,7 @@ public class Spell implements Storable, Configurable {
     protected String description = "no description";
     protected Boolean mobile = true; // can move and cast?
     protected Target target = Target.caster; // spell target: caster, area etc.
-    protected Integer charges = 1;  // number of times the spell can be cast in a sequence without recharge.
+    protected Integer charges = 0;  // number of times the spell can be cast in a sequence without recharge.
     protected Integer range = 100; // how far away the target may be.
     protected Float interval = 0.5f; // how often to call onProgress and onEffects.
     protected Float cooldown = 1.0f; // time to regenerate a charge.

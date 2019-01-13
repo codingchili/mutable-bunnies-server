@@ -5,14 +5,15 @@
     "script/pixi.js",
     "script/canvas.js",
     "script/game.js",
-    "script/input.js",
     "script/dialog.js",
+    "script/spells.js",
     "script/texteffects.js",
     "script/assetloader.js",
-    "script/spawnhandler.js",
-    "script/chathandler.js",
-    "script/movementhandler.js",
-    "script/camera.js"
+    "script/spawn.js",
+    "script/chat.js",
+    "script/movement.js",
+    "script/camera.js",
+    "script/input.js"
   ],
   "files": {
     "game/character/chr.png": {},

@@ -5,6 +5,7 @@ package com.codingchili.instance.model.events;
  */
 public enum EventType {
     spell,
+    spellstate,
     move,
     death,
     affliction,

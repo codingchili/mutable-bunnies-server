@@ -24,6 +24,8 @@ window.Game = class Game extends Canvas {
                 done.error(resp.message);
             }
         }, character.name);
+
+        application.gameLoaded();
     }
 
     onScriptShutdown() {
@@ -40,6 +42,8 @@ window.Game = class Game extends Canvas {
         this.movement = new MovementHandler();
         this.chat = new ChatHandler();
         this.dialogs = new DialogHandler();
+        this.spells = new Spells();
+        this.texts = new TextEffects();
 
         this.fps = 0;
         setInterval(() => {

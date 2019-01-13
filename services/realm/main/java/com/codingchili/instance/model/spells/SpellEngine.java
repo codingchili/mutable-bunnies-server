@@ -114,8 +114,7 @@ public class SpellEngine {
      */
     public void cleanse(Creature target, String regex) {
         target.getAfflictions().removeIf(affliction ->
-                        affliction.getAffliction().getName().matches(regex),
-                game);
+                        affliction.getAffliction().getName().matches(regex), game);
     }
 
     /**
@@ -131,12 +130,13 @@ public class SpellEngine {
     /**
      * Adds a charge to the spell with the given name if not at max charges.
      *
-     * @param caster    the caster to add the charge to.
-     * @param spellName the name of the spell to add a charge to.
+     * @param caster  the caster to add the charge to.
+     * @param spellId the id of the spell to add a charge to.
      */
-    public void charge(Creature caster, String spellName) {
-        spells.getByName(spellName).ifPresent(spell -> {
-            caster.getSpells().isCharged(spell);
+    public void charge(Creature caster, String spellId) {
+        spells.getByName(spellId).ifPresent(spell -> {
+            caster.getSpells().charge(spell);
+            caster.handle(new SpellStateEvent(caster.getSpells(), spell));
         });
     }
 
@@ -150,7 +150,7 @@ public class SpellEngine {
         Stats stats = target.getBaseStats();
 
         while (amount > 0) {
-            Double current  = stats.get(Attribute.experience);
+            Double current = stats.get(Attribute.experience);
             Double next = stats.get(Attribute.nextlevel) - current;
 
             if (next.intValue() < amount) {

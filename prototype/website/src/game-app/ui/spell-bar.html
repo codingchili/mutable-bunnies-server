@@ -24,7 +24,7 @@
             .interface-box {
                 display: block;
                 background-color: #000000;
-                opacity: 0.84;
+                opacity: 1.0;
                 height: 46px;
             }
 
@@ -54,7 +54,6 @@
 
             #casting-progress {
                 position: absolute;
-                opacity: 0.84;
                 margin-top: 4px;
                 top: -36px;
                 display: inline;
@@ -151,9 +150,8 @@
                         </paper-tooltip>
                     </div>
 
-                    <!-- cooldown, hide otherwise. -->
-                    <paper-progress class="cooldown-bar transiting" min="0" max="[[character.stats.nextlevel]]"
-                                    value="[[character.stats.experience]]"></paper-progress>
+                    <paper-progress id="cd-bar-[[spell.id]]" class="cooldown-bar transiting" min="0"
+                                    max="100"></paper-progress>
                 </template>
             </template>
 
@@ -161,7 +159,7 @@
 
         <template is="dom-if" if="[[casting]]">
             <div id="casting-progress">
-                <paper-progress id="casting-progress-bar" class="casting-bar transiting" min="0" max="200"
+                <paper-progress id="casting-progress-bar" class="casting-bar transiting" min="0" max="100"
                                 value="0">
                 </paper-progress>
                 <span id="casting-progress-title">casting [[spellId]]</span>
@@ -183,18 +181,45 @@
 
                 application.onCharacterLoaded(player => {
                     this.character = player;
-
-                    input.onKeysListener({
-                        down: (key) => {
-                            let spellName = this.character.spells.learned[this.hotkeys.indexOf(key)];
-                            this._cast(this._getSpellById(spellName));
-                        }
-                    }, this.hotkeys);
                 });
 
                 application.onRealmLoaded(realm => {
                     this.realm = realm;
                     this.spells = realm.spells;
+                });
+
+                application.onGameLoaded(() => {
+                    input.onKeysListener({
+                        down: (key) => {
+                            let spellId = this.character.spells.learned[this.hotkeys.indexOf(key)];
+                            this._cast(this._getSpellById(spellId));
+                        }
+                    }, this.hotkeys);
+
+                    game.spells.onCharge((spell, charges) => {
+                        console.log(`spell ${spell} has ${charges} charges.`);
+                    });
+
+                    game.spells.onCooldown((spell, ms) => {
+                        console.log(`spell ${spell} on cooldown for ${ms}ms.`);
+
+                        let bar = this.shadowRoot.querySelector(`#cd-bar-${spell}`);
+                        bar.style.visibility = 'visible';
+                        bar.value = 100;
+                        bar.style.setProperty(
+                            '--paper-progress-transition-duration',
+                            ms / 1000 + 's'
+                        );
+
+                        setTimeout(() => {
+                            bar.style.visibility = 'hidden';
+                            bar.value = 0;
+                        }, ms);
+                    });
+
+                    game.spells.onGCD((ms) => {
+                        console.log(`global gcd for ${ms}ms.`);
+                    });
                 });
             }
 
@@ -218,26 +243,42 @@
                 if (this.casting) {
                     return;
                 }
-                server.cast((casted) => {
-                    this.casting = true;
-                    this.spellId = spell.id;
+                game.spells.cast((casted) => {
+                    if (casted.result === 'CASTING') {
+                        this.casting = true;
+                        this.spellId = casted.spellId;
 
-                    Polymer.RenderStatus.afterNextRender(this, () => {
-                        let progress = this.shadowRoot.querySelector('#casting-progress-bar');
+                        Polymer.RenderStatus.afterNextRender(this, () => {
+                            let progress = this.shadowRoot.querySelector('#casting-progress-bar');
 
-                        progress.style.visibility = 'visible';
-                        progress.value = 300;
-                        progress.style.setProperty(
-                            '--paper-progress-transition-duration',
-                            spell.casttime + 's'
-                        );
+                            progress.style.visibility = 'visible';
+                            progress.value = 100;
+                            progress.style.setProperty(
+                                '--paper-progress-transition-duration',
+                                spell.casttime + 's'
+                            );
 
-                        setTimeout(() => {
-                            this.casting = false;
-                            progress.style.visibility = 'hidden';
-                            progress.value = 0;
-                        }, spell.casttime * 1000);
-                    });
+                            setTimeout(() => {
+                                this.casting = false;
+                                progress.style.visibility = 'hidden';
+                                progress.value = 0;
+                            }, spell.casttime * 1000);
+                        });
+                    } else {
+                        let player = game.lookup(application.character.id);
+
+                        if (casted.result === 'UNABLE') {
+                            game.texts.chat(player, {text: "unable to cast spell."});
+                        }
+
+                        if (casted.result === 'COOLDOWN') {
+                            game.texts.chat(player, {text: "spell is on cooldown."});
+                        }
+
+                        if (casted.result === 'UNKNOWN_SPELL') {
+                            game.texts.chat(player, {text: "unknown spell."});
+                        }
+                    }
 
                 }, spell.id, {});
             }
@@ -248,6 +289,5 @@
         }
 
         window.customElements.define(SpellBar.is, SpellBar);
-
     </script>
 </dom-module>

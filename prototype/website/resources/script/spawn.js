@@ -3,11 +3,18 @@ window.SpawnHandler = class SpawnHandler {
     constructor(camera) {
         this.camera = camera;
 
+        server.connection.setHandler('death', event => {
+            console.log('uh oh death');
+            console.log(event);
+            this.death(game.lookup(event.targetId));
+        });
+
         server.connection.setHandler('spawn', event => {
+            console.log('GOT SPAWN EVENT');
             this.handle(event);
         });
 
-        assetLoader.load((sprite) => {
+       /* assetLoader.load((sprite) => {
             for (let z = 0; z < 30; z++) {
                 let startX = z * (sprite.width / 2);
                 let startY = z * (sprite.height / 2 - 14);
@@ -19,7 +26,7 @@ window.SpawnHandler = class SpawnHandler {
                     game.stage.addChild(ground);
                 }
             }
-        }, "game/map/background_snow.png");
+        }, "game/map/background_snow.png");*/
 
         assetLoader.load((sprite) => {
             let tree = new PIXI.Sprite(PIXI.loader.resources["game/map/tree.png"].texture);
@@ -51,8 +58,6 @@ window.SpawnHandler = class SpawnHandler {
     handle(event) {
         let entities = [];
 
-        console.log(event);
-
         if (Array.isArray(event.entities)) {
             entities = event.entities;
         } else {
@@ -71,9 +76,12 @@ window.SpawnHandler = class SpawnHandler {
 
     spawn(entity) {
         let vector = entity.vector;
+        console.log('spawn:');
+        console.log(entity);
 
         assetLoader.load((sprite) => {
             Object.assign(sprite, entity);
+
             sprite.x = vector.x;
             sprite.y = vector.y;
             sprite.velocity = vector.velocity;
@@ -109,9 +117,19 @@ window.SpawnHandler = class SpawnHandler {
         return entity.account === application.token.domain;
     }
 
+    death(entity) {
+        this.despawn(entity);
+
+        if (entity.isPlayer) {
+            console.log('hahahahahahahhahahahahahahahah')
+        }
+    }
+
     despawn(entity) {
         entity = game.lookup(entity.id);
         game.stage.removeChild(entity);
-        game.entities[entity.id] = null;
+        console.log('desspawn');
+        console.log(entity);
+        delete game.entities[entity.id];
     }
 };
