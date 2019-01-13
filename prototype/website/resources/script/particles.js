@@ -1,3 +1,7 @@
+/**
+ * Handles particle systems. uses pixi-particles for rendering.
+ * @type {Window.Particles}
+ */
 window.Particles = class Particles {
 
     constructor() {
@@ -12,9 +16,29 @@ window.Particles = class Particles {
         game.ticker(() => this._update());
     }
 
+    /**
+     * Stops the given particle emitter.
+     * @param id an id returned by any of the create methods.
+     */
+    stop(id) {
+        this.emitters[id].emit = false;
+        setTimeout(() => {
+            this.emitters[id].destroy();
+            delete this.emitters[id];
+        }, 5000);
+    }
 
+    /**
+     * Creates a new particle system that is fixed onto its target. Particles
+     * will revolve around the given target as their 'world'.
+     *
+     * @param name the name of the particle system to start. matches a particle system json configuration file.
+     * @param target the target to follow.
+     * @param ttl the lifetime of the emitter
+     * @returns {string} the ID of the created particle system so that it can be stopped.
+     */
     fixed(name, target, ttl) {
-        this._create((configuration) => {
+        return this._create((configuration) => {
             let container = new PIXI.Container();
             container.x = game.player.width;
             container.y = game.player.height / 2;
@@ -27,8 +51,17 @@ window.Particles = class Particles {
         }, name);
     }
 
+    /**
+     * Creates a particle system where the emitter follows the given target but the particles
+     * are relative to the world.
+     *
+     * @param name the name of the particle system to start. matches a particle system json configuration file.
+     * @param target the target to follow.
+     * @param ttl the lifetime of the emitter
+     * @returns {string} the ID of the created particle system so that it can be stopped.
+     */
     following(name, target, ttl) {
-        this._create((configuration) => {
+        return this._create((configuration) => {
             let container = game.stage;
             configuration.emitterLifetime = ttl;
             //game.stage.addChild(container);
@@ -40,8 +73,17 @@ window.Particles = class Particles {
         });
     }
 
+    /**
+     * Creates a particle system with an emitter that is fixed in the world.
+     *
+     * @param name the name of the particle system to start. matches a particle system json configuration file.
+     * @param x coordinate of the emitter.
+     * @param y coordinate ofo the emitter.
+     * @param ttl the lifetime of the emitter
+     * @returns {string} the ID of the created particle system so that it can be stopped.
+     */
     spawn(name, x, y, ttl) {
-        this._create((configuration) => {
+        return this._create((configuration) => {
             let container = new PIXI.Container();
             container.x = x;
             container.y = y;
@@ -55,6 +97,7 @@ window.Particles = class Particles {
     }
 
     _create(init, destroy, system, listener) {
+        let id = Math.random().toString(36).substring(7);
         let images = [];
 
         assetLoader.load((configuration) => {
@@ -76,7 +119,7 @@ window.Particles = class Particles {
                         }
 
                         emitter.container = container;
-                        emitter.id = Math.random().toString(36).substring(7);
+                        emitter.id = id;
                         this.emitters[emitter.id] = emitter;
 
                         emitter.playOnceAndDestroy(() => {
@@ -87,6 +130,7 @@ window.Particles = class Particles {
                 }, fileName);
             });
         }, `game/particles/${system}.json`).begin();
+        return id;
     }
 
     _update() {
