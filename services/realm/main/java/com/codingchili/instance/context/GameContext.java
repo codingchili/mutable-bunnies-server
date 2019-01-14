@@ -5,7 +5,7 @@ import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.items.InventoryEngine;
 import com.codingchili.instance.model.npc.*;
-import com.codingchili.instance.model.spells.MovementEngine;
+import com.codingchili.instance.model.movement.MovementEngine;
 import com.codingchili.instance.model.spells.SpellEngine;
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
@@ -28,7 +28,7 @@ import com.codingchili.core.logging.Logger;
  * The core game loop.
  */
 public class GameContext {
-    private static final int TICK_INTERVAL_MS = 16;
+    public static final int TICK_INTERVAL_MS = 16;
     private Map<EventType, Map<String, EventProtocol>> listeners = new ConcurrentHashMap<>();
     private Queue<Runnable> queue = new ConcurrentLinkedQueue<>();
     private Set<Ticker> tickers = new ConcurrentHashSet<>();
@@ -269,6 +269,14 @@ public class GameContext {
 
     public static Integer secondsToTicks(double seconds) {
         return (int) (seconds * 1000 / TICK_INTERVAL_MS);
+    }
+
+    public static Integer onAllTicks() {
+        return 1;
+    }
+
+    public static Integer msToTicks(Integer ms) {
+        return (ms / TICK_INTERVAL_MS);
     }
 
     public static double ticksToSeconds(int ticks) {

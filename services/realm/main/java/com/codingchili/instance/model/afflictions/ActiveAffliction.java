@@ -30,6 +30,7 @@ public class ActiveAffliction {
     private Creature target;
     private Integer ticks;
     private Integer interval;
+    private Float delta = 0f;
     private Long start = System.currentTimeMillis();
 
     public ActiveAffliction(Creature source, Creature target, Affliction affliction) {
@@ -57,8 +58,13 @@ public class ActiveAffliction {
      */
     public boolean tick(GameContext context) {
         try {
-            affliction.tick(getBindings(context));
-            return ((ticks -= interval) > 0);
+            do {
+                affliction.tick(getBindings(context));
+                ticks -= interval;
+                this.delta -= interval;
+            } while (this.delta >= 1);
+
+            return (ticks > 0);
         } catch (Exception e) {
             context.getLogger(getClass()).event("affliction.fail", Level.ERROR)
                 .put(ID_NAME, affliction.getName())
@@ -68,8 +74,8 @@ public class ActiveAffliction {
     }
 
 
-    public boolean shouldTick(long currentTick) {
-        return (currentTick % interval) == 0;
+    public boolean shouldTick(float delta) {
+        return ((this.delta += delta) >= interval);
     }
 
     private Bindings getBindings(GameContext context) {

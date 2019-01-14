@@ -32,7 +32,6 @@ public class SpellEngine {
     private AfflictionDB afflictions;
     private SpellDB spells;
     private GameContext game;
-    private Integer tick = 0;
 
     /**
      * Creates a new spell engine on the given game context.
@@ -45,7 +44,7 @@ public class SpellEngine {
         this.spells = new SpellDB(game.instance());
         this.afflictions = new AfflictionDB(game.instance());
 
-        game.ticker(this::tick, 1);
+        game.ticker(this::tick, GameContext.secondsToTicks(0.1));
     }
 
     /**
@@ -135,7 +134,7 @@ public class SpellEngine {
      */
     public void charge(Creature caster, String spellId) {
         spells.getByName(spellId).ifPresent(spell -> {
-            caster.getSpells().charge(spell);
+            caster.getSpells().charge(spell, 1.0f);
             caster.handle(new SpellStateEvent(caster.getSpells(), spell));
         });
     }
@@ -287,35 +286,31 @@ public class SpellEngine {
         }
     }
 
-    // calls update methods.
     private void tick(Ticker ticker) {
-        updateCreatureSpellState();
-        updateCastingProgress();
-        updateActiveSpells();
-        updateProjectiles();
-
-        if (tick == Integer.MAX_VALUE) {
-            tick = 0;
-        }
-        tick++;
+        updateCreatureSpellState(ticker);
+        updateCastingProgress(ticker);
+        updateActiveSpells(ticker);
+        updateProjectiles(ticker);
     }
 
     // update affliction state and spell cooldowns.
-    private void updateCreatureSpellState() {
+    private void updateCreatureSpellState(Ticker ticker) {
+        float delta = ticker.delta();
         creatures.all().forEach(entity -> {
             entity.getAfflictions().removeIf(active -> {
-                if (active.shouldTick(active.getStart() + tick))
+                if (active.shouldTick(delta))
                     if (!active.tick(game)) return true;
                 return false;
             }, game);
-            entity.getSpells().tick(spells, tick);
+            entity.getSpells().tick(spells, delta);
         });
     }
 
     // update progress for spells currently being casted.
-    private void updateCastingProgress() {
+    private void updateCastingProgress(Ticker ticker) {
+        float delta = ticker.delta();
         casting.values().removeIf((casting) -> {
-            if (casting.completed()) {
+            if (casting.completed(delta)) {
                 game.publish(new SpellCastEvent(casting.setCycle(SpellCycle.CASTED)));
                 casting.onCastCompleted(game);
 
@@ -323,8 +318,8 @@ public class SpellEngine {
                 active.add(casting);
                 return true;
             } else {
-                if (casting.shouldTick(tick)) {
-                    casting.onCastProgress(game, tick);
+                if (casting.shouldTick(delta)) {
+                    casting.onCastProgress(game);
                 }
             }
             return false;
@@ -332,12 +327,13 @@ public class SpellEngine {
     }
 
     // execute spell effects for spells that have been casted successfully.
-    private void updateActiveSpells() {
+    private void updateActiveSpells(Ticker ticker) {
+        float delta = ticker.delta();
         active.removeIf(spell -> {
-            if (spell.active()) {
+            if (spell.active(delta)) {
 
-                if (spell.shouldTick(tick)) {
-                    spell.onSpellEffects(game, tick);
+                if (spell.shouldTick(delta)) {
+                    spell.onSpellEffects(game);
                 }
 
                 return false;
@@ -348,7 +344,7 @@ public class SpellEngine {
     }
 
     // updates all projectiles.
-    private void updateProjectiles() {
+    private void updateProjectiles(Ticker ticker) {
         projectiles.removeIf(Projectile::tick);
     }
 }

@@ -49,7 +49,7 @@ public class Projectile {
 
     // update position, check collisions.
     public boolean tick() {
-        vector.forward();
+        vector.forward(1f);
 
         game.creatures().radius(vector).forEach(creature -> {
             spell.getSpell().onSpellActive.apply(getBindings(creature));

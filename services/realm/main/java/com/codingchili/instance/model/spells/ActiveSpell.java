@@ -28,11 +28,12 @@ public class ActiveSpell {
     private static final String DAMAGE_TYPE = "DamageType";
     private transient Bindings bindings = null;
     private SpellCycle cycle = SpellCycle.CASTING;
+    private SpellTarget target;
+    private Creature source;
+    private Spell spell;
     private int progress = 0;
     private int timer;
-    private Creature source;
-    private SpellTarget target;
-    private Spell spell;
+    private float delta = 0f;
 
     public ActiveSpell(Spell spell) {
         this.timer = GameContext.secondsToTicks(spell.getActive());
@@ -40,20 +41,22 @@ public class ActiveSpell {
         this.spell = spell;
     }
 
-    public boolean completed() {
-        return (--progress <= 0);
+    public boolean completed(float delta) {
+        return ((progress -= delta) <= 0);
     }
 
-    public boolean active() {
-        return (--timer <= 0);
+    public boolean active(float delta) {
+        return ((timer -= delta) <= 0);
     }
 
-    public void onCastProgress(GameContext game, int tick) {
+    public void onCastProgress(GameContext game) {
         if (spell.onCastProgress != null) {
             Bindings bindings = getBindings(game);
-            bindings.put(TICK, tick);
             try {
-                spell.onCastProgress.apply(bindings);
+                do {
+                    spell.onCastProgress.apply(bindings);
+                    this.delta -= spell.getInterval();
+                } while (this.delta > 0);
             } catch (Throwable e) {
                 game.getLogger(getClass()).onError(e);
             }
@@ -79,16 +82,18 @@ public class ActiveSpell {
         }
     }
 
-    public void onSpellEffects(GameContext game, int tick) {
+    public void onSpellEffects(GameContext game) {
         if (spell.onSpellActive != null) {
             Bindings bindings = getBindings(game);
-            bindings.put(TICK, tick);
-            spell.onSpellActive.apply(bindings);
+            do {
+                spell.onSpellActive.apply(bindings);
+                this.delta -= spell.getInterval();
+            } while (this.delta > 0);
         }
     }
 
-    public boolean shouldTick(long currentTick) {
-        return currentTick % spell.getInterval() == 0;
+    public boolean shouldTick(float delta) {
+        return ((this.delta += delta) >= spell.getInterval());
     }
 
     private Bindings getBindings(GameContext game) {

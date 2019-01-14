@@ -43,8 +43,12 @@ public class Ticker implements Supplier<Integer> {
         return this;
     }
 
-    public Long delta() {
+    public Long deltaMS() {
         return lastTick;
+    }
+
+    public float delta() {
+        return (lastTick * 1.0f) / GameContext.TICK_INTERVAL_MS;
     }
 
     public Ticker disable() {

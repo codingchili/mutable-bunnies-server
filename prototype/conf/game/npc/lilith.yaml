@@ -15,4 +15,10 @@ spawn:
 death:
   jexl: "return true;"
 tick:
-  jexl: "return true;"
+  jexl: |
+    for (creature : context.creatures().all()) {
+      if (!creature.equals(source)) {
+        log.accept('following ' + creature.getName());
+        context.movement().follow(source, creature);
+      }
+    }

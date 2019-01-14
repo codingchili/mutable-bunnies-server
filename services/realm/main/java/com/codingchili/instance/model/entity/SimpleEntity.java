@@ -43,7 +43,7 @@ public abstract class SimpleEntity implements Entity {
     }
 
     @Override
-    public com.codingchili.instance.model.entity.Vector getVector() {
+    public Vector getVector() {
         return vector;
     }
 

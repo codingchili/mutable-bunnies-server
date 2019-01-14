@@ -3,6 +3,7 @@ package com.codingchili.instance.model.entity;
 import java.util.*;
 
 import com.codingchili.instance.context.GameContext;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Robin Duda
@@ -19,6 +20,10 @@ public class Vector {
     private transient List<Integer> buckets = new ArrayList<>();
     private transient float acceleration = 1.0f;
     private transient boolean dirty = false;
+    private transient boolean target = false;
+    private transient float targetX;
+    private transient float targetY;
+    private transient Vector following;
     private float velocity = 0.0f;
     private float direction = 0.0f;
     private int size = 24;
@@ -81,6 +86,61 @@ public class Vector {
         return this;
     }
 
+    @JsonIgnore
+    public float getTargetX() {
+        return targetX;
+    }
+
+    public Vector setTargetX(float targetX) {
+        this.targetX = targetX;
+        return this;
+    }
+
+    @JsonIgnore
+    public float getTargetY() {
+        return targetY;
+    }
+
+    public Vector setTargetY(float targetY) {
+        this.targetY = targetY;
+        return this;
+    }
+
+    @JsonIgnore
+    public boolean hasTarget() {
+        return target;
+    }
+
+    public Vector setTarget(float targetX, float targetY) {
+        this.target = true;
+        this.targetX = targetX;
+        this.targetY = targetY;
+        float theta = (float) (Math.atan2(y - targetY, targetX - x));
+
+        theta += Math.toRadians(90);
+        this.direction = theta;
+
+        return this;
+    }
+
+    public void clearTarget() {
+        this.target = false;
+    }
+
+    @JsonIgnore
+    public Vector getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(Vector following) {
+        this.following = following;
+    }
+
+    @JsonIgnore
+    public boolean isFollowing() {
+        return this.following != null;
+    }
+
     @Override
     public String toString() {
         return String.format("x=%f y=%f, dir=%f velocity=%f", x, y, direction, velocity);
@@ -101,7 +161,7 @@ public class Vector {
     /**
      * Returns the cells that the vector is placed in.
      *
-     * @param cellSize  the size of the cells.
+     * @param cellSize the size of the cells.
      * @return cell numbers that this vector exists within.
      */
     public Collection<Integer> cells(final int cellSize) {
@@ -121,15 +181,16 @@ public class Vector {
     /**
      * Moves the vector in its direction given its velocity.
      */
-    public void forward() {
+    public void forward(float delta) {
+        if (velocity > 0) {
+            if (acceleration < 1) {
+                acceleration += ACCELERATION_STEP * delta;
+            } else {
+                acceleration = 1.0f;
+            }
 
-        if (acceleration < 1) {
-            acceleration += ACCELERATION_STEP;
-        } else {
-            acceleration = 1.0f;
+            x += Math.sin(direction) * (velocity * acceleration * delta);
+            y += Math.cos(direction) * (velocity * acceleration * delta);
         }
-
-        x += Math.sin(direction) * (velocity * acceleration);
-        y += Math.cos(direction) * (velocity * acceleration);
     }
 }

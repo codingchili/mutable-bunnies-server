@@ -1,6 +1,7 @@
 package com.codingchili.instance.model.spells;
 
 import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.context.Ticker;
 
 import java.time.*;
 import java.util.*;
@@ -23,7 +24,7 @@ public class SpellState {
     private static final Integer GCD_MS = 250;
     private Set<String> learned = new HashSet<>();
     private Map<String, Long> casted = new HashMap<>();
-    private Map<String, Integer> charges = new HashMap<>();
+    private Map<String, Float> charges = new HashMap<>();
     private Long gcd = 0L;
 
     /**
@@ -93,24 +94,24 @@ public class SpellState {
      * @return an integer indicating number of charges available.
      */
     public int charges(Spell spell) {
-        charges.putIfAbsent(spell.id, 0);
-        return charges.get(spell.getId());
+        charges.putIfAbsent(spell.id, 0f);
+        return charges.get(spell.getId()).intValue();
     }
 
     /**
      * Processes the current cooldown and generates new charges if enough time has passed.
      *
-     * @param spells      a reference to the spell database.
-     * @param currentTick a reference to the current tick.
+     * @param spells a reference to the spell database.
+     * @param delta  ticker delta
      */
-    public void tick(SpellDB spells, long currentTick) {
+    public void tick(SpellDB spells, float delta) {
         for (String spellName : learned) {
 
             spells.getByName(spellName).ifPresent(spell -> {
                 int cooldown = GameContext.secondsToTicks(spell.getCooldown());
 
-                if (spell.charges > 1 && currentTick % cooldown == 0) {
-                    charge(spell);
+                if (spell.charges > 1) {
+                    charge(spell, delta / cooldown);
                 }
             });
         }
@@ -122,15 +123,15 @@ public class SpellState {
      *
      * @param spell the spell to add a charge for.
      */
-    public void charge(Spell spell) {
+    public void charge(Spell spell, float amount) {
         charges.compute(spell.getId(), (key, charges) -> {
 
             if (charges == null) {
-                charges = 0;
+                charges = 0f;
             }
 
             if (charges < spell.charges) {
-                return charges + 1;
+                return charges + amount;
             } else {
                 return charges;
             }

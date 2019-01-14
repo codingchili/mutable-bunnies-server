@@ -2,7 +2,7 @@ package com.codingchili.instance.controller;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.events.MovementEvent;
-import com.codingchili.instance.model.spells.MovementEngine;
+import com.codingchili.instance.model.movement.MovementEngine;
 import com.codingchili.instance.transport.InstanceRequest;
 
 import com.codingchili.core.protocol.Api;

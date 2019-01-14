@@ -5,6 +5,8 @@ import com.codingchili.instance.model.entity.SimpleCreature;
 import com.codingchili.instance.model.events.DeathEvent;
 import com.codingchili.instance.scripting.Bindings;
 
+import java.util.function.Consumer;
+
 import com.codingchili.core.protocol.Api;
 
 /**
@@ -14,7 +16,7 @@ import com.codingchili.core.protocol.Api;
  */
 public class Npc extends SimpleCreature {
     private static final String DESCRIPTION = "description";
-    private static final double TPS = 0.2; // limits NPCs to 5 actions per second.
+    private static final double TPS = 1; // limits NPCs to 1 AI update per second.
     private NpcConfiguration config;
 
     @Override
@@ -22,7 +24,10 @@ public class Npc extends SimpleCreature {
         super.setContext(game);
         Bindings bindings = new Bindings()
                 .setSource(this)
-                .setContext(game);
+                .set("log", (Consumer<String>) (line) -> {
+                    game.getLogger(Npc.class)
+                            .log(line);
+                }).setContext(game);
 
         if (config.getSpawn() != null) {
             config.getSpawn().apply(bindings);
