@@ -24,9 +24,8 @@ public class MovementEngine {
                 if (vector.isFollowing()) {
                     Vector following = vector.getFollowing();
                     vector.setTarget(following.getX(), following.getY());
-                    vector.setVelocity(1.0f);
+                    vector.setVelocity((float) creature.getStats().get(Attribute.movement));
                     game.publish(new MovementEvent(vector, creature.getId()));
-                    //}
                 } else if (vector.hasTarget()) {
                     if (!targetOutOfRange(vector, vector.getTargetX(), vector.getTargetY())) {
                         vector.clearTarget();
@@ -101,6 +100,16 @@ public class MovementEngine {
     public void follow(Entity source, Entity target) {
         // update event is set in the vector update method.
         source.getVector().setFollowing(target.getVector());
+    }
+
+    /**
+     * Makes the source move in the opposite of the target.
+     *
+     * @param source the source to be moved.
+     * @param target the target to move the source relative to.
+     */
+    public void flee(Entity source, Entity target) {
+        source.getVector().setFleeing(target.getVector());
     }
 
     /**

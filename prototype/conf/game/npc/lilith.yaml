@@ -10,6 +10,7 @@ point:
 stats:
   health: 1000.0
   maxhealth: 1000.0
+  movement: 1.0
 spawn:
   jexl: "return true;"
 death:

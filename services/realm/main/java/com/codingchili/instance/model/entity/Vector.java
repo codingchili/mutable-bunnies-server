@@ -21,6 +21,7 @@ public class Vector {
     private transient float acceleration = 1.0f;
     private transient boolean dirty = false;
     private transient boolean target = false;
+    private transient boolean fleeing = false;
     private transient float targetX;
     private transient float targetY;
     private transient Vector following;
@@ -118,6 +119,11 @@ public class Vector {
         float theta = (float) (Math.atan2(y - targetY, targetX - x));
 
         theta += Math.toRadians(90);
+
+        if (fleeing) {
+            theta += Math.toRadians(180);
+        }
+
         this.direction = theta;
 
         return this;
@@ -125,6 +131,7 @@ public class Vector {
 
     public void clearTarget() {
         this.target = false;
+        this.fleeing = false;
     }
 
     @JsonIgnore
@@ -134,6 +141,12 @@ public class Vector {
 
     public void setFollowing(Vector following) {
         this.following = following;
+        this.fleeing = false;
+    }
+
+    public void setFleeing(Vector vector) {
+        this.following = vector;
+        this.fleeing = true;
     }
 
     @JsonIgnore
