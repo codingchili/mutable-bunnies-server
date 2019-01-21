@@ -23,8 +23,14 @@ public class MovementEngine {
 
                 if (vector.isFollowing()) {
                     Vector following = vector.getFollowing();
-                    vector.setTarget(following.getX(), following.getY());
-                    vector.setVelocity((float) creature.getStats().get(Attribute.movement));
+
+                    if (targetOutOfRange(vector, following.getX(), following.getY())) {
+                        vector.setTarget(following.getX(), following.getY());
+                        vector.setVelocity((float) creature.getStats().get(Attribute.movement));
+                    } else {
+                        vector.setVelocity(0);
+                    }
+
                     game.publish(new MovementEvent(vector, creature.getId()));
                 } else if (vector.hasTarget()) {
                     if (!targetOutOfRange(vector, vector.getTargetX(), vector.getTargetY())) {
@@ -34,7 +40,7 @@ public class MovementEngine {
                     }
                 }
             });
-        }, GameContext.secondsToTicks(0.5));
+        }, GameContext.secondsToTicks(1));
 
         game.ticker(ticker -> {
             float delta = ticker.delta();

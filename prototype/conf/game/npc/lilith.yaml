@@ -16,10 +16,10 @@ spawn:
 death:
   jexl: "return true;"
 tick:
-  jexl: |
+  groovy: |
     for (creature : context.creatures().all()) {
-      if (!creature.equals(source)) {
-        log.accept('following ' + creature.getName());
+      if (!creature.getName().equals('Illicit Lilith')) {
         context.movement().follow(source, creature);
+        break;
       }
     }

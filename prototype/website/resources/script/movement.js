@@ -3,8 +3,8 @@ const LEFT = 'a';
 const DOWN = 's';
 const RIGHT = 'd';
 const RUN_TOGGLE = 'z';
-const ACCELERATION_START = 0.4;
-const ACCELERATION_STEP = (1 - ACCELERATION_START) / Game.secondsToTicks(0.5);
+const ACCELERATION_BASE = 0.4;
+const ACCELERATION_STEP = (1 - ACCELERATION_BASE) / Game.secondsToTicks(0.5);
 
 window.MovementHandler = class MovementHandler {
 

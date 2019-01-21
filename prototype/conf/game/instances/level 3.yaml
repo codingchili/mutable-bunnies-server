@@ -17,5 +17,5 @@ onPlayerJoin:
     }
 onStartup:
   jexl: |
-    context.npcs().spawn("Illicit Lilith");
+    //context.npcs().spawn("Illicit Lilith");
 # how to handle the world layout? in this file?
