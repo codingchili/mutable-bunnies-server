@@ -4,6 +4,7 @@
   "executable": [
     "script/lib/pixi.js",
     "script/lib/pixi-particles.js",
+    "script/lib/pixi-spine.js",
     "script/particles.js",
     "script/canvas.js",
     "script/game.js",

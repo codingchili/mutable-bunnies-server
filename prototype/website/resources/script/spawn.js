@@ -79,15 +79,38 @@ window.SpawnHandler = class SpawnHandler {
             return false;
         }
 
-        assetLoader.load((sprite) => {
+        assetLoader.load((jsondata) => {
+
+            const rawSkeletonData = jsondata; //your skeleton.json file here
+            const rawAtlasData = PIXI.loader.resources['game/pixitest/goblins-pro.json_atlas'].data; //your atlas file
+
+            const spineAtlas = new PIXI.spine.core.TextureAtlas(rawAtlasData, function (line, callback) {
+                // pass the image here.
+                callback(PIXI.BaseTexture.fromImage(line));
+            }); // specify path, image.png will be added automatically
+
+            const spineAtlasLoader = new PIXI.spine.core.AtlasAttachmentLoader(spineAtlas);
+            const spineJsonParser = new PIXI.spine.core.SkeletonJson(spineAtlasLoader);
+
+// in case if you want everything scaled up two times
+            spineJsonParser.scale = 2.0;
+
+            const spineData = spineJsonParser.readSkeletonData(rawSkeletonData);
+
+// now we can create spine instance
+            const sprite = new PIXI.spine.Spine(spineData);
+
             Object.assign(sprite, entity);
+
+            sprite.skeleton.setSkinByName('goblingirl');
+
 
             sprite.x = vector.x;
             sprite.y = vector.y;
             sprite.velocity = vector.velocity;
             sprite.direction = vector.direction;
-            sprite.scale.x = 0.64;
-            sprite.scale.y = 0.64;
+            sprite.scale.set(0.16);
+            //sprite.scale.y = 0.2;
             sprite.layer = 1;
             sprite.id = entity.id;
             game.entities[entity.id] = sprite;
@@ -110,7 +133,7 @@ window.SpawnHandler = class SpawnHandler {
                 this.camera.set(vector.x, vector.y);
                 this.camera.focus(sprite);
             }
-        }, "game/character/chr.png").begin();
+        }, "game/pixitest/goblins-pro.json").begin();
     }
 
     isPlayer(entity) {

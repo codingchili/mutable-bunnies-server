@@ -1,5 +1,5 @@
 // may load multiple resources at once: but resources added after the load call starts
-class AssetLoader {
+window.AssetLoader = class AssetLoader {
 
     constructor() {
         this.callbacks = [];
@@ -39,9 +39,8 @@ class AssetLoader {
                 res.complete();
             } else {
                 // if not loaded by patcher perform on-demand xhr load.
-                if (!res.resolved) {
+                if (!res.url.startsWith(application.realm.resources)) {
                     res.url = application.realm.resources + res.url;
-                    res.resolved = true;
                 }
             }
             next();
@@ -88,6 +87,6 @@ class AssetLoader {
             completer();
         });
     }
-}
+};
 
 var assetLoader = new AssetLoader();

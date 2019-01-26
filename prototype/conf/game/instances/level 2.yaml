@@ -23,5 +23,3 @@ onPlayerJoin:
 onStartup:
   jexl: |
     context.npcs().spawn("Illicit Lilith");
-    context.npcs().spawn("Illicit Lilith");
-    context.npcs().spawn("Illicit Lilith");

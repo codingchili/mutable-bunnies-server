@@ -108,6 +108,16 @@ window.MovementHandler = class MovementHandler {
 
         if (entity.velocity === 0) {
             entity.acceleration = 0.4;
+
+            if (entity.state.hasAnimation('walk')) {
+                entity.state.setAnimation(0, 'walk', true);
+                entity.state.timeScale = 0.8;
+            }
+        }
+
+        if (event.vector.velocity === 0) {
+            entity.state.clearTracks();
+            entity.skeleton.setToSetupPose();
         }
 
         entity.x = event.vector.x;

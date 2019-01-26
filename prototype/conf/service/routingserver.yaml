@@ -20,10 +20,10 @@ transport:
 external:
   client.authentication.node: ".*"
   client.realmregistry.node: ".*"
-global: "DGcblTJdOv51Bf5YbiwXT7d44mkJN4y6wFa93iZD42G+/Nf9sdlERMw9FLMkQ63J/WX2kIdMoGmlXIakt6PI4A=="
+global: "eyIcMFRwjZm+1M0HSl8snad34VGKoQ763vLpipoygGk+stAqy96jsV0jShwiBdzl+14W8lyTPNafdMi7S+oM3w=="
 logging:
   properties:
     type: "HmacSHA512"
   domain: "routing.node"
-  key: "dPer3BOQWB00K9grLLs6aLD7MJJq0W8DXhkSKSF9K4bayoXqZ69eEv/kVk/hEzmC7duN+NEPIVVxzAPS0hWPcw=="
-  expiry: 1547739680
+  key: "i1qrEqrbbTtBHXj8Mdd4Dk309j9ciz+HlKSAs1rTHWlJU5RF1Cg3Jwmd1V3PFUBG1uMLAhzWIYhh0t3IT/omLg=="
+  expiry: 1548680944
