@@ -18,7 +18,9 @@ window.Canvas = class {
         this.renderer.view.id = 'canvas';
         this.renderer.view.style.animation = "fadein 0.4s ease-in 1";
 
+        PIXI.settings.TARGET_FPMS = 0.12;
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
         window.onresize = () => this.resize();
         this.resize();
     }

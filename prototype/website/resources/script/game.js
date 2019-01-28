@@ -48,9 +48,10 @@ window.Game = class Game extends Canvas {
         this.texts = new TextEffects();
         this.particles = new Particles();
 
-        this.fps = 0;
+        this.frames = 0;
         setInterval(() => {
-            this.fps = 0;
+            this.fps = this.frames;
+            this.frames = 0;
         }, 1000);
         this.entities = {};
         this.isPlaying = true;
@@ -95,16 +96,15 @@ window.Game = class Game extends Canvas {
     }
 
     loop() {
-        //Loop this function at 60 frames per second
         if (this.isPlaying) {
             this.stage.children.sort(this.depthCompare);
 
-            this.fps++;
+            this.frames++;
 
-            this.stage.x = this.camera.getX();
-            this.stage.y = this.camera.getY();
+            this.camera.update();
+            this.stage.x = -this.camera.x;
+            this.stage.y = -this.camera.y;
 
-            //Render the stage to see the animation
             this.renderer.render(this.stage);
             requestAnimationFrame(() => this.loop());
         }

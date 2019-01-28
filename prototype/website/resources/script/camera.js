@@ -7,34 +7,30 @@ window.Camera = class Camera {
         this.y = -2000;
         this.following = {x: this.x, y: this.y};
 
-        let last = performance.now();
+        this.last = performance.now();
 
-        game.ticker(() => {
-            let delta = performance.now() - last;
-            let target = this._getTarget(this.following.x, this.following.y);
+        /*game.ticker(() => {
 
-            let deltaX = (this.x - target.x);
-            let deltaY = (this.y - target.y);
-
-            if (Math.abs(deltaX) > this.clipping) {
-                this.x -= deltaX * (this.smoothing * (delta / Game.MS_PER_FRAME));
-            }
-
-            if (Math.abs(deltaY) > this.clipping) {
-                this.y -= deltaY * (this.smoothing * (delta / Game.MS_PER_FRAME));
-            }
-
-            this.cull(game.stage.children);
-            last = performance.now();
-        });
+        });*/
     }
 
-    getX() {
-        return -this.x;
-    }
+    update() {
+        let delta = performance.now() - this.last;
+        let target = this._getTarget(this.following.x, this.following.y);
 
-    getY() {
-        return -this.y;
+        let deltaX = (this.x - target.x);
+        let deltaY = (this.y - target.y);
+
+        if (Math.abs(deltaX) > this.clipping) {
+            this.x -= deltaX * (this.smoothing * (delta / Game.MS_PER_FRAME));
+        }
+
+        if (Math.abs(deltaY) > this.clipping) {
+            this.y -= deltaY * (this.smoothing * (delta / Game.MS_PER_FRAME));
+        }
+
+        this.cull(game.stage.children);
+        this.last = performance.now();
     }
 
     shake() {

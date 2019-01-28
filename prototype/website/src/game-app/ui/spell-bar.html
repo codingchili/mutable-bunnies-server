@@ -214,6 +214,7 @@
                         setTimeout(() => {
                             bar.style.visibility = 'hidden';
                             bar.value = 0;
+                            bar.style.setProperty('--paper-progress-transition-duration', '0s');
                         }, ms);
                     });
 
