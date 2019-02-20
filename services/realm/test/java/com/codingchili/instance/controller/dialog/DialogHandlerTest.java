@@ -1,12 +1,9 @@
 package com.codingchili.instance.controller.dialog;
 
 import com.codingchili.instance.context.*;
+import com.codingchili.instance.transport.InstanceRequest;
 import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.realm.configuration.RealmSettings;
-import com.codingchili.instance.controller.DialogHandler;
-import com.codingchili.instance.model.dialog.DialogRequest;
-import com.codingchili.instance.model.npc.TalkingPerson;
-import com.codingchili.instance.transport.InstanceRequest;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -35,7 +32,7 @@ public class DialogHandlerTest {
     @Test
     @Ignore("reading scripts from the classpath is not supported - to be fixed.")
     public void testSomeDialog() {
-        DialogPerson npc = new DialogPerson();
+        /*DialogPerson npc = new DialogPerson();
         TalkingPerson player = new TalkingPerson();
 
         game.add(npc);
@@ -55,12 +52,13 @@ public class DialogHandlerTest {
 
         request.setNext("test3");
         instance = request(request, player.getId());
-        dialog.say(instance);
+        dialog.say(instance);*/
     }
 
     private InstanceRequest request(Object object, String senderId) {
-        return new InstanceRequest(new MessageMock("", (response, status) -> {
-            System.out.println(response.encodePrettily());
-        }, Serializer.json(object).put("target", senderId)));
+        return new InstanceRequest(new MessageMock(Serializer.json(object).put("target", senderId))
+                .setListener((response, status) -> {
+                    System.out.println(response.encodePrettily());
+                }));
     }
 }

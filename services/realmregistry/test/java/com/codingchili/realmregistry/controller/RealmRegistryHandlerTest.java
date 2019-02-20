@@ -101,13 +101,11 @@ public class RealmRegistryHandlerTest {
     @Test
     public void testClientClose(TestContext test) {
         // need to register realm before removing
-        updateRealmTest(test);
-
-        handle(CLIENT_CLOSE, (response, status) -> {
+        handle(REALM_UPDATE, (response, status) -> {
             test.assertEquals(ResponseStatus.ACCEPTED, status);
         }, new JsonObject()
                 .put(ID_REALM, Serializer.json(realmconfig))
-                .put(ID_TOKEN, Serializer.json(realmconfig.getAuthentication())));
+                .put(ID_TOKEN, realmToken));
     }
 
     @Test
