@@ -12,7 +12,8 @@ class Application {
             selectFirstRealm: true,
             clearCache: true,
             rightClick: true,
-            logEvents: false
+            logEvents: false,
+            hardResetXY: false
         };
 
         this.handlers = {};

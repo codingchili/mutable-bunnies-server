@@ -3,6 +3,7 @@ const LEFT = 'a';
 const DOWN = 's';
 const RIGHT = 'd';
 const RUN_TOGGLE = 'z';
+const PI = 3.1415927;
 const ACCELERATION_BASE = 0.4;
 const ACCELERATION_STEP = (1 - ACCELERATION_BASE) / Game.secondsToTicks(0.5);
 
@@ -33,11 +34,11 @@ window.MovementHandler = class MovementHandler {
         for (let key in game.entities) {
             let entity = game.lookup(key);
             if (entity) {
-
                 entity.acceleration = entity.acceleration || 1;
 
                 if (entity.acceleration < 1.0) {
                     entity.acceleration += (ACCELERATION_STEP * (delta / Game.MS_PER_FRAME));
+                    entity.state.timeScale = entity.velocity * entity.acceleration;
                 } else {
                     entity.acceleration = 1.0;
                 }
@@ -111,7 +112,6 @@ window.MovementHandler = class MovementHandler {
 
             if (entity.state.hasAnimation('walk')) {
                 entity.state.setAnimation(0, 'walk', true);
-                entity.state.timeScale = 0.8;
             }
         }
 
@@ -120,8 +120,17 @@ window.MovementHandler = class MovementHandler {
             entity.skeleton.setToSetupPose();
         }
 
-        entity.x = event.vector.x;
-        entity.y = event.vector.y;
+        if (event.vector.direction > PI) {
+            entity.scale.x = -entity.scale.y;
+        } else if (event.vector.direction > 0 && event.vector.direction < PI) {
+            entity.scale.x = entity.scale.y;
+        }
+
+        if (application.development.hardResetXY) {
+            // used to check client-server delta
+            entity.x = event.vector.x;
+            entity.y = event.vector.y;
+        }
 
         entity.velocity = event.vector.velocity;
         entity.direction = event.vector.direction;
