@@ -3,7 +3,7 @@ package com.codingchili.instance.model.npc;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.Creature;
 
-import java.util.*;
+import java.util.Optional;
 
 /**
  * @author Robin Duda
@@ -23,26 +23,21 @@ public class NpcEngine {
     }
 
     /**
-     * @param npcs a list of npcs to spawn.
-     */
-    public List<Creature> spawn(String... npcs) {
-        List<Creature> result = new ArrayList<>(npcs.length);
-
-        for (String npc: npcs) {
-            spawn(npc).ifPresent(result::add);
-        }
-        return result;
-    }
-
-    /**
      * @param id the id of the npc creature to spawn.
+     * @param x the x point.
+     * @param y the y point.
+     * @return the creature that was spawned.
      */
-    public Optional<Creature> spawn(String id) {
+    public Optional<Creature> spawn(String id, float x, float y) {
         Optional<NpcConfiguration> configuration = npcs.getById(id);
 
         if (configuration.isPresent()) {
             Npc npc = new Npc()
                     .setConfiguration(configuration.get());
+
+            npc.getVector()
+                    .setX(x)
+                    .setY(y);
 
             game.add(npc);
             return Optional.of(npc);

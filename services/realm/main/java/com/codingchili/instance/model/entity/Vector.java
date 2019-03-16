@@ -178,7 +178,7 @@ public class Vector {
      * @return cell numbers that this vector exists within.
      */
     public Collection<Integer> cells(final int cellSize) {
-        if (velocity > 0 || dirty) {
+        if (dirty) {
             dirty = false;
             List<Integer> cells = new ArrayList<>();
             cells.add(Math.round(((x + size) / cellSize) + ((y / cellSize))));
@@ -192,7 +192,7 @@ public class Vector {
     }
 
     /**
-     * Moves the vector in its direction given its velocity.
+     * @param delta Moves the vector in its direction given its velocity.
      */
     public void forward(float delta) {
         if (velocity > 0) {
@@ -204,6 +204,8 @@ public class Vector {
 
             x += Math.sin(direction) * (velocity * acceleration * delta);
             y += Math.cos(direction) * (velocity * acceleration * delta);
+
+            dirty = true;
         }
     }
 }

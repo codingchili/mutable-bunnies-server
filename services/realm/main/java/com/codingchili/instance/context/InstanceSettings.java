@@ -1,16 +1,13 @@
 package com.codingchili.instance.context;
 
-import com.codingchili.core.configuration.Configurable;
-
 import com.codingchili.instance.model.SpawnPoint;
-import com.codingchili.instance.model.entity.Node;
-import com.codingchili.instance.model.npc.Npc;
-import com.codingchili.instance.model.entity.Portal;
-import com.codingchili.instance.scripting.Bindings;
+import com.codingchili.instance.model.entity.SpawnConfiguration;
 import com.codingchili.instance.scripting.Scripted;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.codingchili.core.configuration.Configurable;
 
 import static com.codingchili.common.Strings.PATH_INSTANCE;
 import static com.codingchili.core.configuration.CoreStrings.EXT_YAML;
@@ -20,9 +17,7 @@ import static com.codingchili.core.configuration.CoreStrings.EXT_YAML;
  * Contains settings for an instance in a realm.
  */
 public class InstanceSettings implements Configurable {
-    private List<Portal> portals = new ArrayList<>();
-    private List<Node> nodes = new ArrayList<>();
-    private List<Npc> npc = new ArrayList<>();
+    private List<SpawnConfiguration> entities = new ArrayList<>();
     private List<SpawnPoint> spawns = new ArrayList<>();
     private Scripted onStartup;
     private Scripted onPlayerJoin;
@@ -138,77 +133,27 @@ public class InstanceSettings implements Configurable {
     }
 
     /**
-     * @return a list of portals, exit points to other instances that exist.
-     */
-    public List<Portal> getPortals() {
-        return portals;
-    }
-
-    /**
-     * @param portals sets a list of portals that are exit points into other instances
-     * @return fluent
-     */
-    protected InstanceSettings setPortals(List<Portal> portals) {
-        this.portals = portals;
-        return this;
-    }
-
-    /**
-     * @param portal to add to the existing set of portals.
-     * @return fluent
-     */
-    public InstanceSettings addPortal(Portal portal) {
-        this.portals.add(portal);
-        return this;
-    }
-
-    /**
-     * @return a list of nodes that exists on the map.
-     */
-    public List<Node> getNodes() {
-        return nodes;
-    }
-
-    /**
-     * @param nodes a list of nodes to set.
-     * @return fluent
-     */
-    protected InstanceSettings setNodes(List<Node> nodes) {
-        this.nodes = nodes;
-        return this;
-    }
-
-    /**
-     * @param node a node on the map.
-     * @return fluent
-     */
-    public InstanceSettings addNode(Node node) {
-        this.nodes.add(node);
-        return this;
-    }
-
-    /**
      * @return a list of npcs on the map.
      */
-    public List<Npc> getNpc() {
-        return npc;
+    public List<SpawnConfiguration> getEntities() {
+        return entities;
     }
 
     /**
-     * @param npc a list of npcs to set for the map.
+     * @param entities a list of npcs to set for the map.
      * @return fluent
      */
-    protected InstanceSettings setNpc(List<Npc> npc) {
-        this.npc = npc;
+    protected InstanceSettings setEntities(List<SpawnConfiguration> entities) {
+        this.entities = entities;
         return this;
     }
 
     /**
-     * @param npc adds a npc to the list of existing.
+     * @param npc adds a entities to the list of existing.
      * @return fluent
      */
-    public InstanceSettings addNpc(Npc npc) {
-        this.npc.add(npc);
+    public InstanceSettings addNpc(SpawnConfiguration npc) {
+        this.entities.add(npc);
         return this;
     }
 

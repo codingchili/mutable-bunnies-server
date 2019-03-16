@@ -24,7 +24,7 @@ public class DB<E extends Storable> {
     private Map<String, E> items;
     private Logger logger;
 
-    DB(CoreContext core, Class<E> type, String path) {
+    public DB(CoreContext core, Class<E> type, String path) {
         this.logger = core.logger(getClass());
         this.items = ConfigurationFactory.readDirectory(path).stream()
                 .map(config -> Serializer.unpack(config, type))

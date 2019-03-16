@@ -50,11 +50,11 @@ public class ActiveSpell {
     }
 
     public void onCastProgress(GameContext game) {
-        if (spell.onCastProgress != null) {
+        if (spell.getOnCastProgress() != null) {
             Bindings bindings = getBindings(game);
             try {
                 do {
-                    spell.onCastProgress.apply(bindings);
+                    spell.getOnCastProgress().apply(bindings);
                     this.delta -= spell.getInterval();
                 } while (this.delta > 0);
             } catch (Throwable e) {
@@ -64,9 +64,9 @@ public class ActiveSpell {
     }
 
     public void onCastCompleted(GameContext game) {
-        if (spell.onCastComplete != null) {
+        if (spell.getOnCastComplete() != null) {
             try {
-                spell.onCastComplete.apply(getBindings(game));
+                spell.getOnCastComplete().apply(getBindings(game));
             } catch (Throwable e) {
                 game.getLogger(getClass()).onError(e);
             }
@@ -75,18 +75,18 @@ public class ActiveSpell {
 
     public boolean onCastBegin(GameContext game) {
         source.getSpells().setCooldown(spell);
-        if (spell.onCastBegin != null) {
-            return spell.onCastBegin.apply(getBindings(game));
+        if (spell.getOnCastBegin() != null) {
+            return spell.getOnCastBegin().apply(getBindings(game));
         } else {
             return true;
         }
     }
 
     public void onSpellEffects(GameContext game) {
-        if (spell.onSpellActive != null) {
+        if (spell.getOnSpellActive() != null) {
             Bindings bindings = getBindings(game);
             do {
-                spell.onSpellActive.apply(bindings);
+                spell.getOnSpellActive().apply(bindings);
                 this.delta -= spell.getInterval();
             } while (this.delta > 0);
         }

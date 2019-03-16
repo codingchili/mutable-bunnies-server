@@ -1,6 +1,6 @@
 package com.codingchili.instance.model.npc;
 
-import com.codingchili.instance.model.entity.Vector;
+import com.codingchili.instance.model.entity.Model;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.JexlScript;
@@ -19,10 +19,10 @@ import com.codingchili.core.storage.Storable;
  */
 public class NpcConfiguration implements Storable {
     private List<LootTableItem> loot = new ArrayList<>();
+    private Model model;
     private String name;
     private String description;
     private String dialog;
-    private Vector point;
     private Stats stats;
     private Scripted spawn;
     private Scripted death;
@@ -33,9 +33,6 @@ public class NpcConfiguration implements Storable {
         npc.name = "Illicit Lilith";
         npc.description = "Malevolent. Angry. Spirit.";
         npc.dialog = "tutor";
-        npc.point = new Vector()
-                .setX(300f)
-                .setY(300f);
         npc.stats = new Stats()
                 .set(Attribute.health, 1000)
                 .set(Attribute.maxhealth, 1000);
@@ -89,14 +86,6 @@ public class NpcConfiguration implements Storable {
         this.dialog = dialog;
     }
 
-    public Vector getPoint() {
-        return point;
-    }
-
-    public void setPoint(Vector point) {
-        this.point = point;
-    }
-
     public Stats getStats() {
         return stats;
     }
@@ -127,5 +116,13 @@ public class NpcConfiguration implements Storable {
 
     public void setTick(Scripted tick) {
         this.tick = tick;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
 }

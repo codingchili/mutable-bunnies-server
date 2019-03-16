@@ -39,13 +39,13 @@ authentication:
   properties:
     type: "HmacSHA512"
   domain: "Angel Oak.node"
-  key: "chPsO2045n4WmZ7jNVsxqlXsIemHDYrcxKszvanL4JeSNVSixjIB48u0nfg5J87owBNZ9x4t3jpELk3e7a5rsA=="
-  expiry: 1552239639
-secret: "whFg4lttxKanuAveL5jJcyxMIfZuvmjuJJJxxpwRDFJG+gP/xmmyVT9XGMu1xdgPY8mCBNNJTb881Hw/zQaw0A=="
-global: "e5l58psJ+rZjc8gKPbGFwFuNCCocg0ktft3XLFcFJsx7rTUtMYRENTTDiuOtFgD+lc06NWsDw3oqjO8WJ7rA8g=="
+  key: "F9HCRS2yvKdz0WUzfnD7rjOKqCdOkO7ZW1RjuYib+Fn0aezB7O2W8kAR8Ik13CFMKxg2uEFl1EVQEqOoq1astg=="
+  expiry: 1553349955
+secret: "x+QCzaGjbj1UCmzXUas+BWjYPBb+BrPtLQrp6KMNBaTEdBqxRN6s4GlmN3PwkgOOW3Tlg2H5loNcrHkGOUFm3Q=="
+global: "bOarC1sqYReU9lIXIUR7V2ECosZnvS4JYYKzmCT5ErE8PZpPXoTD6dnS2Q2fLDBoFC96M86YlsupOcYFWBXkFg=="
 logging:
   properties:
     type: "HmacSHA512"
   domain: "Angel Oak.node"
-  key: "II6wE5po07pNTSfzm5jrRyJe3ibgdwUWPksI8gLFzRZl2BpmEUK+YqyvfRjlG02wYdM7Ng0wk6kc3ecmi0xQwA=="
-  expiry: 1552239639
+  key: "6WE5lbLrREUjIYsFG+JLC8rbv6BPCIglQX71lve26R/3kX4qUlbGi1tfJ6mNoO6WWAmwCIE/e81jWJ5Mvpdwcw=="
+  expiry: 1553349955

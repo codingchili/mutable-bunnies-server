@@ -52,7 +52,7 @@ public class Projectile {
         vector.forward(1f);
 
         game.creatures().radius(vector).forEach(creature -> {
-            spell.getSpell().onSpellActive.apply(getBindings(creature));
+            spell.getSpell().getOnSpellActive().apply(getBindings(creature));
             hit.set(true);
         });
 

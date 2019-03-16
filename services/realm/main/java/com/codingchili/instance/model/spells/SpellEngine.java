@@ -299,7 +299,7 @@ public class SpellEngine {
         creatures.all().forEach(entity -> {
             entity.getAfflictions().removeIf(active -> {
                 if (active.shouldTick(delta))
-                    if (!active.tick(game)) return true;
+                    return !active.tick(game);
                 return false;
             }, game);
             entity.getSpells().tick(spells, delta);

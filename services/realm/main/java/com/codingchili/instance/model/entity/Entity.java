@@ -31,6 +31,11 @@ public interface Entity extends Storable, Receiver<Event> {
     Vector getVector();
 
     /**
+     * @return a graphical representation of the entity.
+     */
+    Model getModel();
+
+    /**
      * @return a set of names of the events that this entity is a subscriber of.
      */
     Set<String> getInteractions();

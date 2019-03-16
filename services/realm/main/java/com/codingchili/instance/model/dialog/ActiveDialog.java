@@ -23,6 +23,7 @@ public class ActiveDialog {
     private Option cursor;
 
     /**
+     * @param game the game context.
      * @param dialog the dialog to be used.
      * @param source the dialog initiator.
      * @param target the dialog holder.

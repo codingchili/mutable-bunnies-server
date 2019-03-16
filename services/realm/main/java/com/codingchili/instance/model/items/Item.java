@@ -5,12 +5,14 @@ import com.codingchili.instance.scripting.Scripted;
 
 import java.util.UUID;
 
+import com.codingchili.core.storage.Storable;
+
 /**
  * @author Robin Duda
  *
  * Model of an item, which may be usable, equippable of consumable.
  */
-public class Item extends ItemType {
+public class Item extends ItemType implements Storable {
     private String id = UUID.randomUUID().toString();
     protected String name = "no name";
     protected String description = "no description.";

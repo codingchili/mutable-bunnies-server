@@ -35,6 +35,7 @@ public class DialogEngine {
      * Player action to advance the dialog.
      *
      * @param request a request to alter state of the dialog.
+     * @param sourceId the dialog initiator that advances the dialog.
      * @return the current state of the dialog.
      */
     public Future<ActiveDialog> say(DialogRequest request, String sourceId) {
@@ -56,6 +57,7 @@ public class DialogEngine {
      * Starts a dialog between a player and a target entity.
      *
      * @param request dialog request
+     * @param sourceId the creature initiating the dialog.
      * @return the current state of the dialog. failed if the
      * target does not support dialogs, is out of range or
      * if the dialog used by the target was not found.

@@ -49,7 +49,7 @@ public class Npc extends SimpleCreature {
 
         attributes.put(DESCRIPTION, config.getDescription());
 
-        vector = config.getPoint().copy();
+        setModel(config.getModel());
         setName(config.getName());
         setBaseStats(config.getStats());
     }

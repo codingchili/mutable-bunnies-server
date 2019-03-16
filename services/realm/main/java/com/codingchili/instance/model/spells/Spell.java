@@ -14,20 +14,21 @@ import com.codingchili.core.storage.Storable;
  * A spell item from the spell DB.
  */
 public class Spell implements Storable, Configurable {
-    protected String id = "no name";
-    protected String description = "no description";
-    protected Boolean mobile = true; // can move and cast?
-    protected Target target = Target.caster; // spell target: caster, area etc.
-    protected Integer charges = 0;  // number of times the spell can be cast in a sequence without recharge.
-    protected Integer range = 100; // how far away the target may be.
-    protected Float interval = 0.5f; // how often to call onProgress and onEffects.
-    protected Float cooldown = 1.0f; // time to regenerate a charge.
-    protected Float casttime = 0.0f; // the time taken to cast the spell.
-    protected Float active = 0.0f; // how long the spell is active after casting is completed.
-    protected Scripted onCastBegin;    // check pre-requisites - must check result.
-    protected Scripted onCastProgress; // implement for channeled abilities.
-    protected Scripted onCastComplete; // implement casted spell logic here.
-    protected Scripted onSpellActive;    // for spells that are active longer than the casting period.
+    private String id = "no name";
+    private String description = "no description";
+    private Boolean mobile = true; // can move and cast?
+    private Target target = Target.caster; // spell target: caster, area etc.
+    private Integer charges = 0;  // number of times the spell can be cast in a sequence without recharge.
+    private Integer range = 100; // how far away the target may be.
+    private Float interval = 0.5f; // how often to call onProgress and onEffects.
+    private Float cooldown = 1.0f; // minimum time between casting the spell.
+    private Float recharge = 1.0f; // time taken to generate one charge.
+    private Float casttime = 0.0f; // the time taken to cast the spell.
+    private Float active = 0.0f; // how long the spell is active after casting is completed.
+    private Scripted onCastBegin;    // check pre-requisites - must check result.
+    private Scripted onCastProgress; // implement for channeled abilities.
+    private Scripted onCastComplete; // implement casted spell logic here.
+    private Scripted onSpellActive;    // for spells that are active longer than the casting period.
 
     @Override
     public String getPath() {
@@ -113,6 +114,14 @@ public class Spell implements Storable, Configurable {
 
     public void setInterval(Float interval) {
         this.interval = interval;
+    }
+
+    public Float getRecharge() {
+        return recharge;
+    }
+
+    public void setRecharge(Float recharge) {
+        this.recharge = recharge;
     }
 
     @JsonIgnore

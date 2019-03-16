@@ -1,4 +1,4 @@
-package com.codingchili.instance.model.items;
+package com.codingchili.instance.model.entity;
 
 import com.codingchili.instance.model.npc.DB;
 
@@ -10,18 +10,19 @@ import com.codingchili.core.context.CoreContext;
 /**
  * @author Robin Duda
  */
-public class ItemDB {
-    private static final String CONF_PATH = "conf/game/item";
+public class EntityDB {
+    private static final String CONF_PATH = "conf/game/entity";
     private static final AtomicBoolean initialized = new AtomicBoolean(false);
-    private static DB<Item> items;
+    private static DB<Entity> items;
 
-    public ItemDB(CoreContext core) {
+    public EntityDB(CoreContext core) {
         if (!initialized.getAndSet(true)) {
-            items = new DB<>(core, Item.class, CONF_PATH);
+            // tbd: use concrete class.
+            items = new DB<>(core, Entity.class, CONF_PATH);
         }
     }
 
-    public Optional<Item> getById(String id) {
+    public Optional<Entity> getById(String id) {
         return items.getById(id);
     }
 }

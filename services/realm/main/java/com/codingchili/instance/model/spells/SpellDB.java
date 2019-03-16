@@ -38,7 +38,7 @@ public class SpellDB implements MetadataStore<Spell> {
         if (!initialized.getAndSet(true)) {
             spells = ConfigurationFactory.readDirectory(CONF_PATH).stream()
                     .map(config -> Serializer.unpack(config, Spell.class))
-                    .collect(Collectors.toMap((k) -> k.id, (v) -> v));
+                    .collect(Collectors.toMap(Spell::getId, (v) -> v));
 
             logger.event(SPELL_LOAD).put(ID_COUNT, spells.size()).send();
 

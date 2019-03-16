@@ -94,7 +94,7 @@ public class SpellState {
      * @return an integer indicating number of charges available.
      */
     public int charges(Spell spell) {
-        charges.putIfAbsent(spell.id, 0f);
+        charges.putIfAbsent(spell.getId(), 0f);
         return charges.get(spell.getId()).intValue();
     }
 
@@ -110,7 +110,7 @@ public class SpellState {
             spells.getByName(spellName).ifPresent(spell -> {
                 int cooldown = GameContext.secondsToTicks(spell.getCooldown());
 
-                if (spell.charges > 1) {
+                if (spell.getCharges() > 1) {
                     charge(spell, delta / cooldown);
                 }
             });
@@ -122,6 +122,7 @@ public class SpellState {
      * has not learned the spell.
      *
      * @param spell the spell to add a charge for.
+     * @param amount the amount of charge being added.
      */
     public void charge(Spell spell, float amount) {
         charges.compute(spell.getId(), (key, charges) -> {
@@ -130,7 +131,7 @@ public class SpellState {
                 charges = 0f;
             }
 
-            if (charges < spell.charges) {
+            if (charges < spell.getCharges()) {
                 return charges + amount;
             } else {
                 return charges;
