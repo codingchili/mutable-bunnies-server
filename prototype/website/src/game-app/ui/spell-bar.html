@@ -115,6 +115,15 @@
                 width: 100%;
             }
 
+            .charges {
+                position: absolute;
+                font-size: 0.8em;
+                left: 22px;
+                top: 24px;
+                display: block;
+                text-shadow: 1px 1px #000;
+            }
+
             @media (max-width: 632px) {
                 :host {
                     bottom: 48px;
@@ -125,7 +134,7 @@
         </style>
 
         <paper-material elevation="3" class="interface-box">
-            <template is="dom-repeat" items="{{spells}}" as="spell">
+            <template is="dom-repeat" items="[[spells]]" as="spell">
                 <template is="dom-if" if="{{_learned(spell, character)}}">
                     <div on-down="_onCast">
                         <img class="spell-icon" src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
@@ -145,9 +154,10 @@
                                 </tr>
                             </table>
 
-                            <span class="description">{{_description(spell)}}</span>
+                            <span class="description">{{_description(spell, character)}}</span>
 
                         </paper-tooltip>
+                        <span class="charges">[[_charges(spell, charges.*)]]</span>
                     </div>
 
                     <paper-progress id="cd-bar-[[spell.id]]" class="cooldown-bar transiting" min="0"
@@ -168,19 +178,36 @@
 
     </template>
     <script>
-        class SpellBar extends Polymer.GestureEventListeners(Polymer.Element) {
+        class SpellBar extends Polymer.MutableData(Polymer.Element) {
 
             static get is() {
                 return 'spell-bar';
+            }
+
+            static get properties() {
+                return {
+                    spells: {
+                        type: Array,
+                        notify: true,
+                        observe: true,
+                        value: []
+                    }
+                }
             }
 
             constructor() {
                 super();
                 this.hotkeys = ['q', 'e', 'r', 'f', 'x', 'c', 'v'];
                 this.spells = [];
+                this.charges = {};
+                this.character = {
+                    spells: {
+                        learned: []
+                    }
+                };
 
                 application.onCharacterLoaded(player => {
-                    this.character = player;
+                    this.set('character', player);
                 });
 
                 application.onRealmLoaded(realm => {
@@ -196,8 +223,8 @@
                         }
                     }, this.hotkeys);
 
-                    game.spells.onCharge((spell, charges) => {
-                        console.log(`spell ${spell} has ${charges} charges.`);
+                    game.spells.onCharge((spellId, charges) => {
+                        this.set(`charges.${spellId}`, charges);
                     });
 
                     game.spells.onCooldown((spell, ms) => {
@@ -222,6 +249,11 @@
                         console.log(`global gcd for ${ms}ms.`);
                     });
                 });
+            }
+
+            _charges(spell) {
+                let charges = this.charges[spell.id];
+                return (charges === 0) ? '' : charges;
             }
 
             _getSpellById(spellName) {

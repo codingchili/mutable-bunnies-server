@@ -14,7 +14,7 @@ public abstract class SimpleEntity implements Entity {
     protected transient EventProtocol protocol = new EventProtocol(this);
     protected transient Set<String> interactions = new HashSet<>();
     private String id = UUID.randomUUID().toString();
-    protected Model model = new Model() {};
+    protected Model model = new Model();
     protected Map<String, Object> attributes = new HashMap<>();
     protected String name = "<no name>";
     protected Vector vector = new Vector();
@@ -48,9 +48,8 @@ public abstract class SimpleEntity implements Entity {
         return vector;
     }
 
-    public Entity setVector(Vector vector) {
+    public void setVector(Vector vector) {
         this.vector = vector;
-        return this;
     }
 
     @Override

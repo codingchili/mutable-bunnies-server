@@ -2,12 +2,19 @@
 name: "Illicit Lilith"
 description: "Malevolent. Angry. Spirit."
 dialog: "tutor"
-point:
-  direction: 0.0
-  size: 24
-  x: 624.0
-  y: 325.0
+model:
+  graphics: "some sprite"
+  scale: 1.0
+  blocking: false
+  hitbox:
+    type: rectangular
+    points:
+      - x: 0
+        y: 0
+      - x: 32
+        y: 32
 stats:
+  level: 10
   health: 1000.0
   maxhealth: 1000.0
   movement: 1.0

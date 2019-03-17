@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.codingchili.core.context.CoreRuntimeException;
+import com.codingchili.core.protocol.Serializer;
 
 /**
  * @author Robin Duda
@@ -85,10 +86,12 @@ public class PlayerCreature extends SimpleCreature {
                     .setSource(this)
                     .setAttribute(Attribute.class);
 
-            stats.set(Attribute.maxhealth, getStats().get(Attribute.constitution) * 10);
-            stats.set(Attribute.maxenergy, getStats().get(Attribute.dexterity) * 20 + 100);
-            stats.setDefault(Attribute.health, getStats().get(Attribute.maxhealth));
-            stats.setDefault(Attribute.energy, getStats().get(Attribute.maxenergy));
+            Stats template = getStats();
+
+            stats.set(Attribute.maxhealth, template.get(Attribute.constitution) * 10);
+            stats.set(Attribute.maxenergy, template.get(Attribute.dexterity) * 20 + 100);
+            stats.setDefault(Attribute.health, template.get(Attribute.maxhealth));
+            stats.setDefault(Attribute.energy, template.get(Attribute.maxenergy));
             stats.setDefault(Attribute.experience, 15.0f);
             stats.setDefault(Attribute.level, 1);
 

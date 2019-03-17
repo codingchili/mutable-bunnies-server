@@ -6,7 +6,6 @@ window.Spells = class Spells  {
         this.charge = () => {};
 
         server.connection.setHandler('spell', (cast) => {
-            console.log(cast);
             let now = new Date().getTime();
 
             if (game.lookup(cast.source).isPlayer) {
@@ -21,6 +20,11 @@ window.Spells = class Spells  {
                 }
                 this.charge(cast.spell, cast.charges);
             }
+        });
+
+        server.connection.setHandler('spellstate', (state) => {
+            console.log(state);
+            this.charge(state.spell, state.charges);
         });
     }
 

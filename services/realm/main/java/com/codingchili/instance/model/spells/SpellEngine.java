@@ -281,7 +281,7 @@ public class SpellEngine {
         if (target.getStats().get(Attribute.health) < 0) {
             game.publish(new DeathEvent(target, source));
 
-            // despawn the player: requires the player to issue a "join" to get respawned.
+            // despawn the player: requires the player to issue a "join" to get re-spawned.
             game.remove(target);
         }
     }
@@ -302,7 +302,8 @@ public class SpellEngine {
                     return !active.tick(game);
                 return false;
             }, game);
-            entity.getSpells().tick(spells, delta);
+
+            entity.getSpells().tick(entity, spells, delta);
         });
     }
 

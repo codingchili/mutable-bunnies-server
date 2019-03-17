@@ -25,7 +25,7 @@ public class DB<E extends Storable> {
     private Logger logger;
 
     public DB(CoreContext core, Class<E> type, String path) {
-        this.logger = core.logger(getClass());
+        this.logger = core.logger(type);
         this.items = ConfigurationFactory.readDirectory(path).stream()
                 .map(config -> Serializer.unpack(config, type))
                 .collect(Collectors.toMap(Storable::getId, (v) -> v));
@@ -48,8 +48,7 @@ public class DB<E extends Storable> {
                 }).build();
 
         logger.event(DB_LOAD)
-                .put(ID_COUNT, items.size())
-                .put(ID_NAME, type.getSimpleName()).send(LOADED);
+                .put(ID_COUNT, items.size()).send(LOADED);
     }
 
     public Optional<E> getById(String id) {

@@ -1,10 +1,12 @@
 package com.codingchili.instance.model.spells;
 
 import com.codingchili.instance.context.GameContext;
-import com.codingchili.instance.context.Ticker;
+import com.codingchili.instance.model.entity.Entity;
+import com.codingchili.instance.model.events.SpellStateEvent;
 
-import java.time.*;
+import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Robin Duda
@@ -55,9 +57,12 @@ public class SpellState {
                 // disregard cooldown if there are charges available.
                 return false;
             } else {
-                // check if the spell is on cooldown.
+                // check if the spell is on cooldown or out of charges if the spell is chargeable.
                 Long lastCastCooldownEnds = casted.getOrDefault(spell.getId(), 0L);
-                return (Instant.now().toEpochMilli() < lastCastCooldownEnds);
+                boolean cooldown = (Instant.now().toEpochMilli() < lastCastCooldownEnds);
+                boolean excharged = spell.getCharges() > 0 && charges(spell) <= 0;
+
+                return cooldown || excharged;
             }
         } else {
             // global cooldown applies to charges as well.
@@ -104,16 +109,22 @@ public class SpellState {
      * @param spells a reference to the spell database.
      * @param delta  ticker delta
      */
-    public void tick(SpellDB spells, float delta) {
+    public void tick(Entity entity, SpellDB spells, float delta) {
         for (String spellName : learned) {
+            Optional<Spell> lookup = spells.getByName(spellName);
 
-            spells.getByName(spellName).ifPresent(spell -> {
-                int cooldown = GameContext.secondsToTicks(spell.getCooldown());
+            if (lookup.isPresent()) {
+                Spell spell = lookup.get();
+                int recharge = GameContext.secondsToTicks(spell.getRecharge());
 
                 if (spell.getCharges() > 1) {
-                    charge(spell, delta / cooldown);
+                    boolean modified = charge(spell, delta / recharge);
+
+                    if (modified) {
+                        entity.handle(new SpellStateEvent(this, spell));
+                    }
                 }
-            });
+            }
         }
     }
 
@@ -121,22 +132,21 @@ public class SpellState {
      * Adds a charge for the given spell - has no effect if the owner of the spell-state
      * has not learned the spell.
      *
-     * @param spell the spell to add a charge for.
+     * @param spell  the spell to add a charge for.
      * @param amount the amount of charge being added.
+     * @return true if the amount of usable charges modified.
      */
-    public void charge(Spell spell, float amount) {
-        charges.compute(spell.getId(), (key, charges) -> {
+    public boolean charge(Spell spell, float amount) {
+        if (learned.contains(spell.getId())) {
+            Float charge = charges.getOrDefault(spell.getId(), 0f);
+            Float next = amount + charge;
 
-            if (charges == null) {
-                charges = 0f;
-            }
+            charges.put(spell.getId(), Math.min(next, spell.getCharges()));
+            return (next.intValue() > charge.intValue());
 
-            if (charges < spell.getCharges()) {
-                return charges + amount;
-            } else {
-                return charges;
-            }
-        });
+        } else {
+            return false;
+        }
     }
 
     /**

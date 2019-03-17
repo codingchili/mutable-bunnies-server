@@ -3,6 +3,7 @@ id: "dagger"
 description: "Strikes nearby targets with a daggur dealing ${this.character.stats.strength / 2} direct damage."
 cooldown: 0.5
 casttime: 0.20
+recharge: 3
 charges: 5
 target: caster
 onCastBegin:

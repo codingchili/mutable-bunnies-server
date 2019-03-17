@@ -1,8 +1,7 @@
 ---
 name: level 2
-portals: []
-nodes: []
-npc: []
+entities:
+  - name: "Illicit Lilith"
 limit: 50
 width: 3000
 height: 3000
@@ -22,4 +21,5 @@ onPlayerJoin:
     }
 onStartup:
   jexl: |
-    context.npcs().spawn("Illicit Lilith");
+    // done by config now, wow.
+    // context.npcs().spawn("Illicit Lilith");

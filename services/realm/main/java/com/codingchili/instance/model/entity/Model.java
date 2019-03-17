@@ -1,27 +1,25 @@
 package com.codingchili.instance.model.entity;
 
-import java.util.List;
-
 /**
  * @author Robin Duda
  * <p>
  * A graphical representation of an object to be used by the client and hit detection.
  */
 public class Model {
-    private String name;
+    private String graphics;
     private float scale;
     private boolean blocking;
-    private List<Point> hitbox;
+    private Hitbox hitbox;
 
     /**
      * @return the graphical representation of the model, a sprite for example.
      */
-    public String getName() {
-        return name;
+    public String getGraphics() {
+        return graphics;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGraphics(String graphics) {
+        this.graphics = graphics;
     }
 
     /**
@@ -49,11 +47,11 @@ public class Model {
     /**
      * @return a list of points that create a bounding box.
      */
-    public List<Point> getHitbox() {
+    public Hitbox getHitbox() {
         return hitbox;
     }
 
-    public void setHitbox(List<Point> hitbox) {
+    public void setHitbox(Hitbox hitbox) {
         this.hitbox = hitbox;
     }
 }
