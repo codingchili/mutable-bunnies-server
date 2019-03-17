@@ -106,6 +106,7 @@ public class SpellState {
     /**
      * Processes the current cooldown and generates new charges if enough time has passed.
      *
+     * @param entity the entity being updated, used for sending updates.
      * @param spells a reference to the spell database.
      * @param delta  ticker delta
      */
