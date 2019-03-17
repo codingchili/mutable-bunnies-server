@@ -75,7 +75,11 @@ public class ScriptEngineTest {
         new BenchmarkExecutor(context)
                 .setListener(new BenchmarkConsoleListener())
                 .start(group).setHandler(done -> {
-            new BenchmarkHTMLReport(done.result()).display();
+                    try {
+                        new BenchmarkHTMLReport(done.result()).display();
+                    } catch (Exception e) {
+                        // no display available.
+                    }
             async.complete();
         });
     }
