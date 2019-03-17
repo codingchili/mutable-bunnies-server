@@ -14,14 +14,17 @@ import static com.codingchili.core.configuration.CoreStrings.EXT_YAML;
 
 /**
  * @author Robin Duda
+ *
  * Contains settings for an instance in a realm.
  */
 public class InstanceSettings implements Configurable {
-    private List<SpawnConfiguration> entities = new ArrayList<>();
+    private List<SpawnConfiguration> structures = new ArrayList<>();
+    private List<SpawnConfiguration> npcs = new ArrayList<>();
     private List<SpawnPoint> spawns = new ArrayList<>();
     private Scripted onStartup;
     private Scripted onPlayerJoin;
     private String name = "default";
+    private String texture = "";
     private int limit = 0;
     private int width = 1;
     private int height = 1;
@@ -133,28 +136,36 @@ public class InstanceSettings implements Configurable {
     }
 
     /**
-     * @return a list of npcs on the map.
+     * @return a list of structures to spawn on the map.
      */
-    public List<SpawnConfiguration> getEntities() {
-        return entities;
+    public List<SpawnConfiguration> getStructures() {
+        return structures;
+    }
+
+    public void setStructures(List<SpawnConfiguration> structures) {
+        this.structures = structures;
     }
 
     /**
-     * @param entities a list of npcs to set for the map.
-     * @return fluent
+     * @return a list of NPCs to spawn on the map.
      */
-    protected InstanceSettings setEntities(List<SpawnConfiguration> entities) {
-        this.entities = entities;
-        return this;
+    public List<SpawnConfiguration> getNpcs() {
+        return npcs;
+    }
+
+    public void setNpcs(List<SpawnConfiguration> npcs) {
+        this.npcs = npcs;
     }
 
     /**
-     * @param npc adds a entities to the list of existing.
-     * @return fluent
+     * @return base ground texture.
      */
-    public InstanceSettings addNpc(SpawnConfiguration npc) {
-        this.entities.add(npc);
-        return this;
+    public String getTexture() {
+        return texture;
+    }
+
+    public void setTexture(String texture) {
+        this.texture = texture;
     }
 
     @Override

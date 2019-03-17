@@ -1,7 +1,5 @@
 ---
 name: level 2
-entities:
-  - name: "Illicit Lilith"
 limit: 50
 width: 3000
 height: 3000

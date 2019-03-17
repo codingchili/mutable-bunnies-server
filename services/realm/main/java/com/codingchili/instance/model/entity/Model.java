@@ -10,6 +10,7 @@ public class Model {
     private float scale;
     private boolean blocking;
     private Hitbox hitbox;
+    private int layer = 1;
 
     /**
      * @return the graphical representation of the model, a sprite for example.
@@ -53,5 +54,16 @@ public class Model {
 
     public void setHitbox(Hitbox hitbox) {
         this.hitbox = hitbox;
+    }
+    
+    /**
+     * @return the layer at which the graphic will be rendered.
+     */
+    public int getLayer() {
+        return layer;
+    }
+
+    public void setLayer(int layer) {
+        this.layer = layer;
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Hitbox {
     private List<Point> points = new ArrayList<>();
-    private HitboxType type;
+    private HitboxType type = HitboxType.rectangular;
 
     public Hitbox() {}
 

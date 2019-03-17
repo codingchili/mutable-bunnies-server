@@ -1,11 +1,8 @@
 package com.codingchili.instance.model.npc;
 
-import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.SimpleCreature;
 import com.codingchili.instance.model.events.DeathEvent;
 import com.codingchili.instance.scripting.Bindings;
-
-import java.util.function.Consumer;
 
 import com.codingchili.core.protocol.Api;
 
@@ -15,43 +12,10 @@ import com.codingchili.core.protocol.Api;
  * Model of an NPC.
  */
 public class Npc extends SimpleCreature {
-    private static final String DESCRIPTION = "description";
-    private static final double TPS = 1; // limits NPCs to 1 AI update per second.
-    private NpcConfiguration config;
+    private EntityConfiguration config;
 
-    @Override
-    public void setContext(GameContext game) {
-        super.setContext(game);
-        Bindings bindings = new Bindings()
-                .setSource(this)
-                .set("log", (Consumer<String>) (line) -> {
-                    game.getLogger(Npc.class)
-                            .log(line);
-                }).setContext(game);
-
-        if (config.getSpawn() != null) {
-            config.getSpawn().apply(bindings);
-        }
-
-        if (config.getTick() != null) {
-            game.ticker((ticker) -> {
-                if (game.exists(getId())) {
-                    config.getTick().apply(bindings);
-                } else {
-                    ticker.disable();
-                }
-            }, GameContext.secondsToTicks(TPS));
-        }
-
-        if (config.getDialog() != null) {
-            game.dialogs().register(this, config.getDialog());
-        }
-
-        attributes.put(DESCRIPTION, config.getDescription());
-
-        setModel(config.getModel());
-        setName(config.getName());
-        setBaseStats(config.getStats());
+    public Npc(EntityConfiguration config) {
+        this.config = config;
     }
 
     @Api(route = "death")
@@ -72,7 +36,7 @@ public class Npc extends SimpleCreature {
         }
     }
 
-    public Npc setConfiguration(NpcConfiguration config) {
+    public Npc setConfiguration(EntityConfiguration config) {
         this.config = config;
         return this;
     }

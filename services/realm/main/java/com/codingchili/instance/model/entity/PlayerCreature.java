@@ -90,8 +90,8 @@ public class PlayerCreature extends SimpleCreature {
 
             stats.set(Attribute.maxhealth, template.get(Attribute.constitution) * 10);
             stats.set(Attribute.maxenergy, template.get(Attribute.dexterity) * 20 + 100);
-            stats.setDefault(Attribute.health, template.get(Attribute.maxhealth));
-            stats.setDefault(Attribute.energy, template.get(Attribute.maxenergy));
+            stats.setDefault(Attribute.health, stats.get(Attribute.maxhealth));
+            stats.setDefault(Attribute.energy, stats.get(Attribute.maxenergy));
             stats.setDefault(Attribute.experience, 15.0f);
             stats.setDefault(Attribute.level, 1);
 

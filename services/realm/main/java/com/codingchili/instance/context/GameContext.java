@@ -43,7 +43,7 @@ public class GameContext {
     private MovementEngine movement;
     private InventoryEngine inventory;
     private DialogEngine dialogs;
-    private NpcEngine npcs;
+    private SpawnEngine npcs;
 
     private ClassDB classes;
     private Logger logger;
@@ -65,7 +65,7 @@ public class GameContext {
         this.inventory = new InventoryEngine(this);
         this.movement = new MovementEngine(this);
         this.dialogs = new DialogEngine(this);
-        this.npcs = new NpcEngine(this);
+        this.npcs = new SpawnEngine(this);
 
         initialize(instance.settings());
 
@@ -159,7 +159,7 @@ public class GameContext {
         return inventory;
     }
 
-    public NpcEngine npcs() {
+    public SpawnEngine spawner() {
         return npcs;
     }
 

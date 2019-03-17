@@ -1,11 +1,9 @@
 package com.codingchili.instance.controller;
 
-import com.codingchili.instance.context.GameContext;
-import com.codingchili.instance.context.InstanceContext;
-import com.codingchili.instance.model.entity.Entity;
-import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.context.*;
+import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.events.*;
-import com.codingchili.instance.scripting.Bindings;
+import com.codingchili.instance.model.npc.SpawnEngine;
 import com.codingchili.instance.transport.InstanceRequest;
 import io.vertx.core.Future;
 
@@ -42,6 +40,25 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
         handlers.add(new InventoryHandler(game));
 
         handlers.forEach(protocol::annotated);
+    }
+
+    @Override
+    public void start(Future<Void> future) {
+        game.queue(() -> {
+            InstanceSettings settings = context.settings();
+            SpawnEngine spawner = game.spawner();
+
+            settings.getStructures().forEach(entity -> {
+                Point point = entity.getPoint();
+                spawner.structure(entity.getName(), point.getX(), point.getY());
+            });
+
+            settings.getNpcs().forEach(npc -> {
+                Point point = npc.getPoint();
+                spawner.npc(npc.getName(), point.getX(), point.getY());
+            });
+            future.complete();
+        });
     }
 
     @Api
@@ -92,16 +109,6 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
     public void stop(Future<Void> future) {
         context.onInstanceStopped(future, context.realm().getNode(), context.settings().getName());
     }
-
-    @Override
-    public void start(Future<Void> future) {
-        //context.onInstanceStarted(context.realm().getName(), context.settings().getName());
-        future.complete();
-    }
-
-    // todo: only log listener started if handler does not implement start or ignore it altogether?
-    // todo: instance metadata is wrong in the listener.start logging, fix.
-    // todo: log loaded X instances, X realms, X classes, X afflictions, X spells - once in the static loader.
 
     @Override
     public int instances() {

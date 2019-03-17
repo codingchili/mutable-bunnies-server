@@ -17,7 +17,7 @@ import com.codingchili.core.storage.Storable;
  * <p>
  * NPC configuration.
  */
-public class NpcConfiguration implements Storable {
+public class EntityConfiguration implements Storable {
     private List<LootTableItem> loot = new ArrayList<>();
     private Model model;
     private String name;
@@ -29,7 +29,7 @@ public class NpcConfiguration implements Storable {
     private Scripted tick;
 
     public static void main(String[] args) {
-        NpcConfiguration npc = new NpcConfiguration();
+        EntityConfiguration npc = new EntityConfiguration();
         npc.name = "Illicit Lilith";
         npc.description = "Malevolent. Angry. Spirit.";
         npc.dialog = "tutor";

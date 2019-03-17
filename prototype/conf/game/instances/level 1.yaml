@@ -3,6 +3,21 @@ name: level 1
 limit: 50
 width: 3000
 height: 3000
+texture: "game/map/background_snow.png"
+structures:
+  - name: "Redwood"
+    point:
+      x: 200
+      y: 200
+  - name: "Redwood"
+    point:
+      x: 235
+      y: 215
+npcs:
+  - name: "Illicit Lilith"
+    point:
+      x: 300
+      y: 300
 spawns:
   - x: 300
     y: 325
@@ -15,4 +30,4 @@ onPlayerJoin:
     }
 onStartup:
   jexl: |
-    //context.npcs().spawn("Illicit Lilith");
+    //context.spawner().npc("Illicit Lilith", 300, 300);

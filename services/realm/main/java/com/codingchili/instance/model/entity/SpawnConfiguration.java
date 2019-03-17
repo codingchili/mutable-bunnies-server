@@ -6,21 +6,21 @@ package com.codingchili.instance.model.entity;
  * Configuration used to specify where a pre-defined entity will be spawned on a map.
  */
 public class SpawnConfiguration {
-    private String entity;
+    private String name;
     private Point point;
 
     /**
      * @return Name (id) of the entity to spawn.
      */
-    public String getEntity() {
-        return entity;
+    public String getName() {
+        return name;
     }
 
     /**
-     * @param entity the id of the entity to spawn.
+     * @param name the id of the entity to spawn.
      */
-    public void setEntity(String entity) {
-        this.entity = entity;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

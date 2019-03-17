@@ -11,15 +11,15 @@ import com.codingchili.core.context.CoreContext;
 public class NpcDB {
     private static final String CONF_PATH = "conf/game/npc";
     private static final AtomicBoolean initialized = new AtomicBoolean(false);
-    private static DB<NpcConfiguration> npcs;
+    private static DB<EntityConfiguration> npcs;
 
     public NpcDB(CoreContext core) {
         if (!initialized.getAndSet(true)) {
-            npcs = new DB<>(core, NpcConfiguration.class, CONF_PATH);
+            npcs = new DB<>(core, EntityConfiguration.class, CONF_PATH);
         }
     }
 
-    public Optional<NpcConfiguration> getById(String id) {
+    public Optional<EntityConfiguration> getById(String id) {
         return npcs.getById(id);
     }
 }
