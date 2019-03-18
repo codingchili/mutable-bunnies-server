@@ -1,6 +1,7 @@
 ---
 name: "Paladin"
 description: "A holy priest enforcing the law with a hammer of justice, possesses blessings of protection."
+theme: "#01bfff"
 weapons:
   - "hammer"
 armors:
@@ -17,11 +18,11 @@ spells:
   - "blinding light"
   - "hammer blow"
 stats:
-  strength: 10
-  intelligence: 10
-  wisdom: 5
-  constitution: 15
-  magicResist: 5
-  armorClass: 5
-  dexterity: 5
+  strength: 16
+  intelligence: 16
+  wisdom: 14
+  constitution: 18
+  dexterity: 14
+  magicResist: 12
+  armorClass: 24
   movement: 2.1

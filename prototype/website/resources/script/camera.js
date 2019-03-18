@@ -6,12 +6,7 @@ window.Camera = class Camera {
         this.x = -2000;
         this.y = -2000;
         this.following = {x: this.x, y: this.y};
-
         this.last = performance.now();
-
-        /*game.ticker(() => {
-
-        });*/
     }
 
     update() {
@@ -92,7 +87,7 @@ window.Camera = class Camera {
             if (visible) {
                 drawing++;
             }
-            sprite.visible = visible;
+            sprite.visible = visible || sprite.layer === -1;
         }
     }
 };

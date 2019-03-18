@@ -16,12 +16,12 @@ window.Game = class Game extends Canvas {
         game.init();
 
         server.join({
-            accepted: (resp) => {
-                this.spawner.handle(resp);
+            accepted: (event) => {
+                this.spawner.join(event);
                 done.accepted();
             },
-            error: (resp) => {
-                done.error(resp.message);
+            error: (event) => {
+                done.error(event.message);
             }
         }, character.name);
 

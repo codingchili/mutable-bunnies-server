@@ -69,17 +69,12 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
     @Api
     public void join(InstanceRequest request) {
         JoinMessage join = request.raw(JoinMessage.class);
-        PlayerCreature creature = join.getPlayer();
-        List<Entity> entities = new ArrayList<>();
-
-        entities.add(creature);
-        entities.addAll(game.entities().all());
-        entities.addAll(game.creatures().all());
+        PlayerCreature player = join.getPlayer();
 
         context.onPlayerJoin(join);
-        game.add(creature);
+        game.add(player);
 
-        request.write(new ConnectEvent(creature, entities));
+        request.write(new ConnectEvent(game, player.getId()));
     }
 
     @Api

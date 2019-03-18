@@ -1,6 +1,7 @@
 ---
 name: "Necromancer"
 description: "Death and dark magics is only fit for such a tainted soul, swings two-handed swords of pure evil."
+theme: "#5108b9"
 weapons:
   - "sword2h"
 armors:
@@ -17,10 +18,10 @@ spells:
   - "sword swing"
 stats:
   strength: 10
-  intelligence: 10
-  wisdom: 10
-  constitution: 5
-  magicResist: 15
-  armorClass: 10
-  dexterity: 5
+  intelligence: 18
+  wisdom: 14
+  constitution: 10
+  dexterity: 8
+  magicResist: 16
+  armorClass: 12
   movement: 2.3

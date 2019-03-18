@@ -1,9 +1,10 @@
 package com.codingchili.instance.model.events;
 
-import com.codingchili.instance.model.entity.Entity;
-import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.context.InstanceSettings;
+import com.codingchili.instance.model.entity.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Robin Duda
@@ -12,17 +13,24 @@ import java.util.List;
  * It contains all entities in the current instance.
  */
 public class ConnectEvent implements Event {
-    private PlayerCreature creature;
-    private List<Entity> entities;
+    private Collection<Entity> entities;
+    private Collection<Creature> creatures;
+    private String player;
+    private String texture;
+    private int size;
 
-    public ConnectEvent(PlayerCreature creature, List<Entity> entities) {
-        this.entities = entities;
-        this.creature = creature;
+    public ConnectEvent(GameContext game, String player) {
+        InstanceSettings instance = game.instance().settings();
+        this.entities = game.entities().all();
+        this.creatures  = game.creatures().all();
+        this.texture = instance.getTexture();
+        this.size = instance.getSize();
+        this.player = player;
     }
 
     @Override
     public String getSource() {
-        return creature.getId();
+        return player;
     }
 
     @Override
@@ -30,15 +38,39 @@ public class ConnectEvent implements Event {
         return EventType.join;
     }
 
+    public String getTexture() {
+        return texture;
+    }
+
+    public void setTexture(String texture) {
+        this.texture = texture;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
     public SpawnEvent.SpawnType getSpawn() {
         return SpawnEvent.SpawnType.SPAWN;
     }
 
-    public List<Entity> getEntities() {
+    public Collection<Entity> getEntities() {
         return entities;
     }
 
-    public void setEntities(List<Entity> entities) {
+    public void setEntities(Collection<Entity> entities) {
         this.entities = entities;
+    }
+
+    public Collection<Creature> getCreatures() {
+        return creatures;
+    }
+
+    public void setCreatures(Collection<Creature> creatures) {
+        this.creatures = creatures;
     }
 }

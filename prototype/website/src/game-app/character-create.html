@@ -12,6 +12,8 @@
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 
+<link rel="import" href="character-stats.html">
+
 
 <!--
     @author Robin Duda
@@ -138,9 +140,9 @@
                 width: 225px;
             }
 
-            .class-stat {
-                color: #00ff00;
-                font-size: medium;
+            .class-stats {
+                font-size: 14px;
+                width: 176px;
             }
 
             .selected-class-image {
@@ -241,13 +243,11 @@
 
                                 <div class="class-image">
                                     <img src="[[realm.resources]]/gui/class/[[playerclass.name]].svg">
-                                    <paper-tooltip position="left">
+                                    <paper-tooltip animation-delay="0" position="left">
                                         <div class="class-stats">
-                                            <template is="dom-repeat" items="{{getStats(playerclass)}}" as="stats">
-                                                <div class="class-stat">
-                                                    +[[stats.bonus]] [[stats.name]]
-                                                </div>
-                                            </template>
+                                            Stats
+                                            <character-stats compact="true" selected="{{_classInfo(classes, playerclass.name, realm.*)}}">
+                                            </character-stats>
                                         </div>
                                     </paper-tooltip>
                                 </div>
@@ -263,7 +263,7 @@
 
                                             <paper-tooltip animation-delay="0" class="tooltip">
                                                 <div class="spell-name">[[spell]]</div>
-                                                <div class="spell-description">{{_getSpellDescription(spell)}}</div>
+                                                <div class="spell-description">{{_getSpellDescription(spell, playerclass.stats)}}</div>
                                             </paper-tooltip>
                                         </div>
                                     </template>
@@ -311,6 +311,8 @@
 
                         <iron-icon on-tap="createCharacter" class="create-button"
                                    icon="icons:send"></iron-icon>
+
+                        <character-stats selected="[[_classInfo(classes, selected.name)]]"></character-stats>
                     </paper-material>
                 </div>
             </div>
@@ -343,16 +345,14 @@
             this.showNaming(e.model.playerclass);
         }
 
-        getStats(playableClass) {
-            let stats = [];
-            for (let key in playableClass.stats) {
-                let bonus = playableClass.stats[key];
-
-                if (bonus - 5 > 0 && key !== 'level') {
-                    stats.push({'bonus': bonus, 'name': key});
+        _classInfo(classes, selected) {
+            if (this.realm) {
+                for (let theClass of this.realm.classes) {
+                    if (theClass.name === selected) {
+                        return theClass;
+                    }
                 }
             }
-            return stats;
         }
 
         _available(playerclass) {
@@ -364,10 +364,11 @@
             return false;
         }
 
-        _getSpellDescription(spellId) {
+        _getSpellDescription(spellId, stats) {
             let spell = this.spells[spellId];
             if (spell) {
-                return this.spells[spellId].description;
+                this.character = { stats: stats };
+                return eval('`' + this.spells[spellId].description + '`');
             } else {
                 return "No description, possible overpowered.";
             }

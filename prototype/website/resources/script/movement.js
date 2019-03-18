@@ -38,11 +38,11 @@ window.MovementHandler = class MovementHandler {
 
                 if (entity.acceleration < 1.0) {
                     entity.acceleration += (ACCELERATION_STEP * (delta / Game.MS_PER_FRAME));
-                    entity.state.timeScale = entity.velocity * entity.acceleration;
                 } else {
                     entity.acceleration = 1.0;
                 }
 
+                entity.state.timeScale = entity.velocity * entity.acceleration;
                 entity.x += Math.sin(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_FRAME);
                 entity.y += Math.cos(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_FRAME);
             }
@@ -120,7 +120,7 @@ window.MovementHandler = class MovementHandler {
             entity.skeleton.setToSetupPose();
         }
 
-        if (event.vector.direction > PI) {
+        if (event.vector.direction > PI || event.vector.direction < 0) {
             entity.scale.x = -entity.scale.y;
         } else if (event.vector.direction > 0 && event.vector.direction < PI) {
             entity.scale.x = entity.scale.y;

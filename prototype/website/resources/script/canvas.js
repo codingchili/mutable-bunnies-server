@@ -8,6 +8,7 @@ window.Canvas = class {
             backgroundColor: 0x0
         });
 
+        this.screen = this.app.screen;
         this.stage = this.app.stage;
         this.stage.interactive = true;
         this.renderer = this.app.renderer;

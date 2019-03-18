@@ -1,6 +1,7 @@
 ---
 name: "Hunter"
 description: "Knowing of their environment and the creatures lurking in it, none shall escape their true aim."
+theme: "#cf8f02"
 weapons:
   - "bow"
 armors:
@@ -18,11 +19,11 @@ spells:
   - "untrapped"
   - "fire bow"
 stats:
-  strength: 5
-  intelligence: 5
-  wisdom: 5
-  constitution: 5
-  magicResist: 0
-  armorClass: 5
-  dexterity: 15
+  strength: 16
+  intelligence: 10
+  wisdom: 10
+  constitution: 16
+  dexterity: 18
+  magicResist: 8
+  armorClass: 12
   movement: 2.8

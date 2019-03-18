@@ -1,9 +1,8 @@
 ---
 name: level 1
 limit: 50
-width: 3000
-height: 3000
-texture: "game/map/background_snow.png"
+size: 4096
+texture: "game/map/background_snow.jpg"
 structures:
   - name: "Redwood"
     point:

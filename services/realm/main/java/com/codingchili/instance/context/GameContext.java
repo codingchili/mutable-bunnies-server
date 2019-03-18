@@ -52,7 +52,7 @@ public class GameContext {
     public GameContext(InstanceContext instance) {
         this.instance = instance;
 
-        int width = instance.settings().getWidth();
+        int width = instance.settings().getSize();
         this.creatures = new Grid<>(width);
         this.structures = new Grid<>(width);
         this.classes = new ClassDB(instance);
@@ -194,7 +194,7 @@ public class GameContext {
 
     private void addNew(Entity entity) {
         entity.setContext(this);
-        publish(new SpawnEvent().setEntities(entity));
+        publish(new SpawnEvent().setEntity(entity));
         subscribe(entity.getId(), entity.protocol());
     }
 
@@ -203,7 +203,7 @@ public class GameContext {
         structures.remove(entity.getId());
         unsubscribe(entity.getId());
         publish(new SpawnEvent()
-                .setEntities(entity)
+                .setEntity(entity)
                 .setType(SpawnEvent.SpawnType.DESPAWN));
     }
 

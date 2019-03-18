@@ -15,6 +15,7 @@ import java.util.Collection;
 public class PlayableClass {
     private String name = "default";
     private String description = "description";
+    private String theme;
     private Stats stats;
     private Collection<String> spells = new ArrayList<>();
     private Collection<String> keywords = new ArrayList<>();
@@ -73,6 +74,14 @@ public class PlayableClass {
     public PlayableClass setArmors(Collection<ArmorType> armors) {
         this.armors = armors;
         return this;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 
     public Stats getStats() {

@@ -1,3 +1,6 @@
+const SPAWN = 'SPAWN';
+const DESPAWN = 'DESPAWN';
+
 window.SpawnHandler = class SpawnHandler {
 
     constructor(camera) {
@@ -8,64 +11,55 @@ window.SpawnHandler = class SpawnHandler {
         });
 
         server.connection.setHandler('spawn', event => {
-            this.handle(event);
+            this._spawn(event.entity, event.spawn);
         });
-
-        assetLoader.load((sprite) => {
-            for (let z = 0; z < 30; z++) {
-                let startX = z * (sprite.width / 2);
-                let startY = z * (sprite.height / 2 - 14);
-                for (let i = 0; i < 30; i++) {
-                    let ground = new PIXI.Sprite(PIXI.loader.resources["game/map/background_snow.png"].texture);
-                    ground.x = (sprite.width / 2) * i + startX;
-                    ground.y = (-sprite.height / 2 + 14) * i + startY;
-                    ground.layer = -1;
-                    game.stage.addChild(ground);
-                }
-            }
-        }, "game/map/background_snow.png");
-
-        assetLoader.load((sprite) => {
-            let tree = new PIXI.Sprite(PIXI.loader.resources["game/map/tree.png"].texture);
-            tree.x = 300;
-            tree.y = 275;
-            tree.scale.x = 0.2;
-            tree.scale.y = 0.2;
-            tree.layer = 1;
-            game.stage.addChild(tree);
-
-            let tree2 = new PIXI.Sprite(PIXI.loader.resources["game/map/tree.png"].texture);
-            tree2.x = 375;
-            tree2.y = 300;
-            tree2.layer = 1;
-            tree2.scale.x = 0.3;
-            tree2.scale.y = 0.3;
-
-            // if interactions available
-            /*sprite.interactive = true;
-            sprite.buttonMode = true;*/
-            sprite.anchor.set(0.5);
-
-            game.stage.addChild(tree2);
-        }, "game/map/tree.png");
-
-        assetLoader.begin();
     }
 
-    handle(event) {
+    /**
+     * Join event received when entering a new instance.
+     *
+     * @param event
+     */
+    join(event) {
+        this._init(event.texture, event.size);
+
+        // in the future we might want to split rendering of entities and creatures.
+        this._spawn(event.entities, SPAWN);
+        this._spawn(event.creatures, SPAWN);
+    }
+
+    _init(texture, size) {
+        assetLoader.load((sprite) => {
+            let container = new PIXI.Container();
+            let tiling = new PIXI.extras.TilingSprite(
+                sprite.texture,
+                size,
+                size
+            );
+            container.scale.y = Math.tan(0.3);
+            tiling.rotation = Math.PI * 2 * (1 / 8);
+
+            container.layer = -1;
+            container.addChild(tiling);
+            game.stage.addChild(container);
+
+        }, texture);
+    }
+
+    _spawn(spawnable, type) {
         let entities = [];
 
-        if (Array.isArray(event.entities)) {
-            entities = event.entities;
+        if (Array.isArray(spawnable)) {
+            entities = spawnable;
         } else {
-            entities.push(event.entities);
+            entities.push(spawnable);
         }
 
         for (let entity of entities) {
-            if (event.spawn === 'SPAWN') {
+            if (type === SPAWN) {
                 this.spawn(entity);
             }
-            if (event.spawn === 'DESPAWN') {
+            if (type === DESPAWN) {
                 this.despawn(game.lookup(entity.id));
             }
         }

@@ -1,6 +1,7 @@
 ---
 name: "Slayer"
 description: "A ferocious murderer feeding on the fear and blood of their victims, melee fighting with health-based damage."
+theme: "#b93408"
 weapons:
   - "battleaxe"
 armors:
@@ -17,12 +18,12 @@ spells:
   - "blood rage"
   - "axe swing"
 stats:
-  strength: 14
-  intelligence: 5
-  wisdom: 5
-  constitution: 10
-  magicResist: 0
-  armorClass: 0
-  dexterity: 5
+  strength: 18
+  intelligence: 8
+  wisdom: 8
+  constitution: 18
+  dexterity: 16
+  magicResist: 12
+  armorClass: 12
   movement: 2.5
   level: 10

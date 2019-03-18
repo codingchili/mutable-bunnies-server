@@ -1,6 +1,7 @@
 ---
 name: "Druid"
 description: "Restores the balance of all things nature with their staff, aids their allies with magic buffs."
+theme: "#48fd06"
 weapons:
   - "staff"
 armors:
@@ -17,11 +18,11 @@ spells:
   - "curse"
   - "staff whack"
 stats:
-  strength: 5
-  intelligence: 5
-  wisdom: 10
-  constitution: 8
-  dexterity: 5
-  magicResist: 10
-  armorClass: 0
+  strength: 8
+  intelligence: 14
+  wisdom: 18
+  constitution: 14
+  dexterity: 12
+  magicResist: 12
+  armorClass: 4
   movement: 2.3

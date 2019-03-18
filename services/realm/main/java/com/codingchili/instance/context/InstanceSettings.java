@@ -26,8 +26,7 @@ public class InstanceSettings implements Configurable {
     private String name = "default";
     private String texture = "";
     private int limit = 0;
-    private int width = 1;
-    private int height = 1;
+    private int size = 4096;
 
     /**
      * @return the name of the realm.
@@ -104,34 +103,18 @@ public class InstanceSettings implements Configurable {
     }
 
     /**
-     * @return the width of the map.
+     * @return the width and height of the map.
      */
-    public int getWidth() {
-        return width;
+    public int getSize() {
+        return size;
     }
 
     /**
-     * @param width set the width of the map.
+     * @param size set the width and height of the map.
      * @return fluent
      */
-    protected InstanceSettings setWidth(int width) {
-        this.width = width;
-        return this;
-    }
-
-    /**
-     * @return the height of the map.
-     */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     * @param height sets the height of the map.
-     * @return fluent
-     */
-    protected InstanceSettings setHeight(int height) {
-        this.height = height;
+    protected InstanceSettings setSize(int size) {
+        this.size = size;
         return this;
     }
 

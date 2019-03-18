@@ -14,12 +14,12 @@ public class SpawnEvent implements Event {
         return this;
     }
 
-    public SpawnEvent setEntities(Entity entity) {
+    public SpawnEvent setEntity(Entity entity) {
         this.entity = entity;
         return this;
     }
 
-    public Entity getEntities() {
+    public Entity getEntity() {
         return entity;
     }
 

@@ -118,7 +118,7 @@
                             <paper-tooltip animation-delay="0" class="tooltip">
                                 <span class="tooltip-text">{{character.className}} Lv.{{character.stats.level}}</span>
                             </paper-tooltip>
-                            <iron-icon on-down="removeCharacter"
+                            <iron-icon on-tap="removeCharacter"
                                        icon="icons:close" class="character-remove"></iron-icon>
                             <img src="{{realm.resources}}/gui/class/{{character.className}}.svg"
                                  class="class-image">

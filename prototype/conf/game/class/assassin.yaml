@@ -1,6 +1,7 @@
 ---
 name: "Assassin"
 description: "Sneaking in the shadows the short blade of their dagger stabs their victims, often to death."
+theme: "#9c0977"
 weapons:
   - "dagger"
 armor:
@@ -17,11 +18,11 @@ spells:
   - "potent venom"
   - "dagger"
 stats:
-  strength: 5
-  intelligence: 5
-  wisdom: 5
-  constitution: 5
-  dexterity: 20
-  magicResist: 0
-  armorClass: 0
+  strength: 16
+  intelligence: 14
+  wisdom: 8
+  constitution: 16
+  dexterity: 18
+  magicResist: 4
+  armorClass: 8
   movement: 3.1
