@@ -13,8 +13,8 @@ public abstract class SimpleEntity implements Entity {
     protected transient GameContext game;
     protected transient EventProtocol protocol = new EventProtocol(this);
     protected transient Set<String> interactions = new HashSet<>();
+    protected transient Model model = new Model();
     private String id = UUID.randomUUID().toString();
-    protected Model model = new Model();
     protected Map<String, Object> attributes = new HashMap<>();
     protected String name = "<no name>";
     protected Vector vector = new Vector();

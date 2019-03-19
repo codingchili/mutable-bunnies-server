@@ -2,6 +2,9 @@
 name: "Druid"
 description: "Restores the balance of all things nature with their staff, aids their allies with magic buffs."
 theme: "#48fd06"
+model:
+  graphics: "game/pixitest/goblins-pro"
+  scale: 0.26
 weapons:
   - "staff"
 armors:

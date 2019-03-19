@@ -13,14 +13,15 @@ import java.util.Collection;
  * A playable class, a character template.
  */
 public class PlayableClass {
+    private Collection<WeaponType> weapons = new ArrayList<>();
+    private Collection<ArmorType> armors = new ArrayList<>();
+    private Collection<String> keywords = new ArrayList<>();
+    private Collection<String> spells = new ArrayList<>();
+    private Model model;
     private String name = "default";
     private String description = "description";
     private String theme;
     private Stats stats;
-    private Collection<String> spells = new ArrayList<>();
-    private Collection<String> keywords = new ArrayList<>();
-    private Collection<WeaponType> weapons = new ArrayList<>();
-    private Collection<ArmorType> armors = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -91,5 +92,13 @@ public class PlayableClass {
     public PlayableClass setStats(Stats stats) {
         this.stats = stats;
         return this;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
 }

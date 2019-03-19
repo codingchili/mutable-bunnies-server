@@ -2,6 +2,9 @@
 name: "Assassin"
 description: "Sneaking in the shadows the short blade of their dagger stabs their victims, often to death."
 theme: "#9c0977"
+model:
+  graphics: "game/pixitest/goblins-pro"
+  scale: 0.26
 weapons:
   - "dagger"
 armor:
