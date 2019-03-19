@@ -80,14 +80,17 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
     @Api
     public void leave(InstanceRequest request) {
         LeaveMessage leave = request.raw(LeaveMessage.class);
-        PlayerCreature player = game.getById(leave.getPlayerName());
-        player.getVector().setVelocity(0);
 
-        handlers.forEach(h -> h.onPlayerLeave(player.getId()));
+        if (game.exists(leave.getPlayerName())) {
+            PlayerCreature player = game.getById(leave.getPlayerName());
+            player.getVector().setVelocity(0);
 
-        game.remove(player);
-        game.instance().sendRealm(new SavePlayerMessage(player));
-        context.onPlayerLeave(leave);
+            handlers.forEach(h -> h.onPlayerLeave(player.getId()));
+
+            game.remove(player);
+            game.instance().sendRealm(new SavePlayerMessage(player));
+            context.onPlayerLeave(leave);
+        }
     }
 
     @Override
