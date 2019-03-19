@@ -56,18 +56,6 @@ public class RouterHandlerTest {
     }
 
     @Test
-    public void testRouteWebServer(TestContext test) {
-        Async async = test.async();
-
-        mockNode(NODE_WEBSERVER);
-
-        handle(NODE_WEBSERVER, (response, status) -> {
-            test.assertEquals(ResponseStatus.ACCEPTED, status);
-            async.complete();
-        });
-    }
-
-    @Test
     public void testRouteHidden(TestContext test) {
         Async async = test.async();
 
