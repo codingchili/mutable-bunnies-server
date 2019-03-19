@@ -94,6 +94,7 @@
                 .container {
                     width: 100%;
                 }
+
                 .character-list-box {
                     width: 100%;
                 }
@@ -298,12 +299,20 @@
             }
 
             select(e) {
+                let character = e.model.character;
+
                 if (this.realm.availableClasses.indexOf(e.model.character.className) >= 0) {
                     application.selectCharacter({
                         server: this.server,
                         realm: this.realm,
-                        character: e.model.character
+                        character: character
                     });
+
+                    for (let playerClass of this.realm.classes) {
+                        if (playerClass.name === character.className) {
+                            document.body.style.setProperty('--player-class-theme', playerClass.theme);
+                        }
+                    }
                 } else {
                     this.showToast("Sorry this class has been temporarily disabled.");
                 }

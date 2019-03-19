@@ -43,12 +43,9 @@
             }
 
             .name {
-
             }
 
             .value {
-                /* get color based on class to be configured on class template. */
-                color: #ff00cc;
             }
 
         </style>
@@ -87,9 +84,7 @@
         }
 
         _layout() {
-            let classname = 'attribute-' + ((this.compact) ? 'compact' : 'wide');
-            console.log(this.compact);
-            return classname;
+            return 'attribute-' + ((this.compact) ? 'compact' : 'wide');
         }
 
         _toList() {

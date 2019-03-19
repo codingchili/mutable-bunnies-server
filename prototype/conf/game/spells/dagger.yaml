@@ -13,7 +13,7 @@ onCastComplete:
   jexl: |
     log.accept('casting dagger completed');
 
-    damage = source.stats[Attribute.strength] * -1;
+    damage = (source.stats[Attribute.strength] * -1 / 2);
     for (creature : game.creatures().all()) {
       if (!creature.equals(source)) {
         spells.damage(source, creature, damage, DamageType.physical);
