@@ -1,5 +1,15 @@
-window.Game = class Game extends Canvas {
+// constants for isometric angles.
+let COS = {
+    _330: Math.cos(330),
+    _150: Math.cos(150)
+};
 
+let SIN = {
+    _330: Math.sin(330),
+    _150: Math.sin(150)
+};
+
+window.Game = class Game extends Canvas {
     static ticksToSeconds(ticks) {
         return (ticks * this.MS_PER_FRAME) / 1000.0;
     }
@@ -67,15 +77,46 @@ window.Game = class Game extends Canvas {
             else
                 return -1;
         }
-        let yB = b.y + b.height;
-        let yA = a.y + a.height;
 
-        if (yA < yB)
+        /* isometric compare using trigons */
+        let inside = this._insideTrigon(a, b);
+
+        // in some positions the sprites are blended together
+        // the reorder point on the character seems to be at midpoint rather than feet.
+
+        if (inside) {
             return -1;
-        else if (yA > yB)
+        }
+
+        /* plain depth compare on y-axis */
+        if (a.y < b.y)
+            return -1;
+        else if (a.y > b.y)
             return 1;
         else
             return 0;
+    }
+
+    _insideTrigon(s, b) {
+        let a = {
+            x: COS._330 * b.height,
+            y: SIN._330 * b.height,
+        };
+        let c = {
+            x: COS._150 * b.width,
+            y: SIN._150 * b.width,
+        };
+
+        let as_x = s.x - a.x;
+        let as_y = s.y - a.y;
+
+        let s_ab = (b.x - a.x) * as_y - (b.y - a.y) * as_x > 0;
+
+        if ((c.x - a.x) * as_y - (c.y - a.y) * as_x > 0 === s_ab) {
+            return false;
+        } else {
+            return (c.x - b.x) * (s.y - b.y) - (c.y - b.y) * (s.x - b.x) > 0 === s_ab;
+        }
     }
 
     setPlayer(player) {
@@ -97,7 +138,7 @@ window.Game = class Game extends Canvas {
 
     loop() {
         if (this.isPlaying) {
-            this.stage.children.sort(this.depthCompare);
+            this.stage.children.sort(this.depthCompare.bind(this));
 
             this.frames++;
 

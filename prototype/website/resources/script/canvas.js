@@ -2,9 +2,9 @@ window.Canvas = class {
 
     constructor() {
         this.app = new PIXI.Application({
-            antialias: false,
+            antialias: true,
             transparent: false,
-            resolution: 1,
+            resolution: 2,
             backgroundColor: 0x0
         });
 
@@ -23,6 +23,10 @@ window.Canvas = class {
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
         window.onresize = () => this.resize();
+        window.onmousedown = (e) => {
+            console.log(`mouse: ${e.pageX + game.camera.x}  ${e.pageY + game.camera.y}`);
+            console.log(`player: ${game.player.x} ${game.player.y}`)
+        };
         this.resize();
     }
 

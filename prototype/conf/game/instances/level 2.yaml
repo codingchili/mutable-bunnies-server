@@ -6,12 +6,12 @@ texture: "game/map/background_sand.jpg"
 structures:
 - name: "Redwood"
   point:
-    x: 200
-    y: 200
-- name: "Redwood"
-  point:
-    x: 275
-    y: 364
+    x: 0
+    y: 0
+#- name: "Redwood"
+#  point:
+#    x: 275
+#    y: 364
 npcs:
 - name: "Illicit Lilith"
   point:

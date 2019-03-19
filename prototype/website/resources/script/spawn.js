@@ -36,8 +36,8 @@ window.SpawnHandler = class SpawnHandler {
                 size,
                 size
             );
-            container.scale.y = Math.tan(0.3);
-            tiling.rotation = Math.PI * 2 * (1 / 8);
+            container.scale.y = Math.tan(30 * Math.PI / 180);
+            tiling.rotation += Math.PI * 2 * (1 / 8);
 
             container.layer = -1;
             container.addChild(tiling);
@@ -102,8 +102,14 @@ window.SpawnHandler = class SpawnHandler {
             return sprite;
         } else {
             // the resource is already converted to a sprite by the loader.
-            resource.scale.x = entity.model.scale;
-            resource.scale.y = entity.model.scale;
+            //resource.scale.x = entity.model.scale;
+            //resource.scale.y = entity.model.scale;
+
+            resource.pivot.y = resource.height;
+            resource.pivot.x = resource.width / 2;
+
+            console.log(`pivot ${resource.pivot.x} ${resource.pivot.y}`);
+
             return resource;
         }
     }
