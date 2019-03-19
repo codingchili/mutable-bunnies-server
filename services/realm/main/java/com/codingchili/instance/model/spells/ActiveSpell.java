@@ -10,8 +10,7 @@ import java.util.function.Consumer;
 
 import com.codingchili.core.logging.Level;
 
-import static com.codingchili.common.Strings.ID_LOG;
-import static com.codingchili.common.Strings.ID_NAME;
+import static com.codingchili.common.Strings.*;
 
 /**
  * @author Robin Duda
@@ -74,9 +73,14 @@ public class ActiveSpell {
     }
 
     public boolean onCastBegin(GameContext game) {
-        source.getSpells().setCooldown(spell);
         if (spell.getOnCastBegin() != null) {
-            return spell.getOnCastBegin().apply(getBindings(game));
+            boolean check = spell.getOnCastBegin().apply(getBindings(game));
+
+            if (check) {
+                // only put on cooldown if precondition check succeeded.
+                source.getSpells().setCooldown(spell);
+            }
+            return check;
         } else {
             return true;
         }
