@@ -42,7 +42,10 @@ window.MovementHandler = class MovementHandler {
                     entity.acceleration = 1.0;
                 }
 
-                entity.state.timeScale = entity.velocity * entity.acceleration;
+                if (entity.state) {
+                    entity.state.timeScale = entity.velocity * entity.acceleration;
+                }
+
                 entity.x += Math.sin(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_FRAME);
                 entity.y += Math.cos(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_FRAME);
             }

@@ -4,8 +4,8 @@ limit: 50
 size: 4096
 texture: "game/map/background_grass.jpg"
 spawns:
-  - x: 300
-    y: 325
+- x: 300
+  y: 325
 onPlayerJoin:
   jexl: |
     if (source.fromAnotherInstance) {
@@ -15,4 +15,4 @@ onPlayerJoin:
 onStartup:
   jexl: |
     //context.npcs().spawn("Illicit Lilith");
-# how to handle the world layout? in this file?
+  # how to handle the world layout? in this file?

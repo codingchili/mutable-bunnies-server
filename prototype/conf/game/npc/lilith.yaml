@@ -3,8 +3,8 @@ name: "Illicit Lilith"
 description: "Malevolent. Angry. Spirit."
 dialog: "tutor"
 model:
-  graphics: "some sprite"
-  scale: 1.0
+  graphics: "game/pixitest/goblins-pro"
+  scale: 0.32
   blocking: false
   hitbox:
     type: rectangular
