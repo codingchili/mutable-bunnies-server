@@ -4,7 +4,7 @@ window.Canvas = class {
         this.app = new PIXI.Application({
             antialias: true,
             transparent: false,
-            resolution: 2,
+            resolution: 1,
             backgroundColor: 0x0
         });
 
@@ -25,14 +25,40 @@ window.Canvas = class {
         window.onresize = () => this.resize();
         window.onmousedown = (e) => {
             console.log(`mouse: ${e.pageX + game.camera.x}  ${e.pageY + game.camera.y}`);
-            console.log(`player: ${game.player.x} ${game.player.y}`)
+            console.log(`player: ${game.player.x} ${game.player.y}`);
+            let inside = game._inFrontOf4({
+                x: 400,
+                y: 400,
+                layer: 0,
+
+                    debug: true
+                }, {
+                layer: 0,
+                x: e.pageX + game.camera.x,
+                y: e.pageY + game.camera.y,
+
+                });
+            console.log(`tree infrontof player ? ${inside}`);
+
+            inside = game._inFrontOf({
+                x: e.pageX + game.camera.x,
+                y: e.pageY + game.camera.y,
+                layer: 0,
+                debug: true
+            }, {
+                layer: 0,
+                x: 400,
+                y: 400,
+            });
+            console.log(`player infrontof tree? ${inside}`);
         };
         this.resize();
     }
 
     shutdown() {
         try {
-            window.onresize = () => {};
+            window.onresize = () => {
+            };
             document.body.removeChild(this.renderer.view);
         } catch (e) {
             console.log(e);

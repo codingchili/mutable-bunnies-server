@@ -2,21 +2,29 @@
 name: level 2
 limit: 50
 size: 4096
-texture: "game/map/background_sand.jpg"
+texture: "game/map/background_snow.jpg"
 structures:
 - name: "Redwood"
   point:
-    x: 0
-    y: 0
+    x: 400
+    y: 400
 #- name: "Redwood"
 #  point:
-#    x: 275
-#    y: 364
+#    x: 400
+#    y: 600
+#- name: "Redwood"
+#  point:
+#    x: 800
+#    y: 500
+#- name: "Redwood"
+#  point:
+#    x: 225
+#    y: 500
+#- name: "Redwood"
+#  point:
+#    x: 40
+#    y: 600
 npcs:
-- name: "Illicit Lilith"
-  point:
-    x: 300
-    y: 300
 spawns:
 - x: 375
   y: 300

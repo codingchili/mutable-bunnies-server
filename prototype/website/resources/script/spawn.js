@@ -102,14 +102,8 @@ window.SpawnHandler = class SpawnHandler {
             return sprite;
         } else {
             // the resource is already converted to a sprite by the loader.
-            //resource.scale.x = entity.model.scale;
-            //resource.scale.y = entity.model.scale;
-
             resource.pivot.y = resource.height;
             resource.pivot.x = resource.width / 2;
-
-            console.log(`pivot ${resource.pivot.x} ${resource.pivot.y}`);
-
             return resource;
         }
     }
