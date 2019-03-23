@@ -1,6 +1,6 @@
 ---
-name: "Illicit Lilith"
-description: "Malevolent. Angry. Spirit."
+name: "Lilith"
+description: "Mentor and life coach."
 dialog: "tutor"
 model:
   graphics: "game/pixitest/goblins-pro"
@@ -20,7 +20,7 @@ death:
 tick:
   groovy: |
     for (creature : context.creatures().all()) {
-      if (!creature.getName().equals('Illicit Lilith')) {
+      if (!creature.getName().equals('Lilith') && !creature.getName().equals('Gargazar')) {
         context.movement().follow(source, creature);
         break;
       }

@@ -5,6 +5,7 @@ import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.Entity;
 import com.codingchili.instance.scripting.Bindings;
 
+import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ public class ActiveDialog {
     public ActiveDialog(GameContext game, Dialog dialog, Entity source, Entity target) {
         this.bindings = new Bindings()
                 .setContext(game)
+                .setState(new HashMap<>())
                 .set(ID_LOG, (Consumer<String>) this::log)
                 .setSource(source)
                 .setTarget(target);

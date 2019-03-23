@@ -4,6 +4,7 @@ import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.scripting.Bindings;
 
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -80,6 +81,7 @@ public class SpawnEngine {
 
         Bindings bindings = new Bindings()
                 .setSource(entity)
+                .setState(new HashMap<>())
                 .set("log", (Consumer<String>) (line) -> {
                     game.getLogger(Npc.class)
                             .log(line);

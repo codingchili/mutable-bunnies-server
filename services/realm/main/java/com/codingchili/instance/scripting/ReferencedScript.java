@@ -23,7 +23,7 @@ import com.codingchili.core.logging.Logger;
 public class ReferencedScript implements Scripted {
     public static final String TYPE = "reference";
     private static final String SCRIPT_LOAD = "script.load";
-    private static final String SCRIPT_PATH = "conf/game/script";
+    private static final String SCRIPT_PATH = "conf/game/scripts";
     private static AtomicBoolean initialized = new AtomicBoolean(false);
     private static final Map<String, Scripted> scripts = new ConcurrentHashMap<>();
     private Scripted reference;

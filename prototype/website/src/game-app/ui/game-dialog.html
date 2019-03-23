@@ -150,13 +150,20 @@
                 } else {
                     this.entity = game.lookup(dialog.targetId).name;
                     this.text = this._parse(dialog.text);
-                    this.lines = dialog.lines;
+
+                    this.set('lines', dialog.lines);
+
+                    if (dialog.target) {
+                        this.target = game.lookup(this.target);
+                    }
+
                     this.$.container.style.display = 'block';
                 }
             }
 
             _parse(text) {
                 let player = this.player;
+                let target = this.target;
                 return eval("`" + text + "`");
             }
 

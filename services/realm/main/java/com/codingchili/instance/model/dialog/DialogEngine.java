@@ -56,21 +56,22 @@ public class DialogEngine {
      * Triggers a dialog on the specified target id. This skips the range check and the dialog
      * busy check. It can be triggered when entering a new area, encountering a new npc etc.
      *
-     * @param targetId the player that the dialog will be trigged on.
      * @param sourceId the npc or entity that is initiating the dialog. for monologues the target and
      *                 source may refer to the same entity.
+     * @param targetId the player that the dialog will be trigged on.
      * @param dialogId the id of the dialog to be triggered.
      * @return future.
      */
-    public Future<ActiveDialog> trigger(String targetId, String sourceId, String dialogId) {
+    public Future<ActiveDialog> trigger(String sourceId, String targetId, String dialogId) {
         Future<ActiveDialog> future = Future.future();
         Optional<Dialog> dialog = dialogDB.getById(dialogId);
         Entity source = game.getById(sourceId);
         Entity target = game.getById(targetId);
 
         if (dialog.isPresent()) {
-            ActiveDialog active = new ActiveDialog(game, dialog.get(), source, target);
-            dialogs.put(sourceId, active);
+            ActiveDialog active = new ActiveDialog(game, dialog.get(), target, source);
+            dialogs.put(targetId, active);
+            target.handle(DialogRequest.from(active));
             future.complete(active);
         } else {
             game.getLogger(getClass()).event("dialog.engine")

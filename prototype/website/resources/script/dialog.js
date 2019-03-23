@@ -23,7 +23,6 @@ window.DialogHandler = class DialogHandler {
         application.dialogEvent(dialog);
 
         if (dialog.end) {
-            game.camera.focus(game.player);
             input.unblock();
         } else {
             game.camera.focus(game.lookup(dialog.targetId));

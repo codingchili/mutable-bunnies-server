@@ -13,7 +13,7 @@ structures:
     x: 275
     y: 364
 npcs:
-- name: "Illicit Lilith"
+- name: "Lilith"
   point:
     x: 300
     y: 300
