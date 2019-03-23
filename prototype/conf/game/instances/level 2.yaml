@@ -25,6 +25,10 @@ structures:
     x: 40
     y: 600
 npcs:
+- name: "Illicit Lilith"
+  point:
+    x: 600
+    y: 600
 spawns:
 - x: 375
   y: 300
