@@ -1,7 +1,6 @@
 package com.codingchili.instance.model.dialog;
 
 import com.codingchili.instance.context.GameContext;
-import com.codingchili.instance.model.dialog.*;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.entity.Vector;
 import com.codingchili.instance.model.events.ChatEvent;
@@ -34,14 +33,14 @@ public class DialogEngine {
     /**
      * Player action to advance the dialog.
      *
-     * @param request a request to alter state of the dialog.
+     * @param request  a request to alter state of the dialog.
      * @param sourceId the dialog initiator that advances the dialog.
      * @return the current state of the dialog.
      */
     public Future<ActiveDialog> say(DialogRequest request, String sourceId) {
         ActiveDialog active = dialogs.get(sourceId);
 
-            if (active != null) {
+        if (active != null) {
             active.say(request.getNext());
 
             if (active.isEnded()) {
@@ -54,9 +53,37 @@ public class DialogEngine {
     }
 
     /**
+     * Triggers a dialog on the specified target id. This skips the range check and the dialog
+     * busy check. It can be triggered when entering a new area, encountering a new npc etc.
+     *
+     * @param targetId the player that the dialog will be trigged on.
+     * @param sourceId the npc or entity that is initiating the dialog. for monologues the target and
+     *                 source may refer to the same entity.
+     * @param dialogId the id of the dialog to be triggered.
+     * @return future.
+     */
+    public Future<ActiveDialog> trigger(String targetId, String sourceId, String dialogId) {
+        Future<ActiveDialog> future = Future.future();
+        Optional<Dialog> dialog = dialogDB.getById(dialogId);
+        Entity source = game.getById(sourceId);
+        Entity target = game.getById(targetId);
+
+        if (dialog.isPresent()) {
+            ActiveDialog active = new ActiveDialog(game, dialog.get(), source, target);
+            dialogs.put(sourceId, active);
+            future.complete(active);
+        } else {
+            game.getLogger(getClass()).event("dialog.engine")
+                    .put("id", dialogId)
+                    .send("failed to trigger dialog, id reference failure.");
+        }
+        return future;
+    }
+
+    /**
      * Starts a dialog between a player and a target entity.
      *
-     * @param request dialog request
+     * @param request  dialog request
      * @param sourceId the creature initiating the dialog.
      * @return the current state of the dialog. failed if the
      * target does not support dialogs, is out of range or
