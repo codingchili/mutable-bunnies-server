@@ -10,6 +10,7 @@ class Application {
         this.development = {
             autologin: true,
             selectFirstRealm: true,
+            selectFirstCharacter: true,
             clearCache: true,
             rightClick: true,
             logEvents: false,

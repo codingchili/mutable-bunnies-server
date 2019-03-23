@@ -248,6 +248,14 @@
                         this.set('realm.characters', data.characters);
                         this.showCharacters();
                         this.hideLoading();
+
+                        if (application.development.selectFirstCharacter) {
+                            this.select({
+                                model: {
+                                    character: data.characters[0]
+                                }
+                            })
+                        }
                     },
                     unauthorized: (data) => {
                         application.error('The authentication server rejected the realm token when listing characters.');
