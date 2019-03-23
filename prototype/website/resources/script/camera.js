@@ -7,6 +7,7 @@ window.Camera = class Camera {
         this.y = -2000;
         this.following = {x: this.x, y: this.y};
         this.last = performance.now();
+        this.drawing = 0;
     }
 
     update() {
@@ -70,22 +71,22 @@ window.Camera = class Camera {
         let y = this.y;
         let boundY = y + window.innerHeight;
         let boundX = x + window.innerWidth;
-        let drawing = 0;
+        this.drawing = 0;
 
         // cull all sprites that are fully outside of the screen.
         for (let sprite of sprites) {
-            let visible = false;
+            let visible = true;
 
             // left and right.
-            if (sprite.x + sprite.width > x && sprite.x < boundX) {
+            if (sprite.x + sprite.width / 2 < x || sprite.x - sprite.width / 2 > boundX) {
                 // top and bottom.
-                if (sprite.y + sprite.height > y && sprite.y < boundY) {
-                    visible = true;
+                if (sprite.y < y || sprite.y - sprite.height > boundY) {
+                    visible = false;
                 }
             }
 
             if (visible) {
-                drawing++;
+                this.drawing++;
             }
             sprite.visible = visible || sprite.layer === -1;
         }

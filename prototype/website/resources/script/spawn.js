@@ -102,7 +102,7 @@ window.SpawnHandler = class SpawnHandler {
             return sprite;
         } else {
             // the resource is already converted to a sprite by the loader.
-            resource.pivot.y = resource.height;
+            resource.pivot.y = resource.height - 50; // todo: apply bounding box!
             resource.pivot.x = resource.width / 2;
             return resource;
         }
