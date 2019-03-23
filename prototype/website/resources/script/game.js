@@ -58,21 +58,6 @@ window.Game = class Game extends Canvas {
         this.loop();
     }
 
-    static depthCompare(a, b) {
-        if (a.layer !== b.layer) {
-            if ((a.layer > b.layer)) {
-                return 1;
-            } else {
-                return -1;
-            }
-        }
-        if (a.y === b.y) {
-            return (a.x < b.x) ? 1 : -1;
-        } else {
-            return (a.y < b.y) ? -1 : 1;
-        }
-    }
-
     setPlayer(player) {
         this.player = player;
     }
@@ -92,7 +77,7 @@ window.Game = class Game extends Canvas {
 
     loop() {
         if (this.isPlaying) {
-            this.stage.children.sort(Game.depthCompare.bind(this));
+            this.stage.children.sort(Camera.depthCompare.bind(this));
 
             this.frames++;
 

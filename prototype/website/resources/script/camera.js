@@ -29,6 +29,24 @@ window.Camera = class Camera {
         this.last = performance.now();
     }
 
+    static depthCompare(a, b) {
+        if (a.visible && b.visible) {
+
+            if (a.layer !== b.layer) {
+                if ((a.layer > b.layer)) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+            if (a.y === b.y) {
+                return (a.x < b.x) ? 1 : -1;
+            } else {
+                return (a.y < b.y) ? -1 : 1;
+            }
+        }
+    }
+
     shake() {
         let start = this.following;
         this.following = {x: start.x + 300, y: start.y};
