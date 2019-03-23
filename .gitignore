@@ -1,7 +1,6 @@
 .gradle
 .idea/
 **/out/**
-lib/
 target/
 build/
 core/conf/
