@@ -25,10 +25,14 @@ structures:
     x: 40
     y: 600
 npcs:
-- name: "Illicit Lilith"
+- name: "Lilith"
   point:
     x: 600
     y: 600
+- name: "Gargazar"
+  point:
+    x: 425
+    y: 865
 spawns:
 - x: 375
   y: 300

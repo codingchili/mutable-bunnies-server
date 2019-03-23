@@ -1,0 +1,36 @@
+---
+id: "gargazar"
+start: "welcome"
+enabled:
+  jexl: |
+    // in boss land, boss talk to you. you not talk to boss.
+    return false;
+options:
+  welcome:
+    text: "At last, you arrive ${player.name}. You are too late to stop me now."
+    next:
+    - id: "fool"
+      text: "I am not here to stop you, I am here to join you."
+    - id: "hero"
+      text: "Blood and ashes, I will end you!"
+  hero:
+    text: "Come at me bro."
+    handler:
+      jexl: |
+        // player is aggressive, punish them with some mighty tbd debuffs.
+        context.spells().afflict(source, 'haste');
+  fool:
+    text: "Ha-Ha you will do no such thing, silly player!"
+    handler:
+      jexl: |
+        state['fool'] = true;
+    filter:
+      jexl: |
+        if (empty(state['fool'])) {
+          return true;
+        } else {
+          return false;
+        }
+    next:
+    - id: "welcome"
+      text: "next"

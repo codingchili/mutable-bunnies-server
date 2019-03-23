@@ -1,0 +1,17 @@
+---
+name: "Gargazar"
+description: "'The bad guy.'"
+dialog: "gargazar"
+model:
+  graphics: "game/pixitest/goblins-pro"
+  scale: 0.5
+  blocking: false
+  hitbox:
+    type: rectangular
+stats:
+  level: 10
+  health: 1000.0
+  maxhealth: 1000.0
+  movement: 1.0
+tick:
+  reference: "gargazar.groovy"
