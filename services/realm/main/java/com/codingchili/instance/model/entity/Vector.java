@@ -1,9 +1,9 @@
 package com.codingchili.instance.model.entity;
 
-import java.util.*;
-
 import com.codingchili.instance.context.GameContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.*;
 
 /**
  * @author Robin Duda
@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Vector {
     public static final float ACCELERATION_BASE = 0.4f;
     private static final float ACCELERATION_STEP = (1 - ACCELERATION_BASE) / GameContext.secondsToTicks(0.5);
-    private transient List<Integer> buckets = new ArrayList<>();
+    private transient Collection<Integer> buckets = new ArrayList<>();
     private transient float acceleration = 1.0f;
     private transient boolean dirty = false;
     private transient boolean target = false;
@@ -180,14 +180,24 @@ public class Vector {
     public Collection<Integer> cells(final int cellSize) {
         if (dirty) {
             dirty = false;
-            List<Integer> cells = new ArrayList<>();
-            cells.add(Math.round(((x + size) / cellSize) + ((y / cellSize))));
-            cells.add(Math.round(((x - size) / cellSize) + ((y / cellSize))));
-            cells.add(Math.round((x / cellSize) + (((y + size) / cellSize))));
-            cells.add(Math.round((x / cellSize) + (((y - size) / cellSize))));
+            Collection<Integer> cells = new ArrayList<>();
+
+            int cellCount = (size*2) / cellSize;
+            int cellY = (int) (y - size) / cellSize;
+            int cellX = (int) (x - size) / cellSize;
+
+            for (int y = cellY; y < cellCount + cellY; y++) {
+                for (int x = cellX; x < cellCount + cellX; x++) {
+                    cells.add((x + y * cellSize));
+                }
+            }
+
+            if (cells.isEmpty()) {
+                cells.add(cellY * cellSize + cellX);
+            }
+
             buckets = cells;
         }
-        // todo: handle cells that cover more than two cells! if cellSize < size perform some loop.
         return buckets;
     }
 

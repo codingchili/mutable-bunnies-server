@@ -142,8 +142,7 @@ public class DialogEngine {
         Vector vector = source.getVector().copy()
                 .setSize(DIALOG_RANGE);
 
-        return game.creatures().radius(vector).contains(target) ||
-                game.entities().radius(vector).contains(target);
+        return game.creatures().radius(vector).contains(target);
     }
 
     /**

@@ -1,7 +1,7 @@
-import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.entity.PlayerCreature
 
 creatures = context.creatures().radius(
-        source.getVector().copy().setSize(1024)
+        source.getVector().copy().setSize(512)
 )
 
 // get creatures in range that does not have had the dialog triggered by this npc.
