@@ -1,4 +1,7 @@
-window. InputManager = class InputManager {
+const MOUSE_LEFT = 0;
+const MOUSE_RIGHT = 2;
+
+window.InputManager = class InputManager {
 
     constructor() {
         this.keyDownListeners = {};
@@ -11,6 +14,8 @@ window. InputManager = class InputManager {
         // some extra variables because binding 'this' inline will produce different fn references.
         document.body.addEventListener('keydown', this.onDownCallback);
         document.body.addEventListener('keyup', this.onUpCallback);
+        document.body.addEventListener('mousedown', this.onDownCallback);
+        document.body.addEventListener('mouseup', this.onUpCallback);
 
         window.onblur = () => {
             if (game.isPlaying) {
@@ -43,24 +48,43 @@ window. InputManager = class InputManager {
     }
 
     _onKeyUp(e) {
-        this.keys[e.key] = false;
+        let key = e.key || e.button;
 
-        if (this.keyUpListeners[e.key]) {
-            for (let listener of this.keyUpListeners[e.key]) {
+        this.keys[key] = false;
+        if (this.keyUpListeners[key]) {
+            for (let listener of this.keyUpListeners[key]) {
                 if (!this.blocked) {
-                    listener.up(e.key);
+                    listener.up(key);
                 }
             }
         }
     }
 
+    ifLeftMouse(callback) {
+        setTimeout(() => {
+            if (this.keys[MOUSE_LEFT]) {
+                callback()
+            }
+        }, 1);
+    }
+
+    ifRightMouse(callback) {
+        setTimeout(() => {
+            if (this.keys[MOUSE_RIGHT]) {
+                callback()
+            }
+        }, 1);
+    }
+
     _onKeyDown(e) {
-        if (!this.keys[e.key]) {
-            this.keys[e.key] = true;
-            if (this.keyDownListeners[e.key]) {
-                for (let listener of this.keyDownListeners[e.key]) {
+        let key = e.key || e.button;
+
+        if (!this.keys[key]) {
+            this.keys[key] = true;
+            if (this.keyDownListeners[key]) {
+                for (let listener of this.keyDownListeners[key]) {
                     if (!this.blocked) {
-                        listener.down(e.key);
+                        listener.down(key);
                     }
                 }
             }
@@ -70,6 +94,8 @@ window. InputManager = class InputManager {
     shutdown() {
         document.body.removeEventListener('keydown', this.onDownCallback);
         document.body.removeEventListener('keyup', this.onUpCallback);
+        document.body.removeEventListener('mousedown', this.onUpCallback);
+        document.body.removeEventListener('mouseup', this.onUpCallback);
     }
 
     isPressed(keys) {

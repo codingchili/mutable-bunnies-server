@@ -110,17 +110,19 @@ window.MovementHandler = class MovementHandler {
     _handle(event) {
         let entity = game.lookup(event.creatureId);
 
+        if (!entity) {
+            return;
+        }
+
         if (entity.velocity === 0) {
             entity.acceleration = 0.4;
-
-            if (entity.state.hasAnimation('walk')) {
-                entity.state.setAnimation(0, 'walk', true);
-            }
         }
 
         if (event.vector.velocity === 0) {
             entity.state.clearTracks();
             entity.skeleton.setToSetupPose();
+        } else {
+            entity.state.setAnimation(0, 'walk', true);
         }
 
         if (event.vector.direction > PI || event.vector.direction < 0) {

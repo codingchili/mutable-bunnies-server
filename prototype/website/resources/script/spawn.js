@@ -86,6 +86,7 @@ window.SpawnHandler = class SpawnHandler {
             this._onPlayerSpawnHook(sprite);
             this._onDialogSupportedHook(sprite);
             this._onLootableHook(sprite);
+            this._onDescriptionHook(sprite);
 
             game.stage.addChild(sprite);
         }, this._graphicsToUrl(entity.model, animated)).begin();
@@ -138,13 +139,27 @@ window.SpawnHandler = class SpawnHandler {
         }
     }
 
+    _onDescriptionHook(sprite) {
+        let description = sprite.attributes['description'] || sprite.name;
+
+        if (description) {
+            sprite.interactive = true;
+            sprite.on('pointerdown', (e) => {
+                input.ifRightMouse(() => {
+                    game.texts.chat(sprite, {text: description});
+                });
+            });
+        }
+    }
+
     _onDialogSupportedHook(sprite) {
         if (sprite.interactions.includes('dialog')) {
             sprite.interactive = true;
             sprite.buttonMode = true;
-
-            sprite.on('pointerdown', () => {
-                game.dialogs.start(sprite.id);
+            sprite.on('pointerdown', (e) => {
+                input.ifLeftMouse(() => {
+                    game.dialogs.start(sprite.id);
+                });
             });
         }
     }
