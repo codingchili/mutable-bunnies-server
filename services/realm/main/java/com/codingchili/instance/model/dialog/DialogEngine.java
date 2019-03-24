@@ -139,10 +139,10 @@ public class DialogEngine {
     }
 
     private boolean targetInRange(Entity source, Entity target) {
-        Vector vector = source.getVector().copy()
+        Vector vector = target.getVector().copy()
                 .setSize(DIALOG_RANGE);
 
-        return game.creatures().radius(vector).contains(target);
+        return game.creatures().radius(vector).contains(source);
     }
 
     /**
