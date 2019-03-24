@@ -4,4 +4,4 @@ duration: 20.0
 description: "Casting time and cooldowns reduced by 15%."
 modifier:
   jexl: |
-    stats[Attribute.movement] = source.stats[Attribute.movement] * 0.15d;
+    stats[Attribute.movement] = source.stats[Attribute.movement] * 0.5d;

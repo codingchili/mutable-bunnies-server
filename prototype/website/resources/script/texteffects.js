@@ -133,9 +133,8 @@ window.TextEffects = class TextEffects {
             counter.ttl = options.ttl || 100;
         }
 
-        counter.offset = target.width / 2;
-        counter.x = target.x - (counter.width / 2) + (target.width / 2) + counter.offset * Math.cos(counter.dir);
-        counter.y = target.y + (target.height / 2) - (counter.height / 2) + counter.offset * Math.sin(counter.dir);
+        counter.x = target.x - counter.width + (target.width / 3) * Math.cos(counter.dir);
+        counter.y = target.y - (target.height / 2) + (target.height / 3) * Math.sin(counter.dir);
         counter.alpha = 0.18;
         counter.speed = 2.56;
         counter.slowdown = 0.925;
@@ -146,8 +145,8 @@ window.TextEffects = class TextEffects {
         if (options.float) {
             counter.dir = (6.14 / 360) * 270;
             counter.speed = 1.8;
-            counter.x = 2 + target.x + (target.width / 2) - (counter.width / 2);
-            counter.y = target.y + (counter.height / 2);
+            counter.x = target.x - (counter.width / 2);
+            counter.y = (target.y * 1.01) - target.height;
         }
 
         this.counters.push(counter);
