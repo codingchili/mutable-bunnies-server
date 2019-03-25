@@ -4,14 +4,13 @@ import com.codingchili.instance.model.entity.Entity;
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * Representation of a dialog tree.
- *
+ * <p>
  * The dialog tree has an id for referencing from an NPC.
  * A starting point that points to one of the options.
  * For each option an option references, a response is available for the player -
@@ -61,11 +60,13 @@ public class Dialog {
 
     public boolean enabled(Entity source, Entity target) {
         if (enabled != null) {
-            return enabled.apply(
+            Boolean is = enabled.apply(
                     new Bindings()
                             .setSource(source)
                             .setTarget(target)
             );
+            Objects.requireNonNull(is, "enabled check for dialog " + id + " returned 'null'.");
+            return is;
         } else {
             return true;
         }

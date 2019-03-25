@@ -24,7 +24,7 @@ options:
     handler:
       jexl: |
         state['fool'] = true;
-    filter:
+    available:
       jexl: |
         if (empty(state['fool'])) {
           return true;

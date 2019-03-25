@@ -2,6 +2,7 @@ package com.codingchili.instance.model.dialog;
 
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +24,7 @@ import java.util.Set;
 public class Option {
     private Set<Line> next = new HashSet<>();
     private Scripted handler;
-    private Scripted filter;
+    private Scripted available;
     private String text;
 
     public Set<Line> getNext() {
@@ -42,12 +43,12 @@ public class Option {
         this.handler = handler;
     }
 
-    public Scripted getFilter() {
-        return filter;
+    public Scripted getAvailable() {
+        return available;
     }
 
-    public void setFilter(Scripted filter) {
-        this.filter = filter;
+    public void setAvailable(Scripted available) {
+        this.available = available;
     }
 
     public String getText() {
@@ -58,9 +59,10 @@ public class Option {
         this.text = text;
     }
 
+    @JsonIgnore
     public boolean isAvailable(Bindings bindings) {
-        if (filter != null) {
-            return filter.apply(bindings);
+        if (available != null) {
+            return available.apply(bindings);
         } else {
             return true;
         }

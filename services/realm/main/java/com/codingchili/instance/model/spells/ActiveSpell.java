@@ -6,6 +6,7 @@ import com.codingchili.instance.model.events.SpellCycle;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.scripting.Bindings;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import com.codingchili.core.logging.Level;
@@ -74,7 +75,10 @@ public class ActiveSpell {
 
     public boolean onCastBegin(GameContext game) {
         if (spell.getOnCastBegin() != null) {
-            boolean check = spell.getOnCastBegin().apply(getBindings(game));
+            Boolean check = spell.getOnCastBegin().apply(getBindings(game));
+
+            Objects.requireNonNull(check,
+                    "onCastBegin check of spell " + spell.getInterval() + " returned 'null'.");
 
             if (check) {
                 // only put on cooldown if precondition check succeeded.

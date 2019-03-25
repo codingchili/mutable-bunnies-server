@@ -20,10 +20,10 @@ options:
       text: "I am a master adventurer and you are a noob."
   greeting:
     text: "Likewise."
-    filter:
+    available:
       jexl: "return true;"
   buff:
-    filter:
+    available:
       jexl: "return true;"
     handler:
       jexl: |
@@ -33,14 +33,14 @@ options:
     handler:
       jexl: |
         context.spells().heal(source, 20.0);
-    filter: 
+    available:
         jexl: "return true;"
     next:
     - id: "welcome"
       text: "Who are you again?"
   quest:
     text: "You have completed your first quest! Enjoy 500 experience points."
-    filter:
+    available:
       jexl: |
         return source.attributes['quest#1'] == null;
     handler:
