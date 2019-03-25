@@ -36,7 +36,7 @@ public class JavaScript implements Scripted {
         try {
             return (T) compiled.eval(bound);
         } catch (ScriptException e) {
-            throw new CoreRuntimeException(e.getMessage());
+            throw new ScriptedException(e);
         }
     }
 

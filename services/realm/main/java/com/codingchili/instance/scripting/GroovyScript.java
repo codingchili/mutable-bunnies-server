@@ -6,7 +6,7 @@ import com.codingchili.core.context.CoreRuntimeException;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * Provides script support for groovy - requires groovy jsr on classpath.
  */
 public class GroovyScript implements Scripted {
@@ -36,7 +36,7 @@ public class GroovyScript implements Scripted {
         try {
             return (T) compiled.eval(bound);
         } catch (ScriptException e) {
-            throw new CoreRuntimeException(e.getMessage());
+            throw new ScriptedException(e);
         }
     }
 
