@@ -3,8 +3,9 @@ name: "Lilith"
 description: "Mentor and life coach."
 dialog: "tutor"
 model:
-  graphics: "game/pixitest/goblins-pro"
-  scale: 0.32
+  graphics: "game/pixitest/bunny/bunny"
+  skin: "yellow"
+  scale: 0.16
   blocking: false
   hitbox:
     type: rectangular

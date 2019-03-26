@@ -42,8 +42,12 @@ window.MovementHandler = class MovementHandler {
                     entity.acceleration = 1.0;
                 }
 
-                if (entity.state) {
+                if (entity.state && entity.velocity > 0) {
                     entity.state.timeScale = entity.velocity * entity.acceleration;
+                }
+                if (entity.state && !entity.state.initialized) {
+                    entity.state.initialized = true;
+                    entity.state.setAnimation(0, 'idle', true);
                 }
 
                 entity.x += Math.sin(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_FRAME);
@@ -119,8 +123,7 @@ window.MovementHandler = class MovementHandler {
         }
 
         if (event.vector.velocity === 0) {
-            entity.state.clearTracks();
-            entity.skeleton.setToSetupPose();
+            entity.state.setAnimation(0, 'idle', true);
         } else {
             entity.state.setAnimation(0, 'walk', true);
         }

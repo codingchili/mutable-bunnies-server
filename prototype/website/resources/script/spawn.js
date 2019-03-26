@@ -89,6 +89,7 @@ window.SpawnHandler = class SpawnHandler {
             this._onDescriptionHook(sprite);
 
             game.stage.addChild(sprite);
+
         }, this._graphicsToUrl(entity.model, animated)).begin();
     }
 
@@ -99,7 +100,9 @@ window.SpawnHandler = class SpawnHandler {
     _loadSpriteFrom(resource, entity, animated) {
         if (animated) {
             let sprite = new PIXI.spine.Spine(this._parseSpineData(resource, entity));
-            sprite.skeleton.setSkinByName('goblingirl');
+            if (entity.model.skin) {
+                sprite.skeleton.setSkinByName(entity.model.skin);
+            }
             return sprite;
         } else {
             // the resource is already converted to a sprite by the loader.

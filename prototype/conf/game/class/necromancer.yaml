@@ -3,8 +3,9 @@ name: "Necromancer"
 description: "Death and dark magics is only fit for such a tainted soul, swings two-handed swords of pure evil."
 theme: "#5108b9"
 model:
-  graphics: "game/pixitest/goblins-pro"
-  scale: 0.26
+  graphics: "game/pixitest/bunny/bunny"
+  skin: "violet"
+  scale: 0.16
 weapons:
   - "sword2h"
 armors:

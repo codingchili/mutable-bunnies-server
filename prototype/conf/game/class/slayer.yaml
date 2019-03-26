@@ -3,8 +3,9 @@ name: "Slayer"
 description: "A ferocious murderer feeding on the fear and blood of their victims, melee fighting with health-based damage."
 theme: "#b93408"
 model:
-  graphics: "game/pixitest/goblins-pro"
-  scale: 0.26
+  graphics: "game/pixitest/bunny/bunny"
+  skin: "reddish"
+  scale: 0.16
 weapons:
   - "battleaxe"
 armors:

@@ -7,6 +7,7 @@ package com.codingchili.instance.model.entity;
  */
 public class Model {
     private String graphics;
+    private String skin;
     private float scale;
     private boolean blocking;
     private Hitbox hitbox;
@@ -65,5 +66,16 @@ public class Model {
 
     public void setLayer(int layer) {
         this.layer = layer;
+    }
+
+    /**
+     * @return name of the animation skin to use by default.
+     */
+    public String getSkin() {
+        return skin;
+    }
+
+    public void setSkin(String skin) {
+        this.skin = skin;
     }
 }

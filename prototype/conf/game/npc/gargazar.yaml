@@ -3,8 +3,9 @@ name: "Gargazar"
 description: "'The bad guy.'"
 dialog: "gargazar"
 model:
-  graphics: "game/pixitest/goblins-pro"
-  scale: 0.5
+  graphics: "game/pixitest/bunny/bunny"
+  skin: "orange"
+  scale: 0.28
   blocking: false
   hitbox:
     type: rectangular

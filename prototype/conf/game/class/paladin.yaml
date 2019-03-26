@@ -3,8 +3,9 @@ name: "Paladin"
 description: "A holy priest enforcing the law with a hammer of justice, possesses blessings of protection."
 theme: "#01bfff"
 model:
-  graphics: "game/pixitest/goblins-pro"
-  scale: 0.26
+  graphics: "game/pixitest/bunny/bunny"
+  skin: "blue"
+  scale: 0.16
 weapons:
   - "hammer"
 armors:

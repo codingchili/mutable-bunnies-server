@@ -3,8 +3,9 @@ name: "Hunter"
 description: "Knowing of their environment and the creatures lurking in it, none shall escape their true aim."
 theme: "#cf8f02"
 model:
-  graphics: "game/pixitest/goblins-pro"
-  scale: 0.26
+  graphics: "game/pixitest/bunny/bunny"
+  skin: "black"
+  scale: 0.16
 weapons:
   - "bow"
 armors:
