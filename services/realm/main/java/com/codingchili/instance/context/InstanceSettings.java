@@ -1,6 +1,7 @@
 package com.codingchili.instance.context;
 
 import com.codingchili.instance.model.SpawnPoint;
+import com.codingchili.instance.model.entity.Skybox;
 import com.codingchili.instance.model.entity.SpawnConfiguration;
 import com.codingchili.instance.scripting.Scripted;
 
@@ -21,6 +22,7 @@ public class InstanceSettings implements Configurable {
     private List<SpawnConfiguration> structures = new ArrayList<>();
     private List<SpawnConfiguration> npcs = new ArrayList<>();
     private List<SpawnPoint> spawns = new ArrayList<>();
+    private Skybox skybox = new Skybox();
     private Scripted onStartup;
     private Scripted onPlayerJoin;
     private String name = "default";
@@ -149,6 +151,17 @@ public class InstanceSettings implements Configurable {
 
     public void setTexture(String texture) {
         this.texture = texture;
+    }
+
+    /**
+     * @return settings for the skybox.
+     */
+    public Skybox getSkybox() {
+        return skybox;
+    }
+
+    public void setSkybox(Skybox skybox) {
+        this.skybox = skybox;
     }
 
     @Override

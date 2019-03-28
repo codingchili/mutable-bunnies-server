@@ -17,6 +17,8 @@ window.Game = class Game extends Canvas {
         server.join({
             accepted: (event) => {
                 this.spawner.join(event);
+                console.log(event);
+                this.setSkybox(event.skybox);
                 done.accepted();
                 application.gameLoaded();
             },
@@ -52,9 +54,9 @@ window.Game = class Game extends Canvas {
             this.frames = 0;
         }, 1000);
         this.entities = {};
-        this.isPlaying = true;
+        this.clouds = [];
 
-        this._initSkybox();
+        this.isPlaying = true;
         this.loop();
     }
 
@@ -75,12 +77,13 @@ window.Game = class Game extends Canvas {
         this.app.ticker.add(callback);
     }
 
-    _initSkybox() {
+    setSkybox(tint) {
         this.clouds = [];
         assetLoader.load(skybox => {
             let ratio = Math.max(2048 / window.innerWidth, 1536 / window.innerHeight);
             skybox.scale.x = ratio;
             skybox.scale.y = ratio;
+            skybox.tint = parseInt(tint.sky.replace('#', '0x'));
 
             this.root.addChildAt(skybox, 0);
             for (let cloud = 1; cloud <= 3; cloud++) {
@@ -90,12 +93,13 @@ window.Game = class Game extends Canvas {
                         cloud.y = Math.random() * window.innerHeight;
                         cloud.x = -cloud.width;
                         cloud.velocity = Math.random() + 0.05;
+                        cloud.tint = parseInt(tint.clouds.replace('#', '0x'));
                         this.clouds.push(cloud);
                         this.root.addChildAt(cloud, 1);
                     }
                 }, `game/map/clouds/${cloud}.png`);
             }
-        }, 'game/map/clouds/skybox_blue.png');
+        }, 'game/map/clouds/skybox_grey.png');
     }
 
     _updateSkybox() {

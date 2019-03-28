@@ -15,6 +15,7 @@ import java.util.*;
 public class ConnectEvent implements Event {
     private Collection<Entity> entities;
     private Collection<Creature> creatures;
+    private Skybox skybox;
     private String player;
     private String texture;
     private int size;
@@ -25,6 +26,7 @@ public class ConnectEvent implements Event {
         this.creatures  = game.creatures().all();
         this.texture = instance.getTexture();
         this.size = instance.getSize();
+        this.skybox = instance.getSkybox();
         this.player = player;
     }
 
@@ -72,5 +74,13 @@ public class ConnectEvent implements Event {
 
     public void setCreatures(Collection<Creature> creatures) {
         this.creatures = creatures;
+    }
+
+    public Skybox getSkybox() {
+        return skybox;
+    }
+
+    public void setSkybox(Skybox skybox) {
+        this.skybox = skybox;
     }
 }

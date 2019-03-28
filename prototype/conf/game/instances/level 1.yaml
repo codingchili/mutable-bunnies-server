@@ -3,6 +3,9 @@ name: level 1
 limit: 50
 size: 1920
 texture: "game/map/tiles/brownstone.png"
+skybox:
+  sky: "#CC0041"
+  clouds: "#FFFFFF"
 structures:
 - name: "Redwood"
   point:

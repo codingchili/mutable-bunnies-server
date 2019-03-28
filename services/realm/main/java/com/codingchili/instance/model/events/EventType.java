@@ -9,7 +9,7 @@ public enum EventType {
     move,
     death,
     affliction,
-    join,   // sent to client for JOIN requests.
+    join,
     spawn,
     update,
     chat,
