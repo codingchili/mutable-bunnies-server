@@ -1,9 +1,9 @@
 ---
-name: "Wyrmwood"
-description: "Godswood."
+name: "Aluminum"
+description: "Light and strong, Aluminum."
 model:
-  graphics: "game/map/trees/redwhite.png"
-  scale: 1.0
+  graphics: "game/ores/aluminum.png"
+  scale: 0.3
   blocking: true
   hitbox:
     type: rectangular

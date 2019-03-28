@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  */
 public class SpawnEngine {
     private static final String DESCRIPTION = "description";
-    private static final double TPS = 2; // limits NPCs to 2 AI update per second.
+    private static final double TPS = 4; // limits NPCs to 4 AI update per second.
     private GameContext game;
     private EntityDB entities;
     private NpcDB npcs;

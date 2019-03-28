@@ -1,9 +1,9 @@
 ---
-name: "Wyrmwood"
-description: "Godswood."
+name: "Uranium."
+description: "Uranium, potentially active."
 model:
-  graphics: "game/map/trees/redwhite.png"
-  scale: 1.0
+  graphics: "game/ores/uranium.png"
+  scale: 0.3
   blocking: true
   hitbox:
     type: rectangular

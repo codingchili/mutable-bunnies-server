@@ -18,7 +18,6 @@ public class EntityDB {
 
     public EntityDB(CoreContext core) {
         if (!initialized.getAndSet(true)) {
-            // tbd: use concrete class.
             items = new DB<>(core, EntityConfiguration.class, CONF_PATH);
         }
     }

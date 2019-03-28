@@ -3,23 +3,16 @@ name: "Redwood"
 description: "Wood. Common wood."
 model:
   graphics: "game/map/trees/cyan.png"
-  scale: 0.4
+  scale: 1.0
   blocking: true
   hitbox:
     type: rectangular
     points:
-      - point:
-          x: 0
-          y: 0
-      - point:
-          x: 32
-          y: 32
+    - point:
+        x: 0
+        y: 0
+    - point:
+        x: 32
+        y: 32
 stats:
   health: 200.0
-spawn:
-  jexl: "return true;"
-death:
-  jexl: |
-    // yield stuff into source's inventory.
-tick:
-  jexl: "return true;"

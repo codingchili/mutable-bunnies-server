@@ -1,0 +1,132 @@
+
+bolt.png
+size: 1820,260
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+blue/keyframes/1
+  rotate: true
+  xy: 103, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+blue/keyframes/2
+  rotate: true
+  xy: 204, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+blue/keyframes/3
+  rotate: true
+  xy: 305, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+blue/keyframes/4
+  rotate: true
+  xy: 406, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+blue/keyframes/5
+  rotate: true
+  xy: 507, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+blue/keyframes/6
+  rotate: true
+  xy: 608, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+pink/keyframes/1
+  rotate: true
+  xy: 709, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+pink/keyframes/2
+  rotate: true
+  xy: 810, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+pink/keyframes/3
+  rotate: true
+  xy: 911, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+pink/keyframes/4
+  rotate: true
+  xy: 1012, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+pink/keyframes/5
+  rotate: true
+  xy: 1113, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+pink/keyframes/6
+  rotate: true
+  xy: 1214, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+red/keyframes/1
+  rotate: true
+  xy: 1315, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+red/keyframes/2
+  rotate: true
+  xy: 1416, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+red/keyframes/3
+  rotate: true
+  xy: 1517, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+red/keyframes/4
+  rotate: true
+  xy: 1618, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+red/keyframes/5
+  rotate: true
+  xy: 1719, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1
+red/keyframes/6
+  rotate: true
+  xy: 2, 2
+  size: 256, 99
+  orig: 256, 99
+  offset: 0, 0
+  index: -1

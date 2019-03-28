@@ -24,6 +24,26 @@ structures:
   point:
     x: 40
     y: 600
+- name: "Aluminum"
+  point:
+    x: 500
+    y: 800
+- name: "Copper"
+  point:
+    x: 600
+    y: 800
+- name: "Gold"
+  point:
+    x: 700
+    y: 800
+- name: "Jade"
+  point:
+    x: 800
+    y: 800
+- name: "Rubies"
+  point:
+    x: 900
+    y: 800
 npcs:
 - name: "Lilith"
   point:

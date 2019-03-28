@@ -199,8 +199,8 @@ window.TextEffects = class TextEffects {
 
     chat(target, event) {
         game.texts._create(target, event.text, {
-            begin: event.color1 || '#ffd8f7',
-            end: event.color2 || '#ffe6eb',
+            begin: event.color1 || '#eaeaea',
+            end: event.color2 || '#ffffff',
             float: true,
             ttl: Game.secondsToTicks(2.2)
         });
