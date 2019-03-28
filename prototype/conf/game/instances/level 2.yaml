@@ -2,21 +2,21 @@
 name: level 2
 limit: 50
 size: 4096
-texture: "game/map/background_snow.jpg"
+texture: "game/map/stone.png"
 structures:
-- name: "Redwood"
+- name: "Wyrmwood"
   point:
     x: 400
     y: 400
-- name: "Redwood"
+- name: "Wyrmwood"
   point:
     x: 400
     y: 600
-- name: "Redwood"
+- name: "Wyrmwood"
   point:
     x: 800
     y: 500
-- name: "Redwood"
+- name: "Wyrmwood"
   point:
     x: 225
     y: 500

@@ -19,9 +19,5 @@
     "script/input.js",
     "script/particles.js"
   ],
-  "files": {
-    "game/particle.png": {},
-    "game/character/chr.png": {},
-    "game/map/background_snow.png": {}
-  }
+  "files": {}
 }
