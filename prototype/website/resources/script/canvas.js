@@ -9,9 +9,13 @@ window.Canvas = class {
         });
 
         this.screen = this.app.screen;
-        this.stage = this.app.stage;
+        this.root = this.app.stage;
+        this.stage = new PIXI.Container();
         this.stage.interactive = true;
         this.renderer = this.app.renderer;
+
+        this.stage.layer = -1;
+        this.root.addChild(this.stage);
 
         if (!document.getElementById('canvas')) {
             document.body.appendChild(this.renderer.view);

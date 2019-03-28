@@ -3,7 +3,7 @@ name: "Assassin"
 description: "Sneaking in the shadows the short blade of their dagger stabs their victims, often to death."
 theme: "#9c0977"
 model:
-  graphics: "game/pixitest/bunny/bunny"
+  graphics: "game/character/bunny/bunny"
   skin: "pink"
   scale: 0.16
 weapons:

@@ -1,5 +1,5 @@
 {
-  "sprites": ["game/particle.png"],
+  "sprites": ["game/particles/sprites/particle.png"],
   "alpha": {
     "start": 0.8,
     "end": 0.1

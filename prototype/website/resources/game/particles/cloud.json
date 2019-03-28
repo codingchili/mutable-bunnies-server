@@ -1,5 +1,5 @@
 {
-  "sprites": ["game/particle.png"],
+  "sprites": ["game/particles/sprites/particle.png"],
   "layer": 5,
   "alpha": {
     "start": 0.13,

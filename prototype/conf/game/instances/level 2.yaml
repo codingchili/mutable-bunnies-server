@@ -1,8 +1,8 @@
 ---
 name: level 2
 limit: 50
-size: 4096
-texture: "game/map/stone.png"
+size: 1920
+texture: "game/map/tiles/stone.png"
 structures:
 - name: "Wyrmwood"
   point:

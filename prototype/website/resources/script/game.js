@@ -18,13 +18,12 @@ window.Game = class Game extends Canvas {
             accepted: (event) => {
                 this.spawner.join(event);
                 done.accepted();
+                application.gameLoaded();
             },
             error: (event) => {
                 done.error(event.message);
             }
         }, character.name);
-
-        application.gameLoaded();
     }
 
     scriptShutdown() {
@@ -55,6 +54,7 @@ window.Game = class Game extends Canvas {
         this.entities = {};
         this.isPlaying = true;
 
+        this._initSkybox();
         this.loop();
     }
 
@@ -75,6 +75,38 @@ window.Game = class Game extends Canvas {
         this.app.ticker.add(callback);
     }
 
+    _initSkybox() {
+        this.clouds = [];
+        assetLoader.load(skybox => {
+            let ratio = Math.max(2048 / window.innerWidth, 1536 / window.innerHeight);
+            skybox.scale.x = ratio;
+            skybox.scale.y = ratio;
+
+            this.root.addChildAt(skybox, 0);
+            for (let cloud = 1; cloud <= 3; cloud++) {
+                assetLoader.load(loaded => {
+                    for (let i = 0; i < 2; i++) {
+                        let cloud = new PIXI.Sprite(loaded.texture);
+                        cloud.y = Math.random() * window.innerHeight;
+                        cloud.x = -cloud.width;
+                        cloud.velocity = Math.random() + 0.05;
+                        this.clouds.push(cloud);
+                        this.root.addChildAt(cloud, 1);
+                    }
+                }, `game/map/clouds/${cloud}.png`);
+            }
+        }, 'game/map/clouds/skybox_blue.png');
+    }
+
+    _updateSkybox() {
+        for (let cloud of this.clouds) {
+            cloud.x += cloud.velocity;
+            if (cloud.x - cloud.width > window.innerWidth) {
+                cloud.x = -cloud.width;
+            }
+        }
+    }
+
     loop() {
         if (this.isPlaying) {
             this.stage.children.sort(Camera.depthCompare.bind(this));
@@ -84,8 +116,9 @@ window.Game = class Game extends Canvas {
             this.camera.update();
             this.stage.x = -this.camera.x;
             this.stage.y = -this.camera.y;
+            this._updateSkybox();
 
-            this.renderer.render(this.stage);
+            this.renderer.render(this.root);
             requestAnimationFrame(() => this.loop());
         }
     }

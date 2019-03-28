@@ -1,8 +1,8 @@
 ---
 name: level 1
 limit: 50
-size: 4096
-texture: "game/map/brownstone.png"
+size: 1920
+texture: "game/map/tiles/brownstone.png"
 structures:
 - name: "Redwood"
   point:

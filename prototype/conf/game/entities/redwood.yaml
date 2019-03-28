@@ -2,7 +2,7 @@
 name: "Redwood"
 description: "Wood. Common wood."
 model:
-  graphics: "game/map/tree-cyan.png"
+  graphics: "game/map/trees/cyan.png"
   scale: 0.4
   blocking: true
   hitbox:

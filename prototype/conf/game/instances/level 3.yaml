@@ -1,8 +1,8 @@
 ---
 name: level 3
 limit: 50
-size: 4096
-texture: "game/map/wood.png"
+size: 1920
+texture: "game/map/tiles/wood.png"
 spawns:
 - x: 300
   y: 325

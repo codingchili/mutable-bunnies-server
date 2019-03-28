@@ -3,7 +3,7 @@ name: "Lilith"
 description: "Mentor and life coach."
 dialog: "tutor"
 model:
-  graphics: "game/pixitest/bunny/bunny"
+  graphics: "game/character/bunny/bunny"
   skin: "yellow"
   scale: 0.16
   blocking: false

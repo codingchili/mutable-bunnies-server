@@ -2,7 +2,7 @@
 name: "Wyrmwood"
 description: "Godswood."
 model:
-  graphics: "game/map/tree-redwhite.png"
+  graphics: "game/map/trees/redwhite.png"
   scale: 0.4
   blocking: true
   hitbox:
