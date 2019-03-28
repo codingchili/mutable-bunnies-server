@@ -7,12 +7,14 @@ import com.codingchili.instance.model.stats.Stats;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.codingchili.core.storage.Storable;
+
 /**
  * @author Robin Duda
  *
  * A playable class, a character template.
  */
-public class PlayableClass {
+public class PlayableClass implements Storable {
     private Collection<WeaponType> weapons = new ArrayList<>();
     private Collection<ArmorType> armors = new ArrayList<>();
     private Collection<String> keywords = new ArrayList<>();
@@ -22,6 +24,11 @@ public class PlayableClass {
     private String description = "description";
     private String theme;
     private Stats stats;
+
+    @Override
+    public String getId() {
+        return name;
+    }
 
     public String getName() {
         return name;

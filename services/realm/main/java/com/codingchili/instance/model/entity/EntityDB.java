@@ -4,22 +4,23 @@ import com.codingchili.instance.model.npc.DB;
 import com.codingchili.instance.model.npc.EntityConfiguration;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.codingchili.core.context.CoreContext;
 
 /**
- * @author Robin Duda
+ * A database of all configured entities.
  */
 public class EntityDB {
     private static final String CONF_PATH = "conf/game/entities";
-    private static final AtomicBoolean initialized = new AtomicBoolean(false);
     private static DB<EntityConfiguration> items;
 
+    /**
+     * Creates a new or re-uses an existing entity database.
+     *
+     * @param core the core context to create the database on.
+     */
     public EntityDB(CoreContext core) {
-        if (!initialized.getAndSet(true)) {
-            items = new DB<>(core, EntityConfiguration.class, CONF_PATH);
-        }
+        items = DB.create(core, EntityConfiguration.class, CONF_PATH);
     }
 
     public Optional<EntityConfiguration> getById(String id) {

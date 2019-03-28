@@ -1,22 +1,23 @@
 package com.codingchili.instance.model.npc;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.codingchili.core.context.CoreContext;
 
 /**
- * @author Robin Duda
+ * Database of all NPC configured.
  */
 public class NpcDB {
     private static final String CONF_PATH = "conf/game/npc";
-    private static final AtomicBoolean initialized = new AtomicBoolean(false);
     private static DB<EntityConfiguration> npcs;
 
+    /**
+     * Creates a new or re-uses an existing npc database.
+     *
+     * @param core the core context to create the database on.
+     */
     public NpcDB(CoreContext core) {
-        if (!initialized.getAndSet(true)) {
-            npcs = new DB<>(core, EntityConfiguration.class, CONF_PATH);
-        }
+        npcs = DB.create(core, EntityConfiguration.class, CONF_PATH);
     }
 
     public Optional<EntityConfiguration> getById(String id) {

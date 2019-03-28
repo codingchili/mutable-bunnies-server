@@ -2,19 +2,13 @@ package com.codingchili.instance.model.afflictions;
 
 import com.codingchili.instance.context.CachedResponse;
 import com.codingchili.instance.model.MetadataStore;
+import com.codingchili.instance.model.npc.DB;
 import io.vertx.core.buffer.Buffer;
 
-import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Optional;
 
 import com.codingchili.core.context.CoreContext;
-import com.codingchili.core.files.*;
-import com.codingchili.core.logging.Logger;
-import com.codingchili.core.protocol.Serializer;
-
-import static com.codingchili.core.configuration.CoreStrings.ID_COUNT;
 
 /**
  * @author Robin Duda
@@ -23,58 +17,30 @@ import static com.codingchili.core.configuration.CoreStrings.ID_COUNT;
  */
 public class AfflictionDB implements MetadataStore<Affliction> {
     private static final String CONF_PATH = "conf/game/afflictions";
-    private static final String AFFLICTION_LOAD = "affliction.load";
-    private static AtomicBoolean initialized = new AtomicBoolean(false);
-    private static Map<String, Affliction> afflictions = new HashMap<>();
     private static Buffer cache;
-    private Logger logger;
+    private DB<Affliction> db;
 
     /**
      * @param core the game context that is associated with this instance.
      */
     public AfflictionDB(CoreContext core) {
-        this.logger = core.logger(getClass());
-
-        if (!initialized.getAndSet(true)) {
-            afflictions = ConfigurationFactory.readDirectory(CONF_PATH).stream()
-                    .map(config -> Serializer.unpack(config, Affliction.class))
-                    .filter(Objects::nonNull)
-                    .filter(affliction -> affliction.name != null)
-                    .collect(Collectors.toMap((k) -> k.name, (v) -> v));
-
-            logger.event(AFFLICTION_LOAD).put(ID_COUNT, afflictions.size()).send();
-
-            FileWatcher.builder(core)
-                    .onDirectory(CONF_PATH)
-                    .rate(() -> 1500)
-                    .withListener(new FileStoreListener() {
-                        @Override
-                        public void onFileModify(Path path) {
-                            logger.event(AFFLICTION_LOAD).send("affliction updated: " + path.toString());
-                            Affliction affliction = Serializer.unpack(
-                                    ConfigurationFactory.readObject(path.toString()), Affliction.class);
-
-                            afflictions.put(affliction.getName(), affliction);
-                            evict();
-                        }
-                    }).build();
-        }
-        evict();
+        this.db = DB.create(core, Affliction.class, CONF_PATH);
+        this.db.setOnInvalidate(this::evict);
     }
 
     @Override
     public Optional<Affliction> getByName(String name) {
-        return Optional.ofNullable(afflictions.get(name));
+        return db.getById(name);
     }
 
     @Override
     public Map<String, Affliction> asMap() {
-        return afflictions;
+        return db.asMap();
     }
 
     @Override
     public void evict() {
-        cache = CachedResponse.make("afflictioninfo", afflictions.values());
+        cache = CachedResponse.make("afflictioninfo", db.asMap().values());
     }
 
     @Override
