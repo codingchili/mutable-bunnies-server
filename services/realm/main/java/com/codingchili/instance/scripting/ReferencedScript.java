@@ -3,7 +3,6 @@ package com.codingchili.instance.scripting;
 import io.vertx.core.Future;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -45,9 +44,8 @@ public class ReferencedScript implements Scripted {
                 try {
                     if (files != null) {
                         long loaded = Arrays.asList(files)
-                                //.parallelStream()
                                 .parallelStream()
-                                .peek(file -> loadScriptAt(core, file))
+                                .peek(file -> loadScriptAt(file))
                                 .filter((file) -> true)
                                 .count();
 
@@ -57,8 +55,9 @@ public class ReferencedScript implements Scripted {
                                 .send();
                     }
                     setupFileWatcher(core, logger);
-                } finally {
                     blocking.complete();
+                } catch (Exception e) {
+                    blocking.fail(e);
                 }
             }, future);
             return future;
@@ -74,7 +73,7 @@ public class ReferencedScript implements Scripted {
                 .withListener(new FileStoreListener() {
                     @Override
                     public void onFileModify(Path path) {
-                        loadScriptAt(core, path.toFile());
+                        loadScriptAt(path.toFile());
                         logger.event(SCRIPT_LOAD).send("script updated " + path.toString());
                     }
                 }).build();
@@ -82,15 +81,15 @@ public class ReferencedScript implements Scripted {
 
     }
 
-    private static void loadScriptAt(CoreContext core, File file) {
+    private static void loadScriptAt(File file) {
         try {
             String name = file.getName();
             String scriptType = name.substring(name.indexOf(".") + 1);
             Scripted script = ScriptEngines.script(
                     new String(Files.readAllBytes(file.toPath())), scriptType);
             add(name, script);
-        } catch (IOException e) {
-            core.logger(ReferencedScript.class).onError(e);
+        } catch (Exception e) {
+            throw new ScriptCompileException(file.getPath(), e);
         }
     }
 

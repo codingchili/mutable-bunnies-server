@@ -45,31 +45,31 @@ public class Service implements CoreService {
 
     @Override
     public void start(Future<Void> start) {
-        List<Future> deployments = new ArrayList<>();
+        context.blocking(blocking -> {
+            List<Future> deployments = new ArrayList<>();
 
-        for (ListenerSettings listener : context.transports()) {
-            handler = new RouterHandler(context);
-            Future<String> future = Future.future();
-            deployments.add(future);
+            for (ListenerSettings listener : context.transports()) {
+                handler = new RouterHandler(context);
+                Future<String> future = Future.future();
+                deployments.add(future);
 
-            switch (listener.getType()) {
-                case UDP:
-                    start(UdpListener::new, listener.getType(), future);
-                    break;
-                case TCP:
-                    start(TcpListener::new, listener.getType(), future);
-                    break;
-                case WEBSOCKET:
-                    start(WebsocketListener::new, listener.getType(), future);
-                    break;
-                case REST:
-                    start(RestListener::new, listener.getType(), future);
-                    break;
+                switch (listener.getType()) {
+                    case UDP:
+                        start(UdpListener::new, listener.getType(), future);
+                        break;
+                    case TCP:
+                        start(TcpListener::new, listener.getType(), future);
+                        break;
+                    case WEBSOCKET:
+                        start(WebsocketListener::new, listener.getType(), future);
+                        break;
+                    case REST:
+                        start(RestListener::new, listener.getType(), future);
+                        break;
+                }
             }
-        }
-        all(deployments).setHandler(done -> {
-            start.complete();
-        });
+            all(deployments).setHandler(done -> blocking.complete());
+        }, start);
     }
 
     private void start(Supplier<CoreListener> listener, WireType type, Future<String> future) {

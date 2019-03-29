@@ -10,7 +10,7 @@ import com.codingchili.core.storage.IndexedMapPersisted;
  */
 public class AuthenticationSettings extends ServiceConfigurable {
     static final String PATH_AUTHSERVER = Strings.getService("authserver");
-    private ValidatorSettings validator = new ValidatorSettings();
+    private ValidatorSettings validator = new ValidatorSettings("validator");
     private byte[] clientSecret;
     private String storage = IndexedMapPersisted.class.getName();
 

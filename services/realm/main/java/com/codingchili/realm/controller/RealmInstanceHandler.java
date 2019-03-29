@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.codingchili.core.context.CoreRuntimeException;
+import com.codingchili.core.context.FutureHelper;
 import com.codingchili.core.listener.*;
 import com.codingchili.core.listener.transport.Connection;
 import com.codingchili.core.logging.Logger;
@@ -88,18 +89,16 @@ public class RealmInstanceHandler implements CoreHandler {
                     // the instances on the same cluster.
                     instanceContext.listener(() -> new FasterBusListener().handler(handler)).setHandler((done) -> {
                         if (done.succeeded()) {
-                            deploy.complete();
                             blocking.complete();
                         } else {
                             context.onInstanceFailed(instance.getName(), done.cause());
-                            deploy.fail(done.cause());
                             blocking.complete();
                         }
                     });
                 } catch (Exception e) {
                     blocking.fail(e);
                 }
-            }, (done) -> {});
+            }, FutureHelper.untyped(deploy));
         }
         CompositeFuture.all(futures).setHandler(done -> {
             if (done.succeeded()) {
