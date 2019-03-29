@@ -1,6 +1,6 @@
 # core-ext-game [![Build Status](https://travis-ci.org/codingchili/chili-game-ext.svg?branch=master)](https://travis-ci.org/codingchili/chili-game-ext)
 
-A microservices based distributed 2d MMORPG with Hazelcast and Vert.x on Java 11, currently 20k LOC including configuration.
+A microservices based distributed 2d MMORPG with Hazelcast and Vert.x on Java 11, currently 20k LOC + configuration.
 
 ![in-game-v2.png](images/in-game-v2.png)
 Sample in-game image of a simple test world.
