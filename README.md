@@ -31,6 +31,46 @@ To run the project without having to build a zip and perform polymer builds:
 This is a 2D MMORPG that is in development, we are currently working on getting the core mechanics in place 
 before we consider any gameplay/story.
 
+Overview of mechanics completed and TBD
+
+Core mechanixs
+- [X] movement
+- [X] player chat
+- [X] spell engine (cooldown, learned spells, charges)
+- [X] dialog engine
+- [X] affliction engine
+- [ ] cross realm/instance chat
+- [ ] friend lists
+- [ ] instance travel
+- [ ] instance loading
+- [ ] dynamically deployed instances
+
+Npcs/Entities
+- [X] scripted npcs/entities
+- [X] support for animations
+- [X] spawn entities/npcs from script
+- [X] NPC initiated dialogs
+- [X] NPC/interaction dialogs
+
+User interface
+- [ ] spellbar
+- [ ] character status
+- [ ] creature targeting
+
+Effects
+- [X] skybox
+- [ ] sound effects
+- [ ] spell effects
+
+Website
+- [X] patch notes
+- [X] realm list
+- [X] character creation
+- [X] login
+- [ ] highscores
+- [ ] character viewer
+- [ ] auction client
+
 ##### Audience :fire:
 * Game developers seeking to implement a 2D RPG multiplayer game.
 * Aspiring game developers with an interest in backend development.
@@ -59,36 +99,10 @@ Do you have an idea for a spell? a new player class? an NPC? gameplay mechanics?
 
 ---
 
-## Configuration
-Services following the official guidelines should place their configuration files in;
-- 'conf/services/' 
-where conf is a directory in the same folder as the server jar.
-```
-├── conf/
-│   ├── system/
-│   │   ├── security.yaml
-│   │   ├── launcher.yaml
-│   │   ├── storage.yaml
-│   │   ├── system.yaml
-│   ├── services/
-│   │   ├── authserver.yaml
-│   │   ├── logserver.yaml
-│   │   ├── realmserver.yaml
-│   │   ├── realmregistry.yaml
-│   │   ├── webserver.yaml
-│   │   ├── routingserver.yaml
-│   ├── realms/
-│   │   ├── realmName.yaml
-│   ├── game/
-│   │   ├── afflictions/
-│   │   ├── class/
-│   │   ├── dialog/
-│   │   ├── entities/
-│   │   ├── instances/
-│   │   ├── npc/
-│   │   ├── scripts/
-│   │   ├── spells/
-```
+## Architecture
+
+![architecture.png](images/architecture.png)
+
 Some services comes with additional resources, these can be bundled within the jar if moved to **src/main/resources**. This also applies to configuration files, it is however recommended that these are easily edited. 
 
 ###### Services
@@ -105,6 +119,6 @@ Some services comes with additional resources, these can be bundled within the j
 
 Patching is no longer a service - the webseed standard was not very well supported so support was dropped. We are aiming to create a browser based game primarily and will rely on a CDN to provide game resources. We want to avoid serving files over the cluster or machines that handles the website or the game state.
 
-Communication between services is done over the cluster, other available transports such as websock, tcp, udp and rest is available but not recommended unless a service is not able to join the cluster. Services that needs to authenticate another service should use the AuthenticationGenerator to generate pre-shared keys, secrets and generate tokens. This may be invoked from the standard launcher in chili-core, using the --generate commandline argument.
+Communication between services is done over the cluster, other available transports such as websock, tcp, udp and rest is available but not recommended unless a service is not able to join the cluster. Services that needs to authenticate another service should use the AuthenticationGenerator to generate pre-shared keys, secrets and generate tokens. This may be invoked from the standard launcher in chili-core, using the `--generate` commandline argument.
 
 All communication between services uses a text-protocol based on JSON for simplicity.
