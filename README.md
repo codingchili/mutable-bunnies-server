@@ -1,6 +1,6 @@
 # core-ext-game [![Build Status](https://travis-ci.org/codingchili/chili-game-ext.svg?branch=master)](https://travis-ci.org/codingchili/chili-game-ext)
 
-A microservices based distributed 2d MMORPG with Hazelcast and Vert.x on Java 11.
+A microservices based distributed 2d MMORPG with Hazelcast and Vert.x on Java 11, currently 20k LOC + configuration.
 
 ![in-game-v2.png](images/in-game-v2.png)
 Sample in-game image of a simple test world.
@@ -29,7 +29,7 @@ To run the project without having to build a zip and perform polymer builds:
 
 ## Background
 This is a 2D MMORPG that is in development, we are currently working on getting the core mechanics in place 
-before we consider any gameplay/story.
+before we consider any gameplay/story. We're also trying to keep the development workflow as fast as possible in order to scale. Some examples include map designer, dialog designer, npc designer, reloadable scripts and fast startup times - 5s to start the current prototype with gradle and 2s to start it fully from a distribution on Java 11.
 
 Overview of mechanics completed and TBD
 
