@@ -70,7 +70,7 @@ task polymer {
 }
 
 task archivePrototype(type: Zip, dependsOn: [subprojects.jar, polymer]) {
-    baseName = 'prototype'
+    archiveBaseName = 'prototype'
 
     into('/') {
         from ('prototype/script') {
@@ -131,7 +131,7 @@ task testReport(type: TestReport, dependsOn: 'build') {
 }
 
 task archiveTestReport(type: Zip, dependsOn: testReport) {
-    baseName = 'testreport'
+    archiveBaseName = 'testreport'
     from fileTree(file("$buildDir/reports/allTests"))
 }
 

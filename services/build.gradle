@@ -7,6 +7,10 @@ subprojects {
     project.group = 'com.codingchili.service'
 }
 
+dependencies {
+    compile 'org.codehaus.groovy:groovy-jsr223:3.0.0-alpha-3'
+}
+
 subprojects.each {
     subproject -> evaluationDependsOn(subproject.path)
 }
@@ -19,7 +23,7 @@ task sourcesJar(type: Jar) {
 }
 
 task allJar(type: Jar, dependsOn: subprojects.jar) {
-    baseName = 'service'
+    archiveBaseName = 'service'
     subprojects.each { subproject ->
         from subproject.configurations.archives.allArtifacts.files.collect {
             zipTree(it)
