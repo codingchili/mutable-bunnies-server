@@ -23,6 +23,7 @@ public class InstancesBootstrap {
      * Attempts to initialize configurable subsystems.
      *
      * @param core the corecontext to initialize on.
+     * @return future
      */
     public static Future<Void> bootstrap(CoreContext core) {
         Future<Void> future = Future.future();
@@ -40,9 +41,9 @@ public class InstancesBootstrap {
                     try {
                         service.shutdown();
                         service.awaitTermination(10, TimeUnit.SECONDS);
-                        future.complete();
+                        blocking.complete();
                     } catch (Exception e) {
-                        future.fail(e);
+                        blocking.fail(e);
                     }
                 }, future);
             } else {

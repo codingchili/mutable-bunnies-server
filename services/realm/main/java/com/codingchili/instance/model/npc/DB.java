@@ -1,8 +1,7 @@
 package com.codingchili.instance.model.npc;
 
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -19,9 +18,9 @@ import static com.codingchili.core.configuration.CoreStrings.*;
  */
 @SuppressWarnings("unchecked")
 public class DB<E extends Storable> {
+    private static final int POLL_FILE_MODIFY = 1500;
     private static final String DB_LOAD = "db.load";
     private static final String UPDATED = "updated";
-    private static final String LOADED = "loaded";
     private static Map<String, DB<?>> maps = new ConcurrentHashMap<>();
     private Map<String, E> items;
     private Runnable onInvalidate = () -> {
@@ -47,14 +46,14 @@ public class DB<E extends Storable> {
         long start = System.currentTimeMillis();
 
         this.logger = core.logger(type);
-        this.items = ConfigurationFactory.readDirectory(path)
+        this.items = ConfigurationFactory.readDirectoryTree(path)
                 .parallelStream()
                 .map(config -> Serializer.unpack(config, type))
                 .collect(Collectors.toMap(Storable::getId, (v) -> v));
 
         FileWatcher.builder(core)
                 .onDirectory(path)
-                .rate(() -> 1500)
+                .rate(() -> POLL_FILE_MODIFY)
                 .withListener(new FileStoreListener() {
                     @Override
                     public void onFileModify(Path modified) {

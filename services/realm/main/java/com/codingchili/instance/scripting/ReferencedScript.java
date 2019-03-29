@@ -11,8 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.context.CoreRuntimeException;
-import com.codingchili.core.files.FileStoreListener;
-import com.codingchili.core.files.FileWatcher;
+import com.codingchili.core.files.*;
 import com.codingchili.core.logging.Logger;
 
 import static com.codingchili.core.configuration.CoreStrings.*;
@@ -39,21 +38,19 @@ public class ReferencedScript implements Scripted {
             Future<Void> future = Future.future();
 
             core.blocking((blocking) -> {
-                // perform the initial load of all files.
-                File[] files = new File(SCRIPT_PATH).listFiles();
+                Collection<String> paths = ConfigurationFactory.enumerate(SCRIPT_PATH, true);
                 try {
-                    if (files != null) {
-                        long loaded = Arrays.asList(files)
-                                .parallelStream()
-                                .peek(file -> loadScriptAt(file))
-                                .filter((file) -> true)
-                                .count();
+                    long loaded = paths.parallelStream()
+                            .map(File::new)
+                            .peek(ReferencedScript::loadScriptAt)
+                            .filter((file) -> true)
+                            .count();
 
-                        logger.event(SCRIPT_LOAD)
-                                .put(ID_COUNT, loaded)
-                                .put(ID_TIME, (System.currentTimeMillis() - start) + "ms")
-                                .send();
-                    }
+                    logger.event(SCRIPT_LOAD)
+                            .put(ID_COUNT, loaded)
+                            .put(ID_TIME, (System.currentTimeMillis() - start) + "ms")
+                            .send();
+
                     setupFileWatcher(core, logger);
                     blocking.complete();
                 } catch (Exception e) {
