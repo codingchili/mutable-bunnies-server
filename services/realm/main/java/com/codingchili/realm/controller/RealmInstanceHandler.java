@@ -80,21 +80,25 @@ public class RealmInstanceHandler implements CoreHandler {
             futures.add(deploy);
 
             context.blocking((blocking) -> {
-                InstanceContext instanceContext = new InstanceContext(context, instance);
-                InstanceHandler handler = new InstanceHandler(instanceContext);
+                try {
+                    InstanceContext instanceContext = new InstanceContext(context, instance);
+                    InstanceHandler handler = new InstanceHandler(instanceContext);
 
-                // sometime in the future the instances will be deployed remotely - just deploy
-                // the instances on the same cluster.
-                instanceContext.listener(() -> new FasterBusListener().handler(handler)).setHandler((done) -> {
-                    if (done.succeeded()) {
-                        deploy.complete();
-                        blocking.complete();
-                    } else {
-                        context.onInstanceFailed(instance.getName(), done.cause());
-                        deploy.fail(done.cause());
-                        blocking.complete();
-                    }
-                });
+                    // sometime in the future the instances will be deployed remotely - just deploy
+                    // the instances on the same cluster.
+                    instanceContext.listener(() -> new FasterBusListener().handler(handler)).setHandler((done) -> {
+                        if (done.succeeded()) {
+                            deploy.complete();
+                            blocking.complete();
+                        } else {
+                            context.onInstanceFailed(instance.getName(), done.cause());
+                            deploy.fail(done.cause());
+                            blocking.complete();
+                        }
+                    });
+                } catch (Exception e) {
+                    blocking.fail(e);
+                }
             }, (done) -> {});
         }
         CompositeFuture.all(futures).setHandler(done -> {
