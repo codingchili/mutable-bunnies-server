@@ -67,9 +67,7 @@ public class Service implements CoreService {
                     break;
             }
         }
-        Logger logger = context.logger(getClass());
         all(deployments).setHandler(done -> {
-            //logger.onServiceStarted(this);
             start.complete();
         });
     }
@@ -80,7 +78,6 @@ public class Service implements CoreService {
                 .settings(() -> context.getListener(type))).setHandler(future);
     }
 
-    // for development.
     public static void main(String[] args) {
         Launcher.main(args);
     }

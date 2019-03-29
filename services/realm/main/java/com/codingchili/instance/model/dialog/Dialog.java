@@ -6,6 +6,8 @@ import com.codingchili.instance.scripting.Scripted;
 
 import java.util.*;
 
+import com.codingchili.core.storage.Storable;
+
 /**
  * @author Robin Duda
  * <p>
@@ -16,7 +18,7 @@ import java.util.*;
  * For each option an option references, a response is available for the player -
  * if the filter of a referenced option allows it.
  */
-public class Dialog {
+public class Dialog implements Storable {
     private Map<String, Option> options = new HashMap<>();
     private Scripted enabled;
     private String id;
@@ -38,6 +40,7 @@ public class Dialog {
         this.start = start;
     }
 
+    @Override
     public String getId() {
         return id;
     }

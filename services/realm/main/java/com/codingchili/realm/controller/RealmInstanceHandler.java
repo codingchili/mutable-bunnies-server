@@ -79,19 +79,23 @@ public class RealmInstanceHandler implements CoreHandler {
             Future deploy = Future.future();
             futures.add(deploy);
 
-            InstanceContext instanceContext = new InstanceContext(context, instance);
-            InstanceHandler handler = new InstanceHandler(instanceContext);
+            context.blocking((blocking) -> {
+                InstanceContext instanceContext = new InstanceContext(context, instance);
+                InstanceHandler handler = new InstanceHandler(instanceContext);
 
-            // sometime in the future the instances will be deployed remotely - just deploy
-            // the instances on the same cluster.
-            instanceContext.listener(() -> new FasterBusListener().handler(handler)).setHandler((done) -> {
-                if (done.succeeded()) {
-                    deploy.complete();
-                } else {
-                    context.onInstanceFailed(instance.getName(), done.cause());
-                    deploy.fail(done.cause());
-                }
-            });
+                // sometime in the future the instances will be deployed remotely - just deploy
+                // the instances on the same cluster.
+                instanceContext.listener(() -> new FasterBusListener().handler(handler)).setHandler((done) -> {
+                    if (done.succeeded()) {
+                        deploy.complete();
+                        blocking.complete();
+                    } else {
+                        context.onInstanceFailed(instance.getName(), done.cause());
+                        deploy.fail(done.cause());
+                        blocking.complete();
+                    }
+                });
+            }, (done) -> {});
         }
         CompositeFuture.all(futures).setHandler(done -> {
             if (done.succeeded()) {
