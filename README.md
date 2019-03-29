@@ -1,9 +1,11 @@
 # core-ext-game [![Build Status](https://travis-ci.org/codingchili/chili-game-ext.svg?branch=master)](https://travis-ci.org/codingchili/chili-game-ext)
 
-A collection of game-oriented microservices that builds upon chili-core. One day it will be complete game.
+A microservices based distributed 2d MMORPG with Hazelcast and Vert.x.
 
-![realm-list.png](images/in-game.png)
-Sample image of realm servers connected to the realm registry.
+![in-game-v2.png](images/in-game-v2.png)
+Sample in-game image of a simple test world.
+
+Uses Pixi.js for rendering and assets from gamedeveloperstudio, see [license](https://www.gamedeveloperstudio.com/license.php).
 
 ## Building
 
@@ -26,7 +28,8 @@ To run the project without having to build a zip and perform polymer builds:
 ```
 
 ## Background
-The purpose of the service part of the project is to provide implementations for use with game servers. Each service may be distributed on different hosts. Communication channels is provided by the core, with support for various transports and storage plugins. Breaking down the system into microservices improves maintainability, testability and ultimately, productivity.
+This is a 2D MMORPG that is in development, we are currently working on getting the core mechanics in place 
+before we consider any gameplay/story.
 
 ##### Audience :fire:
 * Game developers seeking to implement a 2D RPG multiplayer game.
@@ -36,12 +39,20 @@ The purpose of the service part of the project is to provide implementations for
 ##### Great software :blue_heart:
 To make this project a reality we use only great software.
 
+On the backend
 - [CQEngine](https://github.com/npgall/cqengine) primary persistence store.
 - [Hazelcast](https://hazelcast.com/) for cluster discovery.
-- [Vert.x](https://vertx.io/) for the backend (with chili-core)
+- [Vert.x](https://vertx.io/) for threading and transports.
+- [chili-core](https://github.com/codingchili/chili-core) for maximum ease of development.
+
+On the frontend
 - [Polymer](https://www.polymer-project.org/) for the website and game UI.
-- [MagicaVoxel](https://ephtracy.github.io/) for artwork!
 - [PIXI.js](http://www.pixijs.com/) for client side rendering.
+
+For art
+- [MagicaVoxel](https://ephtracy.github.io/) for artwork!
+- [Spine 2d](http://esotericsoftware.com/) for animations!
+
 
 ##### Contributing :purple_heart:
 Do you have an idea for a spell? a new player class? an NPC? gameplay mechanics? story? anything really, we are open 24/7 for contributions. Just submit an issue or a PR.
@@ -69,10 +80,14 @@ where conf is a directory in the same folder as the server jar.
 │   ├── realms/
 │   │   ├── realmName.yaml
 │   ├── game/
-│   │   ├── classes/
 │   │   ├── afflictions/
-│   │   ├── spells/
+│   │   ├── class/
+│   │   ├── dialog/
+│   │   ├── entities/
 │   │   ├── instances/
+│   │   ├── npc/
+│   │   ├── scripts/
+│   │   ├── spells/
 ```
 Some services comes with additional resources, these can be bundled within the jar if moved to **src/main/resources**. This also applies to configuration files, it is however recommended that these are easily edited. 
 
