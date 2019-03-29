@@ -80,7 +80,7 @@ window.Game = class Game extends Canvas {
     setSkybox(tint) {
         this.clouds = [];
         assetLoader.load(skybox => {
-            let ratio = Math.max(2048 / window.innerWidth, 1536 / window.innerHeight);
+            let ratio = Math.max(window.innerWidth / 2048, window.innerHeight / 1536);
             skybox.scale.x = ratio;
             skybox.scale.y = ratio;
             skybox.tint = parseInt(tint.sky.replace('#', '0x'));
