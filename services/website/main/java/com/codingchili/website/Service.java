@@ -30,28 +30,30 @@ public class Service implements CoreService {
 
     @Override
     public void start(Future<Void> start) {
-        Router router = Router.router(core.vertx());
-        router.route().handler(BodyHandler.create());
+        core.blocking((blocking) -> {
+            Router router = Router.router(core.vertx());
+            router.route().handler(BodyHandler.create());
 
-        router.route("/*").handler(ctx -> {
-            if (ctx.request().path().equals("/")) {
-                core.onPageLoaded(ctx.request());
-            }
-            ctx.next();
-        });
+            router.route("/*").handler(ctx -> {
+                if (ctx.request().path().equals("/")) {
+                    core.onPageLoaded(ctx.request());
+                }
+                ctx.next();
+            });
 
-        router.route("/*").handler(StaticHandler.create()
-                .setCachingEnabled(settings.isCache())
-                .setCacheEntryTimeout(32000L)
-                .setSendVaryHeader(false)
-                .setIndexPage(settings.getStartPage())
-                .setWebRoot(settings.getResources()));
+            router.route("/*").handler(StaticHandler.create()
+                    .setCachingEnabled(settings.isCache())
+                    .setCacheEntryTimeout(32000L)
+                    .setSendVaryHeader(false)
+                    .setIndexPage(settings.getStartPage())
+                    .setWebRoot(settings.getResources()));
 
-        HttpServerOptions options = settings.getListener().getHttpOptions()
-                .setCompressionSupported(settings.getGzip());
+            HttpServerOptions options = settings.getListener().getHttpOptions()
+                    .setCompressionSupported(settings.getGzip());
 
-        core.vertx().createHttpServer(options)
-                .requestHandler(router)
-                .listen(settings.getListener().getPort(), untyped(start));
+            core.vertx().createHttpServer(options)
+                    .requestHandler(router)
+                    .listen(settings.getListener().getPort(), untyped(blocking));
+        }, start);
     }
 }

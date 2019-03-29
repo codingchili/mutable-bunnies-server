@@ -12,6 +12,8 @@ import com.codingchili.core.context.CoreRuntimeException;
 public class GroovyScript implements Scripted {
     private static final ScriptEngineManager factory = new ScriptEngineManager();
     private static final ScriptEngine engine = factory.getEngineByName("groovy");
+    // enabled ahead of time compilation: slower startup for greatly improved runtime performance.
+    private static final boolean compile = true;
     public static final String TYPE = "groovy";
     private CompiledScript compiled;
     private String source;
@@ -19,7 +21,9 @@ public class GroovyScript implements Scripted {
     public GroovyScript(String source) {
         try {
             this.source = source;
-            this.compiled = ((Compilable) engine).compile(source);
+            if (compile) {
+                this.compiled = ((Compilable) engine).compile(source);
+            }
         } catch (ScriptException e) {
             throw new CoreRuntimeException(e.getMessage());
         }
@@ -34,7 +38,11 @@ public class GroovyScript implements Scripted {
             bindings.forEach(bound::put);
         }
         try {
-            return (T) compiled.eval(bound);
+            if (compile) {
+                return (T) compiled.eval(bound);
+            } else {
+                return (T) engine.eval(source, bound);
+            }
         } catch (ScriptException e) {
             throw new ScriptedException(e);
         }

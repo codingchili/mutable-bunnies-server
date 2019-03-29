@@ -1,7 +1,8 @@
 package com.codingchili.instance.model.npc;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,8 @@ public class DB<E extends Storable> {
     private static final String LOADED = "loaded";
     private static Map<String, DB<?>> maps = new ConcurrentHashMap<>();
     private Map<String, E> items;
-    private Runnable onInvalidate = () -> {};
+    private Runnable onInvalidate = () -> {
+    };
     private Logger logger;
 
     /**
@@ -42,8 +44,11 @@ public class DB<E extends Storable> {
     }
 
     private DB(CoreContext core, Class<E> type, String path) {
+        long start = System.currentTimeMillis();
+
         this.logger = core.logger(type);
-        this.items = ConfigurationFactory.readDirectory(path).stream()
+        this.items = ConfigurationFactory.readDirectory(path)
+                .parallelStream()
                 .map(config -> Serializer.unpack(config, type))
                 .collect(Collectors.toMap(Storable::getId, (v) -> v));
 
@@ -66,7 +71,9 @@ public class DB<E extends Storable> {
                 }).build();
 
         logger.event(DB_LOAD)
-                .put(ID_COUNT, items.size()).send(LOADED);
+                .put(ID_COUNT, items.size())
+                .put(ID_TIME, (System.currentTimeMillis() - start) + "ms")
+                .send();
 
         onInvalidate.run();
     }

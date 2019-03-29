@@ -1,6 +1,7 @@
 package com.codingchili.realm;
 
 import com.codingchili.common.Strings;
+import com.codingchili.instance.context.InstancesBootstrap;
 import com.codingchili.realm.configuration.*;
 import com.codingchili.realm.controller.*;
 import com.codingchili.realm.model.RealmNotUniqueException;
@@ -53,14 +54,20 @@ public class Service implements CoreService {
         RealmServerSettings server = Configurations.get(PATH_REALMSERVER, RealmServerSettings.class);
         List<Future> deployments = new ArrayList<>();
 
-        for (String enabled : server.getEnabled()) {
-            Supplier<RealmSettings> realm = () -> Configurations.get(realmPath(enabled), RealmSettings.class);
-            realm.get().load();
-            Future<Void> future = Future.future();
-            deploy(future, realm);
-            deployments.add(future);
-        }
-        CompositeFuture.all(deployments).setHandler(untyped(start));
+        InstancesBootstrap.bootstrap(context).setHandler(done -> {
+            if (done.succeeded()) {
+                for (String enabled : server.getEnabled()) {
+                    Supplier<RealmSettings> realm = () -> Configurations.get(realmPath(enabled), RealmSettings.class);
+                    realm.get().load();
+                    Future<Void> future = Future.future();
+                    deploy(future, realm);
+                    deployments.add(future);
+                }
+                CompositeFuture.all(deployments).setHandler(untyped(start));
+            } else {
+                start.fail(done.cause());
+            }
+        });
     }
 
     private static String realmPath(String realmName) {

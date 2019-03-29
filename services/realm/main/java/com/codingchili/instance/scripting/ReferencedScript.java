@@ -1,5 +1,7 @@
 package com.codingchili.instance.scripting;
 
+import io.vertx.core.Future;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,10 +10,13 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.codingchili.core.context.*;
+import com.codingchili.core.context.CoreContext;
+import com.codingchili.core.context.CoreRuntimeException;
 import com.codingchili.core.files.FileStoreListener;
 import com.codingchili.core.files.FileWatcher;
 import com.codingchili.core.logging.Logger;
+
+import static com.codingchili.core.configuration.CoreStrings.*;
 
 /**
  * @author Robin Duda
@@ -27,35 +32,54 @@ public class ReferencedScript implements Scripted {
     private static final Map<String, Scripted> scripts = new ConcurrentHashMap<>();
     private Scripted reference;
 
-    static {
-        // loads all script in the game/scripts folder.
-        StartupListener.subscribe(core -> {
-            Logger logger = core.logger(ReferencedScript.class);
+    public static Future<Void> initialize(CoreContext core) {
+        long start = System.currentTimeMillis();
+        Logger logger = core.logger(ReferencedScript.class);
 
-            if (!initialized.getAndSet(true)) {
+        if (!initialized.getAndSet(true)) {
+            Future<Void> future = Future.future();
+
+            core.blocking((blocking) -> {
                 // perform the initial load of all files.
                 File[] files = new File(SCRIPT_PATH).listFiles();
+                try {
+                    if (files != null) {
+                        long loaded = Arrays.asList(files)
+                                //.parallelStream()
+                                .parallelStream()
+                                .peek(file -> loadScriptAt(core, file))
+                                .filter((file) -> true)
+                                .count();
 
-                if (files != null) {
-                    for (File file : files) {
-                        loadScriptAt(core, file);
+                        logger.event(SCRIPT_LOAD)
+                                .put(ID_COUNT, loaded)
+                                .put(ID_TIME, (System.currentTimeMillis() - start) + "ms")
+                                .send();
                     }
-                    logger.event(SCRIPT_LOAD).send("loaded " + files.length + " scripts from " + SCRIPT_PATH);
+                    setupFileWatcher(core, logger);
+                } finally {
+                    blocking.complete();
                 }
+            }, future);
+            return future;
+        } else {
+            return Future.succeededFuture();
+        }
+    }
 
-                // set up a filewatcher to reload updated scripts.
-                FileWatcher.builder(core)
-                        .onDirectory(SCRIPT_PATH)
-                        .rate(() -> 1500)
-                        .withListener(new FileStoreListener() {
-                            @Override
-                            public void onFileModify(Path path) {
-                                loadScriptAt(core, path.toFile());
-                                logger.event(SCRIPT_LOAD).send("script updated " + path.toString());
-                            }
-                        }).build();
-            }
-        });
+    private static void setupFileWatcher(CoreContext core, Logger logger) {
+        FileWatcher.builder(core)
+                .onDirectory(SCRIPT_PATH)
+                .rate(() -> 1500)
+                .withListener(new FileStoreListener() {
+                    @Override
+                    public void onFileModify(Path path) {
+                        loadScriptAt(core, path.toFile());
+                        logger.event(SCRIPT_LOAD).send("script updated " + path.toString());
+                    }
+                }).build();
+
+
     }
 
     private static void loadScriptAt(CoreContext core, File file) {

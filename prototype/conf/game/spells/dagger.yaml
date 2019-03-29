@@ -7,8 +7,8 @@ recharge: 3
 charges: 5
 target: caster
 onCastBegin:
-  js:
-    spells.energy(source, -15);
+  jexl:
+    return spells.energy(source, -15);
 onCastComplete:
   jexl: |
     log.accept('casting dagger completed');
