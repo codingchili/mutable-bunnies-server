@@ -3,7 +3,6 @@ package com.codingchili.realm.controller;
 import com.codingchili.instance.context.InstanceContext;
 import com.codingchili.instance.context.InstanceSettings;
 import com.codingchili.instance.controller.InstanceHandler;
-import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.transport.InstanceRequest;
 import com.codingchili.realm.configuration.RealmContext;
@@ -102,15 +101,8 @@ public class RealmInstanceHandler implements CoreHandler {
             }
         } else {
             request.error(new CoreRuntimeException(String.format(
-                    "No such instance '%s'.",
-                    message.getInstance())));
+                    "No such instance '%s'.", message.getInstance())));
         }
-    }
-
-    private void leave(PlayerCreature player, String instance) {
-        context.sendInstance(instance, new LeaveMessage()
-                .setPlayerName(player.getName())
-                .setAccountName(player.getAccount()));
     }
 
     @Api
