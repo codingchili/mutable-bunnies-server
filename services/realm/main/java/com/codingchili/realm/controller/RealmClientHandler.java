@@ -1,13 +1,11 @@
 package com.codingchili.realm.controller;
 
-import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.events.JoinMessage;
 import com.codingchili.instance.model.events.LeaveMessage;
-import com.codingchili.instance.transport.FasterRealmInstanceCodec;
+import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.realm.model.*;
 import io.vertx.core.Future;
-import io.vertx.core.eventbus.*;
 import io.vertx.core.json.JsonObject;
 
 import java.util.Collection;
@@ -16,14 +14,12 @@ import com.codingchili.core.context.CoreRuntimeException;
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
 import com.codingchili.core.listener.transport.Connection;
-import com.codingchili.core.logging.Logger;
 import com.codingchili.core.protocol.*;
 import com.codingchili.core.security.Token;
 
 import static com.codingchili.common.Strings.*;
 import static com.codingchili.core.configuration.CoreStrings.ANY;
 import static com.codingchili.core.protocol.RoleMap.PUBLIC;
-import static io.vertx.core.eventbus.ReplyFailure.*;
 
 /**
  * @author Robin Duda
@@ -60,8 +56,7 @@ public class RealmClientHandler implements CoreHandler {
     @Api(route = CLIENT_INSTANCE_JOIN)
     public void join(RealmRequest request) {
         if (context.isConnected(request.account())) {
-            throw new CoreRuntimeException("Failure: Already connected to " +
-                    request.connection().getProperty(ID_INSTANCE).orElse("?"));
+            throw new CoreRuntimeException("Account is already connected to this realm.");
         } else {
             characters.findOne(find -> {
                 if (find.succeeded()) {
@@ -78,7 +73,7 @@ public class RealmClientHandler implements CoreHandler {
 
                     // notify the remote instance when the client disconnects - register handler only once.
                     request.connection().onCloseHandler("leaveInstances", () -> {
-                       leave(request);
+                        leave(request);
                     });
 
                     // save the instance the player is connected to on the request object.
@@ -178,12 +173,12 @@ public class RealmClientHandler implements CoreHandler {
         } else {
             Token token = request.token();
             context.verifyToken(token).setHandler(verify -> {
-               if (verify.succeeded()) {
-                   request.connection().setProperty(ID_ACCOUNT, token.getDomain());
-                   future.complete(Role.USER);
-               } else {
-                   future.complete(Role.PUBLIC);
-               }
+                if (verify.succeeded()) {
+                    request.connection().setProperty(ID_ACCOUNT, token.getDomain());
+                    future.complete(Role.USER);
+                } else {
+                    future.complete(Role.PUBLIC);
+                }
             });
         }
         return future;
