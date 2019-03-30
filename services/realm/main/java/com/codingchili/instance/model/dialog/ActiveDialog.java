@@ -24,7 +24,7 @@ public class ActiveDialog {
     private Option cursor;
 
     /**
-     * @param game the game context.
+     * @param game   the game context.
      * @param dialog the dialog to be used.
      * @param source the dialog initiator.
      * @param target the dialog holder.
@@ -77,7 +77,16 @@ public class ActiveDialog {
      */
     public Set<Line> lines() {
         return cursor.getNext().stream()
-                .filter(next -> dialog.get(next.getId()).isAvailable(bindings))
+                .filter(next -> {
+                    Option option = dialog.get(next.getId());
+
+                    if (option != null) {
+                        return option.isAvailable(bindings);
+                    } else {
+                        log(String.format("missing handler for option '%s'.", next.getId()));
+                        return false;
+                    }
+                })
                 .collect(Collectors.toSet());
     }
 
