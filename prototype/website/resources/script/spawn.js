@@ -21,6 +21,8 @@ window.SpawnHandler = class SpawnHandler {
      * @param event
      */
     join(event) {
+        game.entities = [];
+
         this._init(event.texture, event.size);
 
         // in the future we might want to split rendering of entities and creatures.

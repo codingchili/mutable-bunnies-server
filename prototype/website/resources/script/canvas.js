@@ -15,7 +15,7 @@ window.Canvas = class {
         this.renderer = this.app.renderer;
 
         this.stage.layer = -1;
-        this.root.addChild(this.stage);
+        this._reset();
 
         if (!document.getElementById('canvas')) {
             document.body.appendChild(this.renderer.view);
@@ -28,10 +28,21 @@ window.Canvas = class {
 
         window.onresize = () => this.resize();
         window.onmousedown = (e) => {
-            console.log(`mouse: ${e.pageX + game.camera.x}  ${e.pageY + game.camera.y}`);
-            console.log(`player: ${game.player.x} ${game.player.y}`);
         };
         this.resize();
+    }
+
+    /**
+     * clear all containers from the root.
+     */
+    _reset() {
+        for (let i = this.stage.children.length - 1; i >= 0; i--) {
+            this.stage.removeChild(this.stage.children[i]);
+        }
+        for (let i = this.root.children.length - 1; i >= 0; i--) {
+            this.root.removeChild(this.root.children[i]);
+        }
+        this.root.addChild(this.stage);
     }
 
     shutdown() {

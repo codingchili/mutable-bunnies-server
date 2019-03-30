@@ -16,6 +16,7 @@ window.Game = class Game extends Canvas {
 
         server.join({
             accepted: (event) => {
+                super._reset();
                 this.spawner.join(event);
                 this.skybox.init(event.skybox);
                 done.accepted();
