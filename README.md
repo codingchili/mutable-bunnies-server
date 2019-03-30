@@ -13,18 +13,25 @@ Uses Pixi.js for rendering and assets from gamedeveloperstudio, see [license](ht
 - Requires Bower.
 
 Builds the project and runs all tests.
-```
+```console
 ./gradlew build
 ```
 
 Create the distribution zip and run polymer build with:
-```
+```console
 ./gradlew archivePrototype
 ```
 
 To run the project without having to build a zip and perform polymer builds:
+```console
+./gradlew prototype -Pexec=--generate
+./gradlew prototype -Pexec=--deploy
 ```
-./gradlew prototype
+
+Building a docker image, make sure to build the distribution zip first.
+```console
+docker build -f Dockerfile ./build
+docker run -p 443:443 -p 1443:1443 -p 9301:9301 -it <imageId>
 ```
 
 ## Background
