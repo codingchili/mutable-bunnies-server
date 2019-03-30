@@ -17,8 +17,7 @@ window.Game = class Game extends Canvas {
         server.join({
             accepted: (event) => {
                 this.spawner.join(event);
-                console.log(event);
-                this.setSkybox(event.skybox);
+                this.skybox.init(event.skybox);
                 done.accepted();
                 application.gameLoaded();
             },
@@ -47,6 +46,7 @@ window.Game = class Game extends Canvas {
         this.spells = new Spells();
         this.texts = new TextEffects();
         this.particles = new Particles();
+        this.skybox = new Skybox();
 
         this.frames = 0;
         setInterval(() => {
@@ -77,40 +77,6 @@ window.Game = class Game extends Canvas {
         this.app.ticker.add(callback);
     }
 
-    setSkybox(tint) {
-        this.clouds = [];
-        assetLoader.load(skybox => {
-            let ratio = Math.max(window.innerWidth / 2048, window.innerHeight / 1536);
-            skybox.scale.x = ratio;
-            skybox.scale.y = ratio;
-            skybox.tint = parseInt(tint.sky.replace('#', '0x'));
-
-            this.root.addChildAt(skybox, 0);
-            for (let cloud = 1; cloud <= 3; cloud++) {
-                assetLoader.load(loaded => {
-                    for (let i = 0; i < 2; i++) {
-                        let cloud = new PIXI.Sprite(loaded.texture);
-                        cloud.y = Math.random() * window.innerHeight;
-                        cloud.x = -cloud.width;
-                        cloud.velocity = Math.random() + 0.05;
-                        cloud.tint = parseInt(tint.clouds.replace('#', '0x'));
-                        this.clouds.push(cloud);
-                        this.root.addChildAt(cloud, 1);
-                    }
-                }, `game/map/clouds/${cloud}.png`);
-            }
-        }, 'game/map/clouds/skybox_grey.png');
-    }
-
-    _updateSkybox() {
-        for (let cloud of this.clouds) {
-            cloud.x += cloud.velocity;
-            if (cloud.x - cloud.width > window.innerWidth) {
-                cloud.x = -cloud.width;
-            }
-        }
-    }
-
     loop() {
         if (this.isPlaying) {
             this.stage.children.sort(Camera.depthCompare.bind(this));
@@ -120,7 +86,7 @@ window.Game = class Game extends Canvas {
             this.camera.update();
             this.stage.x = -this.camera.x;
             this.stage.y = -this.camera.y;
-            this._updateSkybox();
+            this.skybox.update();
 
             this.renderer.render(this.root);
             requestAnimationFrame(() => this.loop());

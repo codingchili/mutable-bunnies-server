@@ -17,7 +17,8 @@
     "script/movement.js",
     "script/camera.js",
     "script/input.js",
-    "script/particles.js"
+    "script/particles.js",
+    "script/skybox.js"
   ],
   "files": {}
 }
