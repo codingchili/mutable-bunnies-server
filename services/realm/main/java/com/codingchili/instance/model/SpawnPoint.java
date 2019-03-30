@@ -14,23 +14,26 @@ public class SpawnPoint {
         return probability;
     }
 
-    public void setProbability(float probability) {
+    public SpawnPoint setProbability(float probability) {
         this.probability = probability;
+        return this;
     }
 
     public int getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public SpawnPoint setX(int x) {
         this.x = x;
+        return this;
     }
 
     public int getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public SpawnPoint setY(int y) {
         this.y = y;
+        return this;
     }
 }

@@ -11,12 +11,6 @@ npcs:
   point:
     x: 600
     y: 600
-onPlayerJoin:
-  jexl: |
-    if (source.fromAnotherInstance) {
-      source.vector.x = spawn.x;
-      source.vector.y = spawn.y;
-    }
 onStartup:
   jexl: |
     //context.npcs().spawn("Illicit Lilith");

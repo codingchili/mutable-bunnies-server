@@ -2,8 +2,10 @@ package com.codingchili.instance.context;
 
 import com.codingchili.instance.model.SpawnPoint;
 import com.codingchili.instance.model.entity.PlayerCreature;
-import com.codingchili.instance.model.events.*;
+import com.codingchili.instance.model.events.JoinMessage;
+import com.codingchili.instance.model.events.LeaveMessage;
 import com.codingchili.instance.scripting.Bindings;
+import com.codingchili.instance.scripting.Scripted;
 import com.codingchili.instance.transport.FasterRealmInstanceCodec;
 import com.codingchili.instance.transport.ReceivableMessage;
 import com.codingchili.realm.configuration.*;
@@ -15,10 +17,8 @@ import java.util.function.Consumer;
 
 import com.codingchili.core.context.*;
 import com.codingchili.core.files.Configurations;
-import com.codingchili.core.listener.RequestWrapper;
 import com.codingchili.core.logging.Level;
 import com.codingchili.core.logging.Logger;
-import com.codingchili.core.protocol.Serializer;
 
 import static com.codingchili.common.Strings.*;
 
@@ -84,20 +84,44 @@ public class InstanceContext extends SystemContext implements ServiceContext {
     /**
      * Executes the onPlayerSpawn script defined in the instance settings.
      *
-     * @param playerCreature the player creature to SPAWN.
+     * @param player the player creature to SPAWN.
      */
-    public void onPlayerJoin(PlayerCreature playerCreature) {
+    public void onPlayerJoin(PlayerCreature player) {
         InstanceSettings settings = settings();
-        SpawnPoint point = settings.getSpawns().get(new Random().nextInt(settings.getSpawns().size()));
+        SpawnPoint point;
 
-        Bindings bindings = new Bindings()
-                .setSource(playerCreature)
-                .set("spawn", point)
-                .set("settings", settings)
-                .set("log", (Consumer<Object>) (object) -> {
-                    context.logger(getClass()).log(object.toString());
-                });
-        settings.getOnPlayerJoin().apply(bindings);
+        if (settings.getSpawns().isEmpty()) {
+            point = new SpawnPoint()
+                    .setX((int) player.getVector().getX())
+                    .setY((int) player.getVector().getY());
+
+            logger.event("player.spawn", Level.WARNING)
+                    .put(ID_INSTANCE, settings.getName())
+                    .send("missing spawn point configurations, using player coordinates.");
+        } else {
+            point = settings.getSpawns().get(
+                    new Random().nextInt(settings.getSpawns().size()));
+        }
+
+        Scripted onPlayerJoin = settings.getOnPlayerJoin();
+
+        if (onPlayerJoin != null) {
+            Bindings bindings = new Bindings()
+                    .setSource(player)
+                    .set("spawn", point)
+                    .set("settings", settings)
+                    .set("log", (Consumer<Object>) (object) -> {
+                        context.logger(getClass()).log(object.toString());
+                    });
+
+            onPlayerJoin.apply(bindings);
+        } else {
+            if (player.isFromAnotherInstance()) {
+                player.getVector()
+                        .setX(point.getX())
+                        .setY(point.getY());
+            }
+        }
     }
 
     @Override
