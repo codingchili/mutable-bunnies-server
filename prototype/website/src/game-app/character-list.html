@@ -167,7 +167,11 @@
                 });
 
                 application.subscribe('cancel-create', () => {
-                    this.showCharacters();
+                    if (this.realm.characters.length > 0) {
+                        this.showCharacters();
+                    } else {
+                        this.realmlist();
+                    }
                 });
 
                 application.subscribe('character-create', () => {
@@ -246,7 +250,13 @@
                     accepted: (data) => {
                         Object.assign(this.realm, data.realm);
                         this.set('realm.characters', data.characters);
-                        this.showCharacters();
+
+                        if (data.characters.length > 0) {
+                            this.showCharacters();
+                        } else {
+                            this.showCreate();
+                        }
+
                         this.hideLoading();
 
                         if (application.development.selectFirstCharacter) {

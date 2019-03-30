@@ -231,7 +231,7 @@
             <div hidden="[[naming]]">
                 <div class="realm-title">
                     <h4 style="display: inline-block">Select class</h4>
-                    <iron-icon on-down="realmlist"
+                    <iron-icon on-down="characterlist"
                                icon="icons:reply"></iron-icon>
                 </div>
 
@@ -431,7 +431,7 @@
             return false;
         }
 
-        realmlist() {
+        characterlist() {
             this.characterName = "";
             application.publish("cancel-create", {});
         }

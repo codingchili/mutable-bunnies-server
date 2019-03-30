@@ -50,7 +50,7 @@ class Application {
         application.view('error-dialog');
         application.publish('onError', {text: error, callback: application.showLogin});
 
-        if (game !== undefined) {
+        if (typeof game !== "undefined") {
             try {
                 game.shutdown();
             } catch (e) {
