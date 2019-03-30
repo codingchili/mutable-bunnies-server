@@ -48,8 +48,10 @@ Core mechanixs
 - [X] affliction engine
 - [ ] cross realm/instance chat
 - [ ] friend lists
-- [ ] instance travel
-- [ ] instance loading
+- [X] instance travel
+- [X] instance loading
+- [ ] crafting
+- [ ] questing
 - [ ] dynamically deployed instances
 
 Npcs/Entities
@@ -60,9 +62,14 @@ Npcs/Entities
 - [X] NPC/interaction dialogs
 
 User interface
-- [ ] spellbar
-- [ ] character status
+- [X] spellbar
+- [X] character status
+- [X] chat box
 - [ ] creature targeting
+- [ ] inventory
+- [ ] quest tracker
+- [ ] crafting
+- [ ] in-game help
 
 Effects
 - [X] skybox
