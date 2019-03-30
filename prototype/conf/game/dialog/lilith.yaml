@@ -38,6 +38,10 @@ options:
     handler:
       jexl: |
         context.movement().travel(source, 'level 3');
+  travel-X:
+    handler:
+      jexl: |
+        context.movement().travel(source, 'level X');
   greeting:
     text: "Likewise."
     available:

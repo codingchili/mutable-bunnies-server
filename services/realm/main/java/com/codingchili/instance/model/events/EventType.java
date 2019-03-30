@@ -24,5 +24,6 @@ public enum EventType {
     loot_item,
     loot_list,
     dialog,
+    error,
     any
 }

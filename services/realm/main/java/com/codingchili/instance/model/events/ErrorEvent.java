@@ -21,6 +21,6 @@ public class ErrorEvent implements Event {
 
     @Override
     public EventType getRoute() {
-        return null;
+        return EventType.error;
     }
 }
