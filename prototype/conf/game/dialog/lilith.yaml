@@ -1,5 +1,5 @@
 ---
-id: "tutor"
+id: "lilith"
 start: "welcome"
 enabled:
   jexl:
@@ -18,6 +18,26 @@ options:
       text: "[complete quest] island expedition"
     - id: "insult"
       text: "I am a master adventurer and you are a noob."
+    - id: "travel-1"
+      text: "take me to instance 1"
+    - id: "travel-2"
+      text: "take me to instance 2"
+    - id: "travel-3"
+      text: "take me to instance 3"
+    - id: "travel-X"
+      text: "take me to a non existing instance."
+  travel-1:
+    handler:
+      jexl: |
+        context.movement().travel(source, 'level 1');
+  travel-2:
+    handler:
+      jexl: |
+        context.movement().travel(source, 'level 2');
+  travel-3:
+    handler:
+      jexl: |
+        context.movement().travel(source, 'level 3');
   greeting:
     text: "Likewise."
     available:

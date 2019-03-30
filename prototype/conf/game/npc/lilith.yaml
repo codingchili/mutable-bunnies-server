@@ -1,7 +1,7 @@
 ---
 name: "Lilith"
 description: "Mentor and life coach."
-dialog: "tutor"
+dialog: "lilith"
 model:
   graphics: "game/character/bunny/bunny"
   skin: "yellow"

@@ -1,6 +1,5 @@
 package com.codingchili.realm.configuration;
 
-import com.codingchili.realm.controller.RealmRequest;
 import com.codingchili.instance.context.InstanceSettings;
 import com.codingchili.instance.model.afflictions.AfflictionDB;
 import com.codingchili.instance.model.entity.PlayerCreature;
@@ -8,10 +7,14 @@ import com.codingchili.instance.model.spells.SpellDB;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
+import com.codingchili.instance.transport.FasterRealmInstanceCodec;
+import com.codingchili.realm.controller.RealmRequest;
 import com.codingchili.realm.model.*;
 import io.vertx.core.Future;
+import io.vertx.core.eventbus.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -29,6 +32,7 @@ import com.codingchili.core.storage.StorageLoader;
 import static com.codingchili.common.Strings.*;
 import static com.codingchili.core.logging.Level.ERROR;
 import static com.codingchili.realm.configuration.RealmServerSettings.PATH_REALMSERVER;
+import static io.vertx.core.eventbus.ReplyFailure.*;
 
 /**
  * @author Robin Duda
@@ -44,6 +48,9 @@ public class RealmContext extends SystemContext implements ServiceContext {
     private ClassDB classes;
     private Logger logger;
 
+    private DeliveryOptions delivery = new DeliveryOptions()
+            .setCodecName(FasterRealmInstanceCodec.getName());
+
     /**
      * @param core     the core context to wrap.
      * @param settings settings for the realm.
@@ -56,6 +63,8 @@ public class RealmContext extends SystemContext implements ServiceContext {
         this.settings = settings;
         this.logger = core.logger(getClass())
                 .setMetadata("realm", realm()::getNode);
+
+        delivery.setSendTimeout(realm().getListener().getTimeout());
     }
 
     /**
@@ -81,6 +90,27 @@ public class RealmContext extends SystemContext implements ServiceContext {
                     }
                 });
 
+        return future;
+    }
+
+    public Future<Object> sendInstance(String instance, Object data) {
+        Future<Object> future = Future.future();
+
+        bus().send(instance, data, delivery, handler -> {
+            // only process missing handlers and recipient failures - timeouts are expected.
+            if (handler.failed() && handler.cause() instanceof ReplyException) {
+                ReplyFailure type = ((ReplyException) handler.cause()).failureType();
+                if (type == NO_HANDLERS || type == RECIPIENT_FAILURE) {
+                    logger.onError(handler.cause());
+                    future.fail(new CoreRuntimeException(throwableToString(handler.cause())));
+                }
+            }
+            // ignore failures - the instance does not need to respond synchronously.
+            // if they do respond - make sure the client receives it.
+            if (handler.succeeded()) {
+                future.complete(handler.result().body());
+            }
+        });
         return future;
     }
 
@@ -171,8 +201,10 @@ public class RealmContext extends SystemContext implements ServiceContext {
                 .send();
     }
 
-    public void connect(PlayerCreature creature, Connection connection) {
-        connection.setProperty(ID_INSTANCE, realm().getNode() + "." + creature.getInstance());
+    public String connect(PlayerCreature creature, Connection connection) {
+        String address = realm().getNode() + "." + creature.getInstance();
+
+        connection.setProperty(ID_INSTANCE, address);
         connections.put(creature.getAccount(), connection);
 
         logger.log("Account " + creature.getAccount() + " connecting with character " + creature.getName() + " to " + creature.getInstance());
@@ -181,6 +213,8 @@ public class RealmContext extends SystemContext implements ServiceContext {
             logger.log("Account " + creature.getAccount() + " disconnected with character " + creature.getName());
             connections.remove(creature.getAccount());
         });
+
+        return address;
     }
 
     public boolean isConnected(String account) {
@@ -205,4 +239,5 @@ public class RealmContext extends SystemContext implements ServiceContext {
             scripted.apply(bindings);
         }
     }
+
 }

@@ -35,15 +35,10 @@ public class RealmClientHandler implements CoreHandler {
     private final Protocol<Request> protocol = new Protocol<>(this);
     private AsyncCharacterStore characters;
     private RealmContext context;
-    private Logger logger;
-    private DeliveryOptions delivery = new DeliveryOptions()
-            .setCodecName(FasterRealmInstanceCodec.getName());
 
     public RealmClientHandler(RealmContext context) {
         this.context = context;
-        this.logger = context.logger(getClass());
         this.characters = context.characters();
-        delivery.setSendTimeout(context.realm().getListener().getTimeout());
     }
 
     @Api(PUBLIC)
@@ -59,28 +54,7 @@ public class RealmClientHandler implements CoreHandler {
         connection.getProperty(ID_ACCOUNT).ifPresent(account -> json.put(ID_ACCOUNT, account));
         connection.getProperty(ID_NAME).ifPresent(character -> json.put(PROTOCOL_TARGET, character));
 
-        sendInstance(request.instance(), request.data()).setHandler(request::result);
-    }
-
-    private Future<Object> sendInstance(String instance, Object data) {
-        Future<Object> future = Future.future();
-
-        context.bus().send(instance, data, delivery, handler -> {
-            // only process missing handlers and recipient failures - timeouts are expected.
-            if (handler.failed() && handler.cause() instanceof ReplyException) {
-                ReplyFailure type = ((ReplyException) handler.cause()).failureType();
-                if (type == NO_HANDLERS || type == RECIPIENT_FAILURE) {
-                    logger.onError(handler.cause());
-                    future.fail(new CoreRuntimeException(throwableToString(handler.cause())));
-                }
-            }
-            // ignore failures - the instance does not need to respond synchronously.
-            // if they do respond - make sure the client receives it.
-            if (handler.succeeded()) {
-                future.complete(handler.result().body());
-            }
-        });
-        return future;
+        context.sendInstance(request.instance(), request.data()).setHandler(request::result);
     }
 
     @Api(route = CLIENT_INSTANCE_JOIN)
@@ -109,7 +83,7 @@ public class RealmClientHandler implements CoreHandler {
 
                     // save the instance the player is connected to on the request object.
                     context.connect(creature, request.connection());
-                    sendInstance(request.instance(), join).setHandler(request::result);
+                    context.sendInstance(request.instance(), join).setHandler(request::result);
                 } else {
                     request.result(find);
                 }
@@ -121,7 +95,7 @@ public class RealmClientHandler implements CoreHandler {
     public void leave(RealmRequest request) {
         context.remove(request);
         request.connection().getProperty(ID_NAME).ifPresent(character -> {
-            sendInstance(request.instance(), new LeaveMessage()
+            context.sendInstance(request.instance(), new LeaveMessage()
                     .setPlayerName(character)
                     .setAccountName(request.account()));
         });

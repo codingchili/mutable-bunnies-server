@@ -2,8 +2,14 @@ package com.codingchili.instance.model.movement;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.*;
-import com.codingchili.instance.model.events.MovementEvent;
+import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.stats.Attribute;
+import io.vertx.core.json.JsonObject;
+
+import com.codingchili.core.protocol.ResponseStatus;
+import com.codingchili.core.protocol.Serializer;
+
+import static com.codingchili.core.configuration.CoreStrings.*;
 
 /**
  * @author Robin Duda
@@ -131,5 +137,31 @@ public class MovementEngine {
                 .setVelocity((float) creature.getStats().get(Attribute.movement));
 
         game.publish(new MovementEvent(creature.getVector(), creature.getId()));
+    }
+
+    /**
+     * Attempts to transfer the given player creature to the given instance.
+     * Has no effect if the player is already in the target instance.
+     *
+     * @param creature the creature which will be travelling.
+     * @param instance the name of the instance being travelled to.
+     */
+    public void travel(PlayerCreature creature, String instance) {
+        if (!creature.getInstance().equals(instance)) {
+            game.instance().sendRealm(new PlayerTravelMessage(creature, instance)).setHandler(done -> {
+                if (done.succeeded()) {
+                    JsonObject response = Serializer.json(done.result());
+                    ResponseStatus status = ResponseStatus.valueOf(response.getString(PROTOCOL_STATUS));
+
+                    if (status.equals(ResponseStatus.ACCEPTED)) {
+                        game.remove(creature);
+                    } else {
+                        creature.handle(new ErrorEvent(response.getString(PROTOCOL_MESSAGE)));
+                    }
+                } else {
+                    creature.handle(new ErrorEvent(done.cause().getMessage()));
+                }
+            });
+        }
     }
 }

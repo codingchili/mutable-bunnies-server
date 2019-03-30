@@ -2,10 +2,15 @@
 name: level 3
 limit: 50
 size: 1920
-texture: "game/map/tiles/wood.png"
+texture: "game/map/tiles/darkwood.png"
 spawns:
 - x: 300
   y: 325
+npcs:
+- name: "Lilith"
+  point:
+    x: 600
+    y: 600
 onPlayerJoin:
   jexl: |
     if (source.fromAnotherInstance) {

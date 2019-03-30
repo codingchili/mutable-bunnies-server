@@ -27,8 +27,6 @@ onPlayerJoin:
 
       source.fromAnotherInstance = true;
       source.instance = 'level 1';
-    } else {
-      source.instance = 'level 2';
     }
 listener:
   secure: true

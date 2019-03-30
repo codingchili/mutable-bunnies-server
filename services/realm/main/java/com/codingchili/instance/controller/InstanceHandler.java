@@ -71,6 +71,8 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
         JoinMessage join = request.raw(JoinMessage.class);
         PlayerCreature player = join.getPlayer();
 
+        System.out.println("got player join for " + player.getName() + " instance " + context.settings().getName());
+
         context.onPlayerJoin(join);
         game.add(player);
 

@@ -1,22 +1,23 @@
 package com.codingchili.realm.controller;
 
-import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.instance.context.InstanceContext;
 import com.codingchili.instance.context.InstanceSettings;
 import com.codingchili.instance.controller.InstanceHandler;
-import com.codingchili.instance.model.events.SavePlayerMessage;
+import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.transport.InstanceRequest;
+import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.realm.model.RealmUpdate;
 import com.codingchili.realm.model.UpdateResponse;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.codingchili.core.context.CoreRuntimeException;
 import com.codingchili.core.context.FutureHelper;
-import com.codingchili.core.listener.*;
+import com.codingchili.core.listener.CoreHandler;
+import com.codingchili.core.listener.Request;
 import com.codingchili.core.listener.transport.Connection;
 import com.codingchili.core.logging.Logger;
 import com.codingchili.core.protocol.*;
@@ -28,7 +29,7 @@ import static com.codingchili.core.protocol.RoleMap.PUBLIC;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * Handles messaging between the realm and connected instances.
  */
 @Roles(PUBLIC)
@@ -66,6 +67,50 @@ public class RealmInstanceHandler implements CoreHandler {
         } else {
             request.error(new CoreRuntimeException("Connection with id '" + request.target() + "' not available."));
         }
+    }
+
+    @Api
+    public void travel(InstanceRequest request) {
+        PlayerTravelMessage message = request.raw(PlayerTravelMessage.class);
+
+        Optional<InstanceSettings> settings = context.instances().stream()
+                .filter(instance -> instance.getName().equals(message.getInstance()))
+                .findFirst();
+
+        if (settings.isPresent()) {
+            Connection connection = context.connections().get(request.target());
+
+            if (connection != null) {
+                context.onPlayerJoin(message.getPlayer());
+                message.getPlayer().setInstance(message.getInstance());
+
+                context.characters().update(message.getPlayer());
+                String destination = context.connect(message.getPlayer(), connection);
+
+                JoinMessage join = new JoinMessage()
+                        .setPlayer(message.getPlayer())
+                        .setRealmName(context.realm().getNode());
+
+                context.sendInstance(destination, join).setHandler(done -> {
+                    if (done.succeeded()) {
+                        connection.write(done.result());
+                        request.accept();
+                    } else {
+                        request.error(new CoreRuntimeException("Failed to join instance " + destination));
+                    }
+                });
+            }
+        } else {
+            request.error(new CoreRuntimeException(String.format(
+                    "No such instance '%s'.",
+                    message.getInstance())));
+        }
+    }
+
+    private void leave(PlayerCreature player, String instance) {
+        context.sendInstance(instance, new LeaveMessage()
+                .setPlayerName(player.getName())
+                .setAccountName(player.getAccount()));
     }
 
     @Api
