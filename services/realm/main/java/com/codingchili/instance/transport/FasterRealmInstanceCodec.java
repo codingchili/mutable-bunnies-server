@@ -39,7 +39,6 @@ public class FasterRealmInstanceCodec<S, R> implements MessageCodec<S, R> {
 
     @Override
     public void encodeToWire(Buffer buffer, S message) {
-        System.out.println("FasterRealmInstanceCodec: possible slowdown using encodeToWire");
         // when encoding to wire: encode as json object.
         buffer.writeToBuffer(Serializer.buffer(message));
     }
@@ -47,7 +46,6 @@ public class FasterRealmInstanceCodec<S, R> implements MessageCodec<S, R> {
     @Override
     @SuppressWarnings("unchecked")
     public R decodeFromWire(int i, Buffer buffer) {
-        System.out.println("FasterRealmInstanceCodec: possible slowdown using decodeFromWire");
         // when decoding from wire: decode as json object and map to source class.
         return (R) buffer.toJsonObject();
     }

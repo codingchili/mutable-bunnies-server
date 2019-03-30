@@ -1,13 +1,15 @@
 package com.codingchili.instance.controller;
 
 import com.codingchili.instance.context.*;
-import com.codingchili.instance.model.entity.*;
+import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.entity.Point;
 import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.npc.SpawnEngine;
 import com.codingchili.instance.transport.InstanceRequest;
 import io.vertx.core.Future;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.codingchili.core.context.DeploymentAware;
 import com.codingchili.core.listener.CoreHandler;
@@ -70,8 +72,6 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
     public void join(InstanceRequest request) {
         JoinMessage join = request.raw(JoinMessage.class);
         PlayerCreature player = join.getPlayer();
-
-        System.out.println("got player join for " + player.getName() + " instance " + context.settings().getName());
 
         context.onPlayerJoin(join);
         game.add(player);

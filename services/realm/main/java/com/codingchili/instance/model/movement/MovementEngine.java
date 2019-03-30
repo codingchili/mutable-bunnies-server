@@ -148,6 +148,8 @@ public class MovementEngine {
      */
     public void travel(PlayerCreature creature, String instance) {
         if (!creature.getInstance().equals(instance)) {
+            creature.setFromAnotherInstance(true);
+
             game.instance().sendRealm(new PlayerTravelMessage(creature, instance)).setHandler(done -> {
                 if (done.succeeded()) {
                     JsonObject response = Serializer.json(done.result());
@@ -157,9 +159,11 @@ public class MovementEngine {
                         game.remove(creature);
                     } else {
                         creature.handle(new ErrorEvent(response.getString(PROTOCOL_MESSAGE)));
+                        creature.setFromAnotherInstance(false);
                     }
                 } else {
                     creature.handle(new ErrorEvent(done.cause().getMessage()));
+                    creature.setFromAnotherInstance(false);
                 }
             });
         }

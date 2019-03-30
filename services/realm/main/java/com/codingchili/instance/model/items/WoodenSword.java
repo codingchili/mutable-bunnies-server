@@ -6,6 +6,9 @@ import org.apache.commons.jexl2.*;
 
 import com.codingchili.core.protocol.Serializer;
 
+/**
+ * Sample item configured as a java object.
+ */
 public class WoodenSword extends Item {
     {
         slot = Slot.weapon;

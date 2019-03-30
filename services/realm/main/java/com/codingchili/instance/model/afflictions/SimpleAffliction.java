@@ -6,7 +6,7 @@ import com.codingchili.instance.scripting.JexlScript;
 import com.codingchili.core.protocol.Serializer;
 
 /**
- * @author Robin Duda
+ * Sample affliction configured as a java object.
  */
 public class SimpleAffliction extends Affliction {
     {

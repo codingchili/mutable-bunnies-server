@@ -109,6 +109,8 @@ public class PlayerCreature extends SimpleCreature {
         this.game = game;
 
         game.instance().onPlayerJoin(this);
+        setFromAnotherInstance(false);
+
         protocol.annotated(this);
 
         for (EventType type : EventType.values()) {
