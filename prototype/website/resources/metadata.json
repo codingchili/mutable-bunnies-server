@@ -20,5 +20,18 @@
     "script/particles.js",
     "script/skybox.js"
   ],
-  "files": {}
+  "files": {
+    "game/map/clouds/skybox_grey.png": {},
+    "game/map/clouds/1.png": {},
+    "game/map/clouds/2.png": {},
+    "game/map/clouds/3.png": {},
+    "game/map/tiles/brownstone.png": {},
+    "game/map/tiles/darkglass.png": {},
+    "game/map/tiles/darkwood.png": {},
+    "game/map/tiles/glass.png": {},
+    "game/map/tiles/ice.png": {},
+    "game/map/tiles/icedark.png": {},
+    "game/map/tiles/lightwood.png": {},
+    "game/map/tiles/stone.png": {}
+  }
 }
