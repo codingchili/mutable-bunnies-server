@@ -112,7 +112,7 @@ public class Grid<T extends Entity> {
      * @return a list of entities that exists in the same network partition.
      */
     public Collection<T> partition(Vector vector) {
-        // todo: partition entities into supercells for network updates.
+        // entities can be partitioned into supercells for network updates.
         return entities.values();
     }
 

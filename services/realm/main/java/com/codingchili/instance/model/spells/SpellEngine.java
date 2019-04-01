@@ -237,10 +237,11 @@ public class SpellEngine {
      * @param spell      the active spell that spawned the projectile. If the spell
      *                   has defined a callback for onHit then this will be called
      *                   each time a projectile hits a target.
-     * @param properties properties of the projectiles to create.
      */
-    public void projectile(ActiveSpell spell, Map<String, Float> properties) {
-        projectiles.add(new Projectile(game, spell)); // todo set properties.
+    public Projectile projectile(ActiveSpell spell) {
+        Projectile projectile = new Projectile(game, spell);
+        projectiles.add(projectile);
+        return projectile;
     }
 
     /**
@@ -346,6 +347,6 @@ public class SpellEngine {
 
     // updates all projectiles.
     private void updateProjectiles(Ticker ticker) {
-        projectiles.removeIf(Projectile::tick);
+        projectiles.removeIf((projectile) -> projectile.tick(ticker));
     }
 }
