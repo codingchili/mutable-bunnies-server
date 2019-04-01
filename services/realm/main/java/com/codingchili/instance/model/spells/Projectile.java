@@ -161,7 +161,7 @@ public class Projectile {
                     done.set(true);
                 }
             });
-            if (hit.get()) {
+            if (done.get()) {
                 expire();
             }
         }

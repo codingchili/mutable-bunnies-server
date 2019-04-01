@@ -13,7 +13,7 @@ public class GroovyScript implements Scripted {
     private static final ScriptEngineManager factory = new ScriptEngineManager();
     private static final ScriptEngine engine = factory.getEngineByName("groovy");
     // enabled ahead of time compilation: slower startup for greatly improved runtime performance.
-    private static final boolean compile = true;
+    private static final boolean compile = false;
     public static final String TYPE = "groovy";
     private CompiledScript compiled;
     private String source;

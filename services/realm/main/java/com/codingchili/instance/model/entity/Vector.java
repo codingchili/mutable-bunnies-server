@@ -1,9 +1,9 @@
 package com.codingchili.instance.model.entity;
 
-import com.codingchili.instance.context.GameContext;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Collection;
+import java.util.HashSet;
 
-import java.util.*;
+import com.codingchili.instance.context.GameContext;
 
 /**
  * @author Robin Duda
@@ -20,11 +20,6 @@ public class Vector {
     private transient Collection<Integer> buckets = new HashSet<>();
     private transient float acceleration = 1.0f;
     private transient boolean dirty = false;
-    private transient boolean target = false;
-    private transient boolean fleeing = false;
-    private transient float targetX;
-    private transient float targetY;
-    private transient Vector following;
     private float velocity = 0.0f;
     private float direction = 0.0f;
     private int size = 24;
@@ -87,71 +82,14 @@ public class Vector {
         return this;
     }
 
-    @JsonIgnore
-    public float getTargetX() {
-        return targetX;
+    public float targetDistance(float targetX, float targetY) {
+        return (float) Math.hypot(Math.abs(x - targetX), Math.abs(y - targetY));
     }
 
-    public Vector setTargetX(float targetX) {
-        this.targetX = targetX;
-        return this;
-    }
-
-    @JsonIgnore
-    public float getTargetY() {
-        return targetY;
-    }
-
-    public Vector setTargetY(float targetY) {
-        this.targetY = targetY;
-        return this;
-    }
-
-    @JsonIgnore
-    public boolean hasTarget() {
-        return target;
-    }
-
-    public Vector setTarget(float targetX, float targetY) {
-        this.target = true;
-        this.targetX = targetX;
-        this.targetY = targetY;
+    public float targetAngle(float targetX, float targetY) {
         float theta = (float) (Math.atan2(y - targetY, targetX - x));
-
         theta += Math.toRadians(90);
-
-        if (fleeing) {
-            theta += Math.toRadians(180);
-        }
-
-        this.direction = theta;
-
-        return this;
-    }
-
-    public void clearTarget() {
-        this.target = false;
-        this.fleeing = false;
-    }
-
-    @JsonIgnore
-    public Vector getFollowing() {
-        return following;
-    }
-
-    public void setFollowing(Vector following) {
-        this.following = following;
-        this.fleeing = false;
-    }
-
-    public void setFleeing(Vector vector) {
-        this.following = vector;
-        this.fleeing = true;
-    }
-
-    @JsonIgnore
-    public boolean isFollowing() {
-        return this.following != null;
+        return theta;
     }
 
     @Override

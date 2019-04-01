@@ -1,15 +1,22 @@
 package com.codingchili.instance.model.movement;
 
-import com.codingchili.instance.context.GameContext;
-import com.codingchili.instance.model.entity.*;
-import com.codingchili.instance.model.events.*;
-import com.codingchili.instance.model.stats.Attribute;
-import io.vertx.core.json.JsonObject;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.codingchili.core.protocol.ResponseStatus;
 import com.codingchili.core.protocol.Serializer;
+import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.model.entity.Creature;
+import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.entity.Vector;
+import com.codingchili.instance.model.events.ErrorEvent;
+import com.codingchili.instance.model.events.MovementEvent;
+import com.codingchili.instance.model.events.PlayerTravelMessage;
+import com.codingchili.instance.model.stats.Attribute;
+import static com.codingchili.core.configuration.CoreStrings.PROTOCOL_MESSAGE;
+import static com.codingchili.core.configuration.CoreStrings.PROTOCOL_STATUS;
 
-import static com.codingchili.core.configuration.CoreStrings.*;
+import io.vertx.core.json.JsonObject;
 
 /**
  * @author Robin Duda
@@ -17,36 +24,23 @@ import static com.codingchili.core.configuration.CoreStrings.*;
  * Handles movement in the game.
  */
 public class MovementEngine {
-    private static final int FOLLOW_RANGE = 128;
+    private Map<Creature, MovementBehaviour> behaviours = new HashMap<>();
     private GameContext game;
 
+    /**
+     * The movement engine handles player and npc movement.
+     *
+     * @param game the game context the engine manages.
+     */
     public MovementEngine(GameContext game) {
         this.game = game;
 
         game.ticker(ticker -> {
-            game.creatures().all().forEach(creature -> {
-                Vector vector = creature.getVector();
-
-                if (vector.isFollowing()) {
-                    Vector following = vector.getFollowing();
-
-                    if (targetOutOfRange(vector, following.getX(), following.getY())) {
-                        vector.setTarget(following.getX(), following.getY());
-                        vector.setVelocity((float) creature.getStats().get(Attribute.movement));
-                    } else {
-                        vector.setVelocity(0);
-                    }
-
-                    game.publish(new MovementEvent(vector, creature.getId()));
-                } else if (vector.hasTarget()) {
-                    if (!targetOutOfRange(vector, vector.getTargetX(), vector.getTargetY())) {
-                        vector.clearTarget();
-                        vector.setVelocity(0);
-                        game.publish(new MovementEvent(vector, creature.getId()));
-                    }
-                }
+            behaviours.entrySet().removeIf(entry -> {
+                entry.getValue().update(game);
+                return !entry.getValue().active(game);
             });
-        }, GameContext.secondsToTicks(1));
+        }, GameContext.secondsToTicks(0.5));
 
         game.ticker(ticker -> {
             float delta = ticker.delta();
@@ -56,17 +50,11 @@ public class MovementEngine {
         }, 1);
     }
 
-    private boolean targetOutOfRange(Vector vector, float targetX, float targetY) {
-        float distanceX = Math.abs(vector.getX() - targetX);
-        float distanceY = Math.abs(vector.getY() - targetY);
-        return (distanceX > FOLLOW_RANGE || distanceY > FOLLOW_RANGE);
-    }
-
     /**
      * Updates the vector of the given creature.
      *
      * @param vector     the updated vector - may only set direction and velocity.
-     *                   velocity is constrained to 0 and the movement attribute of the creature.
+     *                   velocity is constrained between 0 and the movement attribute of the creature.
      * @param creatureId the creature to update the vector of.
      */
     public void update(Vector vector, String creatureId) {
@@ -90,6 +78,16 @@ public class MovementEngine {
     }
 
     /**
+     * Updates the vector and cancels any existing behaviors.
+     * @param vector the updated vector.
+     * @param creatureId the creature id.
+     */
+    public void set(Vector vector, String creatureId) {
+        cancel(game.getById(creatureId));
+        update(vector, creatureId);
+    }
+
+    /**
      * Stops following an existing target.
      *
      * @param creature the creature that will stop following its target.
@@ -97,10 +95,9 @@ public class MovementEngine {
     public void unfollow(Creature creature) {
         Vector vector = creature.getVector();
 
-        vector.setFollowing(null);
         vector.setVelocity(0);
-
-        game.publish(new MovementEvent(vector, creature.getId()));
+        update(vector, creature.getId());
+        behaviours.remove(creature);
     }
 
     /**
@@ -109,9 +106,8 @@ public class MovementEngine {
      * @param source the creature that is following.
      * @param target the creature that is to be followed.
      */
-    public void follow(Entity source, Entity target) {
-        // update event is set in the vector update method.
-        source.getVector().setFollowing(target.getVector());
+    public void follow(Creature source, Creature target) {
+        behaviours.put(source, new FollowBehaviour(source, target));
     }
 
     /**
@@ -120,8 +116,8 @@ public class MovementEngine {
      * @param source the source to be moved.
      * @param target the target to move the source relative to.
      */
-    public void flee(Entity source, Entity target) {
-        source.getVector().setFleeing(target.getVector());
+    public void flee(Creature source, Creature target) {
+        behaviours.put(source, new FleeBehaviour(source, target));
     }
 
     /**
@@ -132,11 +128,18 @@ public class MovementEngine {
      * @param y        the y position to move to.
      */
     public void moveTo(Creature creature, float x, float y) {
-        creature.getVector()
-                .setTarget(x, y)
-                .setVelocity((float) creature.getStats().get(Attribute.movement));
+        behaviours.put(creature,
+            new MoveToPointBehaviour(creature, x, y)
+                .activate(game));
+    }
 
-        game.publish(new MovementEvent(creature.getVector(), creature.getId()));
+
+    /**
+     * Cancels the behavior set on the given creature.
+     * @param creature the creature to cancel behaviours on.
+     */
+    public void cancel(Creature creature) {
+        behaviours.remove(creature);
     }
 
     /**

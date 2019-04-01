@@ -120,12 +120,11 @@ window.MovementHandler = class MovementHandler {
 
         if (entity.velocity === 0) {
             entity.acceleration = 0.4;
+            entity.state.setAnimation(0, 'walk', true);
         }
 
         if (event.vector.velocity === 0) {
             entity.state.setAnimation(0, 'idle', true);
-        } else {
-            entity.state.setAnimation(0, 'walk', true);
         }
 
         if (event.vector.direction > PI || event.vector.direction < 0) {
