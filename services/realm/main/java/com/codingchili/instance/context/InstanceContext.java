@@ -122,6 +122,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
                         .setY(point.getY());
             }
         }
+        player.setFromAnotherInstance(false);
     }
 
     @Override

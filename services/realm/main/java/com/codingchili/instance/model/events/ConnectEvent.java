@@ -4,11 +4,11 @@ import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.context.InstanceSettings;
 import com.codingchili.instance.model.entity.*;
 
-import java.util.*;
+import java.util.Collection;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * On connection this event is emitted to the connecting player.
  * It contains all entities in the current instance.
  */
@@ -20,10 +20,14 @@ public class ConnectEvent implements Event {
     private String texture;
     private int size;
 
+    /**
+     * @param game   the game context (instance) on which the connection is made.
+     * @param player theplayer that is connecting.
+     */
     public ConnectEvent(GameContext game, String player) {
         InstanceSettings instance = game.instance().settings();
         this.entities = game.entities().all();
-        this.creatures  = game.creatures().all();
+        this.creatures = game.creatures().all();
         this.texture = instance.getTexture();
         this.size = instance.getSize();
         this.skybox = instance.getSkybox();
