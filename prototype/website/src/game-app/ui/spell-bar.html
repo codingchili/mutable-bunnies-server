@@ -119,7 +119,7 @@
                 position: absolute;
                 font-size: 0.8em;
                 left: 22px;
-                top: 24px;
+                top: 28px;
                 display: block;
                 text-shadow: 1px 1px #000;
             }
@@ -130,6 +130,9 @@
                 }
             }
 
+            .unavailable {
+                opacity: 0.5;
+            }
 
         </style>
 
@@ -137,7 +140,8 @@
             <template is="dom-repeat" items="[[spells]]" as="spell">
                 <template is="dom-if" if="{{_learned(spell, character)}}">
                     <div on-down="_onCast">
-                        <img class="spell-icon" src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
+                        <img class$="spell-icon {{_available(spell.id, charges.*, cooldown.*)}}"
+                             src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
                         <paper-tooltip class="spell-info" animation-delay="0" position="top">
                             <span class="title">[[spell.id]]</span>
 
@@ -157,11 +161,15 @@
                             <span class="description">{{_description(spell, character)}}</span>
 
                         </paper-tooltip>
-                        <span class="charges">[[_charges(spell, charges.*)]]</span>
+                        <template is="dom-if" if="{{_chargeable(spell, character)}}">
+                            <span class="charges">[[_charges(spell, charges.*)]]</span>
+                        </template>
                     </div>
 
-                    <paper-progress id="cd-bar-[[spell.id]]" class="cooldown-bar transiting" min="0"
-                                    max="100"></paper-progress>
+                    <template is="dom-if" if="{{!_chargeable(spell, character)}}">
+                        <paper-progress id="cd-bar-[[spell.id]]" class="cooldown-bar transiting" min="0"
+                                        max="100"></paper-progress>
+                    </template>
                 </template>
             </template>
 
@@ -200,6 +208,7 @@
                 this.hotkeys = ['q', 'e', 'r', 'f', 'x', 'c', 'v'];
                 this.spells = [];
                 this.charges = {};
+                this.cooldown = {};
                 this.character = {
                     spells: {
                         learned: []
@@ -208,6 +217,9 @@
 
                 application.onCharacterLoaded(player => {
                     this.set('character', player);
+                    for (let learned of player.spells.learned) {
+                        this.set(`charges.${learned}`, 0);
+                    }
                 });
 
                 application.onRealmLoaded(realm => {
@@ -230,6 +242,7 @@
                     game.spells.onCooldown((spell, ms) => {
                         console.log(`spell ${spell} on cooldown for ${ms}ms.`);
 
+                        this.set(`cooldown.${spell}`, true);
                         let bar = this.shadowRoot.querySelector(`#cd-bar-${spell}`);
                         bar.style.visibility = 'visible';
                         bar.value = 100;
@@ -239,6 +252,7 @@
                         );
 
                         setTimeout(() => {
+                            this.set(`cooldown.${spell}`, false);
                             bar.style.visibility = 'hidden';
                             bar.value = 0;
                             bar.style.setProperty('--paper-progress-transition-duration', '0s');
@@ -251,9 +265,22 @@
                 });
             }
 
+            _available(spellId) {
+                let spell = this._getSpellById(spellId);
+
+                if (this._chargeable(spell)) {
+                    return (this.charges[spellId] > 0) ? '' : 'unavailable';
+                } else {
+                    return (!this.cooldown[spellId]) ? '' : 'unavailable';
+                }
+            }
+
             _charges(spell) {
-                let charges = this.charges[spell.id];
-                return (charges === 0) ? '' : charges;
+                return this.charges[spell.id];
+            }
+
+            _chargeable(spell) {
+                return spell.charges > 0;
             }
 
             _getSpellById(spellName) {
