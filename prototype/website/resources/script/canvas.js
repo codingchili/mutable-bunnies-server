@@ -27,8 +27,6 @@ window.Canvas = class {
         //PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
         window.onresize = () => this.resize();
-        window.onmousedown = (e) => {
-        };
         this.resize();
     }
 

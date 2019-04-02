@@ -26,6 +26,12 @@ window.MovementHandler = class MovementHandler {
             }
         }, [UP, RIGHT, LEFT, DOWN, RUN_TOGGLE]);
 
+        window.onmousedown = (e) => {
+            if (e.button === 2 && game.isPlaying) {
+                game.movement.moveTo(e.x + game.camera.x, e.y + game.camera.y);
+            }
+        };
+
         server.connection.setHandler('move', (event) => this._onMovement(event));
     }
 
@@ -57,6 +63,16 @@ window.MovementHandler = class MovementHandler {
         this.last = performance.now();
     }
 
+    moveTo(x, y) {
+        server.connection.send('moveTo', {
+            vector: {
+                x: x,
+                y: y,
+                velocity: this._velocity()
+            }
+        }, (event) => this._onMovement(event))
+    }
+
     _onMovement(event) {
         if (Array.isArray(event.spawn)) {
             for (let i in event.spawn) {
@@ -67,10 +83,14 @@ window.MovementHandler = class MovementHandler {
         }
     }
 
+    _velocity() {
+        return game.player.stats.movement * (this.run ? 1.0 : 0.6);
+    }
+
     _update() {
         let direction = 0;
         let velocity = 0;
-        let max = game.player.stats.movement * (this.run ? 1.0 : 0.6);
+        let max = this._velocity();
 
         if (input.isPressed([LEFT, UP, RIGHT, DOWN])) {
             velocity = max;
@@ -119,7 +139,7 @@ window.MovementHandler = class MovementHandler {
         }
 
         if (entity.velocity === 0) {
-            entity.acceleration = 0.4;
+            entity.acceleration = ACCELERATION_BASE;
             entity.state.setAnimation(0, 'walk', true);
         }
 

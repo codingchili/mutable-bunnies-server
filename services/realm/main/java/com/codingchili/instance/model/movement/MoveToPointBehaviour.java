@@ -3,42 +3,37 @@ package com.codingchili.instance.model.movement;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.Vector;
-import com.codingchili.instance.model.events.MovementEvent;
-import com.codingchili.instance.model.stats.Attribute;
 
 /**
  * A behaviour that moves the given target creature towards the given point.
  * The behaviour is active until the player leaves the context or the target point reached.
  */
 public class MoveToPointBehaviour implements MovementBehaviour {
-    private long ttl;
     private Creature source;
-    private float targetX;
-    private float targetY;
+    private Vector target;
+    private boolean onTheLeft;
+    private boolean onTheTop;
 
     /**
-     * @param source  the creature that will move to the point.
-     * @param targetX the target x coordinate.
-     * @param targetY the target y coordinate.
+     * @param source the creature that will move to the point.
+     * @param target the target vector.
      */
-    public MoveToPointBehaviour(Creature source, float targetX, float targetY) {
+    public MoveToPointBehaviour(Creature source, Vector target) {
         this.source = source;
-        this.targetX = targetX;
-        this.targetY = targetY;
+        this.target = target;
     }
 
     @Override
     public MovementBehaviour activate(GameContext game) {
         Vector vector = source.getVector();
-        float direction = vector.targetAngle(targetX, targetY);
+        float direction = vector.targetAngle(target.getX(), target.getY());
         vector.setDirection(direction);
-        vector.setVelocity((float) source.getStats().get(Attribute.movement));
+        vector.setVelocity(target.getVelocity());
 
-        this.ttl = (int) ((vector.targetDistance(targetX, targetY)
-            / vector.getVelocity()) * 1000)
-            + System.currentTimeMillis();
+        onTheLeft = vector.toLeftOf(target);
+        onTheTop = vector.onTopOf(target);
 
-        game.publish(new MovementEvent(vector, source.getId()));
+        game.movement().update(source);
         return this;
     }
 
@@ -49,10 +44,16 @@ public class MoveToPointBehaviour implements MovementBehaviour {
 
     @Override
     public boolean active(GameContext game) {
-        boolean active =  ttl > System.currentTimeMillis() && game.exists(source.getId());
+        Vector vector = source.getVector();
+
+        // check if left/right and bottom/top relations have changed.
+        boolean active = (!(onTheLeft ^ vector.toLeftOf(target) &&
+                (onTheTop ^ vector.onTopOf(target)))) &&
+                game.exists(source.getId());
+
         if (!active) {
-            source.getVector().setVelocity(0);
-            game.movement().update(source.getVector(), source.getId());
+            source.getVector().stop();
+            game.movement().update(source);
         }
         return active;
     }
