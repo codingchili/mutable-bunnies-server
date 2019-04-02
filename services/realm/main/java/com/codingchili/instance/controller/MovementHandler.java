@@ -27,16 +27,13 @@ public class MovementHandler implements GameHandler {
     @Api
     public void move(InstanceRequest request) {
         MovementEvent movement = request.raw(MovementEvent.class);
-        engine.set(movement.getVector(), request.target());
+        engine.apply(movement.getVector(), request.target());
     }
 
     @Api
     public void moveTo(InstanceRequest request) {
         MovementEvent movement = request.raw(MovementEvent.class);
         Creature creature = game.getById(request.target());
-
-        engine.moveTo(creature,
-            movement.getVector().getX(),
-            movement.getVector().getY());
+        engine.moveTo(creature, movement.getVector());
     }
 }

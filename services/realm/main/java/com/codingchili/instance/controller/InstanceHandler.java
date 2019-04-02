@@ -85,7 +85,7 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
 
         if (game.exists(leave.getPlayerName())) {
             PlayerCreature player = game.getById(leave.getPlayerName());
-            player.getVector().setVelocity(0);
+            player.getVector().stop();
 
             handlers.forEach(h -> h.onPlayerLeave(player.getId()));
 

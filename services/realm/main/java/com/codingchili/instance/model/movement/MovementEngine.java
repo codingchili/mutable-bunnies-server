@@ -53,28 +53,30 @@ public class MovementEngine {
      * @param creature the creature with a modified vector to be updated.
      */
     public void update(Creature creature) {
-        Vector current = creature.getVector();
-
-        if (current.getVelocity() == 0) {
-            current.setAcceleration(Vector.ACCELERATION_BASE);
-        }
+        Vector vector = creature.getVector();
 
         // make sure the player cannot arbitrarily update movement.
-        if (current.getVelocity() == 0) {
-            current.setVelocity(0);
-        } else {
-            current.setVelocity((float) Math.min(creature.getStats().get(Attribute.movement), current.getVelocity()));
+        if (vector.isMoving()) {
+            vector.setVelocity((float) Math.min(creature.getStats().get(Attribute.movement), vector.getVelocity()));
         }
-        MovementEvent event = new MovementEvent(current, creature.getId());
+
+        MovementEvent event = new MovementEvent(vector, creature.getId());
         game.publish(event);
     }
 
     /**
      * Updates the vector and cancels any existing behaviors.
      *
-     * @param creature the creature to set the vector for.
+     * @param vector     contains new vector properties, velocity and direction.
+     * @param creatureId the id of the creature to modify the vector of.
      */
-    public void set(Creature creature) {
+    public void apply(Vector vector, String creatureId) {
+        Creature creature = game.getById(creatureId);
+
+        creature.getVector()
+                .setVelocity(vector.getVelocity())
+                .setDirection(vector.getDirection());
+
         cancel(creature);
         update(creature);
     }
@@ -87,7 +89,7 @@ public class MovementEngine {
     public void unfollow(Creature creature) {
         Vector vector = creature.getVector();
 
-        vector.setVelocity(0);
+        vector.stop();
         update(creature);
         behaviours.remove(creature);
     }
@@ -116,12 +118,11 @@ public class MovementEngine {
      * Moves to a location specified by the given coordinates.
      *
      * @param creature the creature that is moving.
-     * @param x        the x position to move to.
-     * @param y        the y position to move to.
+     * @param vector   the target vector.
      */
-    public void moveTo(Creature creature, float x, float y) {
+    public void moveTo(Creature creature, Vector vector) {
         behaviours.put(creature,
-                new MoveToPointBehaviour(creature, x, y)
+                new MoveToPointBehaviour(creature, vector)
                         .activate(game));
     }
 

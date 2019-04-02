@@ -42,8 +42,8 @@ public class FollowBehaviour implements MovementBehaviour {
             vector.setVelocity((float) source.getStats().get(Attribute.movement));
             game.movement().update(source);
         } else {
-            if (vector.getVelocity() != 0) {
-                vector.setVelocity(0);
+            if (vector.isMoving()) {
+                vector.stop();
                 game.movement().update(source);
             }
         }
