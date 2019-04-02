@@ -1,22 +1,18 @@
 package com.codingchili.instance.model.movement;
 
+import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.model.entity.*;
+import com.codingchili.instance.model.events.*;
+import com.codingchili.instance.model.stats.Attribute;
+import io.vertx.core.json.JsonObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import com.codingchili.core.protocol.ResponseStatus;
 import com.codingchili.core.protocol.Serializer;
-import com.codingchili.instance.context.GameContext;
-import com.codingchili.instance.model.entity.Creature;
-import com.codingchili.instance.model.entity.PlayerCreature;
-import com.codingchili.instance.model.entity.Vector;
-import com.codingchili.instance.model.events.ErrorEvent;
-import com.codingchili.instance.model.events.MovementEvent;
-import com.codingchili.instance.model.events.PlayerTravelMessage;
-import com.codingchili.instance.model.stats.Attribute;
-import static com.codingchili.core.configuration.CoreStrings.PROTOCOL_MESSAGE;
-import static com.codingchili.core.configuration.CoreStrings.PROTOCOL_STATUS;
 
-import io.vertx.core.json.JsonObject;
+import static com.codingchili.core.configuration.CoreStrings.*;
 
 /**
  * @author Robin Duda
@@ -24,6 +20,7 @@ import io.vertx.core.json.JsonObject;
  * Handles movement in the game.
  */
 public class MovementEngine {
+    private static final float BEHAVIOUR_UPDATE_INTERVAL = 0.5f;
     private Map<Creature, MovementBehaviour> behaviours = new HashMap<>();
     private GameContext game;
 
@@ -40,51 +37,46 @@ public class MovementEngine {
                 entry.getValue().update(game);
                 return !entry.getValue().active(game);
             });
-        }, GameContext.secondsToTicks(0.5));
+        }, GameContext.secondsToTicks(BEHAVIOUR_UPDATE_INTERVAL));
 
         game.ticker(ticker -> {
             float delta = ticker.delta();
             game.creatures().all().forEach(creature -> {
                 creature.getVector().forward(delta);
             });
-        }, 1);
+        }, GameContext.onAllTicks());
     }
 
     /**
      * Updates the vector of the given creature.
      *
-     * @param vector     the updated vector - may only set direction and velocity.
-     *                   velocity is constrained between 0 and the movement attribute of the creature.
-     * @param creatureId the creature to update the vector of.
+     * @param creature the creature with a modified vector to be updated.
      */
-    public void update(Vector vector, String creatureId) {
-        Creature creature = game.getById(creatureId);
-
+    public void update(Creature creature) {
         Vector current = creature.getVector();
-        current.setDirection(vector.getDirection());
 
         if (current.getVelocity() == 0) {
             current.setAcceleration(Vector.ACCELERATION_BASE);
         }
 
         // make sure the player cannot arbitrarily update movement.
-        if (vector.getVelocity() == 0) {
+        if (current.getVelocity() == 0) {
             current.setVelocity(0);
         } else {
-            current.setVelocity((float) Math.min(creature.getStats().get(Attribute.movement), vector.getVelocity()));
+            current.setVelocity((float) Math.min(creature.getStats().get(Attribute.movement), current.getVelocity()));
         }
-        MovementEvent event = new MovementEvent(current, creatureId);
+        MovementEvent event = new MovementEvent(current, creature.getId());
         game.publish(event);
     }
 
     /**
      * Updates the vector and cancels any existing behaviors.
-     * @param vector the updated vector.
-     * @param creatureId the creature id.
+     *
+     * @param creature the creature to set the vector for.
      */
-    public void set(Vector vector, String creatureId) {
-        cancel(game.getById(creatureId));
-        update(vector, creatureId);
+    public void set(Creature creature) {
+        cancel(creature);
+        update(creature);
     }
 
     /**
@@ -96,7 +88,7 @@ public class MovementEngine {
         Vector vector = creature.getVector();
 
         vector.setVelocity(0);
-        update(vector, creature.getId());
+        update(creature);
         behaviours.remove(creature);
     }
 
@@ -129,13 +121,14 @@ public class MovementEngine {
      */
     public void moveTo(Creature creature, float x, float y) {
         behaviours.put(creature,
-            new MoveToPointBehaviour(creature, x, y)
-                .activate(game));
+                new MoveToPointBehaviour(creature, x, y)
+                        .activate(game));
     }
 
 
     /**
      * Cancels the behavior set on the given creature.
+     *
      * @param creature the creature to cancel behaviours on.
      */
     public void cancel(Creature creature) {

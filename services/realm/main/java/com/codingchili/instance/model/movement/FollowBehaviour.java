@@ -40,11 +40,11 @@ public class FollowBehaviour implements MovementBehaviour {
             float direction = vector.targetAngle(targetX, targetY);
             vector.setDirection(direction);
             vector.setVelocity((float) source.getStats().get(Attribute.movement));
-            game.movement().update(vector, source.getId());
+            game.movement().update(source);
         } else {
             if (vector.getVelocity() != 0) {
                 vector.setVelocity(0);
-                game.movement().update(vector, source.getId());
+                game.movement().update(source);
             }
         }
     }
