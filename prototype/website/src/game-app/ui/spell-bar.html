@@ -164,12 +164,11 @@
                         <template is="dom-if" if="{{_chargeable(spell, character)}}">
                             <span class="charges">[[_charges(spell, charges.*)]]</span>
                         </template>
+                        <template is="dom-if" if="{{!_chargeable(spell, character)}}">
+                            <paper-progress id="cd-bar-[[spell.id]]" class="cooldown-bar transiting" min="0"
+                                            max="100"></paper-progress>
+                        </template>
                     </div>
-
-                    <template is="dom-if" if="{{!_chargeable(spell, character)}}">
-                        <paper-progress id="cd-bar-[[spell.id]]" class="cooldown-bar transiting" min="0"
-                                        max="100"></paper-progress>
-                    </template>
                 </template>
             </template>
 

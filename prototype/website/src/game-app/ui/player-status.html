@@ -183,7 +183,7 @@
                 <paper-tooltip animation-delay="0" position="bottom" class="stats-tooltip">
                     <div class="class-stats">
                         Stats
-                        <character-stats compact="true" selected="{{character}}"
+                        <character-stats id="stats" compact="true" selected="{{character}}"
                                          style="display:block"></character-stats>
                     </div>
                 </paper-tooltip>
@@ -250,6 +250,10 @@
             constructor() {
                 super();
                 this.afflictions = [];
+            }
+
+            ready() {
+                super.ready();
 
                 setInterval(() => {
                     for (let i = 0; i < this.afflictions.length; i++) {
@@ -275,7 +279,9 @@
                 this.afflictions = [];
                 this.afflictions = character.afflictions.list;
                 this.notifyPath("afflictions");
+                this.shadowRoot.querySelector('#stats').update(character);
             }
+
 
             _description(affliction) {
                 return eval('`' + affliction.description + '`');

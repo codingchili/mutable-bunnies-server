@@ -51,7 +51,7 @@
         </style>
 
         <div class="container">
-            <template is="dom-repeat" items="[[_toList(selected)]]" as="attribute">
+            <template is="dom-repeat" items="[[_toList(selected.stats.*)]]" as="attribute">
                 <div class$="{{_layout(compact)}}">
                     <span class="name">[[attribute.name]]</span>
                     <span class="value" style$="color:[[_color(selected)]];">[[attribute.value]]</span>
@@ -101,10 +101,15 @@
             Object.keys(this.selected.stats).forEach((key, index) => {
                 stats.splice(index, 0, {
                     name: key,
-                    value: this.selected.stats[key]
+                    value: this.selected.stats[key].toFixed((key === 'movement' ? 1 : 0))
                 });
             });
             return stats;
+        }
+
+        update(character) {
+            this.set('selected', character);
+            this.notifyPath('selected.stats');
         }
     }
 
