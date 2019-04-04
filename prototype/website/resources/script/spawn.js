@@ -199,6 +199,7 @@ window.SpawnHandler = class SpawnHandler {
 
     death(target, source) {
         if (target.isPlayer) {
+            // handle this more gracefully (death event fails because client disconnects before processing is done?)
             game.scriptShutdown();
             application.scriptShutdown();
             application.showCharacters();

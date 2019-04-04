@@ -10,4 +10,13 @@ window.Inventory = class Inventory {
     unsubscribeLootList(entity) {
         server.connection.send('loot_unsubscribe', {entityId: entity.id});
     }
+
+    takeLoot(entity, item) {
+        server.connection.send('loot_item', {
+            targetId: entity.id,
+            itemId: item.id
+        }, (e) => {
+            console.log(e);
+        });
+    }
 };

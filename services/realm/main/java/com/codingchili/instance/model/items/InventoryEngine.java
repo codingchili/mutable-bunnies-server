@@ -116,7 +116,7 @@ public class InventoryEngine {
         Item item = inventory.getById(itemId);
         inventory.getItems().remove(item);
         update(source);
-        game.add(new LootableEntity(source.getVector(), Collections.singletonList(item)));
+        game.add(new LootableEntity("dropped by " + source.getName(), source.getVector(), Collections.singletonList(item)));
     }
 
     /**
@@ -136,7 +136,9 @@ public class InventoryEngine {
         inventory.getItems().clear();
         update(source);
 
-        game.add(new LootableEntity(source.getVector(), loot));
+        loot.add(new WoodenSword());
+
+        game.add(new LootableEntity("corpse of " + source.getName(), source.getVector(), loot));
     }
 
     /**

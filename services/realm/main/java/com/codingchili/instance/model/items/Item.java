@@ -14,6 +14,7 @@ import com.codingchili.core.storage.Storable;
  */
 public class Item extends ItemType implements Storable {
     private String id = UUID.randomUUID().toString();
+    protected String icon = "dagger.png";
     protected String name = "no name";
     protected String description = "no description.";
     protected Stats stats = new Stats();
@@ -92,6 +93,14 @@ public class Item extends ItemType implements Storable {
 
     public void setRarity(ItemRarity rarity) {
         this.rarity = rarity;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     @Override

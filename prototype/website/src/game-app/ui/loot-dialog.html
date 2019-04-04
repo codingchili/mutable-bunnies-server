@@ -2,6 +2,8 @@
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 
+<link rel="import" href="../character-stats.html">
+
 <!--
     @author Robin Duda
     Realm chat.
@@ -92,9 +94,13 @@
                 <span class="dialog-entity">[[target.name]]</span>
 
                 <template is="dom-repeat" items="[[loot]]" as="item">
-                    <div>[[item.name]]</div>
+                    <div on-click="_loot">
+                        <img src="[[realm.resources]]/gui/item/icon/[[item.icon]]"/>
+                        <div>[[item.name]]</div>
+                        <div>[[item.description]]</div>
+                        <character-stats selected="[[item]]"></character-stats>
+                    </div>
                 </template>
-
             </paper-material>
         </div>
     </template>
@@ -113,6 +119,14 @@
                     this.set('loot', e.lootList);
                     this._start();
                 });
+
+                application.onRealmLoaded((realm) => {
+                    this.realm = realm;
+                })
+            }
+
+            _loot(e) {
+                game.inventory.takeLoot(this.target, e.model.item);
             }
 
             _start() {

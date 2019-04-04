@@ -60,7 +60,7 @@ public class InventoryHandler implements GameHandler {
     }
 
     @Api
-    public void loot_items(InstanceRequest request) {
+    public void loot_item(InstanceRequest request) {
         LootEntityEvent event = request.raw(LootEntityEvent.class);
         inventory.takeLoot(creature(request), event.getTargetId(), event.getItemId());
     }

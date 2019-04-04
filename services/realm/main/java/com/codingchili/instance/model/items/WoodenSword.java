@@ -22,7 +22,7 @@ public class WoodenSword extends Item {
         stats.update(Attribute.attackspeed, 2);
         stats.set(Attribute.health, 1.1f);
 
-        onUse = new ReferencedScript("heal");
+        //onUse = new ReferencedScript("heal");
     }
 
     public static void main(String[] args) {

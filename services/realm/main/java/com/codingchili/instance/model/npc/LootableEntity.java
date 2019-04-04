@@ -24,11 +24,11 @@ public class LootableEntity extends SimpleEntity {
     private List<Item> items;
 
 
-    public LootableEntity(Vector vector, List<Item> items) {
+    public LootableEntity(String name, Vector vector, List<Item> items) {
         this.vector = vector;
         this.items = items;
         this.interactions.add("loot");
-        this.setName("loot");
+        this.name = name;
     }
 
     @Override
