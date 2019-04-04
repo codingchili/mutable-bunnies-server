@@ -50,8 +50,8 @@ public class SpellEngine {
     /**
      * Attempts to cast a new spell.
      *
-     * @param caster    the caster casting the spell.
-     * @param target    the spelltarget, a single target, aoe, cone etc.
+     * @param caster  the caster casting the spell.
+     * @param target  the spelltarget, a single target, aoe, cone etc.
      * @param spellId the name of the spell to cast.
      * @return a spell result indicating if the spell may be casted.
      */
@@ -248,6 +248,7 @@ public class SpellEngine {
      * @param spell the active spell that spawned the projectile. If the spell
      *              has defined a callback for onHit then this will be called
      *              each time a projectile hits a target.
+     * @return the created projectile object.
      */
     public Projectile projectile(ActiveSpell spell) {
         Projectile projectile = new Projectile(game, spell);

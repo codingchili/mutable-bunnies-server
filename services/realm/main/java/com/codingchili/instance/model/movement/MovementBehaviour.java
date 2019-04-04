@@ -31,6 +31,7 @@ public interface MovementBehaviour {
      * Called once when the behaviour is applied.
      *
      * @param game the game context.
+     * @return fluent.
      */
     default MovementBehaviour activate(GameContext game) {
         return this;

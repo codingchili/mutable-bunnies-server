@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static com.codingchili.core.configuration.CoreStrings.testDirectory;
 import static com.codingchili.core.configuration.CoreStrings.testFile;
@@ -56,7 +57,8 @@ public class ConfigurationsTest {
 
     @Test
     public void testReadPlayerClasses() throws IOException {
-        Collection<JsonObject> classes = ConfigurationFactory.readDirectory(testDirectory("class"));
+        Collection<JsonObject> classes = ConfigurationFactory.readDirectory(testDirectory("class"))
+                .collect(Collectors.toList());
 
         for (JsonObject player : classes) {
             Serializer.unpack(player, PlayableClass.class);
