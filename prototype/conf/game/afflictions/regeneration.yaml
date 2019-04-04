@@ -1,5 +1,5 @@
 ---
-name: "regeneration"
+name: "Regeneration"
 description: "Heals increasingly over time."
 duration: 60
 interval: 2

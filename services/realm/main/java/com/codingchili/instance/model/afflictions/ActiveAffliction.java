@@ -3,9 +3,9 @@ package com.codingchili.instance.model.afflictions;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.spells.DamageType;
-import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
+import com.codingchili.instance.scripting.Bindings;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.HashMap;
@@ -17,8 +17,6 @@ import com.codingchili.core.logging.Level;
 import static com.codingchili.core.configuration.CoreStrings.ID_NAME;
 
 /**
- * @author Robin Duda
- * <p>
  * Maps an active affliction onto an entity.
  */
 public class ActiveAffliction {
@@ -33,17 +31,28 @@ public class ActiveAffliction {
     private Float delta = 0f;
     private Long start = System.currentTimeMillis();
 
+    /**
+     * @param source     the source of the affliction.
+     * @param target     the target of the affliction.
+     * @param affliction the affliction that was created by source on target.
+     */
     public ActiveAffliction(Creature source, Creature target, Affliction affliction) {
         this.source = source;
         this.target = target;
         this.affliction = affliction;
-        this.ticks = GameContext.secondsToTicks(affliction.duration);
-        this.interval = GameContext.secondsToTicks(affliction.interval);
+        this.ticks = GameContext.secondsToTicks(affliction.getDuration());
+        this.interval = GameContext.secondsToTicks(affliction.getInterval());
     }
 
-    public Stats modify(GameContext context) {
+    /**
+     * Modifies the stats on the target creature.
+     *
+     * @param game the game context.
+     * @return the modified stats.
+     */
+    public Stats modify(GameContext game) {
         stats.clear();
-        affliction.apply(getBindings(context).setStats(stats));
+        affliction.apply(getBindings(game).setStats(stats));
         return stats;
     }
 
@@ -67,8 +76,8 @@ public class ActiveAffliction {
             return (ticks > 0);
         } catch (Exception e) {
             context.getLogger(getClass()).event("affliction.fail", Level.ERROR)
-                .put(ID_NAME, affliction.getName())
-                .send(e.getMessage());
+                    .put(ID_NAME, affliction.getName())
+                    .send(e.getMessage());
             return false;
         }
     }

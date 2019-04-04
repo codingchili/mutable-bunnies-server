@@ -147,7 +147,7 @@ public class RealmClientHandler implements CoreHandler {
     public void characterCreate(RealmRequest request) {
         PlayerCreature creature = new PlayerCreature(request.character());
         creature.setAccount(request.account());
-        creature.setClassName(request.className());
+        creature.setClassId(request.classId());
 
         characters.create(creation -> {
             if (creation.succeeded()) {

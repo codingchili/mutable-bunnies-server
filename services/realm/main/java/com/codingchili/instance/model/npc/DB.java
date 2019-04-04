@@ -1,7 +1,12 @@
 package com.codingchili.instance.model.npc;
 
+import com.codingchili.common.Strings;
+import io.vertx.core.json.JsonObject;
+
 import java.nio.file.Path;
-import java.util.*;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -14,7 +19,8 @@ import com.codingchili.core.storage.Storable;
 import static com.codingchili.core.configuration.CoreStrings.*;
 
 /**
- * @author Robin Duda
+ * A database used to load local configuration files into a typed map which
+ * supports reloading objects on the fly.
  */
 @SuppressWarnings("unchecked")
 public class DB<E extends Storable> {
@@ -29,7 +35,7 @@ public class DB<E extends Storable> {
 
     /**
      * Creates a new database to hold references of the given class. If the database is already
-     * initialized it will be reused.
+     * initialized it will be reused. The name of the loaded file will be used as it's ID.
      *
      * @param core the core context to run file modify listener on.
      * @param type the type of classes to be stored in the database.
@@ -46,8 +52,11 @@ public class DB<E extends Storable> {
         long start = System.currentTimeMillis();
 
         this.logger = core.logger(type);
-        this.items = ConfigurationFactory.readDirectoryTree(path)
-                .parallelStream()
+
+        // iterate all subdirectories of the root path and set the ID of the loaded
+        // object to the file name, example filename "the_file.yaml" -> id "the_file".
+        this.items = ConfigurationFactory.enumerate(path, true)
+                .map(this::parseWithId)
                 .map(config -> Serializer.unpack(config, type))
                 .collect(Collectors.toMap(Storable::getId, (v) -> v));
 
@@ -61,8 +70,7 @@ public class DB<E extends Storable> {
                                 .put(ID_NAME, type.getSimpleName())
                                 .send(UPDATED);
 
-                        E item = Serializer.unpack(
-                                ConfigurationFactory.readObject(modified.toString()), type);
+                        E item = Serializer.unpack(parseWithId(modified.toString()), type);
 
                         items.put(item.getId(), item);
                         onInvalidate.run();
@@ -75,6 +83,22 @@ public class DB<E extends Storable> {
                 .send();
 
         onInvalidate.run();
+    }
+
+    private JsonObject parseWithId(String filePath) {
+        JsonObject json = ConfigurationFactory.readObject(filePath);
+
+        // allow ID to be overridden through configuration.
+        if (!json.containsKey(Strings.ID)) {
+            json.put(Strings.ID, getIdFromFileName(filePath));
+        }
+        return json;
+    }
+
+    private static String getIdFromFileName(String filePath) {
+        String fileName = Paths.get(filePath).getFileName().toString();
+        int extensionAt = fileName.lastIndexOf(".");
+        return (extensionAt == -1) ? fileName : fileName.substring(0, extensionAt);
     }
 
     /**

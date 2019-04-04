@@ -52,15 +52,15 @@ public class SpellEngine {
      *
      * @param caster    the caster casting the spell.
      * @param target    the spelltarget, a single target, aoe, cone etc.
-     * @param spellName the name of the spell to cast.
+     * @param spellId the name of the spell to cast.
      * @return a spell result indicating if the spell may be casted.
      */
-    public SpellResult cast(Creature caster, SpellTarget target, String spellName) {
-        Optional<Spell> spell = spells.getByName(spellName);
+    public SpellResult cast(Creature caster, SpellTarget target, String spellId) {
+        Optional<Spell> spell = spells.getById(spellId);
 
         if (spell.isPresent()) {
 
-            if (caster.getSpells().learned(spellName)) {
+            if (caster.getSpells().learned(spellId)) {
                 if (caster.getSpells().isOnCooldown(spell.get())) {
                     return SpellResult.COOLDOWN;
                 } else {
@@ -81,7 +81,7 @@ public class SpellEngine {
                 return SpellResult.UNKNOWN_SPELL;
             }
         } else {
-            throw new NoSuchSpellException(spellName);
+            throw new NoSuchSpellException(spellId);
         }
     }
 
@@ -112,8 +112,19 @@ public class SpellEngine {
      * @param regex  a regex matching the name of afflictions to remove.
      */
     public void cleanse(Creature target, String regex) {
-        target.getAfflictions().removeIf(affliction ->
-                        affliction.getAffliction().getName().matches(regex), game);
+        List<String> removed = new ArrayList<>();
+
+        target.getAfflictions().removeIf(affliction -> {
+            boolean matches = affliction.getAffliction().getName().matches(regex);
+            if (matches) {
+                removed.add(affliction.getAffliction().getName());
+            }
+            return matches;
+        }, game);
+
+        if (removed.size() > 0) {
+            game.publish(new CleanseEvent(target, removed));
+        }
     }
 
     /**
@@ -133,7 +144,7 @@ public class SpellEngine {
      * @param spellId the id of the spell to add a charge to.
      */
     public void charge(Creature caster, String spellId) {
-        spells.getByName(spellId).ifPresent(spell -> {
+        spells.getById(spellId).ifPresent(spell -> {
             caster.getSpells().charge(spell, 1.0f);
             caster.handle(new SpellStateEvent(caster.getSpells(), spell));
         });
@@ -183,7 +194,7 @@ public class SpellEngine {
      * @param name   the name of the affliction to apply.
      */
     public void afflict(Creature source, Creature target, String name) {
-        afflictions.getByName(name).ifPresent(affliction -> {
+        afflictions.getById(name).ifPresent(affliction -> {
             ActiveAffliction active = affliction.apply(source, target);
             source.getAfflictions().add(active, game);
             game.publish(new AfflictionEvent(active));
@@ -234,9 +245,9 @@ public class SpellEngine {
     }
 
     /**
-     * @param spell      the active spell that spawned the projectile. If the spell
-     *                   has defined a callback for onHit then this will be called
-     *                   each time a projectile hits a target.
+     * @param spell the active spell that spawned the projectile. If the spell
+     *              has defined a callback for onHit then this will be called
+     *              each time a projectile hits a target.
      */
     public Projectile projectile(ActiveSpell spell) {
         Projectile projectile = new Projectile(game, spell);
@@ -248,11 +259,11 @@ public class SpellEngine {
      * Retrieves a spell given its name. If the spell does not exist an error
      * will be thrown.
      *
-     * @param spellName the name of the spell to retrieve.
+     * @param spellId the name of the spell to retrieve.
      * @return a spell matching the given spell name.
      */
-    public Optional<Spell> getSpellByName(String spellName) {
-        return spells.getByName(spellName);
+    public Optional<Spell> getSpellById(String spellId) {
+        return spells.getById(spellId);
     }
 
 
@@ -263,7 +274,7 @@ public class SpellEngine {
      * @return true if the spell is registered, otherwise false.
      */
     public boolean exists(String spellName) {
-        return spells.getByName(spellName).isPresent();
+        return spells.getById(spellName).isPresent();
     }
 
     /**
@@ -298,11 +309,11 @@ public class SpellEngine {
     private void updateCreatureSpellState(Ticker ticker) {
         float delta = ticker.delta();
         creatures.all().forEach(entity -> {
-            entity.getAfflictions().removeIf(active -> {
-                if (active.shouldTick(delta))
-                    return !active.tick(game);
-                return false;
-            }, game);
+            boolean modified = entity.getAfflictions().tick(game, delta);
+
+            if (modified) {
+                game.publish(new StatsUpdateEvent(entity));
+            }
 
             entity.getSpells().tick(entity, spells, delta);
         });

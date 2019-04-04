@@ -6,7 +6,6 @@ import com.codingchili.instance.model.events.SpellStateEvent;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Robin Duda
@@ -112,7 +111,7 @@ public class SpellState {
      */
     public void tick(Entity entity, SpellDB spells, float delta) {
         for (String spellName : learned) {
-            Optional<Spell> lookup = spells.getByName(spellName);
+            Optional<Spell> lookup = spells.getById(spellName);
 
             if (lookup.isPresent()) {
                 Spell spell = lookup.get();

@@ -23,7 +23,7 @@ public class PlayerCreature extends SimpleCreature {
     private transient boolean fromAnotherInstance = false;
     private Integer logins = 0;
     private String instance;
-    private String className;
+    private String classId;
     private String account;
 
     public PlayerCreature() {
@@ -66,7 +66,7 @@ public class PlayerCreature extends SimpleCreature {
     public Stats getStats() {
         Stats stats = super.getStats();
         if (game != null) {
-            game.classes().getByName(className).ifPresent(playableClass -> {
+            game.classes().getById(classId).ifPresent(playableClass -> {
                 stats.apply(playableClass.getStats());
             });
         }
@@ -77,7 +77,7 @@ public class PlayerCreature extends SimpleCreature {
     public void setContext(GameContext game) {
         this.game = game;
 
-        Optional<PlayableClass> theClass = game.classes().getByName(className);
+        Optional<PlayableClass> theClass = game.classes().getById(classId);
 
         if (theClass.isPresent()) {
             Scripted scaling = game.instance().realm().getLevelScaling();
@@ -97,7 +97,7 @@ public class PlayerCreature extends SimpleCreature {
 
             stats.set(Attribute.nextlevel, scaling.apply(bindings));
         } else {
-            throw new CoreRuntimeException("Class not available: " + className);
+            throw new CoreRuntimeException("Class not available: " + classId);
         }
 
         // learn all enabled spells for the current class for now.
@@ -133,12 +133,12 @@ public class PlayerCreature extends SimpleCreature {
         this.instance = instance;
     }
 
-    public String getClassName() {
-        return className;
+    public String getClassId() {
+        return classId;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setClassId(String classId) {
+        this.classId = classId;
     }
 
     @Override

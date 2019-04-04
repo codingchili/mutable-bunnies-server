@@ -31,6 +31,11 @@ window.MovementHandler = class MovementHandler {
                 game.movement.moveTo(e.x + game.camera.x, e.y + game.camera.y);
             }
         };
+        window.ontouchstart = (e) => {
+            if (game.isPlaying) {
+                game.movement.moveTo(e.touches[0].clientX + game.camera.x, e.touches[0].clientY + game.camera.y);
+            }
+        };
 
         server.connection.setHandler('move', (event) => this._onMovement(event));
     }

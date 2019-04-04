@@ -39,7 +39,7 @@ public abstract class Strings extends CoreStrings {
     public static final String ID_LOG = "log";
     public static final String ID_NAME = "name";
     public static final String ID_CHARACTERS = "characters";
-    public static final String ID_PLAYERCLASS = "className";
+    public static final String ID_PLAYERCLASS = "classId";
     public static final String ID_ACCOUNT = "account";
     public static final String ID_REALM = "realm";
     public static final String ID_REALMS = "realms";
@@ -108,6 +108,7 @@ public abstract class Strings extends CoreStrings {
     public static final String ERROR_REALM_UPDATE = "Failed to update realm-list.";
     public static final String ERROR_REALM_DISCONNECT = "Error disconnecting realm.";
     public static final String ERROR_REALM_MISSING = "The requested realm is missing.";
+    public static final String ID = "id";
 
     public static String getCharacterExistsError(String name) {
         return "Character " + name + " already exists.";

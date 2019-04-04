@@ -5,9 +5,11 @@ import io.vertx.core.Future;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.context.CoreRuntimeException;
@@ -38,12 +40,11 @@ public class ReferencedScript implements Scripted {
             Future<Void> future = Future.future();
 
             core.blocking((blocking) -> {
-                Collection<String> paths = ConfigurationFactory.enumerate(SCRIPT_PATH, true);
                 try {
-                    long loaded = paths.parallelStream()
+                    long loaded = ConfigurationFactory.enumerate(SCRIPT_PATH, true)
                             .map(File::new)
                             .peek(ReferencedScript::loadScriptAt)
-                            .filter((file) -> true)
+                            .filter((file) -> Boolean.TRUE)
                             .count();
 
                     logger.event(SCRIPT_LOAD)

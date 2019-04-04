@@ -1,5 +1,4 @@
 ---
-id: "gargazar"
 start: "welcome"
 enabled:
   jexl: |

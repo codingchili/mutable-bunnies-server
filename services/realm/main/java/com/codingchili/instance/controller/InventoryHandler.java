@@ -71,6 +71,12 @@ public class InventoryHandler implements GameHandler {
         inventory.listLoot(creature(request), event.getTargetId());
     }
 
+    @Api
+    public void loot_unsubscribe(InstanceRequest request) {
+        LootUnsubscribeEvent event = request.raw(LootUnsubscribeEvent.class);
+        inventory.unsubscribe(request.target(), event.getSubscribed());
+    }
+
     private Creature creature(InstanceRequest request) {
         return game.getById(request.target());
     }

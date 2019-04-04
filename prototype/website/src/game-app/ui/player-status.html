@@ -2,6 +2,8 @@
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/paper-progress/paper-progress.html">
 
+<link rel="import" href="../character-stats.html">
+
 <!--
     @author Robin Duda
     Realm chat.
@@ -157,12 +159,36 @@
                 font-size: larger;
             }
 
+            .class-stats {
+                font-size: 14px;
+                width: 176px;
+            }
+
+            .class-icon {
+                width: 64px;
+            }
+
+            .stats-tooltip {
+                margin-left: 64px;
+            }
+
         </style>
+
 
         <paper-material elevation="3" id="frame" class="interface-box">
             <span class="level">[[character.stats.level]]</span>
             <span class="name">[[character.name]]</span>
-            <img class="portrait" src="[[realm.resources]]/gui/class/[[character.className]].svg">
+
+            <div class="class-icon">
+                <paper-tooltip animation-delay="0" position="bottom" class="stats-tooltip">
+                    <div class="class-stats">
+                        Stats
+                        <character-stats compact="true" selected="{{character}}"
+                                         style="display:block"></character-stats>
+                    </div>
+                </paper-tooltip>
+                <img class="portrait" src="[[realm.resources]]/gui/class/[[character.classId]].svg">
+            </div>
 
             <div class="health-bar">
                 <paper-tooltip class="spell-info" animation-delay="0" position="bottom">
@@ -192,10 +218,9 @@
         <div id="afflictions">
             <template is="dom-repeat" items="{{afflictions}}" as="affliction">
                 <div class="affliction interface-box">
-                    <img src="[[realm.resources]]/gui/status/[[affliction.name]].svg" class="affliction-icon"
+                    <img src="[[realm.resources]]/gui/afflictions/[[affliction.id]].svg" class="affliction-icon"
                          alt="affliction">
 
-                    <!-- todo: can be reused as an element. -->
                     <paper-tooltip class="spell-info" animation-delay="0" position="bottom">
                         <span class="title">[[affliction.name]]</span>
 
@@ -204,7 +229,6 @@
                                 <th>Duration</th>
                             </tr>
                             <tr style="text-align: center;">
-                                <!-- todo: format HH/MM/SS + update -->
                                 <td class="duration">[[affliction.duration]]s</td>
                             </tr>
                         </table>

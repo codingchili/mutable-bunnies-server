@@ -242,11 +242,11 @@
                                 <paper-ripple></paper-ripple>
 
                                 <div class="class-image">
-                                    <img src="[[realm.resources]]/gui/class/[[playerclass.name]].svg">
+                                    <img src="[[realm.resources]]/gui/class/[[playerclass.id]].svg">
                                     <paper-tooltip animation-delay="0" position="left">
                                         <div class="class-stats">
                                             Stats
-                                            <character-stats compact="true" selected="{{_classInfo(classes, playerclass.name, realm.*)}}">
+                                            <character-stats compact="true" selected="{{_classInfo(classes, playerclass.id, realm.*)}}">
                                             </character-stats>
                                         </div>
                                     </paper-tooltip>
@@ -258,11 +258,11 @@
                                 <div class="spell-container">
                                     <template is="dom-repeat" items="{{playerclass.spells}}" as="spell">
                                         <div class="spell">
-                                            <img src="{{realm.resources}}/gui/spell/{{spell}}.svg"
+                                            <img src="[[realm.resources]]/gui/spell/[[spell]].svg"
                                                  class="spell-image">
 
                                             <paper-tooltip animation-delay="0" class="tooltip">
-                                                <div class="spell-name">[[spell]]</div>
+                                                <div class="spell-name">[[_getSpellName(spell)]]</div>
                                                 <div class="spell-description">{{_getSpellDescription(spell, playerclass.stats)}}</div>
                                             </paper-tooltip>
                                         </div>
@@ -347,17 +347,13 @@
 
         _classInfo(classes, selected) {
             if (this.realm) {
-                for (let theClass of this.realm.classes) {
-                    if (theClass.name === selected) {
-                        return theClass;
-                    }
-                }
+                return this.realm.classes.get(selected);
             }
         }
 
         _available(playerclass) {
             for (let aClass of this.realm.availableClasses) {
-                if (aClass === playerclass.name) {
+                if (aClass === playerclass.id) {
                     return true;
                 }
             }
@@ -371,6 +367,16 @@
                 return eval('`' + this.spells[spellId].description + '`');
             } else {
                 return "No description, possible overpowered.";
+            }
+        }
+
+        _getSpellName(spellId) {
+            let spell = this.spells[spellId];
+
+            if (spell) {
+                return spell.name;
+            } else {
+                return spellId;
             }
         }
 
@@ -409,7 +415,7 @@
                                 application.error("Failed to connect to the authentication server for character creation.");
                             }
                         }
-                    }, this.selected.name, this.characterName);
+                    }, this.selected.id, this.characterName);
                 }
             }
         }

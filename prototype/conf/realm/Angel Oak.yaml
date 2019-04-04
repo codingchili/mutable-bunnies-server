@@ -1,6 +1,6 @@
 ---
 node: "Angel Oak"
-host: "localhost"
+host: "192.168.10.183"
 version: 1
 size: 5000
 resources: "/resources/"
@@ -11,12 +11,12 @@ attributes:
   leveling: 1
   type: "PvP"
 availableClasses:
-- "Paladin"
-- "Druid"
-- "Assassin"
-- "Hunter"
-- "Necromancer"
-- "Slayer"
+- "paladin"
+- "druid"
+- "assassin"
+- "hunter"
+- "necromancer"
+- "slayer"
 levelScaling:
   jexl: |
     source.stats[Attribute.level] * 80 + 100;
@@ -29,7 +29,7 @@ onPlayerJoin:
       source.instance = 'level 1';
     }
 listener:
-  secure: true
+  secure: false
   port: 9301
   timeout: 3000
   binaryWebsockets: false

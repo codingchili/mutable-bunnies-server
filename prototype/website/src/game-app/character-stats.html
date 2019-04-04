@@ -54,7 +54,7 @@
             <template is="dom-repeat" items="[[_toList(selected)]]" as="attribute">
                 <div class$="{{_layout(compact)}}">
                     <span class="name">[[attribute.name]]</span>
-                    <span class="value" style$="color:[[selected.theme]];">[[attribute.value]]</span>
+                    <span class="value" style$="color:[[_color(selected)]];">[[attribute.value]]</span>
                 </div>
             </template>
         </div>
@@ -85,6 +85,14 @@
 
         _layout() {
             return 'attribute-' + ((this.compact) ? 'compact' : 'wide');
+        }
+
+        _color() {
+            if (this.selected && this.selected.theme) {
+                return this.selected.theme;
+            } else {
+                return document.body.style.getPropertyValue('--player-class-theme');
+            }
         }
 
         _toList() {

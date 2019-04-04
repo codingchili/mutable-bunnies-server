@@ -14,7 +14,8 @@ import com.codingchili.core.storage.Storable;
  * A spell item from the spell DB.
  */
 public class Spell implements Storable, Configurable {
-    private String id = "no name";
+    private String id = "no_id";
+    private String name = "no name";
     private String description = "no description";
     private Boolean mobile = true; // can move and cast?
     private Target target = Target.caster; // spell target: caster, area etc.
@@ -42,6 +43,14 @@ public class Spell implements Storable, Configurable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {

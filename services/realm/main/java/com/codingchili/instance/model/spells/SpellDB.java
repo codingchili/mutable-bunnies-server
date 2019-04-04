@@ -29,7 +29,7 @@ public class SpellDB implements MetadataStore<Spell> {
     }
 
     @Override
-    public Optional<Spell> getByName(String name) {
+    public Optional<Spell> getById(String name) {
         return spells.getById(name);
     }
 

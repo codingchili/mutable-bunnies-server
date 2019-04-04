@@ -2,8 +2,8 @@ package com.codingchili.instance.model.items;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.Creature;
-import com.codingchili.instance.model.npc.LootableEntity;
 import com.codingchili.instance.model.events.EquipItemEvent;
+import com.codingchili.instance.model.npc.LootableEntity;
 import com.codingchili.instance.model.spells.SpellTarget;
 import com.codingchili.instance.scripting.Bindings;
 
@@ -131,6 +131,7 @@ public class InventoryEngine {
         loot.addAll(inventory.getItems());
         loot.addAll(inventory.getEquipped().values());
 
+        // drop everything equipped and in inventory.
         inventory.getEquipped().clear();
         inventory.getItems().clear();
         update(source);
@@ -164,6 +165,17 @@ public class InventoryEngine {
 
         // must subscribe to updates when other players remove loot etc.
         entity.subscribe(source);
+    }
+
+    /**
+     * Called after subscribing to a loot container to not receive any more update events.
+     *
+     * @param target     the unsubscribing entity.
+     * @param subscribed the lootable entity.
+     */
+    public void unsubscribe(String target, String subscribed) {
+        LootableEntity entity = game.getById(subscribed);
+        entity.unsubscribe(target);
     }
 
     private void update(Creature source) {

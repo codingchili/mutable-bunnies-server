@@ -1,6 +1,6 @@
 ---
-name: "poison"
-description: "Takes damage based on maximum health and increases over time."
+name: "Poison"
+description: "Deals 2% of max health per second."
 duration: 12
 interval: 0.5
 chance: 0.5

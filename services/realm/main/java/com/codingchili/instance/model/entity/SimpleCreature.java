@@ -39,7 +39,10 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
 
     public Stats getStats() {
         calculated.clear();
-        return calculated.apply(inventory.getStats()).apply(afflictions.getStats()).apply(stats);
+        return calculated
+                .apply(inventory.getStats())
+                .apply(afflictions.getStats())
+                .apply(stats);
     }
 
     public void setInventory(Inventory inventory) {

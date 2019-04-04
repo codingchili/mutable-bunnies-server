@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * The affliction state contains applied afflictions to a single creature.
  */
 public class AfflictionState {
@@ -44,8 +44,9 @@ public class AfflictionState {
 
     /**
      * adds a new affliction.
+     *
      * @param affliction the affliction to add.
-     * @param game the game context to send updates to.
+     * @param game       the game context to send updates to.
      */
     public void add(ActiveAffliction affliction, GameContext game) {
         list.add(affliction);
@@ -54,6 +55,7 @@ public class AfflictionState {
 
     /**
      * Checks if an affliction is added by its name.
+     *
      * @param afflictionName the name of the affliction.
      * @return true if the affliction is active in this state.
      */
@@ -68,20 +70,47 @@ public class AfflictionState {
 
     /**
      * Removes afflictions based on a predicate.
+     *
      * @param predicate the predicate to determine if an affliction is to be removed.
-     * @param game the game context to send updates to.
+     * @param game      the game context to send updates to.
      */
     public void removeIf(Predicate<ActiveAffliction> predicate, GameContext game) {
+        AtomicBoolean modified = new AtomicBoolean(false);
         list.removeIf((affliction) -> {
             if (predicate.test(affliction)) {
-                update(game);
+                modified.set(true);
                 return true;
             }
             return false;
         });
+        if (modified.get()) {
+            update(game);
+        }
     }
 
-    public void update(GameContext game) {
+    /**
+     * Updates the state of afflictions and removes those that have expired.
+     *
+     * @param game  a reference to the game context for sending updates on change.
+     * @param delta the delta time to consider on update operations.
+     * @return true if an afflication has been removed.
+     */
+    public boolean tick(GameContext game, float delta) {
+        AtomicBoolean modified = new AtomicBoolean(false);
+        removeIf(active -> {
+            if (active.shouldTick(delta)) {
+                boolean remove = !active.tick(game);
+                if (remove) {
+                    modified.set(true);
+                }
+                return remove;
+            }
+            return false;
+        }, game);
+        return modified.get();
+    }
+
+    private void update(GameContext game) {
         stats.clear();
         list.forEach(active ->
                 stats = stats.apply(active.modify(game)));

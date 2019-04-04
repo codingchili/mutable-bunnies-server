@@ -25,7 +25,7 @@ public class RealmRequest implements RequestWrapper {
         return data().getString(ID_CHARACTER);
     }
 
-    public String className() {
+    public String classId() {
         return data().getString(ID_PLAYERCLASS);
     }
 

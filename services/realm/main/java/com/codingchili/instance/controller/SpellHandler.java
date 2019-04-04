@@ -34,16 +34,16 @@ public class SpellHandler implements GameHandler {
     @Api
     public void list(InstanceRequest request) {
         PlayerCreature creature = game.getById(request.target());
-        Optional<PlayableClass> aClass = game.classes().getByName(creature.getClassName());
+        Optional<PlayableClass> aClass = game.classes().getById(creature.getClassId());
 
         if (aClass.isPresent()) {
             request.write(aClass.get().getSpells().stream()
-                    .map(game.spells()::getSpellByName)
+                    .map(game.spells()::getSpellById)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .collect(Collectors.toList()));
         } else {
-            request.error(new CoreRuntimeException("Player class unavailable: " + creature.getClassName()));
+            request.error(new CoreRuntimeException("Player class unavailable: " + creature.getClassId()));
         }
     }
 
@@ -51,12 +51,12 @@ public class SpellHandler implements GameHandler {
     public void cast(InstanceRequest request) {
         SpellCastRequest cast = request.raw(SpellCastRequest.class);
         Creature caster = game.getById(request.target());
-        SpellResult result = spells.cast(caster, cast.getSpellTarget(), cast.getSpellName());
+        SpellResult result = spells.cast(caster, cast.getSpellTarget(), cast.getSpellId());
         request.write(new SpellCastResponse(result, cast));
     }
 
     @Api
     public void spell(InstanceRequest request) {
-        request.write(spells.getSpellByName(request.data().getString("spellName")));
+        request.write(spells.getSpellById(request.data().getString("spellName")));
     }
 }

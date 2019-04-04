@@ -21,11 +21,11 @@
                 width: 326px;
             }
 
-            .interface-box {
-                display: block;
+            .spell-bar {
                 background-color: #000000;
                 opacity: 1.0;
                 height: 46px;
+                display: flex;
             }
 
             .spell-icon {
@@ -136,14 +136,14 @@
 
         </style>
 
-        <paper-material elevation="3" class="interface-box">
+        <paper-material elevation="3" class="spell-bar">
             <template is="dom-repeat" items="[[spells]]" as="spell">
                 <template is="dom-if" if="{{_learned(spell, character)}}">
-                    <div on-down="_onCast">
+                    <div on-down="_onCast" class="spell-button">
                         <img class$="spell-icon {{_available(spell.id, charges.*, cooldown.*)}}"
                              src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
                         <paper-tooltip class="spell-info" animation-delay="0" position="top">
-                            <span class="title">[[spell.id]]</span>
+                            <span class="title">[[spell.name]]</span>
 
                             <table class="info-table">
                                 <tr>
@@ -180,7 +180,7 @@
                 <paper-progress id="casting-progress-bar" class="casting-bar transiting" min="0" max="100"
                                 value="0">
                 </paper-progress>
-                <span id="casting-progress-title">casting [[spellId]]</span>
+                <span id="casting-progress-title">[[_name(spellId)]]</span>
             </div>
         </template>
 
@@ -279,13 +279,22 @@
                 return this.charges[spell.id];
             }
 
+            _name(spellId) {
+                let spell = this._getSpellById(spellId);
+                if (spell) {
+                    return spell.name;
+                } else {
+                    return "";
+                }
+            }
+
             _chargeable(spell) {
                 return spell.charges > 0;
             }
 
-            _getSpellById(spellName) {
+            _getSpellById(spellId) {
                 for (let i = 0; i < this.spells.length; i++) {
-                    if (this.spells[i].id === spellName) {
+                    if (this.spells[i].id === spellId) {
                         return this.spells[i];
                     }
                 }
@@ -303,6 +312,7 @@
                 if (this.casting) {
                     return;
                 }
+
                 game.spells.cast((casted) => {
                     if (casted.result === 'CASTING') {
                         this.casting = true;

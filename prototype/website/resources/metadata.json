@@ -18,6 +18,7 @@
     "script/camera.js",
     "script/input.js",
     "script/particles.js",
+    "script/inventory.js",
     "script/skybox.js"
   ],
   "files": {

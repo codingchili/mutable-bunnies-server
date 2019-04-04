@@ -1,0 +1,13 @@
+---
+name: "Potent Venom"
+description: "Deals 2% of maximum health per second plus ${(this.character.stats.dexterity / 2).toFixed(1)}."
+cooldown: 4
+casttime: 1
+target: caster
+onCastBegin:
+  jexl:
+    return spells.energy(source, -10);
+onCastComplete:
+  jexl: |
+    log.accept('casting potent venom completed');
+    spells.afflict(source, 'poison');

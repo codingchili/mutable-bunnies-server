@@ -117,11 +117,11 @@
                         <paper-material elevation="2" class="character" on-tap="select">
                             <paper-ripple></paper-ripple>
                             <paper-tooltip animation-delay="0" class="tooltip">
-                                <span class="tooltip-text">{{character.className}} Lv.{{character.stats.level}}</span>
+                                <span class="tooltip-text">{{_className(character.classId)}} {{_level(character.stats)}}</span>
                             </paper-tooltip>
                             <iron-icon on-tap="removeCharacter"
                                        icon="icons:close" class="character-remove"></iron-icon>
-                            <img src="{{realm.resources}}/gui/class/{{character.className}}.svg"
+                            <img src="[[realm.resources]]/gui/class/[[character.classId]].svg"
                                  class="class-image">
 
                             <div class="character-name">{{character.name}}</div>
@@ -181,6 +181,14 @@
 
             }
 
+            _level(stats) {
+                if (stats.level) {
+                    return `Lv. ${stats.level}`;
+                } else {
+                    return '';
+                }
+            }
+
             realmtoken() {
                 this.showLoading('Authenticating..');
                 new RealmRegistry().realmtoken({
@@ -207,6 +215,10 @@
                 });
             }
 
+            _className(classId) {
+                return this.realm.classes.get(classId).name;
+            }
+
             loadMetadata() {
                 this.showLoading("Loading metadata..");
                 let count = 3;
@@ -231,6 +243,14 @@
                 this.server.classinfo({
                     accepted: (data) => {
                         this.realm.classes = data.collection;
+                        this.realm.classes.get = (id) => {
+                            for (let playableClass of this.realm.classes) {
+                                if (playableClass.id === id) {
+                                    return playableClass;
+                                }
+                            }
+                            throw Error(`Class ${id} not found in realm`);
+                        };
                         latch();
                     },
                     error: metadataError
@@ -319,7 +339,7 @@
             select(e) {
                 let character = e.model.character;
 
-                if (this.realm.availableClasses.indexOf(e.model.character.className) >= 0) {
+                if (this.realm.availableClasses.indexOf(e.model.character.classId) >= 0) {
                     application.selectCharacter({
                         server: this.server,
                         realm: this.realm,
@@ -327,7 +347,7 @@
                     });
 
                     for (let playerClass of this.realm.classes) {
-                        if (playerClass.name === character.className) {
+                        if (playerClass.id === character.classId) {
                             document.body.style.setProperty('--player-class-theme', playerClass.theme);
                         }
                     }
@@ -336,8 +356,6 @@
                 }
             }
         }
-
         window.customElements.define(CharacterList.is, CharacterList);
-
     </script>
 </dom-module>

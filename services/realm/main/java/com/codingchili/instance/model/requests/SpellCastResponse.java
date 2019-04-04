@@ -15,7 +15,7 @@ public class SpellCastResponse {
 
     public SpellCastResponse(SpellResult result, SpellCastRequest cast) {
         this.result = result;
-        this.spellId = cast.getSpellName();
+        this.spellId = cast.getSpellId();
         this.target = cast.getSpellTarget();
     }
 

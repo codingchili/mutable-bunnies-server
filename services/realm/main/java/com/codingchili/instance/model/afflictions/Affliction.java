@@ -15,24 +15,29 @@ import com.codingchili.core.storage.Storable;
  */
 public class Affliction implements Storable {
     private static transient Random random = new Random();
-    protected String name = "missing name";
-    protected String description = "missing description";
-    protected Float duration = 8.0f;
-    protected Float interval = 2.0f;
-    protected Float chance = 1.0f;
-    protected Scripted modifier;
-    protected Scripted tick;
+    private String id = "no_id";
+    private String name = "missing name";
+    private String description = "missing description";
+    private Float duration = 8.0f;
+    private Float interval = 2.0f;
+    private Float chance = 1.0f;
+    private Scripted modifier;
+    private Scripted tick;
 
     public ActiveAffliction apply(Creature source, Creature target) {
         return new ActiveAffliction(source, target, this);
     }
 
-    public String getName() {
-        return name;
-    }
-
     @Override
     public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
         return name;
     }
 

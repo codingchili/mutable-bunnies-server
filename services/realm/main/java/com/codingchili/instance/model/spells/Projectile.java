@@ -168,6 +168,11 @@ public class Projectile {
         return done.get();
     }
 
+
+    // todo:
+    // implement projectiles on the client :)
+    // use animated sprite, or use particle system. or combine?
+
     private void expire() {
         if (explode) {
             Bindings bindings = getBindings();

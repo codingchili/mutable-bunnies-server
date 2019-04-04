@@ -69,7 +69,7 @@ window.SpawnHandler = class SpawnHandler {
 
     spawn(entity) {
         let vector = entity.vector;
-        let animated = this._isAnimated(entity.model.graphics);
+        let animated = this._isAnimated(entity);
 
         assetLoader.load((resource) => {
             let sprite = this._loadSpriteFrom(resource, entity, animated);
@@ -95,7 +95,8 @@ window.SpawnHandler = class SpawnHandler {
         }, this._graphicsToUrl(entity.model, animated)).begin();
     }
 
-    _isAnimated(graphics) {
+    _isAnimated(entity) {
+        let graphics = entity.model.graphics;
         return !(graphics.includes('.png') || graphics.includes('.jpg'));
     }
 
@@ -139,33 +140,39 @@ window.SpawnHandler = class SpawnHandler {
         }
     }
 
-    _onLootableHook(sprite) {
-        if (sprite.interactions.includes('loot')) {
-            // no supported yet.
-            return false;
-        }
-    }
+    _onLootableHook(entity) {
+        if (entity.interactions.includes('loot')) {
+            entity.interactive = true;
+            entity.buttonMode = true;
 
-    _onDescriptionHook(sprite) {
-        let description = sprite.attributes['description'] || sprite.name;
-
-        if (description) {
-            sprite.interactive = true;
-            sprite.on('pointerdown', (e) => {
+            entity.on('pointerdown', (e) => {
                 input.ifRightMouse(() => {
-                    game.texts.chat(sprite, {text: description});
+                    game.inventory.requestLootList(entity);
                 });
             });
         }
     }
 
-    _onDialogSupportedHook(sprite) {
-        if (sprite.interactions.includes('dialog')) {
-            sprite.interactive = true;
-            sprite.buttonMode = true;
-            sprite.on('pointerdown', (e) => {
+    _onDescriptionHook(entity) {
+        let description = entity.attributes['description'] || entity.name;
+
+        if (description) {
+            entity.interactive = true;
+            entity.on('pointerdown', (e) => {
+                input.ifRightMouse(() => {
+                    game.texts.chat(entity, {text: description});
+                });
+            });
+        }
+    }
+
+    _onDialogSupportedHook(entity) {
+        if (entity.interactions.includes('dialog')) {
+            entity.interactive = true;
+            entity.buttonMode = true;
+            entity.on('pointerdown', (e) => {
                 input.ifLeftMouse(() => {
-                    game.dialogs.start(sprite.id);
+                    game.dialogs.start(entity.id);
                 });
             });
         }

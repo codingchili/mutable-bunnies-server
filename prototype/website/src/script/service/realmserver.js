@@ -30,9 +30,9 @@ class RealmServer {
         this.connection.send('classinfo', {}, callback);
     }
 
-    create(callback, className, characterName) {
+    create(callback, classId, characterName) {
         this.connection.send('character.create', {
-            className: className,
+            classId: classId,
             character: characterName
         }, callback);
     }

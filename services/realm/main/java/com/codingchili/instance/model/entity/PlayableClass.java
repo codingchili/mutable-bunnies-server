@@ -11,7 +11,7 @@ import com.codingchili.core.storage.Storable;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * A playable class, a character template.
  */
 public class PlayableClass implements Storable {
@@ -19,7 +19,8 @@ public class PlayableClass implements Storable {
     private Collection<ArmorType> armors = new ArrayList<>();
     private Collection<String> keywords = new ArrayList<>();
     private Collection<String> spells = new ArrayList<>();
-    private Model model;
+    private Model model = new Model();
+    private String id = "no_id";
     private String name = "default";
     private String description = "description";
     private String theme;
@@ -27,7 +28,11 @@ public class PlayableClass implements Storable {
 
     @Override
     public String getId() {
-        return name;
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

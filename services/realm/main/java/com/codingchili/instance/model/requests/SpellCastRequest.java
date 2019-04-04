@@ -9,21 +9,21 @@ import com.codingchili.instance.model.spells.SpellTarget;
  */
 public class SpellCastRequest {
     private SpellTarget spellTarget;
-    private String spellName;
+    private String spellId;
 
     public SpellTarget getSpellTarget() {
         return spellTarget;
     }
 
-    public String getSpellName() {
-        return spellName;
+    public String getSpellId() {
+        return spellId;
     }
 
     public void setSpellTarget(SpellTarget spellTarget) {
         this.spellTarget = spellTarget;
     }
 
-    public void setSpellName(String spellName) {
-        this.spellName = spellName;
+    public void setSpellId(String spellId) {
+        this.spellId = spellId;
     }
 }

@@ -13,5 +13,5 @@ logging:
   key: "86X2xFqz/FCBBZfdD4DbfZyGssce+TvzQh4qObBIeojg8WEdD4b7jn+njX6VCAnO4cEiS9l0AJVVEpxXJDz8nQ=="
   expiry: 1554740286
 listener:
-  secure: true
+  secure: false
   port: 443

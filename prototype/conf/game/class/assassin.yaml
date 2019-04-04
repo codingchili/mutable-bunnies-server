@@ -19,7 +19,7 @@ spells:
   - "ice venom"
   - "shadow step"
   - "shadow escape"
-  - "potent venom"
+  - "potent_venom"
   - "dagger"
 stats:
   strength: 16

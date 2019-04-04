@@ -17,7 +17,7 @@ public interface MetadataStore<T> {
      * @param name the name as a unique id to retrieve a specific item/
      * @return an item if one exists, empty otherwise.
      */
-    Optional<T> getByName(String name);
+    Optional<T> getById(String name);
 
     /**
      * Retrieve the database as a map. Good for local operations.

@@ -1,15 +1,22 @@
 package com.codingchili.instance.model.events;
 
 import com.codingchili.instance.model.afflictions.ActiveAffliction;
+import com.codingchili.instance.model.stats.Stats;
 
 /**
  * @author Robin Duda
  */
 public class AfflictionEvent implements Event {
     private ActiveAffliction active;
+    private Stats stats;
 
     public AfflictionEvent(ActiveAffliction affliction) {
         this.active = affliction;
+        this.stats = affliction.getSource().getStats();
+    }
+
+    public Stats getStats() {
+        return stats;
     }
 
     public String getSourceId() {
@@ -18,6 +25,10 @@ public class AfflictionEvent implements Event {
 
     public String getTargetId() {
         return active.getTarget().getId();
+    }
+
+    public String getId() {
+        return active.getAffliction().getId();
     }
 
     public String getName() {

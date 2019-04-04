@@ -9,6 +9,7 @@ public enum EventType {
     move,
     death,
     affliction,
+    cleanse,
     join,
     spawn,
     update,
@@ -25,5 +26,5 @@ public enum EventType {
     loot_list,
     dialog,
     error,
-    any
+    loot_unsubscribe, any
 }

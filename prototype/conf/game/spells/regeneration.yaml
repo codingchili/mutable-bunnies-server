@@ -1,5 +1,5 @@
 ---
-id: "regeneration"
+name: "Regeneration"
 description: |
   Heals over 14s for 1% of maximum health (${(this.character.stats.maxhealth * 0.01).toFixed(1)}) and increasing by 0.5% per tick
   up to (${(this.character.stats.maxhealth * (0.005 * 7 + 0.01)).toFixed(1)}).

@@ -6,11 +6,11 @@ package com.codingchili.instance.model.entity;
  * A graphical representation of an object to be used by the client and hit detection.
  */
 public class Model {
-    private String graphics;
+    private String graphics = "game/placeholder.png";
     private String skin;
-    private float scale;
-    private boolean blocking;
-    private Hitbox hitbox;
+    private float scale = 1.0f;
+    private boolean blocking = false;
+    private Hitbox hitbox = new Hitbox();
     private int layer = 1;
 
     /**

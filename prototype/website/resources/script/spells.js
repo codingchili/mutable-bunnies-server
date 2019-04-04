@@ -1,9 +1,12 @@
-window.Spells = class Spells  {
+window.Spells = class Spells {
 
     constructor() {
-        this.gcd = () => {};
-        this.cooldown = () => {};
-        this.charge = () => {};
+        this.gcd = () => {
+        };
+        this.cooldown = () => {
+        };
+        this.charge = () => {
+        };
 
         server.connection.setHandler('spell', (cast) => {
             let now = new Date().getTime();
@@ -31,21 +34,35 @@ window.Spells = class Spells  {
             }
         });
 
+        server.connection.setHandler('cleanse', event => {
+            let target = game.lookup(event.targetId);
+            target.stats = event.stats;
+            target.afflictions = target.afflictions.filter((value) => {
+                return !event.cleansed.contains(value.name);
+            });
+
+            if (target.isPlayer) {
+                application.characterUpdate(target);
+            }
+        });
+
         server.connection.setHandler('affliction', event => {
             let current = game;
             let target = game.lookup(event.targetId);
 
-            let affliction = (({name, description, duration}) => ({name, description, duration}))(event);
-            affliction.id = Math.random().toString(36).substring(7);
+            console.log(event);
+            let affliction = event;
+            affliction.reference = Math.random().toString(36).substring(7);
 
             target.afflictions.list.push(affliction);
+            target.stats = event.stats;
 
             setTimeout(() => {
                 let afflictions = target.afflictions.list;
 
                 if (current.isPlaying) {
                     for (let i = 0; i < afflictions.length; i++) {
-                        if (afflictions[i].id === affliction.id) {
+                        if (afflictions[i].reference === affliction.reference) {
                             target.afflictions.list.splice(i, 1);
 
                             if (target.isPlayer) {
@@ -67,9 +84,9 @@ window.Spells = class Spells  {
         });
     }
 
-    cast(callback, spellName, spellTarget) {
+    cast(callback, spellId, spellTarget) {
         server.connection.send('cast', {
-            spellName: spellName,
+            spellId: spellId,
             spellTarget: spellTarget
         }, callback);
     }
