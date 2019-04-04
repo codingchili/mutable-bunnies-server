@@ -7,12 +7,6 @@ window.Particles = class Particles {
     constructor() {
         this.emitters = {};
         this.elapsed = Date.now();
-
-        application.onGameLoaded(() => {
-            this.spawn("cloud", 300, 300, 3.0);
-            this.spawn("leafs", 575, 225, 12.0);
-        });
-
         game.ticker(() => this._update());
     }
 

@@ -1,0 +1,57 @@
+{
+  "sprites": [
+    "game/particles/sprites/leaf.png"
+  ],
+  "layer": 0,
+  "alpha": {
+    "start": 1,
+    "end": 0.4
+  },
+  "scale": {
+    "start": 1.5,
+    "end": 0.8,
+    "minimumScaleMultiplier": 0.5
+  },
+  "color": {
+    "start": "#6fff00",
+    "end": "#f51d0a"
+  },
+  "speed": {
+    "start": 60,
+    "end": 10,
+    "minimumSpeedMultiplier": 1
+  },
+  "acceleration": {
+    "x": 0,
+    "y": 0
+  },
+  "maxSpeed": 0,
+  "startRotation": {
+    "min": 0,
+    "max": 360
+  },
+  "noRotation": false,
+  "rotationSpeed": {
+    "min": 64,
+    "max": 20
+  },
+  "lifetime": {
+    "min": 1.2,
+    "max": 1.8
+  },
+  "blendMode": "normal",
+  "frequency": 0.1,
+  "emitterLifetime": -1,
+  "maxParticles": 500,
+  "pos": {
+    "x": 4,
+    "y": 4
+  },
+  "addAtBack": true,
+  "spawnType": "circle",
+  "spawnCircle": {
+    "x": 0,
+    "y": -40,
+    "r": 48
+  }
+}
