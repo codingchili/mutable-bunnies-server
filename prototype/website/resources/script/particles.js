@@ -40,14 +40,12 @@ window.Particles = class Particles {
     fixed(name, target, ttl) {
         return this._create((configuration) => {
             let container = new PIXI.Container();
-            container.x = game.player.width;
-            container.y = game.player.height / 2;
             container.layer = configuration.layer;
             configuration.emitterLifetime = ttl;
-            game.player.addChildAt(container, 0);
+            target.addChild(container);
             return container;
         }, (container) => {
-            game.player.removeChild(container);
+            target.removeChild(container);
         }, name);
     }
 
@@ -62,12 +60,13 @@ window.Particles = class Particles {
      */
     following(name, target, ttl) {
         return this._create((configuration) => {
-            let container = game.stage;
+            let container = new PIXI.Container();
             configuration.emitterLifetime = ttl;
-            //game.stage.addChild(container);
+            container.layer = configuration.layer;
+            game.stage.addChild(container);
             return container;
         }, (container) => {
-            game.player.removeChild(container);
+            game.stage.removeChild(container);
         }, name, (emitter, container) => {
             emitter.updateOwnerPos(target.x, target.y);
         });
