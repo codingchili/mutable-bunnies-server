@@ -33,7 +33,7 @@ window.SpawnHandler = class SpawnHandler {
     _init(texture, size) {
         assetLoader.load((sprite) => {
             let container = new PIXI.Container();
-            let tiling = new PIXI.extras.TilingSprite(
+            let tiling = new PIXI.TilingSprite(
                 sprite.texture,
                 size,
                 size
@@ -119,9 +119,9 @@ window.SpawnHandler = class SpawnHandler {
 
     _parseSpineData(jsondata, entity) {
         const rawSkeletonData = jsondata;
-        const rawAtlasData = PIXI.loader.resources[`${entity.model.graphics}.json_atlas`].data;
+        const rawAtlasData = assetLoader.resources[`${entity.model.graphics}.json_atlas`].data;
         const spineAtlas = new PIXI.spine.core.TextureAtlas(rawAtlasData, (image, callback) => {
-            callback(PIXI.BaseTexture.fromImage(this._getImageNameFrom(entity.model.graphics, image)));
+            callback(PIXI.BaseTexture.from(this._getImageNameFrom(entity.model.graphics, image)));
         });
 
         const spineAtlasLoader = new PIXI.spine.core.AtlasAttachmentLoader(spineAtlas);
@@ -146,7 +146,7 @@ window.SpawnHandler = class SpawnHandler {
             entity.buttonMode = true;
 
             entity.on('pointerdown', (e) => {
-                input.ifRightMouse(() => {
+                input.ifLeftMouse(() => {
                     game.inventory.requestLootList(entity);
                 });
             });
@@ -160,7 +160,9 @@ window.SpawnHandler = class SpawnHandler {
             entity.interactive = true;
             entity.on('pointerdown', (e) => {
                 input.ifRightMouse(() => {
-                    game.texts.chat(entity, {text: description});
+                    if (e.data.originalEvent.altKey) {
+                        game.texts.chat(entity, {text: description});
+                    }
                 });
             });
         }
@@ -190,7 +192,7 @@ window.SpawnHandler = class SpawnHandler {
 
     _getImageNameFrom(path, imageName) {
         let directoryName = path.substr(0, path.lastIndexOf('/'));
-        return `${application.realm.resources}/${directoryName}/${imageName}`;
+        return `${application.realm.resources}${directoryName}/${imageName}`;
     }
 
     isPlayer(entity) {

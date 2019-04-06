@@ -14,7 +14,7 @@ class Application {
             clearCache: true,
             rightClick: false,
             logEvents: false,
-            hardResetXY: true
+            hardResetXY: false
         };
 
         this.handlers = {};

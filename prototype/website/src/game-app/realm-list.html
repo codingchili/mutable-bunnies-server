@@ -223,7 +223,7 @@
 
             <div class="list">
                 <template is="dom-repeat" items="{{realms}}" as="realm" sort="{{sort}}">
-                    <paper-material class="item noselect status" on-down="select" hidden="{{realm.hidden}}"
+                    <paper-material class="item noselect status" on-tap="select" hidden="{{realm.hidden}}"
                                     elevation="0">
                         <paper-ripple></paper-ripple>
                         <div class="name">

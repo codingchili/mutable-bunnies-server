@@ -14,7 +14,7 @@ window.DialogHandler = class DialogHandler {
 
         server.connection.setHandler('talk', {
             error: (event) => {
-                game.texts.chat(game.lookup(application.character.id), {text: event.message});
+                game.texts.chat(game.player, {text: event.message});
             }
         });
     }

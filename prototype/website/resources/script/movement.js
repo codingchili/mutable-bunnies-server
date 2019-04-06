@@ -27,12 +27,12 @@ window.MovementHandler = class MovementHandler {
         }, [UP, RIGHT, LEFT, DOWN, RUN_TOGGLE]);
 
         window.onmousedown = (e) => {
-            if (e.button === 2 && game.isPlaying) {
+            if (e.button === 2 && game.isPlaying && !e.altKey && !input.blocked) {
                 game.movement.moveTo(e.x + game.camera.x, e.y + game.camera.y);
             }
         };
         window.ontouchstart = (e) => {
-            if (game.isPlaying) {
+            if (game.isPlaying && !input.blocked) {
                 game.movement.moveTo(e.touches[0].clientX + game.camera.x, e.touches[0].clientY + game.camera.y);
             }
         };
