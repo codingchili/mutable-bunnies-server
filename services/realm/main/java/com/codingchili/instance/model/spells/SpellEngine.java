@@ -71,7 +71,13 @@ public class SpellEngine {
                     if (active.onCastBegin(game)) {
                         cancel(caster);
                         casting.put(active.getSource(), active);
+
                         game.publish(new SpellCastEvent(active));
+
+                        // restrict movement speed while casting.
+                        if (!spell.get().getMobile()) {
+                            game.movement().stop(caster);
+                        }
                         return SpellResult.CASTING;
                     } else {
                         return SpellResult.UNABLE;
@@ -82,6 +88,39 @@ public class SpellEngine {
             }
         } else {
             throw new NoSuchSpellException(spellId);
+        }
+    }
+
+    /**
+     * Checks if the given target is casting a spell.
+     *
+     * @param caster the caster.
+     * @return an optional with the spell being casted, otherwise empty.
+     */
+    public Optional<ActiveSpell> casting(Creature caster) {
+        if (casting.containsKey(caster)) {
+            return Optional.of(casting.get(caster));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Checks if the given creature is movement impaired due to spellcasting.
+     *
+     * @param creature the caster casting the spell.
+     * @return true if the caster is not casting a spell or is casting a mobile spell.
+     */
+    public boolean mobile(Creature creature) {
+        Optional<ActiveSpell> spell = casting(creature);
+
+        // should we check if the given creature is movement impaired by an affliction?
+
+        if (spell.isPresent()) {
+            return spell.get().getSpell().getMobile();
+        } else {
+            // not casting a spell: creature is mobile.
+            return true;
         }
     }
 

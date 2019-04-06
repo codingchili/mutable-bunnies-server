@@ -1,6 +1,7 @@
 package com.codingchili.instance.model.entity;
 
 import com.codingchili.instance.context.GameContext;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -142,6 +143,7 @@ public class Vector {
     /**
      * @return true if the velocity of the vector is greater than 0.
      */
+    @JsonIgnore
     public boolean isMoving() {
         return velocity > 0f;
     }

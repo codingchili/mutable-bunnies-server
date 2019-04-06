@@ -67,18 +67,24 @@ public class MovementEngine {
     /**
      * Updates the vector and cancels any existing behaviors.
      *
-     * @param vector     contains new vector properties, velocity and direction.
-     * @param creatureId the id of the creature to modify the vector of.
+     * @param creature the creature to modify the vector of.
+     * @param vector   contains new vector properties, velocity and direction.
      */
-    public void apply(Vector vector, String creatureId) {
-        Creature creature = game.getById(creatureId);
+    public void move(Creature creature, Vector vector) {
+        tryMove(creature, () -> {
+            creature.getVector()
+                    .setVelocity(vector.getVelocity())
+                    .setDirection(vector.getDirection());
 
-        creature.getVector()
-                .setVelocity(vector.getVelocity())
-                .setDirection(vector.getDirection());
+            cancel(creature);
+            update(creature);
+        });
+    }
 
-        cancel(creature);
-        update(creature);
+    private void tryMove(Creature creature, Runnable runnable) {
+        if (game.spells().mobile(creature)) {
+            runnable.run();
+        }
     }
 
     /**
@@ -101,7 +107,26 @@ public class MovementEngine {
      * @param target the creature that is to be followed.
      */
     public void follow(Creature source, Creature target) {
-        behaviours.put(source, new FollowBehaviour(source, target));
+        tryActivate(source, new FollowBehaviour(source, target));
+    }
+
+    private void tryActivate(Creature creature, MovementBehaviour behavior) {
+        // allow blocking behaviours?
+        tryMove(creature, () -> {
+            behaviours.put(creature, behavior);
+            behavior.activate(game);
+        });
+    }
+
+    /**
+     * Stops moving the given source and cancels any behaviours.
+     *
+     * @param source the creature to stop.
+     */
+    public void stop(Creature source) {
+        source.getVector().stop();
+        cancel(source);
+        update(source);
     }
 
     /**
@@ -111,7 +136,7 @@ public class MovementEngine {
      * @param target the target to move the source relative to.
      */
     public void flee(Creature source, Creature target) {
-        behaviours.put(source, new FleeBehaviour(source, target));
+        tryActivate(source, new FleeBehaviour(source, target));
     }
 
     /**
@@ -121,14 +146,13 @@ public class MovementEngine {
      * @param vector   the target vector.
      */
     public void moveTo(Creature creature, Vector vector) {
-        behaviours.put(creature,
-                new MoveToPointBehaviour(creature, vector)
-                        .activate(game));
+        tryActivate(creature,
+                new MoveToPointBehaviour(creature, vector));
     }
 
 
     /**
-     * Cancels the behavior set on the given creature.
+     * Cancels the behavior set on the given creature and stops moving it.
      *
      * @param creature the creature to cancel behaviours on.
      */
@@ -153,6 +177,7 @@ public class MovementEngine {
                     ResponseStatus status = ResponseStatus.valueOf(response.getString(PROTOCOL_STATUS));
 
                     if (status.equals(ResponseStatus.ACCEPTED)) {
+                        game.spells().cancel(creature);
                         game.remove(creature);
                     } else {
                         creature.handle(new ErrorEvent(response.getString(PROTOCOL_MESSAGE)));
