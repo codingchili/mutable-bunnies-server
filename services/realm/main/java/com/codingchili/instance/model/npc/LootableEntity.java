@@ -19,7 +19,7 @@ import com.codingchili.core.context.CoreRuntimeException;
  * container expires, is emptied or the creature leaves the instance.
  */
 public class LootableEntity extends SimpleEntity {
-    private static final int LOOT_DECAY_TIME = GameContext.secondsToTicks(600);
+    private static final int LOOT_DECAY_TIME = 300;
     private Set<String> subscribers = new HashSet<>();
     private List<Item> items;
 
@@ -37,10 +37,9 @@ public class LootableEntity extends SimpleEntity {
     public void setContext(GameContext game) {
         super.setContext(game);
 
-        game.ticker(ticker -> {
+        game.instance().timer(LOOT_DECAY_TIME, (id) -> {
             game.remove(this);
-            ticker.disable();
-        }, LOOT_DECAY_TIME);
+        });
     }
 
     public void subscribe(Creature source) {
