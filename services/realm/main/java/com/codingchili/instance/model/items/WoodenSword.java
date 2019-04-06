@@ -21,27 +21,5 @@ public class WoodenSword extends Item {
         stats.update(Attribute.attackpower, 5);
         stats.update(Attribute.attackspeed, 2);
         stats.set(Attribute.health, 1.1f);
-
-        //onUse = new ReferencedScript("heal");
-    }
-
-    public static void main(String[] args) {
-        String yaml = Serializer.yaml(new WoodenSword());
-        Item item = Serializer.unyaml(yaml, Item.class);
-        String yaml2 = Serializer.yaml(item);
-        System.out.println(yaml2);
-
-
-        JexlEngine engine = new JexlEngine();
-        Script expression = engine.createScript("" +
-                "stats[attribute.strength];" +
-                "stats[attribute.attackpower];" +
-                "return 500;");
-
-        JexlContext context = new MapContext();
-        context.set("stats", item.stats);
-        context.set("attribute", Attribute.class);
-        System.out.println(expression.execute(context));
-
     }
 }

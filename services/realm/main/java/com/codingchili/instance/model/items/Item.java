@@ -23,7 +23,7 @@ public class Item extends ItemType implements Storable {
     protected Scripted onHit = null;
     protected Integer quantity = 1;
 
-    // todo: needs a cooldown?
+    // todo: apply GCD
     protected Scripted onUse = null;
 
     public Boolean isUsable() {
@@ -34,48 +34,54 @@ public class Item extends ItemType implements Storable {
         return description;
     }
 
-    public void setDescription(String description) {
+    public Item setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Item setName(String name) {
         this.name = name;
+        return this;
     }
 
     public Stats getStats() {
         return stats;
     }
 
-    public void setStats(Stats stats) {
+    public Item setStats(Stats stats) {
         this.stats = stats;
+        return this;
     }
 
     public Scripted getOnHit() {
         return onHit;
     }
 
-    public void setOnHit(Scripted onHit) {
+    public Item setOnHit(Scripted onHit) {
         this.onHit = onHit;
+        return this;
     }
 
     public Scripted getOnDamaged() {
         return onDamaged;
     }
 
-    public void setOnDamaged(Scripted onDamaged) {
+    public Item setOnDamaged(Scripted onDamaged) {
         this.onDamaged = onDamaged;
+        return this;
     }
 
     public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public Item setQuantity(Integer quantity) {
         this.quantity = quantity;
+        return this;
     }
 
     public String getId() {
@@ -91,16 +97,18 @@ public class Item extends ItemType implements Storable {
         return rarity;
     }
 
-    public void setRarity(ItemRarity rarity) {
+    public Item setRarity(ItemRarity rarity) {
         this.rarity = rarity;
+        return this;
     }
 
     public String getIcon() {
         return icon;
     }
 
-    public void setIcon(String icon) {
+    public Item setIcon(String icon) {
         this.icon = icon;
+        return this;
     }
 
     @Override

@@ -9,7 +9,7 @@
     Polymer element for a simple admin-panel using iron-pages.
  -->
 
-<dom-module id="character-stats">
+<dom-module id="stats-view">
     <link rel="import" href="../style/theme.css" type="css">
     <link rel="import" href="../style/style.css" type="css">
     <template>
@@ -54,16 +54,17 @@
             <template is="dom-repeat" items="[[_toList(selected.stats.*)]]" as="attribute">
                 <div class$="{{_layout(compact)}}">
                     <span class="name">[[attribute.name]]</span>
-                    <span class="value" style$="color:[[_color(selected)]];">[[attribute.value]]</span>
+                    <span class="value" style$="color:[[_color(selected)]];">
+                        <b>[[attribute.value]]</b>
+                    </span>
                 </div>
             </template>
         </div>
 
-
     </template>
 </dom-module>
 <script>
-    class CharacterStats extends Polymer.GestureEventListeners(Polymer.Element) {
+    class StatsView extends Polymer.GestureEventListeners(Polymer.Element) {
 
         constructor() {
             super();
@@ -71,7 +72,7 @@
         }
 
         static get is() {
-            return 'character-stats';
+            return 'stats-view';
         }
 
         static get properties() {
@@ -113,5 +114,5 @@
         }
     }
 
-    window.customElements.define(CharacterStats.is, CharacterStats);
+    window.customElements.define(StatsView.is, StatsView);
 </script>

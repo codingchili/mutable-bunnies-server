@@ -2,7 +2,7 @@
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/paper-progress/paper-progress.html">
 
-<link rel="import" href="../character-stats.html">
+<link rel="import" href="../stats-view.html">
 
 <!--
     @author Robin Duda
@@ -183,8 +183,8 @@
                 <paper-tooltip animation-delay="0" position="bottom" class="stats-tooltip">
                     <div class="class-stats">
                         Stats
-                        <character-stats id="stats" compact="true" selected="{{character}}"
-                                         style="display:block"></character-stats>
+                        <stats-view id="stats" compact="true" selected="{{character}}"
+                                         style="display:block"></stats-view>
                     </div>
                 </paper-tooltip>
                 <img class="portrait" src="[[realm.resources]]/gui/class/[[character.classId]].svg">

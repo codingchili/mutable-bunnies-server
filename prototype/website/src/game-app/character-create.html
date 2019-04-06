@@ -12,7 +12,7 @@
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 
-<link rel="import" href="character-stats.html">
+<link rel="import" href="stats-view.html">
 
 
 <!--
@@ -246,8 +246,8 @@
                                     <paper-tooltip animation-delay="0" position="left">
                                         <div class="class-stats">
                                             Stats
-                                            <character-stats compact="true" selected="{{_classInfo(classes, playerclass.id, realm.*)}}">
-                                            </character-stats>
+                                            <stats-view compact="true" selected="{{_classInfo(classes, playerclass.id, realm.*)}}">
+                                            </stats-view>
                                         </div>
                                     </paper-tooltip>
                                 </div>
@@ -312,7 +312,7 @@
                         <iron-icon on-tap="createCharacter" class="create-button"
                                    icon="icons:send"></iron-icon>
 
-                        <character-stats selected="[[_classInfo(classes, selected.id)]]"></character-stats>
+                        <stats-view selected="[[_classInfo(classes, selected.id)]]"></stats-view>
                     </paper-material>
                 </div>
             </div>

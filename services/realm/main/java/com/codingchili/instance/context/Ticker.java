@@ -17,6 +17,11 @@ public class Ticker implements Supplier<Integer> {
     private Long lastTick = System.currentTimeMillis();
     private Consumer<Ticker> exec;
 
+    /**
+     * @param context the game context the ticker runs on.
+     * @param exec the task that will be periodically executed.
+     * @param tick the interval in game ticks to run the ticker.
+     */
     public Ticker(GameContext context, Consumer<Ticker> exec, Integer tick) {
         this.exec = exec;
         this.context = context;
