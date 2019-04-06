@@ -29,6 +29,8 @@ public class LootableEntity extends SimpleEntity {
         this.items = items;
         this.interactions.add("loot");
         this.name = name;
+
+        vector.stop();
     }
 
     @Override
