@@ -6,6 +6,7 @@ window.AssetLoader = class AssetLoader {
         this.completers = [];
         this.loading = false;
         this.queue = [];
+        this.resources = PIXI.loader.resources;
     }
 
     load(callback, assetName) {
@@ -89,4 +90,4 @@ window.AssetLoader = class AssetLoader {
     }
 };
 
-var assetLoader = new AssetLoader();
+var Loader = new AssetLoader();

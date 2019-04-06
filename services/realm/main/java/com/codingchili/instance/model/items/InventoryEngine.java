@@ -169,6 +169,7 @@ public class InventoryEngine {
      *
      * @param source   the creature that is interested in the loot contents.
      * @param targetId the target loot container.
+     * @return future
      */
     public Future<Void> listLoot(Creature source, String targetId) {
         LootableEntity entity = game.getById(targetId);

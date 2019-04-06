@@ -155,14 +155,14 @@ class Application {
 
     onGameLoaded(callback) {
         if (this.game) {
-            callback();
+            callback(this.game);
         }
         this.subscribe('onGameLoaded', callback);
     }
 
-    gameLoaded() {
-        this.game = true;
-        this.publish('onGameLoaded');
+    gameLoaded(game) {
+        this.game = game;
+        this.publish('onGameLoaded', game);
     }
 
     scriptShutdown() {

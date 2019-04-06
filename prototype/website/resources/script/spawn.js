@@ -31,9 +31,9 @@ window.SpawnHandler = class SpawnHandler {
     }
 
     _init(texture, size) {
-        assetLoader.load((sprite) => {
+        Loader.load((sprite) => {
             let container = new PIXI.Container();
-            let tiling = new PIXI.TilingSprite(
+            let tiling = new PIXI.extras.TilingSprite(
                 sprite.texture,
                 size,
                 size
@@ -71,7 +71,7 @@ window.SpawnHandler = class SpawnHandler {
         let vector = entity.vector;
         let animated = this._isAnimated(entity);
 
-        assetLoader.load((resource) => {
+        Loader.load((resource) => {
             let sprite = this._loadSpriteFrom(resource, entity, animated);
 
             Object.assign(sprite, entity);
@@ -119,7 +119,7 @@ window.SpawnHandler = class SpawnHandler {
 
     _parseSpineData(jsondata, entity) {
         const rawSkeletonData = jsondata;
-        const rawAtlasData = assetLoader.resources[`${entity.model.graphics}.json_atlas`].data;
+        const rawAtlasData = Loader.resources[`${entity.model.graphics}.json_atlas`].data;
         const spineAtlas = new PIXI.spine.core.TextureAtlas(rawAtlasData, (image, callback) => {
             callback(PIXI.BaseTexture.from(this._getImageNameFrom(entity.model.graphics, image)));
         });

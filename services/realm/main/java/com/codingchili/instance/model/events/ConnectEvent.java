@@ -3,6 +3,7 @@ package com.codingchili.instance.model.events;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.context.InstanceSettings;
 import com.codingchili.instance.model.entity.*;
+import com.codingchili.instance.model.spells.SpellState;
 
 import java.util.Collection;
 
@@ -16,7 +17,7 @@ public class ConnectEvent implements Event {
     private Collection<Entity> entities;
     private Collection<Creature> creatures;
     private Skybox skybox;
-    private String player;
+    private Creature player;
     private String texture;
     private int size;
 
@@ -24,7 +25,7 @@ public class ConnectEvent implements Event {
      * @param game   the game context (instance) on which the connection is made.
      * @param player theplayer that is connecting.
      */
-    public ConnectEvent(GameContext game, String player) {
+    public ConnectEvent(GameContext game, Creature player) {
         InstanceSettings instance = game.instance().settings();
         this.entities = game.entities().all();
         this.creatures = game.creatures().all();
@@ -36,7 +37,11 @@ public class ConnectEvent implements Event {
 
     @Override
     public String getSource() {
-        return player;
+        return player.getId();
+    }
+
+    public SpellState getSpellState() {
+        return player.getSpells();
     }
 
     @Override

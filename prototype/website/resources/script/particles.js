@@ -93,11 +93,11 @@ window.Particles = class Particles {
         let id = Math.random().toString(36).substring(7);
         let images = [];
 
-        assetLoader.load((configuration) => {
+        Loader.load((configuration) => {
             let container = init(configuration);
 
             configuration.sprites.forEach(fileName => {
-                assetLoader.load((sprite) => {
+                Loader.load((sprite) => {
                     images.push(sprite.texture);
 
                     if (images.length === configuration.sprites.length) {

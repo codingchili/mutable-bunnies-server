@@ -166,7 +166,7 @@
                         </template>
                         <template is="dom-if" if="{{!_chargeable(spell, character)}}">
                             <paper-progress id="cd-bar-[[spell.id]]" class="cooldown-bar transiting" min="0"
-                                            max="100"></paper-progress>
+                                            max="100" value="0"></paper-progress>
                         </template>
                     </div>
                 </template>
@@ -213,12 +213,13 @@
                         learned: []
                     }
                 };
+            }
+
+            ready() {
+                super.ready();
 
                 application.onCharacterLoaded(player => {
                     this.set('character', player);
-                    for (let learned of player.spells.learned) {
-                        this.set(`charges.${learned}`, 0);
-                    }
                 });
 
                 application.onRealmLoaded(realm => {
@@ -226,7 +227,7 @@
                     this.spells = realm.spells;
                 });
 
-                application.onGameLoaded(() => {
+                application.onGameLoaded((game) => {
                     input.onKeysListener({
                         down: (key) => {
                             let spellId = this.character.spells.learned[this.hotkeys.indexOf(key)];
@@ -235,32 +236,48 @@
                     }, this.hotkeys);
 
                     game.spells.onCharge((spellId, charges) => {
+                        console.log(`charges ${spellId} has ${charges}`);
                         this.set(`charges.${spellId}`, charges);
                     });
 
                     game.spells.onCooldown((spell, ms) => {
-                        console.log(`spell ${spell} on cooldown for ${ms}ms.`);
+                        // chargeable spells don't show any cooldown information.
+                        if (!this._chargeable(this._getSpellById(spell))) {
 
-                        this.set(`cooldown.${spell}`, true);
-                        let bar = this.shadowRoot.querySelector(`#cd-bar-${spell}`);
-                        bar.style.visibility = 'visible';
-                        bar.value = 100;
-                        bar.style.setProperty(
-                            '--paper-progress-transition-duration',
-                            ms / 1000 + 's'
-                        );
+                            console.log(`spell ${spell} on cd for ${ms}ms.`);
 
-                        setTimeout(() => {
-                            this.set(`cooldown.${spell}`, false);
-                            bar.style.visibility = 'hidden';
+                            this.set(`cooldown.${spell}`, true);
+                            let bar = this.shadowRoot.querySelector(`#cd-bar-${spell}`);
+                            bar.style.visibility = 'visible';
+
+                            // reset the value to 0.
                             bar.value = 0;
                             bar.style.setProperty('--paper-progress-transition-duration', '0s');
-                        }, ms);
+
+                            setTimeout(() => {
+                                bar.value = 100;
+                                bar.style.setProperty(
+                                    '--paper-progress-transition-duration',
+                                    ms / 1000 + 's'
+                                );
+                            }, 0);
+
+                            setTimeout(() => {
+                                this.set(`cooldown.${spell}`, false);
+                                bar.style.visibility = 'hidden';
+                                bar.value = 0;
+                                bar.style.setProperty('--paper-progress-transition-duration', '0s');
+                            }, ms);
+                        }
                     });
 
                     game.spells.onGCD((ms) => {
                         console.log(`global gcd for ${ms}ms.`);
                     });
+
+                    setTimeout(() => {
+                        game.spells.emit();
+                    }, 0);
                 });
             }
 

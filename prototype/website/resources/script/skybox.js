@@ -8,7 +8,7 @@ window.Skybox = class {
     }
 
     init(skybox) {
-        assetLoader.load(background => {
+        Loader.load(background => {
             this.background = background;
 
             let ratio = Math.max(window.innerWidth / 2048, window.innerHeight / 1536);
@@ -18,7 +18,7 @@ window.Skybox = class {
 
             game.root.addChildAt(background, 0);
             for (let cloud = 1; cloud <= 3; cloud++) {
-                assetLoader.load(loaded => {
+                Loader.load(loaded => {
                     for (let i = 0; i < 2; i++) {
                         let cloud = new PIXI.Sprite(loaded.texture);
                         cloud.y = Math.random() * window.innerHeight;

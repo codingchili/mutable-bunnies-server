@@ -17,14 +17,18 @@ window.Game = class Game extends Canvas {
         server.join({
             accepted: (event) => {
                 super._reset();
+
                 this.spawner.join(event);
                 this.skybox.init(event.skybox);
-                done.accepted();
+                this.spells.init(event);
 
                 if (!this.loaded) {
-                    application.gameLoaded();
+                    console.log('application loaded emit');
+                    application.gameLoaded(game);
                     this.loaded = true;
                 }
+
+                done.accepted();
             },
             error: (event) => {
                 done.error(event.message);

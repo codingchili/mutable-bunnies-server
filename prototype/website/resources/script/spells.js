@@ -5,15 +5,37 @@
 window.Spells = class Spells {
 
     constructor() {
-        this.gcd = () => {};
-        this.cooldown = () => {};
-        this.charge = () => {};
+        this.gcd = (e) => {};
+        this.cooldown = (e) => {};
+        this.charge = (e) => {};
 
         server.connection.setHandler('spell', (event) => this._spell(event));
         server.connection.setHandler('stats', (event) => this._stats(event));
         server.connection.setHandler('cleanse', (event) => this._cleanse(event));
         server.connection.setHandler('affliction', (event) => this._affliction(event));
         server.connection.setHandler('spellstate', (event) => this._spellstate(event));
+    }
+
+    init(event) {
+        this.state = event.spellState;
+    }
+
+    emit() {
+        let now = new Date().getTime();
+
+        console.log(this.state);
+
+        for (let spell in this.state.charges) {
+            this.charge(spell, Math.trunc(this.state.charges[spell]));
+        }
+
+        for (let spell in this.state.cooldowns) {
+            let cooldown = this.state.cooldowns[spell] - now;
+
+            if (cooldown > 0) {
+                this.cooldown(spell, cooldown);
+            }
+        }
     }
 
     /**

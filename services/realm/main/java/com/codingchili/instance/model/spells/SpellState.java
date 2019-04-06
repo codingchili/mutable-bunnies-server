@@ -157,6 +157,21 @@ public class SpellState {
     }
 
     /**
+     * @return a map of spell id's and the number of available charges.
+     */
+    public Map<String, Float> getCharges() {
+        return this.charges;
+    }
+
+    /**
+     * @return a map of spell id's and the unix epoch at which the cooldown expires.
+     */
+    public Map<String, Long> getCooldowns() {
+        return this.casted;
+
+    }
+
+    /**
      * @param spellSet a set of spells to set as learned.
      * @return fluent.
      */
