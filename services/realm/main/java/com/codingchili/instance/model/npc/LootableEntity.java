@@ -48,6 +48,10 @@ public class LootableEntity extends SimpleEntity {
         subscribers.add(source.getId());
     }
 
+    public List<Item> getItems() {
+        return items;
+    }
+
     public void unsubscribe(String targetId) {
         subscribers.remove(targetId);
     }

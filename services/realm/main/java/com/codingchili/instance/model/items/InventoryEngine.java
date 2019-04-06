@@ -1,11 +1,13 @@
 package com.codingchili.instance.model.items;
 
 import com.codingchili.instance.context.GameContext;
-import com.codingchili.instance.model.entity.Creature;
+import com.codingchili.instance.model.dialog.InteractionOutOfRangeException;
+import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.events.EquipItemEvent;
 import com.codingchili.instance.model.npc.LootableEntity;
 import com.codingchili.instance.model.spells.SpellTarget;
 import com.codingchili.instance.scripting.Bindings;
+import io.vertx.core.Future;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +21,7 @@ import com.codingchili.core.context.CoreRuntimeException;
  */
 public class InventoryEngine {
     public static final String TARGET = "target";
+    public static final int LOOT_RANGE = 164;
     private GameContext game;
 
     /**
@@ -150,6 +153,7 @@ public class InventoryEngine {
      * @param itemId   the id of the item in the container to take.
      */
     public void takeLoot(Creature source, String targetId, String itemId) {
+        // allow only if subscribed !!!
         LootableEntity entity = game.getById(targetId);
         Item item = entity.takeItem(itemId);
         source.getInventory().add(item);
@@ -162,11 +166,22 @@ public class InventoryEngine {
      * @param source   the creature that is interested in the loot contents.
      * @param targetId the target loot container.
      */
-    public void listLoot(Creature source, String targetId) {
+    public Future<Void> listLoot(Creature source, String targetId) {
         LootableEntity entity = game.getById(targetId);
+        Future<Void> future = Future.future();
 
-        // must subscribe to updates when other players remove loot etc.
-        entity.subscribe(source);
+        if (targetInRange(source, entity)) {
+            if (entity.getItems().isEmpty()) {
+                future.fail(new LootableEmptyException());
+            } else {
+                entity.subscribe(source);
+                future.complete();
+                game.movement().stop(source);
+            }
+        } else {
+            future.fail(new InteractionOutOfRangeException());
+        }
+        return future;
     }
 
     /**
@@ -178,6 +193,13 @@ public class InventoryEngine {
     public void unsubscribe(String target, String subscribed) {
         LootableEntity entity = game.getById(subscribed);
         entity.unsubscribe(target);
+    }
+
+    private boolean targetInRange(Entity source, Entity target) {
+        Vector vector = target.getVector().copy()
+                .setSize(LOOT_RANGE);
+
+        return game.creatures().radius(vector).contains(source);
     }
 
     private void update(Creature source) {

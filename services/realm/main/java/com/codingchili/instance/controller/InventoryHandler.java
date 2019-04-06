@@ -13,7 +13,7 @@ import com.codingchili.core.protocol.Api;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * Handles inventory - list, equip and consume items.
  */
 public class InventoryHandler implements GameHandler {
@@ -68,7 +68,11 @@ public class InventoryHandler implements GameHandler {
     @Api
     public void loot_list(InstanceRequest request) {
         ListEntityLootEvent event = request.raw(ListEntityLootEvent.class);
-        inventory.listLoot(creature(request), event.getTargetId());
+        inventory.listLoot(creature(request), event.getTargetId()).setHandler(done -> {
+            if (done.failed()) {
+                request.error(done.cause());
+            }
+        });
     }
 
     @Api
