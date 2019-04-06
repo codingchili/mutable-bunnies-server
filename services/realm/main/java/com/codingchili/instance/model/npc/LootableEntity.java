@@ -25,12 +25,12 @@ public class LootableEntity extends SimpleEntity {
 
 
     public LootableEntity(String name, Vector vector, List<Item> items) {
-        this.vector = vector;
+        this.vector = vector.copy();
         this.items = items;
         this.interactions.add("loot");
         this.name = name;
 
-        vector.stop();
+        this.vector.stop();
     }
 
     @Override
@@ -60,9 +60,9 @@ public class LootableEntity extends SimpleEntity {
         for (Item item : items) {
             if (item.getId().equals(itemId)) {
 
-                if (items.size() == 0) {
+                /*if (items.size() == 0) {
                     game.remove(this);
-                }
+                }*/
 
                 items.remove(item);
                 notifySubscribers();
@@ -71,6 +71,10 @@ public class LootableEntity extends SimpleEntity {
             }
         }
         throw new CoreRuntimeException("Item is not available.");
+    }
+
+    public boolean subscribed(Creature source) {
+        return subscribers.contains(source.getId());
     }
 
     private void notifySubscribers() {
@@ -93,6 +97,5 @@ public class LootableEntity extends SimpleEntity {
         event.setTargetId(getId());
         return event;
     }
-
 }
 

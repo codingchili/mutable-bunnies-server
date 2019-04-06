@@ -140,24 +140,28 @@ public class InventoryEngine {
         update(source);
 
         loot.add(new WoodenSword());
+        loot.add(new Apple());
 
         game.add(new LootableEntity("corpse of " + source.getName(), source.getVector(), loot));
     }
 
     /**
      * Takes an item out of the loot container as specified by its item id
-     * and moves it into the inventory of the looter.
+     * and moves it into the inventory of the looter. If the source entity
+     * is not already subscribed the action is ignored.
      *
      * @param source   the creature performing the looting.
      * @param targetId the id of the container that holds the loot.
      * @param itemId   the id of the item in the container to take.
      */
     public void takeLoot(Creature source, String targetId, String itemId) {
-        // allow only if subscribed !!!
         LootableEntity entity = game.getById(targetId);
-        Item item = entity.takeItem(itemId);
-        source.getInventory().add(item);
-        update(source);
+
+        if (entity.subscribed(source)) {
+            Item item = entity.takeItem(itemId);
+            source.getInventory().add(item);
+            update(source);
+        }
     }
 
     /**
