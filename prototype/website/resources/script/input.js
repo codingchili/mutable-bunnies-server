@@ -78,7 +78,6 @@ window.InputManager = class InputManager {
 
     _onKeyDown(e) {
         let key = e.key || e.button;
-
         if (!this.keys[key]) {
             this.keys[key] = true;
             if (this.keyDownListeners[key]) {

@@ -21,7 +21,7 @@ public class Spell implements Storable, Configurable {
     private Target target = Target.caster; // spell target: caster, area etc.
     private Integer charges = 0;  // number of times the spell can be cast in a sequence without recharge.
     private Integer range = 100; // how far away the target may be.
-    private Float interval = 0.5f; // how often to call onProgress and onEffects.
+    private Float interval = 0.5f; // how often to call onProgress and onActive.
     private Float cooldown = 1.0f; // minimum time between casting the spell.
     private Float recharge = 1.0f; // time taken to generate one charge.
     private Float casttime = 0.0f; // the time taken to cast the spell.

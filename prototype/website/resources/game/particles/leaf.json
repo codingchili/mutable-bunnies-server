@@ -2,7 +2,7 @@
   "sprites": [
     "game/particles/sprites/leaf.png"
   ],
-  "layer": 0,
+  "layer": 2,
   "alpha": {
     "start": 1,
     "end": 0.4

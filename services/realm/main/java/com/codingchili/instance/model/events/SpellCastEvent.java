@@ -29,7 +29,7 @@ public class SpellCastEvent implements Event {
         return spell.getCycle();
     }
 
-    public SpellTarget getTarget() {
+    public SpellTarget getSpellTarget() {
         return spell.getTarget();
     }
 

@@ -11,7 +11,7 @@ public class Model {
     private float scale = 1.0f;
     private boolean blocking = false;
     private Hitbox hitbox = new Hitbox();
-    private int layer = 1;
+    private int layer = 5;
 
     /**
      * @return the graphical representation of the model, a sprite for example.

@@ -386,9 +386,8 @@ public class SpellEngine {
             if (spell.active(delta)) {
 
                 if (spell.shouldTick(delta)) {
-                    spell.onSpellEffects(game);
+                    spell.onSpellActive(game);
                 }
-
                 return false;
             } else {
                 return true;

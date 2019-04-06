@@ -26,6 +26,7 @@ public class Bindings extends HashMap<String, Object> {
     private static final String SOURCE = "source";
     private static final String TARGET = "target";
     private static final String STATE = "state";
+    public static final Bindings NONE = new Bindings();
 
     public Bindings() {}
 

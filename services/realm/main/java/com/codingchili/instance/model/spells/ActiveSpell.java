@@ -36,17 +36,17 @@ public class ActiveSpell {
     private float delta = 0f;
 
     public ActiveSpell(Spell spell) {
-        this.timer = GameContext.secondsToTicks(spell.getActive());
         this.progress = GameContext.secondsToTicks(spell.getCasttime());
         this.spell = spell;
     }
 
     public boolean completed(float delta) {
+        this.timer = GameContext.secondsToTicks(spell.getActive());
         return ((progress -= delta) <= 0);
     }
 
     public boolean active(float delta) {
-        return ((timer -= delta) <= 0);
+        return ((timer -= delta) >= 0);
     }
 
     public void onCastProgress(GameContext game) {
@@ -55,7 +55,7 @@ public class ActiveSpell {
             try {
                 do {
                     spell.getOnCastProgress().apply(bindings);
-                    this.delta -= spell.getInterval();
+                    this.delta -= GameContext.secondsToTicks(spell.getInterval());
                 } while (this.delta > 0);
             } catch (Throwable e) {
                 game.getLogger(getClass()).onError(e);
@@ -90,12 +90,12 @@ public class ActiveSpell {
         }
     }
 
-    public void onSpellEffects(GameContext game) {
+    public void onSpellActive(GameContext game) {
         if (spell.getOnSpellActive() != null) {
             Bindings bindings = getBindings(game);
             do {
                 spell.getOnSpellActive().apply(bindings);
-                this.delta -= spell.getInterval();
+                this.delta -= GameContext.secondsToTicks(spell.getInterval());
             } while (this.delta > 0);
         }
     }

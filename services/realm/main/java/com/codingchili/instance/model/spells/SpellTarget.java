@@ -2,6 +2,8 @@ package com.codingchili.instance.model.spells;
 
 import com.codingchili.instance.model.entity.Vector;
 
+import java.util.Objects;
+
 /**
  * @author Robin Duda
  * <p>
@@ -13,6 +15,7 @@ public class SpellTarget {
     private String targetId;
 
     public Vector getVector() {
+        Objects.requireNonNull(vector, "target vector is not set in spell target.");
         return vector;
     }
 

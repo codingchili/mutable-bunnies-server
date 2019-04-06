@@ -5,9 +5,30 @@
 window.Spells = class Spells {
 
     constructor() {
-        this.gcd = (e) => {};
-        this.cooldown = (e) => {};
-        this.charge = (e) => {};
+        this.gcd = (e) => {
+        };
+        this.cooldown = (e) => {
+        };
+        this.charge = (e) => {
+        };
+
+        input.onKeysListener({
+            down: () => {
+                if (this.loaded) {
+                    let marker = this.loaded.marker;
+                    let loaded = this.loaded;
+
+                    game.stage.removeChild(marker);
+                    this._startCast(loaded.callback, loaded.spellId, {
+                        vector: {
+                            x: marker.x,
+                            y: marker.y
+                        }
+                    });
+                }
+                delete this.loaded;
+            }
+        }, [0]);
 
         server.connection.setHandler('spell', (event) => this._spell(event));
         server.connection.setHandler('stats', (event) => this._stats(event));
@@ -16,10 +37,18 @@ window.Spells = class Spells {
         server.connection.setHandler('spellstate', (event) => this._spellstate(event));
     }
 
+    /**
+     * @param event initializes the spell handler with the given player spell state.
+     */
     init(event) {
         this.state = event.spellState;
+        this.spells = application.realm.spells;
+        this.classes = application.realm.classes;
     }
 
+    /**
+     * Emits the initial state of charges and cooldowns.
+     */
     emit() {
         let now = new Date().getTime();
 
@@ -34,6 +63,18 @@ window.Spells = class Spells {
 
             if (cooldown > 0) {
                 this.cooldown(spell, cooldown);
+            }
+        }
+    }
+
+    /**
+     * @param spellId the id of the spell to find.
+     * @returns {*} a spell configuration object.
+     */
+    getById(spellId) {
+        for (let i = 0; i < this.spells.length; i++) {
+            if (this.spells[i].id === spellId) {
+                return this.spells[i];
             }
         }
     }
@@ -54,6 +95,16 @@ window.Spells = class Spells {
                 if (now < event.cooldown) {
                     this.cooldown(event.spell, event.cooldown - now);
                 }
+
+                if (event.spell === 'potent_venom') {
+                    let target = event.spellTarget;
+
+                    return game.particles.following('cloud', {
+                        x: target.vector.x,
+                        y: target.vector.y
+                    }, 12.0); // get TTL from spell config?
+                }
+
             }
             this.charge(event.spell, event.charges);
         }
@@ -156,10 +207,49 @@ window.Spells = class Spells {
      * @param spellTarget the target of the spell.
      */
     cast(callback, spellId, spellTarget) {
+        let spell = this.getById(spellId);
+
+        if (spell.target === 'area') {
+            let marker = new PIXI.Graphics();
+            marker.layer = 0;
+            marker.lineStyle(2, this._theme(), 0.5);
+            marker.drawEllipse(0, 0, 256, 128);
+            this.loaded = {
+                marker: marker,
+                spellId: spellId,
+                spellTarget: spellTarget,
+                callback: callback
+            };
+            game.stage.addChild(marker);
+        } else {
+            this._startCast(callback, spellId, spellTarget);
+        }
+    }
+
+    _startCast(callback, spellId, spellTarget) {
         server.connection.send('cast', {
             spellId: spellId,
             spellTarget: spellTarget
         }, callback);
+    }
+
+    _mouse() {
+        return game.renderer.plugins.interaction.mouse.global;
+    }
+
+    update() {
+        if (this.loaded) {
+            let marker = this.loaded.marker;
+            marker.x = this._mouse().x + game.camera.x;
+            marker.y = this._mouse().y + game.camera.y;
+
+            // todo if marker out of range do something.
+        }
+    }
+
+    _theme() {
+        let theme = this.classes.get(game.player.classId).theme;
+        return parseInt(theme.replace('#', '0x'));
     }
 
     /**

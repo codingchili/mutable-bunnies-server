@@ -236,16 +236,12 @@
                     }, this.hotkeys);
 
                     game.spells.onCharge((spellId, charges) => {
-                        console.log(`charges ${spellId} has ${charges}`);
                         this.set(`charges.${spellId}`, charges);
                     });
 
                     game.spells.onCooldown((spell, ms) => {
                         // chargeable spells don't show any cooldown information.
                         if (!this._chargeable(this._getSpellById(spell))) {
-
-                            console.log(`spell ${spell} on cd for ${ms}ms.`);
-
                             this.set(`cooldown.${spell}`, true);
                             let bar = this.shadowRoot.querySelector(`#cd-bar-${spell}`);
                             bar.style.visibility = 'visible';
@@ -309,11 +305,7 @@
             }
 
             _getSpellById(spellId) {
-                for (let i = 0; i < this.spells.length; i++) {
-                    if (this.spells[i].id === spellId) {
-                        return this.spells[i];
-                    }
-                }
+                return game.spells.getById(spellId);
             }
 
             _description(spell) {

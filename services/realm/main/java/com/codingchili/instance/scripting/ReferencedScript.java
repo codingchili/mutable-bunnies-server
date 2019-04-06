@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Stream;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.context.CoreRuntimeException;
@@ -98,7 +97,7 @@ public class ReferencedScript implements Scripted {
      */
     public ReferencedScript(String referenceName) {
         this.reference = get(referenceName).orElseThrow(() -> new CoreRuntimeException(
-                String.format("Failed to find referenced script '%s'.", referenceName)));
+                String.format("Failed to find referenced script '%s/%s'.", SCRIPT_PATH, referenceName)));
     }
 
     @Override

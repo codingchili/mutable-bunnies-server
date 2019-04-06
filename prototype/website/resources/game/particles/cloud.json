@@ -1,6 +1,6 @@
 {
   "sprites": ["game/particles/sprites/particle.png"],
-  "layer": 5,
+  "layer": 10,
   "alpha": {
     "start": 0.13,
     "end": 0.49

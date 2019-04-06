@@ -94,6 +94,7 @@ window.Game = class Game extends Canvas {
             this.frames++;
 
             this.camera.update();
+            this.spells.update();
             this.stage.x = -this.camera.x;
             this.stage.y = -this.camera.y;
             this.skybox.update();
