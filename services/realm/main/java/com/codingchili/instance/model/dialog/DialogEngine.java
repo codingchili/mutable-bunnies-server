@@ -15,7 +15,7 @@ import java.util.*;
  * a player and an NPC or between a player and a game object.
  */
 public class DialogEngine {
-    private static final int DIALOG_RANGE = 128;
+    private static final int DIALOG_RANGE = 164;
     private static final String DIALOG_ID = "DIALOG_ID";
     private static final String MISSING = "undefined";
     private Map<String, ActiveDialog> dialogs = new HashMap<>();
@@ -114,7 +114,7 @@ public class DialogEngine {
                 return Future.failedFuture(new NoSuchDialogException(dialogId));
             }
         } else {
-            return Future.failedFuture(new DialogTargetOutOfRangeException());
+            return Future.failedFuture(new InteractionOutOfRangeException());
         }
     }
 

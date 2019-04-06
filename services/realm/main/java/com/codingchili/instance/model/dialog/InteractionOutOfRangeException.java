@@ -7,9 +7,9 @@ import com.codingchili.core.context.CoreRuntimeException;
  *
  * When the target of the dialog is out of range.
  */
-public class DialogTargetOutOfRangeException extends CoreRuntimeException {
+public class InteractionOutOfRangeException extends CoreRuntimeException {
 
-    public DialogTargetOutOfRangeException() {
+    public InteractionOutOfRangeException() {
         super("Move closer to interact.");
     }
 }
