@@ -38,9 +38,14 @@ docker run -p 443:443 -p 1443:1443 -p 9301:9301 -it <imageId>
 This is a 2D MMORPG that is in development, we are currently working on getting the core mechanics in place 
 before we consider any gameplay/story. We're also trying to keep the development workflow as fast as possible in order to scale. Some examples include map designer, dialog designer, npc designer, reloadable scripts and fast startup times - 5s to start the current prototype with gradle and 2s to start it fully from a distribution on Java 11.
 
+Focusing on
+- ease of development: simple event passing and handler-based server development.
+- fast feedback loop: fast startup times, fast client load times, unit-testable.
+- simple and extendable: scripted events, yaml-based npc/item/spell/affliction configurations. 
+
 Overview of mechanics completed and TBD
 
-Core mechanixs
+Core mechanics
 - [X] movement
 - [X] player chat
 - [X] spell engine (cooldown, learned spells, charges)
@@ -133,6 +138,6 @@ Some services comes with additional resources, these can be bundled within the j
 
 Patching is no longer a service - the webseed standard was not very well supported so support was dropped. We are aiming to create a browser based game primarily and will rely on a CDN to provide game resources. We want to avoid serving files over the cluster or machines that handles the website or the game state.
 
-Communication between services is done over the cluster, other available transports such as websock, tcp, udp and rest is available but not recommended unless a service is not able to join the cluster. Services that needs to authenticate another service should use the AuthenticationGenerator to generate pre-shared keys, secrets and generate tokens. This may be invoked from the standard launcher in chili-core, using the `--generate` commandline argument.
+Communication between services is done over the cluster/local bus, other available transports such as websock, tcp, udp and rest is available but not recommended unless a service is not able to join the cluster. Services that needs to authenticate another service should use the AuthenticationGenerator to generate pre-shared keys, secrets and generate tokens. This may be invoked from the standard launcher in chili-core, using the `--generate` commandline argument.
 
-All communication between services uses a text-protocol based on JSON for simplicity.
+All communication between services in different JVM's uses a text-protocol based on JSON for simplicity.
