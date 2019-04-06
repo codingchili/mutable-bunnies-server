@@ -139,32 +139,30 @@ window.MovementHandler = class MovementHandler {
     _handle(event) {
         let entity = game.lookup(event.creatureId);
 
-        if (!entity) {
-            return;
-        }
+        if (entity) {
+            if (entity.velocity === 0) {
+                entity.acceleration = ACCELERATION_BASE;
+                entity.state.setAnimation(0, 'walk', true);
+            }
 
-        if (entity.velocity === 0) {
-            entity.acceleration = ACCELERATION_BASE;
-            entity.state.setAnimation(0, 'walk', true);
-        }
+            if (event.vector.velocity === 0) {
+                entity.state.setAnimation(0, 'idle', true);
+            }
 
-        if (event.vector.velocity === 0) {
-            entity.state.setAnimation(0, 'idle', true);
-        }
+            if (event.vector.direction > PI || event.vector.direction < 0) {
+                entity.scale.x = -entity.scale.y;
+            } else if (event.vector.direction > 0 && event.vector.direction < PI) {
+                entity.scale.x = entity.scale.y;
+            }
 
-        if (event.vector.direction > PI || event.vector.direction < 0) {
-            entity.scale.x = -entity.scale.y;
-        } else if (event.vector.direction > 0 && event.vector.direction < PI) {
-            entity.scale.x = entity.scale.y;
-        }
+            if (application.development.hardResetXY) {
+                // used to check client-server delta
+                entity.x = event.vector.x;
+                entity.y = event.vector.y;
+            }
 
-        if (application.development.hardResetXY) {
-            // used to check client-server delta
-            entity.x = event.vector.x;
-            entity.y = event.vector.y;
+            entity.velocity = event.vector.velocity;
+            entity.direction = event.vector.direction;
         }
-
-        entity.velocity = event.vector.velocity;
-        entity.direction = event.vector.direction;
     }
 };

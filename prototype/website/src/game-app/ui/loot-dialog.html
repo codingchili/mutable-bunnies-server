@@ -25,6 +25,7 @@
                 transform: translate(-50%, -50%);
                 min-width: 428px;
                 max-width: 428px;
+                min-height: 112px;
                 z-index: 999;
             }
 
@@ -83,6 +84,34 @@
                 animation: fadein 1.2s ease 1;
                 pointer-events: none;
             }
+
+            #loot-items {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .item-info {
+
+            }
+
+            .item-stats {
+                margin-top: 16px;
+                font-size: small;
+            }
+
+            .item-name {
+                font-size: large;
+            }
+
+            .item-description {
+                margin-top: 16px;
+                font-size: small;
+            }
+
+            .stats-header {
+                display: block;
+            }
+
         </style>
 
         <div id="loot-container">
@@ -93,14 +122,23 @@
 
                 <span class="dialog-entity">[[target.name]]</span>
 
-                <template is="dom-repeat" items="[[loot]]" as="item">
-                    <div on-click="_loot">
-                        <img src="[[realm.resources]]/gui/item/icon/[[item.icon]]"/>
-                        <div>[[item.name]]</div>
-                        <div>[[item.description]]</div>
-                        <character-stats selected="[[item]]"></character-stats>
-                    </div>
-                </template>
+                <div id="loot-items">
+                    <template is="dom-repeat" items="[[loot]]" as="item">
+                        <div on-click="_loot">
+                            <paper-tooltip animation-delay="0" position="bottom" class="stats-tooltip">
+                                <div class="item-info">
+                                    <div class="item-name">[[item.name]]</div>
+                                    <span class="stats-header"
+                                          style$="color:[[_rarity(item.rarity)]]">[[item.rarity]]</span>
+                                    <character-stats class="item-stats" compact="true" selected="{{item}}"
+                                                     style="display:block"></character-stats>
+                                    <div class="item-description">[[item.description]]</div>
+                                </div>
+                            </paper-tooltip>
+                            <img src="[[realm.resources]]/gui/item/icon/[[item.icon]]"/>
+                        </div>
+                    </template>
+                </div>
             </paper-material>
         </div>
     </template>
@@ -117,12 +155,32 @@
                 server.connection.setHandler('loot_list', e => {
                     this.set('target', game.entities[e.targetId]);
                     this.set('loot', e.lootList);
-                    this._start();
+
+                    if (e.lootList.length > 0) {
+                        this._start();
+                    } else {
+                        this._stop();
+                    }
                 });
 
                 application.onRealmLoaded((realm) => {
                     this.realm = realm;
                 })
+            }
+
+            _rarity(level) {
+                switch (level) {
+                    case 'COMMON':
+                        return '#02a415';
+                    case 'UNCOMMON':
+                        return '#00fff2';
+                    case 'RARE':
+                        return '#0021ff';
+                    case 'EPIC':
+                        return '#ff00b4';
+                    case 'LEGENDARY':
+                        return '#b2a600';
+                }
             }
 
             _loot(e) {

@@ -74,7 +74,7 @@ public class InventoryHandler implements GameHandler {
     @Api
     public void loot_unsubscribe(InstanceRequest request) {
         LootUnsubscribeEvent event = request.raw(LootUnsubscribeEvent.class);
-        inventory.unsubscribe(request.target(), event.getSubscribed());
+        inventory.unsubscribe(request.target(), event.getEntityId());
     }
 
     private Creature creature(InstanceRequest request) {
