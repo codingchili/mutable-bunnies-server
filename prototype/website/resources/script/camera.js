@@ -93,13 +93,13 @@ window.Camera = class Camera {
 
         // cull all sprites that are fully outside of the screen.
         for (let sprite of sprites) {
-            let visible = true;
+            let visible = false;
 
             // left and right.
-            if (sprite.x + sprite.width / 2 < x || sprite.x - sprite.width / 2 > boundX) {
+            if (sprite.x + sprite.width > x && sprite.x - sprite.width < boundX) {
                 // top and bottom.
-                if (sprite.y < y || sprite.y - sprite.height > boundY) {
-                    visible = false;
+                if (sprite.y + sprite.height / 2 > y && sprite.y - sprite.height < boundY) {
+                    visible = true;
                 }
             }
 
