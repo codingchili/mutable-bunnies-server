@@ -66,11 +66,11 @@ public class DB<E extends Storable> {
                 .withListener(new FileStoreListener() {
                     @Override
                     public void onFileModify(Path modified) {
-                        logger.event(DB_LOAD)
-                                .put(ID_NAME, type.getSimpleName())
-                                .send(UPDATED);
-
                         E item = Serializer.unpack(parseWithId(modified.toString()), type);
+
+                        logger.event(DB_LOAD)
+                                .put(ID_NAME, item.getId())
+                                .send(UPDATED);
 
                         items.put(item.getId(), item);
                         onInvalidate.run();
