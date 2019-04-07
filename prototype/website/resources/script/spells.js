@@ -2,6 +2,9 @@
  * Handles spells by invoking the SpellHandler API's..
  * @type {Window.Spells}
  */
+const CYCLE_CASTED = 'CASTED';
+const CYCLE_CASTING = 'CASTING';
+
 window.Spells = class Spells {
 
     constructor() {
@@ -18,17 +21,22 @@ window.Spells = class Spells {
                     let marker = this.loaded.marker;
                     let loaded = this.loaded;
 
-                    game.stage.removeChild(marker);
                     this._startCast(loaded.callback, loaded.spellId, {
                         vector: {
                             x: marker.x,
                             y: marker.y
                         }
                     });
+                    this._cancel();
                 }
-                delete this.loaded;
             }
-        }, [0]);
+        }, [input.LMB]);
+
+        input.onKeysListener({
+            down: () => {
+                this._cancel();
+            }
+        }, [input.ESCAPE]);
 
         server.connection.setHandler('spell', (event) => this._spell(event));
         server.connection.setHandler('stats', (event) => this._stats(event));
@@ -44,6 +52,13 @@ window.Spells = class Spells {
         this.state = event.spellState;
         this.spells = application.realm.spells;
         this.classes = application.realm.classes;
+    }
+
+    _cancel() {
+        if (this.loaded) {
+            game.stage.removeChild(this.loaded.marker);
+            delete this.loaded;
+        }
     }
 
     /**
@@ -87,19 +102,27 @@ window.Spells = class Spells {
         let now = new Date().getTime();
 
         if (game.lookup(event.source).isPlayer) {
-            if (event.cycle === 'CASTED') {
+            if (event.cycle === CYCLE_CASTED) {
                 if (now < event.gcd) {
                     this.gcd(event.gcd - now);
                 }
-
                 if (now < event.cooldown) {
                     this.cooldown(event.spell, event.cooldown - now);
                 }
-                this._activateEffectByActiveSpell(event);
             }
-            this.charge(event.spell, event.charges);
+
+            if (event.cycle === CYCLE_CASTED) {
+                this.charge(event.spell, event.charges);
+            }
         }
 
+        if (event.cycle === CYCLE_CASTED) {
+            this._activateEffectByActiveSpell(event);
+        }
+
+        if (event.cycle === CYCLE_CASTING) {
+            this._activateCastingEffects(event);
+        }
     }
 
     /**
@@ -182,10 +205,41 @@ window.Spells = class Spells {
         if (event.spell === 'potent_venom') {
             let target = event.spellTarget;
 
-            return game.particles.following('cloud', {
+            return game.particles.spawn('cloud', {
                 x: target.vector.x,
                 y: target.vector.y
             }, 12.0); // get TTL from spell config?
+        }
+
+        if (event.spell === 'shadow_step') {
+            let target = game.lookup(event.source);
+
+            // sets starting point to old position.
+            let start = {
+                x: target.x,
+                y: target.y
+            };
+
+            // set target point to new position with updates.
+            target.x = event.spellTarget.vector.x;
+            target.y = event.spellTarget.vector.y;
+
+            game.particles.moving('flash', start, {
+                destination: target,
+                velocity: 16.0,
+                complete: () => {
+                    target.alpha = 1.0;
+                    target.tint = 0xffffff;
+                }
+            });
+        }
+    }
+
+    _activateCastingEffects(event) {
+        if (event.spell === 'shadow_step') {
+            let entity = game.lookup(event.source);
+            entity.tint = 0x000000;
+            entity.alpha = 0.4;
         }
     }
 
@@ -229,6 +283,8 @@ window.Spells = class Spells {
         let spell = this.getById(spellId);
 
         if (spell.target === 'area') {
+            this._cancel();
+
             let marker = new PIXI.Graphics();
             marker.layer = 0;
             marker.lineStyle(2, this._theme(), 0.5);

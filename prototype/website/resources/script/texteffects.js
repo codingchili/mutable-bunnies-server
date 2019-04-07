@@ -106,7 +106,7 @@ window.TextEffects = class TextEffects {
         counter.slowdown = 0.925;
         counter.fade_in = 0.04;
         counter.fade_out = 0.015;
-        counter.layer = 5;
+        counter.layer = 25;
 
         if (options.float) {
             counter.dir = (6.14 / 360) * 270;

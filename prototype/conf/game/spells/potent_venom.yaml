@@ -8,6 +8,6 @@ interval: 1.0
 target: area
 onCastBegin:
   jexl:
-    return spells.energy(source, -10);
+    return spells.energy(source, -10.0);
 onSpellActive:
   reference: "potent_venom.groovy"

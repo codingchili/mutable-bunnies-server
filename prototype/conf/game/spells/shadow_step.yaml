@@ -1,0 +1,16 @@
+---
+name: "Shadow Step"
+description: "Moves quickly through the shadows in one direction."
+recharge: 10
+casttime: 1.5
+charges: 2
+# change to target: line
+target: area
+onCastBegin:
+  jexl:
+    return spells.energy(source, -10.0);
+onCastComplete:
+  jexl: |
+    // clients are updated using the spelltarget.
+    source.vector.x = target.vector.x;
+    source.vector.y = target.vector.y;

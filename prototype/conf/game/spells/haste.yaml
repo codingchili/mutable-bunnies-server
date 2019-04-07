@@ -7,7 +7,7 @@ casttime: 2.0
 target: caster
 onCastBegin:
   jexl:
-    return spells.energy(source, -10);
+    return spells.energy(source, -10.0);
 onCastComplete:
   jexl: |
     spells.afflict(source, 'haste');

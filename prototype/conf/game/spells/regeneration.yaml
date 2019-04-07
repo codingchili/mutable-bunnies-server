@@ -9,7 +9,7 @@ target: caster
 mobile: false
 onCastBegin:
   jexl:
-    return spells.energy(source, -10);
+    return spells.energy(source, -10.0);
 onCastComplete:
   jexl: |
     spells.afflict(source, 'regeneration');
