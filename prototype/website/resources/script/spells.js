@@ -95,16 +95,7 @@ window.Spells = class Spells {
                 if (now < event.cooldown) {
                     this.cooldown(event.spell, event.cooldown - now);
                 }
-
-                if (event.spell === 'potent_venom') {
-                    let target = event.spellTarget;
-
-                    return game.particles.following('cloud', {
-                        x: target.vector.x,
-                        y: target.vector.y
-                    }, 12.0); // get TTL from spell config?
-                }
-
+                this._activateEffectByActiveSpell(event);
             }
             this.charge(event.spell, event.charges);
         }
@@ -155,10 +146,21 @@ window.Spells = class Spells {
         }
     }
 
+    /**
+     * @param affliction the given affliction to disable spell effects for.
+     * @private
+     */
     _disableEffects(affliction) {
         game.particles.stop(affliction.effect);
     }
 
+    /**
+     * Activates affliction effects for the given target/affliction.
+     * @param target the target of the affliction.
+     * @param affliction the affliction being applied.
+     * @returns {string} a unique id of the effect so that it can be cancelled.
+     * @private
+     */
     _activateEffectByAffliction(target, affliction) {
         switch (affliction.id) {
             case "poison":
@@ -167,6 +169,23 @@ window.Spells = class Spells {
                 return game.particles.following('leaf', target, affliction.duration);
             case "haste":
                 return game.particles.following('burst', target, affliction.duration);
+        }
+    }
+
+    /**
+     * Activates spell effects for a spell, during channeling or activation.
+     * @param event the event that contains information about the spell being activated.
+     * @returns {string} a unique id of the effect so that it can be cancelled.
+     * @private
+     */
+    _activateEffectByActiveSpell(event) {
+        if (event.spell === 'potent_venom') {
+            let target = event.spellTarget;
+
+            return game.particles.following('cloud', {
+                x: target.vector.x,
+                y: target.vector.y
+            }, 12.0); // get TTL from spell config?
         }
     }
 
@@ -242,7 +261,6 @@ window.Spells = class Spells {
             let marker = this.loaded.marker;
             marker.x = this._mouse().x + game.camera.x;
             marker.y = this._mouse().y + game.camera.y;
-
             // todo if marker out of range do something.
         }
     }

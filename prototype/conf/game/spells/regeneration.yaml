@@ -13,4 +13,3 @@ onCastBegin:
 onCastComplete:
   jexl: |
     spells.afflict(source, 'regeneration');
-    spells.afflict(source, 'haste');

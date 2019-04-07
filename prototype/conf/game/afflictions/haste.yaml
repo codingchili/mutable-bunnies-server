@@ -1,7 +1,7 @@
 ---
 name: "Haste"
-duration: 20.0
-description: "Casting time and cooldowns reduced by 15%."
+duration: 12.0
+description: "Movement speed increased by 35%."
 modifier:
   jexl: |
-    stats[Attribute.movement] = source.stats[Attribute.movement] * 0.5d;
+    stats[Attribute.movement] = source.stats[Attribute.movement] * 0.35d;

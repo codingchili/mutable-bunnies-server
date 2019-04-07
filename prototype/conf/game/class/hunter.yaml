@@ -13,6 +13,7 @@ armors:
   - "leather"
   - "mail"
 spells:
+  - "haste"
   - "archery"
   - "hunting"
   - "quick draw"
