@@ -247,7 +247,7 @@ public class SpellEngine {
      * @param amount the amount of energy to deduct.
      * @return true if the energy was available and consumed, otherwise false.
      */
-    public boolean energy(Creature target, int amount) {
+    public boolean energy(Creature target, double amount) {
         Stats stats = target.getBaseStats();
 
         if (amount < 0 && stats.get(Attribute.energy) < amount) {
@@ -256,7 +256,7 @@ public class SpellEngine {
         } else {
             if (amount > stats.get(Attribute.maxenergy)) {
                 // prevent updating over maximum.
-                amount = (int) stats.get(Attribute.maxenergy);
+                amount = stats.get(Attribute.maxenergy);
             }
 
             stats.update(Attribute.energy, amount);
