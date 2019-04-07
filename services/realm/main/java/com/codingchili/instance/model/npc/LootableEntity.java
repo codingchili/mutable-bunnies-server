@@ -19,7 +19,7 @@ import com.codingchili.core.context.CoreRuntimeException;
  * container expires, is emptied or the creature leaves the instance.
  */
 public class LootableEntity extends SimpleEntity {
-    private static final int LOOT_DECAY_TIME = 300;
+    private static final int LOOT_DECAY_TIME = 300_000; // 5 minutes.
     private Set<String> subscribers = new HashSet<>();
     private List<Item> items;
 
