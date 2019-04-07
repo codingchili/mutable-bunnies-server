@@ -27,6 +27,7 @@ public class ActiveSpell {
     private static final String SPELLS = "spells";
     private static final String DAMAGE_TYPE = "DamageType";
     private transient Bindings bindings = null;
+    private transient int interval;
     private SpellCycle cycle = SpellCycle.CASTING;
     private SpellTarget target;
     private Creature source;
@@ -37,6 +38,7 @@ public class ActiveSpell {
 
     public ActiveSpell(Spell spell) {
         this.progress = GameContext.secondsToTicks(spell.getCasttime());
+        this.interval = GameContext.secondsToTicks(spell.getInterval());
         this.spell = spell;
     }
 
@@ -55,7 +57,7 @@ public class ActiveSpell {
             try {
                 do {
                     spell.getOnCastProgress().apply(bindings);
-                    this.delta -= GameContext.secondsToTicks(spell.getInterval());
+                    this.delta -= interval;
                 } while (this.delta > 0);
             } catch (Throwable e) {
                 game.getLogger(getClass()).onError(e);
@@ -78,7 +80,7 @@ public class ActiveSpell {
             Boolean check = spell.getOnCastBegin().apply(getBindings(game));
 
             Objects.requireNonNull(check,
-                    "onCastBegin check of spell " + spell.getInterval() + " returned 'null'.");
+                    "onCastBegin check of spell " + spell.getId() + " returned 'null'.");
 
             if (check) {
                 // only put on cooldown if precondition check succeeded.
@@ -93,10 +95,11 @@ public class ActiveSpell {
     public void onSpellActive(GameContext game) {
         if (spell.getOnSpellActive() != null) {
             Bindings bindings = getBindings(game);
-            do {
+
+            while (this.delta > interval) {
                 spell.getOnSpellActive().apply(bindings);
-                this.delta -= GameContext.secondsToTicks(spell.getInterval());
-            } while (this.delta > 0);
+                this.delta -= interval;
+            }
         }
     }
 
