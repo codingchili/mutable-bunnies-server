@@ -7,8 +7,12 @@ window.Game = class Game extends Canvas {
         return (seconds * 1000) / this.MS_PER_FRAME;
     }
 
-    static get MS_PER_FRAME() {
+    static get MS_PER_SERVER() {
         return 16;
+    }
+
+    static get MS_PER_FRAME() {
+        return (game.fps) ? (1000 / game.fps) : 16;
     }
 
     onScriptsLoaded(done) {
@@ -23,7 +27,7 @@ window.Game = class Game extends Canvas {
                 this.spells.init(event);
 
                 if (!this.loaded) {
-                    console.log('application loaded emit');
+                    this._setup();
                     application.gameLoaded(game);
                     this.loaded = true;
                 }
@@ -57,6 +61,7 @@ window.Game = class Game extends Canvas {
         this.particles = new Particles();
         this.skybox = new Skybox();
         this.inventory = new Inventory();
+        this.fps = 60;
 
         this.frames = 0;
         setInterval(() => {
@@ -89,19 +94,71 @@ window.Game = class Game extends Canvas {
 
     loop() {
         if (this.isPlaying) {
+            let start = performance.now();
+            let delta = start - this.last;
+
             this.stage.children.sort(Camera.depthCompare.bind(this));
 
             this.frames++;
 
-            this.camera.update();
-            this.spells.update();
+            this.camera.update(delta);
+            this.spells.update(delta);
+            this.particles.update(delta);
+            this.texts.update(delta);
+            this.skybox.update(delta);
+            this.movement.update(delta);
+
             this.stage.x = -this.camera.x;
             this.stage.y = -this.camera.y;
-            this.skybox.update();
 
+            let render = performance.now();
             this.renderer.render(this.root);
+
+            this.updateTime = render - start;
+            this.renderTime = performance.now() - render;
             requestAnimationFrame(() => this.loop());
+
+            this.last = start;
         }
+    }
+
+    _metrics() {
+        this.fpsMetrics.text = this.fps;
+    }
+
+    _setup() {
+        if (application.development.metrics) {
+            this._counter(() => {
+                return `fps: ${this.fps}`;
+            });
+            this._counter(() => {
+                return `drawables: ${this.camera.drawing}`;
+            });
+            this._counter(() => {
+                return `update: ${this.updateTime.toFixed(2)}ms.`;
+            });
+            this._counter(() => {
+                return `render: ${this.renderTime.toFixed(2)}ms.`;
+            });
+        }
+    }
+
+    _counter(text) {
+        this.counters = this.counters || 0;
+
+        let counter = new PIXI.Text(text, this.texts.style());
+        counter.y = 16 * (this.counters++) + 128;
+        counter.x = 16;
+        counter.layer = 100;
+
+        let update = setInterval(() => {
+            if (game.isPlaying) {
+                counter.text = text();
+            } else {
+                clearInterval(update);
+            }
+        }, 1000);
+        this.root.addChild(counter);
     }
 };
 

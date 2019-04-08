@@ -7,7 +7,6 @@ window.Particles = class Particles {
     constructor() {
         this.emitters = {};
         this.elapsed = Date.now();
-        game.ticker(() => this._update());
     }
 
     /**
@@ -134,6 +133,7 @@ window.Particles = class Particles {
 
         Loader.load((configuration) => {
             let container = init(configuration);
+            container.particles = true;
 
             configuration.sprites.forEach(fileName => {
                 Loader.load((sprite) => {
@@ -165,17 +165,14 @@ window.Particles = class Particles {
         return id;
     }
 
-    _update() {
-        let elapsed = performance.now() - this.last;
-
+    update(delta) {
         for (let id in this.emitters) {
             let emitter = this.emitters[id];
 
             if (emitter.listener) {
-                emitter.listener(emitter, emitter.container, elapsed);
+                emitter.listener(emitter, emitter.container, delta);
             }
-            emitter.update(elapsed * 0.001);
+            emitter.update(delta * 0.001);
         }
-        this.last = performance.now();
     }
 };

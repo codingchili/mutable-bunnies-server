@@ -12,17 +12,16 @@ window.MovementHandler = class MovementHandler {
     constructor() {
         this.run = true;
         this.last = performance.now();
-        game.ticker(() => this._tick());
 
         input.onKeysListener({
             up: (key) => {
-                this._update();
+                this._input();
             },
             down: (key) => {
                 if (key === RUN_TOGGLE) {
                     this.run = !this.run;
                 }
-                this._update();
+                this._input();
             }
         }, [UP, RIGHT, LEFT, DOWN, RUN_TOGGLE]);
 
@@ -40,15 +39,14 @@ window.MovementHandler = class MovementHandler {
         server.connection.setHandler('move', (event) => this._onMovement(event));
     }
 
-    _tick() {
-        let delta = performance.now() - this.last;
+    update(delta) {
         for (let key in game.entities) {
             let entity = game.lookup(key);
             if (entity) {
                 entity.acceleration = entity.acceleration || 1;
 
                 if (entity.acceleration < 1.0) {
-                    entity.acceleration += (ACCELERATION_STEP * (delta / Game.MS_PER_FRAME));
+                    entity.acceleration += (ACCELERATION_STEP * (delta / Game.MS_PER_SERVER));
                 } else {
                     entity.acceleration = 1.0;
                 }
@@ -61,11 +59,10 @@ window.MovementHandler = class MovementHandler {
                     entity.state.setAnimation(0, 'idle', true);
                 }
 
-                entity.x += Math.sin(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_FRAME);
-                entity.y += Math.cos(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_FRAME);
+                entity.x += Math.sin(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_SERVER);
+                entity.y += Math.cos(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_SERVER);
             }
         }
-        this.last = performance.now();
     }
 
     moveTo(x, y) {
@@ -92,7 +89,7 @@ window.MovementHandler = class MovementHandler {
         return game.player.stats.movement * (this.run ? 1.0 : 0.6);
     }
 
-    _update() {
+    _input() {
         let direction = 0;
         let velocity = 0;
         let max = this._velocity();
