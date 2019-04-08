@@ -38,6 +38,7 @@ window.Skybox = class {
             cloud.x += cloud.velocity;
             if (cloud.x - cloud.width > window.innerWidth) {
                 cloud.x = -cloud.width;
+                cloud.y = Math.random() * window.innerHeight;
             }
         }
     }
