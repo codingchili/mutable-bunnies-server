@@ -153,9 +153,19 @@
                 opacity: 0.22;
             }
 
+            .create-box {
+                max-width: 625px;
+                padding-bottom:32px;
+            }
+
             @media (max-width: 632px) {
+
+                .create-box {
+                    height: 296px;
+                }
+
                 .class-image {
-                    width: 64px;
+                    width: 96px;
                     top: 28px;
                     left: 4px;
                     position: absolute;
@@ -171,7 +181,7 @@
                 .create-button {
                     height: 64px;
                     margin-left: auto;
-                    margin-top: 48px;
+                    margin-top: 96px;
                     margin-right: auto;
                     width: 100%;
                     top: unset;
@@ -202,10 +212,11 @@
                 }
 
                 .class-description {
-                    top: 32px;
-                    left: 72px;
+                    top: 43px;
+                    left: 116px;
                     right: 34px;
-                    margin-left: 0px;
+                    width: 60%;
+                    margin: auto;
                 }
 
                 .tags {
@@ -217,10 +228,6 @@
                 .character-class {
                     margin-top: 8px;
                     height: 158px;
-                }
-
-                .list {
-                    padding-bottom: 32px;
                 }
             }
 
@@ -297,7 +304,7 @@
                                icon="icons:reply"></iron-icon>
                 </div>
 
-                <div class="list" style="padding-bottom:32px">
+                <div class="create-box">
                     <paper-material elevation="0" class="character-class">
 
                         <template is="dom-if" if="[[selected]]">
