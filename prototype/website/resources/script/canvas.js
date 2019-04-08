@@ -63,7 +63,15 @@ window.Canvas = class {
         this.renderer.view.style.bottom = "0px";
         this.renderer.view.ondragstart = () => false;
         this.renderer.view.ondrop = () => false;
-        this.renderer.autoResize = true;
-        this.renderer.resize(window.innerWidth, window.innerHeight);
+        //this.renderer.autoResize = true;
+        this.renderer.resize(this._width(), this._height());
+    }
+
+    _width() {
+        return Math.min(window.outerWidth, window.innerWidth);
+    }
+
+    _height() {
+        return Math.min(window.outerHeight, window.innerHeight);
     }
 };
