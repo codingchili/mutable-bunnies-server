@@ -10,8 +10,7 @@ window.Camera = class Camera {
         this.drawing = 0;
     }
 
-    update() {
-        let delta = performance.now() - this.last;
+    update(delta) {
         let target = this._getTarget(this.following.x, this.following.y);
 
         let deltaX = (this.x - target.x);
@@ -26,7 +25,6 @@ window.Camera = class Camera {
         }
 
         this.cull(game.stage.children);
-        this.last = performance.now();
     }
 
     static depthCompare(a, b) {
@@ -85,28 +83,33 @@ window.Camera = class Camera {
     }
 
     cull(sprites) {
-        let x = this.x;
-        let y = this.y;
-        let boundY = y + window.innerHeight;
-        let boundX = x + window.innerWidth;
+        let boundY = this.y + window.innerHeight;
+        let boundX = this.x + window.innerWidth;
         this.drawing = 0;
 
         // cull all sprites that are fully outside of the screen.
         for (let sprite of sprites) {
+            let x = sprite.x;
+            let y = sprite.y;
             let visible = false;
 
-            // left and right.
-            if (sprite.x + sprite.width > x && sprite.x - sprite.width < boundX) {
-                // top and bottom.
-                if (sprite.y + sprite.height / 2 > y && sprite.y - sprite.height < boundY) {
-                    visible = true;
+            if (sprite.particles) {
+                // don't cull particle systems; no access to emitters ownerPos here.
+                sprite.visible = true;
+            } else {
+                // left and right.
+                if (x + sprite.width > this.x && x - sprite.width < boundX) {
+                    // top and bottom.
+                    if (y + sprite.height / 2 > this.y && y - sprite.height < boundY) {
+                        visible = true;
+                    }
                 }
-            }
 
-            if (visible) {
-                this.drawing++;
+                if (visible) {
+                    this.drawing++;
+                }
+                sprite.visible = visible || sprite.layer === -1;
             }
-            sprite.visible = visible || sprite.layer === -1;
         }
     }
 };
