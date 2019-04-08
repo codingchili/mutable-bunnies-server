@@ -31,15 +31,9 @@ window.TextEffects = class TextEffects {
             event.value = event.value.toFixed(1);
             this.effects[event.damage](target, event);
         });
-
-        game.ticker(() => {
-            this._update();
-        });
     }
 
-    _update() {
-        let delta = (performance.now() - this.last) / Game.MS_PER_FRAME;
-
+    update(delta) {
         for (let i = 0; i < this.counters.length; i++) {
             let counter = this.counters[i];
 
@@ -55,15 +49,15 @@ window.TextEffects = class TextEffects {
                 this.counters.splice(i, 1);
             } else {
                 counter.speed *= counter.slowdown;
-                counter.x += counter.speed * Math.cos(counter.dir) * delta;
-                counter.y += counter.speed * Math.sin(counter.dir) * delta;
+                counter.x += counter.speed * Math.cos(counter.dir) * delta / Game.MS_PER_FRAME;
+                counter.y += counter.speed * Math.sin(counter.dir) * delta / Game.MS_PER_FRAME;
 
                 if (counter.ttl > 0) {
-                    counter.alpha += counter.fade_in * delta;
+                    counter.alpha += counter.fade_in * delta / Game.MS_PER_FRAME;
                 }
 
                 if (counter.ttl < 0) {
-                    counter.alpha -= counter.fade_out * delta;
+                    counter.alpha -= counter.fade_out * delta / Game.MS_PER_FRAME;
                 }
 
                 if (counter.alpha > 1.0) {
@@ -74,11 +68,12 @@ window.TextEffects = class TextEffects {
                 }
             }
         }
-        this.last = performance.now();
     }
 
-    _create(target, text, options) {
-        let style = new PIXI.TextStyle({
+    style(options) {
+        options = options || this.options();
+
+        return new PIXI.TextStyle({
             fontFamily: 'Verdana',
             fontSize: 12,
             //fontWeight: 'bold',
@@ -88,21 +83,31 @@ window.TextEffects = class TextEffects {
             wordWrap: true,
             wordWrapWidth: 440
         });
+    }
 
+    options() {
+        return {
+            begin: '#ffffff',
+            end: '#ffffff',
+        }
+    }
+
+    _create(target, text, options) {
+        let style = this.style(options);
         let counter = new PIXI.Text(text, style);
         counter.dir = (6.14 / 360) * Math.random() * 360;
 
         if (options.critical) {
             style.fontSize = 16;
-            counter.ttl = options.ttl || 120;
+            counter.ttl = options.ttl || 220;
         } else {
-            counter.ttl = options.ttl || 100;
+            counter.ttl = options.ttl || 120;
         }
 
-        counter.x = target.x - counter.width + (target.width / 3) * Math.cos(counter.dir);
-        counter.y = target.y - (target.height / 2) + (target.height / 3) * Math.sin(counter.dir);
+        counter.x = target.x - (counter.width / 2) + (target.width / 3) * Math.cos(counter.dir);
+        counter.y = target.y - (target.height / 2) + (target.height / 4) * Math.sin(counter.dir);
         counter.alpha = 0.18;
-        counter.speed = 2.56;
+        counter.speed = 2.48;
         counter.slowdown = 0.925;
         counter.fade_in = 0.04;
         counter.fade_out = 0.015;
@@ -110,7 +115,7 @@ window.TextEffects = class TextEffects {
 
         if (options.float) {
             counter.dir = (6.14 / 360) * 270;
-            counter.speed = 1.8;
+            counter.speed = 1.6;
             counter.x = target.x - (counter.width / 2);
             counter.y = (target.y * 1.01) - target.height;
         }
@@ -168,7 +173,7 @@ window.TextEffects = class TextEffects {
             begin: event.color1 || '#eaeaea',
             end: event.color2 || '#ffffff',
             float: true,
-            ttl: Game.secondsToTicks(2.2)
+            ttl: Game.secondsToTicks(2.8)
         });
     }
 };
