@@ -141,8 +141,7 @@
         </style>
 
         <paper-material elevation="3" class="spell-bar">
-            <template is="dom-repeat" items="[[spells]]" as="spell">
-                <template is="dom-if" if="{{_learned(spell, character)}}">
+            <template is="dom-repeat" items="[[_list(spells, character)]]" as="spell">
                     <div on-down="_onCast" class="spell-button">
                         <img class$="spell-icon {{_available(spell.id, charges.*, cooldown.*)}}"
                              src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
@@ -173,7 +172,6 @@
                                             max="100" value="0"></paper-progress>
                         </template>
                     </div>
-                </template>
             </template>
 
         </paper-material>
@@ -302,6 +300,14 @@
                 } else {
                     return "";
                 }
+            }
+
+            _list() {
+                let list = [];
+                for (let spell of this.character.spells.learned) {
+                    list.push(this._getSpellById(spell));
+                }
+                return list;
             }
 
             _chargeable(spell) {
