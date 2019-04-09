@@ -347,23 +347,21 @@ public class SpellEngine {
 
     // update affliction state and spell cooldowns.
     private void updateCreatureSpellState(Ticker ticker) {
-        float delta = ticker.delta();
         creatures.all().forEach(entity -> {
-            boolean modified = entity.getAfflictions().tick(game, delta);
+            boolean modified = entity.getAfflictions().tick(game, ticker);
 
             if (modified) {
                 game.publish(new StatsUpdateEvent(entity));
             }
 
-            entity.getSpells().tick(entity, spells, delta);
+            entity.getSpells().tick(entity, spells, ticker);
         });
     }
 
     // update progress for spells currently being casted.
     private void updateCastingProgress(Ticker ticker) {
-        float delta = ticker.delta();
         casting.values().removeIf((casting) -> {
-            if (casting.completed(delta)) {
+            if (casting.completed(ticker)) {
                 game.publish(new SpellCastEvent(casting.setCycle(SpellCycle.CASTED)));
                 casting.onCastCompleted(game);
 
@@ -371,7 +369,7 @@ public class SpellEngine {
                 active.add(casting);
                 return true;
             } else {
-                if (casting.shouldTick(delta)) {
+                if (casting.shouldTick(ticker)) {
                     casting.onCastProgress(game);
                 }
             }
@@ -381,11 +379,9 @@ public class SpellEngine {
 
     // execute spell effects for spells that have been casted successfully.
     private void updateActiveSpells(Ticker ticker) {
-        float delta = ticker.delta();
         active.removeIf(spell -> {
-            if (spell.active(delta)) {
-
-                if (spell.shouldTick(delta)) {
+            if (spell.active(ticker)) {
+                if (spell.shouldTick(ticker)) {
                     spell.onSpellActive(game);
                 }
                 return false;

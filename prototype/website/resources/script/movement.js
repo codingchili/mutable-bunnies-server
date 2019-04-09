@@ -46,21 +46,21 @@ window.MovementHandler = class MovementHandler {
                 entity.acceleration = entity.acceleration || 1;
 
                 if (entity.acceleration < 1.0) {
-                    entity.acceleration += (ACCELERATION_STEP * (delta / Game.MS_PER_SERVER));
+                    entity.acceleration += (ACCELERATION_STEP * delta);
                 } else {
                     entity.acceleration = 1.0;
                 }
 
                 if (entity.state && entity.velocity > 0) {
-                    entity.state.timeScale = entity.velocity * entity.acceleration;
+                    entity.state.timeScale = entity.velocity * entity.acceleration * delta * 2;
                 }
                 if (entity.state && !entity.state.initialized) {
                     entity.state.initialized = true;
                     entity.state.setAnimation(0, 'idle', true);
                 }
 
-                entity.x += Math.sin(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_SERVER);
-                entity.y += Math.cos(entity.direction) * (entity.acceleration * entity.velocity) * (delta / Game.MS_PER_SERVER);
+                entity.x += Math.sin(entity.direction) * (entity.acceleration * entity.velocity) * delta;
+                entity.y += Math.cos(entity.direction) * (entity.acceleration * entity.velocity) * delta;
             }
         }
     }

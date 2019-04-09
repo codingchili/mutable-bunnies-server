@@ -74,7 +74,7 @@ window.Particles = class Particles {
     moving(name, start, options) {
         let destination = options.destination;
         let distance = Math.hypot(Math.abs(start.x - destination.x), Math.abs(destination.y - start.y));
-        let ttl = Game.ticksToSeconds(distance / options.velocity);
+        let ttl = distance / options.velocity;
 
         return this._create((configuration) => {
             let container = new PIXI.Container();
@@ -99,8 +99,8 @@ window.Particles = class Particles {
             container.direction += 90 * (Math.PI / 180);
 
             // updateOwnerPos vs. update container pos.
-            emitter.ownerPos.x += Math.sin(container.direction) * (container.acceleration * container.velocity) * (delta / Game.MS_PER_FRAME);
-            emitter.ownerPos.y += Math.cos(container.direction) * (container.acceleration * container.velocity) * (delta / Game.MS_PER_FRAME);
+            emitter.ownerPos.x += Math.sin(container.direction) * (container.acceleration * container.velocity) * delta;
+            emitter.ownerPos.y += Math.cos(container.direction) * (container.acceleration * container.velocity) * delta;
             emitter.posChanged = true;
         });
     }
@@ -172,7 +172,7 @@ window.Particles = class Particles {
             if (emitter.listener) {
                 emitter.listener(emitter, emitter.container, delta);
             }
-            emitter.update(delta * 0.001);
+            emitter.update(delta);
         }
     }
 };

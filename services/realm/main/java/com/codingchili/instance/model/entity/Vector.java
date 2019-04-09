@@ -1,6 +1,7 @@
 package com.codingchili.instance.model.entity;
 
 import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.context.Ticker;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Collection;
@@ -233,18 +234,18 @@ public class Vector {
     }
 
     /**
-     * @param delta Moves the vector in its direction given its velocity.
+     * @param ticker Moves the vector in its direction given its velocity.
      */
-    public void forward(float delta) {
+    public void forward(Ticker ticker) {
         if (velocity > 0) {
             if (acceleration < 1) {
-                acceleration += ACCELERATION_STEP * delta;
+                acceleration += ACCELERATION_STEP * ticker.delta();
             } else {
                 acceleration = 1.0f;
             }
 
-            x += Math.sin(direction) * (velocity * acceleration * delta);
-            y += Math.cos(direction) * (velocity * acceleration * delta);
+            x += Math.sin(direction) * (velocity * acceleration * ticker.delta());
+            y += Math.cos(direction) * (velocity * acceleration * ticker.delta());
 
             dirty = true;
         }

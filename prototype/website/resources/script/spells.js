@@ -223,10 +223,11 @@ window.Spells = class Spells {
             // set target point to new position with updates.
             target.x = event.spellTarget.vector.x;
             target.y = event.spellTarget.vector.y;
+            target.alpha = 0.0;
 
             game.particles.moving('flash', start, {
                 destination: target,
-                velocity: 16.0,
+                velocity: 1200.0,
                 complete: () => {
                     target.alpha = 1.0;
                     target.tint = 0xffffff;

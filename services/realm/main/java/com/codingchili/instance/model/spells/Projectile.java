@@ -139,7 +139,7 @@ public class Projectile {
     public boolean tick(Ticker ticker) {
         AtomicBoolean hit = new AtomicBoolean(false);
 
-        vector.forward(ticker.delta());
+        vector.forward(ticker);
         Scripted onHit = spell.getSpell().getOnSpellActive();
         Bindings bindings = getBindings();
 

@@ -1,6 +1,7 @@
 package com.codingchili.instance.model.afflictions;
 
 import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.spells.DamageType;
 import com.codingchili.instance.model.stats.Attribute;
@@ -26,8 +27,8 @@ public class ActiveAffliction {
     private Affliction affliction;
     private Creature source;
     private Creature target;
-    private Integer ticks;
-    private Integer interval;
+    private Float ticks;
+    private Float interval;
     private Float delta = 0f;
     private Long start = System.currentTimeMillis();
 
@@ -40,8 +41,8 @@ public class ActiveAffliction {
         this.source = source;
         this.target = target;
         this.affliction = affliction;
-        this.ticks = GameContext.secondsToTicks(affliction.getDuration());
-        this.interval = GameContext.secondsToTicks(affliction.getInterval());
+        this.ticks = affliction.getDuration() * 1000;
+        this.interval = affliction.getInterval() * 1000;
     }
 
     /**
@@ -83,8 +84,8 @@ public class ActiveAffliction {
     }
 
 
-    public boolean shouldTick(float delta) {
-        return ((this.delta += delta) >= interval);
+    public boolean shouldTick(Ticker ticker) {
+        return ((this.delta += ticker.deltaMS()) >= interval);
     }
 
     private Bindings getBindings(GameContext context) {

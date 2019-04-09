@@ -40,9 +40,8 @@ public class MovementEngine {
         }, GameContext.secondsToTicks(BEHAVIOUR_UPDATE_INTERVAL));
 
         game.ticker(ticker -> {
-            float delta = ticker.delta();
             game.creatures().all().forEach(creature -> {
-                creature.getVector().forward(delta);
+                creature.getVector().forward(ticker);
             });
         }, GameContext.onAllTicks());
     }

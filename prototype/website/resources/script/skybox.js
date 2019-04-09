@@ -21,10 +21,12 @@ window.Skybox = class {
                 Loader.load(loaded => {
                     for (let i = 0; i < 2; i++) {
                         let cloud = new PIXI.Sprite(loaded.texture);
-                        cloud.y = Math.random() * window.innerHeight;
-                        cloud.x = -cloud.width;
+                        this._reset(cloud);
+
+                        cloud.x = Math.random() * window.innerWidth;
                         cloud.tint = parseInt(skybox.clouds.replace('#', '0x'));
-                        cloud.velocity = Math.random() + 0.05;
+                        cloud.velocity = Math.random() * 42 + 16;
+
                         this.clouds.push(cloud);
                         game.root.addChildAt(cloud, 1);
                     }
@@ -33,12 +35,20 @@ window.Skybox = class {
         }, 'game/map/clouds/skybox_grey.png');
     }
 
-    update() {
+    _reset(cloud) {
+        //let scale = (cloud.velocity / 68); // large velocity = larger
+        //cloud.scale.x = scale;
+        //cloud.scale.y = scale;
+        //cloud.layer = (-1) - scale;
+        cloud.x = -cloud.width;
+        cloud.y = Math.random() * window.innerHeight;
+    }
+
+    update(delta) {
         for (let cloud of this.clouds) {
-            cloud.x += cloud.velocity;
+            cloud.x += cloud.velocity * delta;
             if (cloud.x - cloud.width > window.innerWidth) {
-                cloud.x = -cloud.width;
-                cloud.y = Math.random() * window.innerHeight;
+                this._reset(cloud);
             }
         }
     }

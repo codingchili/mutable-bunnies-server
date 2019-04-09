@@ -12,15 +12,15 @@ armor:
   - "cloth"
   - "leather"
 spells:
+  - "dagger"
   - "backstabber"
   - "poison strikes"
   - "front stab"
   - "corrupting venom"
   - "ice venom"
+  - "potent_venom"
   - "shadow_step"
   - "shadow escape"
-  - "potent_venom"
-  - "dagger"
 stats:
   strength: 16
   intelligence: 14
@@ -29,4 +29,4 @@ stats:
   dexterity: 18
   magicResist: 4
   armorClass: 8
-  movement: 3.1
+  movement: 310

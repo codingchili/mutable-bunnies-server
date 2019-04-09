@@ -1,6 +1,7 @@
 package com.codingchili.instance.model.spells;
 
 import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.entity.Entity;
 import com.codingchili.instance.model.events.SpellStateEvent;
 
@@ -107,18 +108,18 @@ public class SpellState {
      *
      * @param entity the entity being updated, used for sending updates.
      * @param spells a reference to the spell database.
-     * @param delta  ticker delta
+     * @param ticker ticker with delta
      */
-    public void tick(Entity entity, SpellDB spells, float delta) {
+    public void tick(Entity entity, SpellDB spells, Ticker ticker) {
         for (String spellName : learned) {
             Optional<Spell> lookup = spells.getById(spellName);
 
             if (lookup.isPresent()) {
                 Spell spell = lookup.get();
-                int recharge = GameContext.secondsToTicks(spell.getRecharge());
+                float recharge = spell.getRecharge() * 1000;
 
                 if (spell.getCharges() > 1) {
-                    boolean modified = charge(spell, delta / recharge);
+                    boolean modified = charge(spell, ticker.deltaMS() / recharge);
 
                     if (modified) {
                         entity.handle(new SpellStateEvent(this, spell));

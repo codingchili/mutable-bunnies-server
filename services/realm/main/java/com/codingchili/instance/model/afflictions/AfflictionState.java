@@ -1,6 +1,7 @@
 package com.codingchili.instance.model.afflictions;
 
 import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.stats.Stats;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -92,13 +93,13 @@ public class AfflictionState {
      * Updates the state of afflictions and removes those that have expired.
      *
      * @param game  a reference to the game context for sending updates on change.
-     * @param delta the delta time to consider on update operations.
+     * @param ticker the delta time to consider on update operations.
      * @return true if an afflication has been removed.
      */
-    public boolean tick(GameContext game, float delta) {
+    public boolean tick(GameContext game, Ticker ticker) {
         AtomicBoolean modified = new AtomicBoolean(false);
         removeIf(active -> {
-            if (active.shouldTick(delta)) {
+            if (active.shouldTick(ticker)) {
                 boolean remove = !active.tick(game);
                 if (remove) {
                     modified.set(true);

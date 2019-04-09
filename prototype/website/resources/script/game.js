@@ -1,6 +1,6 @@
 window.Game = class Game extends Canvas {
     static ticksToSeconds(ticks) {
-        return (ticks * this.MS_PER_FRAME) / 1000.0;
+        return (ticks * this.TARGET_FRAME_MS) / 1000.0;
     }
 
     static secondsToTicks(seconds) {
@@ -11,8 +11,12 @@ window.Game = class Game extends Canvas {
         return 16;
     }
 
+    static get TARGET_FRAME_MS() {
+        return 6.94;
+    }
+
     static get MS_PER_FRAME() {
-        return (game.fps) ? (1000 / game.fps) : 16;
+        return (game.fps) ? (1000 / game.fps) : 16.67;
     }
 
     onScriptsLoaded(done) {
@@ -95,7 +99,7 @@ window.Game = class Game extends Canvas {
     loop() {
         if (this.isPlaying) {
             let start = performance.now();
-            let delta = start - this.last;
+            let delta = (start - this.last) * 0.001;
 
             this.stage.children.sort(Camera.depthCompare.bind(this));
 

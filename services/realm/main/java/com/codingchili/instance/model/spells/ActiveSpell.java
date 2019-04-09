@@ -1,6 +1,7 @@
 package com.codingchili.instance.model.spells;
 
 import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.events.SpellCycle;
 import com.codingchili.instance.model.stats.Attribute;
@@ -37,18 +38,18 @@ public class ActiveSpell {
     private float delta = 0f;
 
     public ActiveSpell(Spell spell) {
-        this.progress = GameContext.secondsToTicks(spell.getCasttime());
-        this.interval = GameContext.secondsToTicks(spell.getInterval());
+        this.progress = (int) (spell.getCasttime() * 1000);
+        this.interval = (int) (spell.getInterval() * 1000);
         this.spell = spell;
     }
 
-    public boolean completed(float delta) {
-        this.timer = GameContext.secondsToTicks(spell.getActive());
-        return ((progress -= delta) <= 0);
+    public boolean completed(Ticker ticker) {
+        this.timer = (int) (spell.getActive() * 1000);
+        return ((progress -= ticker.deltaMS()) <= 0);
     }
 
-    public boolean active(float delta) {
-        return ((timer -= delta) >= 0);
+    public boolean active(Ticker ticker) {
+        return ((timer -= ticker.deltaMS()) >= 0);
     }
 
     public void onCastProgress(GameContext game) {
@@ -103,8 +104,8 @@ public class ActiveSpell {
         }
     }
 
-    public boolean shouldTick(float delta) {
-        return ((this.delta += delta) >= spell.getInterval());
+    public boolean shouldTick(Ticker ticker) {
+        return ((this.delta += ticker.deltaMS()) >= spell.getInterval() * 1000);
     }
 
     private Bindings getBindings(GameContext game) {

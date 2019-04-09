@@ -15,6 +15,7 @@ public class Ticker implements Supplier<Integer> {
     private GameContext context;
     private AtomicInteger tick;
     private Long lastTick = System.currentTimeMillis();
+    private Long deltaMS = 0L;
     private Consumer<Ticker> exec;
 
     /**
@@ -31,15 +32,15 @@ public class Ticker implements Supplier<Integer> {
 
     public void run() {
         Long currentTick = System.currentTimeMillis();
+        deltaMS = currentTick - lastTick;
 
-        if (lastTick > currentTick) {
+        if (deltaMS < 0) {
             // prevent overflow caused by low accuracy.
-            lastTick = currentTick;
+            deltaMS = 0L;
         } else {
-            lastTick = currentTick - lastTick;
+            exec.accept(this);
+            lastTick = currentTick;
         }
-        exec.accept(this);
-        lastTick = System.currentTimeMillis();
     }
 
     public Ticker interval(Integer tick) {
@@ -49,11 +50,11 @@ public class Ticker implements Supplier<Integer> {
     }
 
     public Long deltaMS() {
-        return lastTick;
+        return deltaMS;
     }
 
     public float delta() {
-        return (lastTick * 1.0f) / GameContext.TICK_INTERVAL_MS;
+        return deltaMS * 0.001f;
     }
 
     public Ticker disable() {

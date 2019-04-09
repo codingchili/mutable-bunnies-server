@@ -38,26 +38,25 @@ window.TextEffects = class TextEffects {
             let counter = this.counters[i];
 
             if (!counter.visible) {
-                // skip updating text that is outside of the screen.
-                continue;
+                counter.ttl = 0;
             }
 
-            counter.ttl -= 1;
+            counter.ttl -= delta;
 
             if (counter.ttl <= 0 && counter.alpha <= 0) {
                 game.stage.removeChild(counter);
                 this.counters.splice(i, 1);
             } else {
                 counter.speed *= counter.slowdown;
-                counter.x += counter.speed * Math.cos(counter.dir) * delta / Game.MS_PER_FRAME;
-                counter.y += counter.speed * Math.sin(counter.dir) * delta / Game.MS_PER_FRAME;
+                counter.x += counter.speed * Math.cos(counter.dir) * delta;
+                counter.y += counter.speed * Math.sin(counter.dir) * delta;
 
                 if (counter.ttl > 0) {
-                    counter.alpha += counter.fade_in * delta / Game.MS_PER_FRAME;
+                    counter.alpha += counter.fade_in * delta;
                 }
 
                 if (counter.ttl < 0) {
-                    counter.alpha -= counter.fade_out * delta / Game.MS_PER_FRAME;
+                    counter.alpha -= counter.fade_out * delta;
                 }
 
                 if (counter.alpha > 1.0) {
@@ -99,23 +98,24 @@ window.TextEffects = class TextEffects {
 
         if (options.critical) {
             style.fontSize = 16;
-            counter.ttl = options.ttl || 220;
+            counter.ttl = options.ttl || 2.2;
         } else {
-            counter.ttl = options.ttl || 120;
+            counter.ttl = options.ttl || 1.2;
         }
 
         counter.x = target.x - (counter.width / 2) + (target.width / 3) * Math.cos(counter.dir);
         counter.y = target.y - (target.height / 2) + (target.height / 4) * Math.sin(counter.dir);
         counter.alpha = 0.18;
-        counter.speed = 2.48;
-        counter.slowdown = 0.925;
-        counter.fade_in = 0.04;
-        counter.fade_out = 0.015;
-        counter.layer = 25;
+        counter.speed = 192;
+        counter.slowdown = 0.825;
+        counter.fade_in = 25;
+        counter.fade_out = 8;
+
+        // newer texts always on top!
+        counter.layer = performance.now();
 
         if (options.float) {
             counter.dir = (6.14 / 360) * 270;
-            counter.speed = 1.6;
             counter.x = target.x - (counter.width / 2);
             counter.y = (target.y * 1.01) - target.height;
         }
@@ -173,7 +173,8 @@ window.TextEffects = class TextEffects {
             begin: event.color1 || '#eaeaea',
             end: event.color2 || '#ffffff',
             float: true,
-            ttl: Game.secondsToTicks(2.8)
+            // longer chat messages has longer lifetime.
+            ttl: 1.325 + event.text.length * 0.065
         });
     }
 };
