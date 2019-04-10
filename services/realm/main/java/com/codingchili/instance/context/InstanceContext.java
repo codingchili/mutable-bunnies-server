@@ -1,9 +1,9 @@
 package com.codingchili.instance.context;
 
 import com.codingchili.instance.model.SpawnPoint;
+import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.PlayerCreature;
-import com.codingchili.instance.model.events.JoinMessage;
-import com.codingchili.instance.model.events.LeaveMessage;
+import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
 import com.codingchili.instance.transport.FasterRealmInstanceCodec;
@@ -178,5 +178,18 @@ public class InstanceContext extends SystemContext implements ServiceContext {
             }
         });
         return future;
+    }
+
+    /**
+     * Saves the given creature to the character database if it is a player.
+     *
+     * @param player the player to be saved.
+     * @return fluent.
+     */
+    public InstanceContext save(Creature player) {
+        if (player instanceof PlayerCreature) {
+            sendRealm(new SavePlayerMessage((PlayerCreature) player));
+        }
+        return this;
     }
 }

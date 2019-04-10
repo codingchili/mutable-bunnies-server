@@ -90,7 +90,7 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
             handlers.forEach(h -> h.onPlayerLeave(player.getId()));
 
             game.remove(player);
-            game.instance().sendRealm(new SavePlayerMessage(player));
+            game.instance().save(player);
             context.onPlayerLeave(leave);
         }
     }
