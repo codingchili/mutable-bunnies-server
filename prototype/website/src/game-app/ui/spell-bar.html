@@ -142,36 +142,36 @@
 
         <paper-material elevation="3" class="spell-bar">
             <template is="dom-repeat" items="[[_list(spells, character)]]" as="spell">
-                    <div on-down="_onCast" class="spell-button">
-                        <img class$="spell-icon {{_available(spell.id, charges.*, cooldown.*)}}"
-                             src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
-                        <paper-tooltip class="spell-info" animation-delay="0" position="top">
-                            <span class="title">[[spell.name]]</span>
+                <div on-down="_onCast" class="spell-button">
+                    <img class$="spell-icon {{_available(spell.id, charges.*, cooldown.*)}}"
+                         src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
+                    <paper-tooltip class="spell-info" animation-delay="0" position="top">
+                        <span class="title">[[spell.name]]</span>
 
-                            <table class="info-table">
-                                <tr>
-                                    <th>Cooldown</th>
-                                    <th>Cast</th>
-                                    <th>Target</th>
-                                </tr>
-                                <tr style="text-align: center;">
-                                    <td class="cooldown">[[spell.cooldown]]s</td>
-                                    <td class="casttime">[[spell.casttime]]s</td>
-                                    <td class="target">[[spell.target]]</td>
-                                </tr>
-                            </table>
+                        <table class="info-table">
+                            <tr>
+                                <th>Cooldown</th>
+                                <th>Cast</th>
+                                <th>Target</th>
+                            </tr>
+                            <tr style="text-align: center;">
+                                <td class="cooldown">[[spell.cooldown]]s</td>
+                                <td class="casttime">[[spell.casttime]]s</td>
+                                <td class="target">[[spell.target]]</td>
+                            </tr>
+                        </table>
 
-                            <span class="description">{{_description(spell, character)}}</span>
+                        <span class="description">{{_description(spell, character)}}</span>
 
-                        </paper-tooltip>
-                        <template is="dom-if" if="{{_chargeable(spell, character)}}">
-                            <span class="charges">[[_charges(spell, charges.*)]]</span>
-                        </template>
-                        <template is="dom-if" if="{{!_chargeable(spell, character)}}">
-                            <paper-progress id="cd-bar-[[spell.id]]" class="cooldown-bar transiting" min="0"
-                                            max="100" value="0"></paper-progress>
-                        </template>
-                    </div>
+                    </paper-tooltip>
+                    <template is="dom-if" if="{{_chargeable(spell, character)}}">
+                        <span class="charges">[[_charges(spell, charges.*)]]</span>
+                    </template>
+                    <template is="dom-if" if="{{!_chargeable(spell, character)}}">
+                        <paper-progress id="cd-bar-[[spell.id]]" class="cooldown-bar transiting" min="0"
+                                        max="100" value="0"></paper-progress>
+                    </template>
+                </div>
             </template>
 
         </paper-material>
@@ -248,23 +248,22 @@
                             let bar = this.shadowRoot.querySelector(`#cd-bar-${spell}`);
                             bar.style.visibility = 'visible';
 
-                            // reset the value to 0.
-                            bar.value = 0;
                             bar.style.setProperty('--paper-progress-transition-duration', '0s');
+                            bar.value = 0;
 
                             setTimeout(() => {
-                                bar.value = 100;
                                 bar.style.setProperty(
                                     '--paper-progress-transition-duration',
-                                    ms / 1000 + 's'
+                                    (ms / 1000).toFixed(1) + 's'
                                 );
-                            }, 0);
+                                setTimeout(() => {bar.value = 100;}, 96);
+                            }, 96);
 
                             setTimeout(() => {
                                 this.set(`cooldown.${spell}`, false);
                                 bar.style.visibility = 'hidden';
-                                bar.value = 0;
                                 bar.style.setProperty('--paper-progress-transition-duration', '0s');
+                                bar.value = 0;
                             }, ms);
                         }
                     });
@@ -275,7 +274,7 @@
 
                     setTimeout(() => {
                         game.spells.emit();
-                    }, 0);
+                    }, 64);
                 });
             }
 
@@ -290,7 +289,7 @@
             }
 
             _charges(spell) {
-                return this.charges[spell.id];
+                return this.charges[spell.id] || 0;
             }
 
             _name(spellId) {
