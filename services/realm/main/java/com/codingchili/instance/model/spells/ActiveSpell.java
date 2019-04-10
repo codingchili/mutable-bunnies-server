@@ -38,13 +38,13 @@ public class ActiveSpell {
     private float delta = 0f;
 
     public ActiveSpell(Spell spell) {
-        this.progress = (int) (spell.getCasttime() * 1000);
-        this.interval = (int) (spell.getInterval() * 1000);
+        this.progress = GameContext.secondsToMs(spell.getCasttime());
+        this.interval = GameContext.secondsToMs(spell.getInterval());
         this.spell = spell;
     }
 
     public boolean completed(Ticker ticker) {
-        this.timer = (int) (spell.getActive() * 1000);
+        this.timer = GameContext.secondsToMs(spell.getActive());
         return ((progress -= ticker.deltaMS()) <= 0);
     }
 
@@ -105,7 +105,7 @@ public class ActiveSpell {
     }
 
     public boolean shouldTick(Ticker ticker) {
-        return ((this.delta += ticker.deltaMS()) >= spell.getInterval() * 1000);
+        return ((this.delta += ticker.deltaMS()) >= GameContext.secondsToMs(spell.getInterval()));
     }
 
     private Bindings getBindings(GameContext game) {

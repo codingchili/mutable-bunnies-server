@@ -116,7 +116,7 @@ public class SpellState {
 
             if (lookup.isPresent()) {
                 Spell spell = lookup.get();
-                float recharge = spell.getRecharge() * 1000;
+                float recharge = GameContext.secondsToMs(spell.getRecharge());
 
                 if (spell.getCharges() > 1) {
                     boolean modified = charge(spell, ticker.deltaMS() / recharge);

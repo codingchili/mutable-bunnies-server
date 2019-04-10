@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public class Ticker implements Supplier<Integer> {
     private int id = UUID.randomUUID().hashCode();
     private GameContext context;
-    private AtomicInteger tick;
+    private AtomicInteger interval;
     private Long lastTick = System.currentTimeMillis();
     private Long deltaMS = 0L;
     private Consumer<Ticker> exec;
@@ -21,12 +21,12 @@ public class Ticker implements Supplier<Integer> {
     /**
      * @param context the game context the ticker runs on.
      * @param exec the task that will be periodically executed.
-     * @param tick the interval in game ticks to run the ticker.
+     * @param interval the interval in game ticks to run the ticker.
      */
-    public Ticker(GameContext context, Consumer<Ticker> exec, Integer tick) {
+    public Ticker(GameContext context, Consumer<Ticker> exec, Integer interval) {
         this.exec = exec;
         this.context = context;
-        this.tick = new AtomicInteger(tick);
+        this.interval = new AtomicInteger(interval);
         context.setTicker(this);
     }
 
@@ -44,7 +44,7 @@ public class Ticker implements Supplier<Integer> {
     }
 
     public Ticker interval(Integer tick) {
-        this.tick.set(tick);
+        this.interval.set(tick);
         context.setTicker(this);
         return this;
     }
@@ -58,7 +58,7 @@ public class Ticker implements Supplier<Integer> {
     }
 
     public Ticker disable() {
-        tick.set(0);
+        interval.set(0);
         context.setTicker(this);
         return this;
     }
@@ -73,8 +73,8 @@ public class Ticker implements Supplier<Integer> {
         return id;
     }
 
-        @Override
+    @Override
     public Integer get() {
-        return tick.get();
+        return interval.get();
     }
 }

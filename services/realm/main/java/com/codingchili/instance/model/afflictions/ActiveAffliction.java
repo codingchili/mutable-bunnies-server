@@ -27,8 +27,8 @@ public class ActiveAffliction {
     private Affliction affliction;
     private Creature source;
     private Creature target;
-    private Float ticks;
-    private Float interval;
+    private int ticks;
+    private int interval;
     private Float delta = 0f;
     private Long start = System.currentTimeMillis();
 
@@ -41,8 +41,8 @@ public class ActiveAffliction {
         this.source = source;
         this.target = target;
         this.affliction = affliction;
-        this.ticks = affliction.getDuration() * 1000;
-        this.interval = affliction.getInterval() * 1000;
+        this.ticks = GameContext.secondsToMs(affliction.getDuration());
+        this.interval = GameContext.secondsToMs(affliction.getInterval());
     }
 
     /**

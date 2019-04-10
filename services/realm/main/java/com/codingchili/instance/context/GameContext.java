@@ -4,8 +4,8 @@ import com.codingchili.instance.model.dialog.DialogEngine;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.items.InventoryEngine;
-import com.codingchili.instance.model.npc.*;
 import com.codingchili.instance.model.movement.MovementEngine;
+import com.codingchili.instance.model.npc.SpawnEngine;
 import com.codingchili.instance.model.spells.SpellEngine;
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
@@ -267,19 +267,15 @@ public class GameContext {
         return instance;
     }
 
-    public static Integer secondsToTicks(double seconds) {
-        return (int) (seconds * 1000 / TICK_INTERVAL_MS);
-    }
-
     public static Integer onAllTicks() {
         return 1;
     }
 
-    public static Integer msToTicks(Integer ms) {
-        return (ms / TICK_INTERVAL_MS);
+    public static Integer secondsToTicks(double seconds) {
+        return (int) (seconds * 1000 / TICK_INTERVAL_MS);
     }
 
-    public static double ticksToSeconds(int ticks) {
-        return (ticks * TICK_INTERVAL_MS) / 1000.0;
+    public static Integer secondsToMs(Float seconds) {
+        return (int) (seconds * 1000);
     }
 }
