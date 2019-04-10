@@ -118,7 +118,7 @@
 
                 <mega-loader text="[[status]]" enabled="[[!loaded]]"></mega-loader>
 
-                <div class="character-list-box" hidden="[[!loaded]]">
+                <div class="character-list-box" hidden$="[[!loaded]]">
                     <template is="dom-repeat" items="[[realm.characters]]" as="character">
                         <paper-material elevation="2" class="character" on-tap="select">
                             <paper-ripple></paper-ripple>
@@ -271,10 +271,13 @@
             }
 
             loadCharacters() {
+                this.set('realm.characters', []);
                 this.showLoading('Loading characters..');
                 this.server.characterlist({
                     accepted: (data) => {
                         Object.assign(this.realm, data.realm);
+
+                        this.hideLoading();
                         this.set('realm.characters', data.characters);
 
                         if (data.characters.length > 0) {
@@ -282,8 +285,6 @@
                         } else {
                             this.showCreate();
                         }
-
-                        this.hideLoading();
 
                         if (application.development.selectFirstCharacter) {
                             this.select({
@@ -301,6 +302,7 @@
 
             removeCharacter(e) {
                 e.stopPropagation();
+                this.set('realm.characters', []);
                 this.showLoading('Removing character..');
 
                 this.server.remove({
@@ -362,6 +364,7 @@
                 }
             }
         }
+
         window.customElements.define(CharacterList.is, CharacterList);
     </script>
 </dom-module>
