@@ -3,7 +3,6 @@ package com.codingchili.instance.model.spells;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.entity.Entity;
-import com.codingchili.instance.model.events.SpellStateEvent;
 
 import java.time.Instant;
 import java.util.*;
@@ -80,6 +79,14 @@ public class SpellState {
      */
     public Long gcd() {
         return gcd;
+    }
+
+    /**
+     * @return manually invoke gcd.
+     */
+    public SpellState setGcd(long ms) {
+        gcd = System.currentTimeMillis() + ms;
+        return this;
     }
 
     /**

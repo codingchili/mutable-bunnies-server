@@ -3,6 +3,8 @@ package com.codingchili.realm.controller;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.events.JoinMessage;
 import com.codingchili.instance.model.events.LeaveMessage;
+import com.codingchili.instance.model.items.Apple;
+import com.codingchili.instance.model.items.WoodenSword;
 import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.realm.model.*;
 import io.vertx.core.Future;
@@ -148,6 +150,10 @@ public class RealmClientHandler implements CoreHandler {
         PlayerCreature creature = new PlayerCreature(request.character());
         creature.setAccount(request.account());
         creature.setClassId(request.classId());
+
+        creature.getInventory()
+                .add(new WoodenSword())
+                .add(new Apple());
 
         characters.create(creation -> {
             if (creation.succeeded()) {
