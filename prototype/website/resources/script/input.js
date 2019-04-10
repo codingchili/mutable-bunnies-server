@@ -4,7 +4,7 @@ const MOUSE_RIGHT = 2;
 window.InputManager = class InputManager {
 
     constructor() {
-        this.ESCAPE = 27;
+        this.ESCAPE = 'Escape';
         this.LMB = 0;
         this.RMB = 2;
 

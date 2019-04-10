@@ -3,10 +3,9 @@ package com.codingchili.instance.model.items;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.dialog.InteractionOutOfRangeException;
 import com.codingchili.instance.model.entity.*;
-import com.codingchili.instance.model.events.EquipItemEvent;
 import com.codingchili.instance.model.npc.LootableEntity;
 import com.codingchili.instance.model.spells.SpellTarget;
-import com.codingchili.instance.scripting.Bindings;
+import com.codingchili.instance.scripting.*;
 import io.vertx.core.Future;
 
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import com.codingchili.core.context.CoreRuntimeException;
 public class InventoryEngine {
     public static final String TARGET = "target";
     public static final int LOOT_RANGE = 164;
+    public static final int ITEM_USE_GCD = 1000;
     private GameContext game;
 
     /**
@@ -91,7 +91,8 @@ public class InventoryEngine {
         Inventory inventory = source.getInventory();
         Item item = inventory.getById(itemId);
 
-        if (item.isUsable()) {
+        if (item.getOnUse().isPresent()) {
+            Scripted scripted = new ReferencedScript(item.onUse);
             item.setQuantity(item.getQuantity() - 1);
 
             if (item.getQuantity() < 1) {
@@ -103,7 +104,8 @@ public class InventoryEngine {
                     .setSource(source)
                     .set(TARGET, target);
 
-            item.onUse.apply(bindings);
+            scripted.apply(bindings);
+            source.getSpells().setGcd(ITEM_USE_GCD);
         }
         update(source);
     }
@@ -137,11 +139,8 @@ public class InventoryEngine {
         // drop everything equipped and in inventory.
         inventory.getEquipped().clear();
         inventory.getItems().clear();
-        update(source);
 
-        loot.add(new WoodenSword());
-        loot.add(new Apple());
-
+        game.instance().save(source);
         game.add(new LootableEntity("corpse of " + source.getName(), source.getVector(), loot));
     }
 
@@ -208,7 +207,7 @@ public class InventoryEngine {
     }
 
     private void update(Creature source) {
-        // new stats: propagate?
         source.getInventory().update();
+        source.handle(new InventoryUpdateEvent(source));
     }
 }

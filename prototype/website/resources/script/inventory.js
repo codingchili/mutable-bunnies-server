@@ -1,6 +1,12 @@
 window.Inventory = class Inventory {
 
     constructor() {
+        this.onInventoryUpdated = () => {
+        };
+
+        server.connection.setHandler('inventory_update', (event) => {
+            this.onInventoryUpdated(event.inventory);
+        });
     }
 
     requestLootList(entity) {
@@ -15,8 +21,6 @@ window.Inventory = class Inventory {
         server.connection.send('loot_item', {
             targetId: entity.id,
             itemId: item.id
-        }, (e) => {
-            console.log(e);
         });
     }
 };

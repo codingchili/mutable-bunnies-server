@@ -1,0 +1,181 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+
+<link rel="import" href="../stats-view.html">
+
+<!--
+    @author Robin Duda
+    Realm chat.
+ -->
+
+<dom-module id="player-inventory">
+    <link rel="import" href="../../style/theme.css" type="css">
+    <link rel="import" href="../../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+            }
+
+            #dialog {
+                pointer-events: auto;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                min-width: 428px;
+                max-width: 428px;
+                min-height: 112px;
+                z-index: 999;
+            }
+
+            .interface-box {
+                background-color: #000000;
+                opacity: 1;
+            }
+
+            span {
+                padding: 0.28rem;
+            }
+
+            .dialog-entity {
+                margin-top: 8px;
+                padding-left: 16px;
+                display: block;
+                color: var(--paper-grey-300);
+            }
+
+            #dialog-close:hover {
+                color: var(--player-class-theme);
+            }
+
+            #dialog-close {
+                position: absolute;
+                right: 8px;
+                top: 8px;
+            }
+
+            @keyframes fadein {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 0.64;
+                }
+            }
+
+            #container {
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                position: absolute;
+                display: none;
+                pointer-events: all;
+                z-index: 500;
+            }
+
+            #overlay {
+                width: 100%;
+                height: 100%;
+                z-index: 400;
+                background-color: black;
+                opacity: 0.64;
+                animation: fadein 1.2s ease 1;
+                pointer-events: none;
+            }
+
+            #loot-items {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+        </style>
+
+        <div id="container">
+            <div id="overlay"></div>
+
+            <paper-material elevation="3" class="interface-box" id="dialog">
+                <iron-icon icon="icons:close" id="dialog-close" on-down="_hide"></iron-icon>
+
+                <span class="dialog-entity">[[name]] inventory</span>
+
+                <!-- display unique slots, with faded BG -->
+
+                <div id="loot-items">
+                    <template is="dom-repeat" items="[[inventory.items]]" as="item">
+                        <div on-click="_equip">
+                            <inventory-item item="[[item]]"></inventory-item>
+                        </div>
+                    </template>
+                </div>
+            </paper-material>
+        </div>
+    </template>
+    <script>
+        class PlayerInventory extends Polymer.GestureEventListeners(Polymer.Element) {
+
+            static get is() {
+                return 'player-inventory';
+            }
+
+            constructor() {
+                super();
+                this.inventory = [];
+            }
+
+            ready() {
+                super.ready();
+
+                application.onGameLoaded((game) => {
+                    input.onKeysListener({
+                        down: () => {
+                            if (this._open()) {
+                                this._hide();
+                            } else {
+                                this._show()
+                            }
+                        }
+                    }, 'i');
+
+                    game.inventory.onInventoryUpdated = (inventory => {
+                        this.inventory = inventory;
+                        this.notifyPath('inventory.items');
+                    });
+                });
+
+                application.onCharacterLoaded(character => {
+                    this.name = character.name;
+                    this.inventory = character.inventory;
+                });
+            }
+
+            _unequip() {
+
+            }
+
+            _equip() {
+
+            }
+
+            _drop() {
+
+            }
+
+            _open() {
+                return this.$.container.style.display === 'block';
+            }
+
+            _show() {
+                this.$.container.style.display = 'block';
+            }
+
+            _hide() {
+                this.$.container.style.display = 'none';
+            }
+        }
+
+        window.customElements.define(PlayerInventory.is, PlayerInventory);
+    </script>
+</dom-module>
