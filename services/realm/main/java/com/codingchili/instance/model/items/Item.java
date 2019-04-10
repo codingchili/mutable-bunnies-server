@@ -1,8 +1,8 @@
 package com.codingchili.instance.model.items;
 
 import com.codingchili.instance.model.stats.Stats;
-import com.codingchili.instance.scripting.Scripted;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.codingchili.core.storage.Storable;
@@ -19,16 +19,10 @@ public class Item extends ItemType implements Storable {
     protected String description = "no description.";
     protected Stats stats = new Stats();
     protected ItemRarity rarity = ItemRarity.COMMON;
-    protected Scripted onDamaged = null;
-    protected Scripted onHit = null;
     protected Integer quantity = 1;
-
-    // todo: apply GCD
-    protected Scripted onUse = null;
-
-    public Boolean isUsable() {
-        return (onUse != null);
-    }
+    protected String onDamaged = null;
+    protected String onHit = null;
+    protected String onUse = null;
 
     public String getDescription() {
         return description;
@@ -57,20 +51,29 @@ public class Item extends ItemType implements Storable {
         return this;
     }
 
-    public Scripted getOnHit() {
-        return onHit;
+    public Optional<String> getOnHit() {
+        return Optional.ofNullable(onHit);
     }
 
-    public Item setOnHit(Scripted onHit) {
+    public Item setOnHit(String onHit) {
         this.onHit = onHit;
         return this;
     }
 
-    public Scripted getOnDamaged() {
+    public String getOnDamaged() {
         return onDamaged;
     }
 
-    public Item setOnDamaged(Scripted onDamaged) {
+    public Optional<String> getOnUse() {
+        return Optional.ofNullable(onUse);
+    }
+
+    public Item setOnUse(String onUse) {
+        this.onUse = onUse;
+        return this;
+    }
+
+    public Item setOnDamaged(String onDamaged) {
         this.onDamaged = onDamaged;
         return this;
     }

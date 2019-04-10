@@ -1,7 +1,5 @@
 package com.codingchili.instance.model.items;
 
-import com.codingchili.instance.scripting.JexlScript;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,8 +19,9 @@ public class Apple extends Item {
         icon = type.getIcon();
         quantity = (int) (Math.random() * 16);
         rarity = type.rarity;
+        onUse = "apple_heal.groovy";
 
-        onUse = new JexlScript("context.spells().damage(source, -24, DamageType.heal);");
+        setId(Apple.class.getSimpleName() + "." + type.rarity);
     }
 
     private enum AppleType {
