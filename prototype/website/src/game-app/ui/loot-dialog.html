@@ -3,6 +3,7 @@
 <link rel="import" href="../../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 
 <link rel="import" href="../stats-view.html">
+<link rel="import" href="inventory-item.html">
 
 <!--
     @author Robin Duda
@@ -90,56 +91,6 @@
                 flex-wrap: wrap;
                 justify-content: center;
             }
-
-            .item-stats {
-                margin-top: 16px;
-                font-size: small;
-            }
-
-            .item-name {
-                font-size: large;
-            }
-
-            .item-description {
-                margin-top: 16px;
-                font-size: small;
-            }
-
-            .stats-header {
-                display: block;
-            }
-
-            .icon-quantity {
-                display: block;
-                position: absolute;
-                right: 6px;
-                top: 44px;
-            }
-
-            .item-slot {
-                position: absolute;
-                right: 16px;
-                top: 28px;
-                font-size: small;
-            }
-
-            .item-icon {
-                cursor: pointer;
-                position: relative;
-            }
-
-            .icon-quantity {
-                position: absolute;
-                right: 8px;
-                top: 48px;
-                font-size: small;
-                text-shadow: 0px 0px 4px #000;
-            }
-
-            .item-info {
-                min-width: 264px;
-            }
-
         </style>
 
         <div id="container">
@@ -153,24 +104,7 @@
                 <div id="loot-items">
                     <template is="dom-repeat" items="[[loot]]" as="item">
                         <div on-click="_loot">
-                            <paper-tooltip animation-delay="0" position="bottom" class="stats-tooltip">
-                                <div class="item-info">
-                                    <div class="item-name">[[item.name]]</div>
-                                    <!--<div class="item-quantity">[[_quantity(item)]]</div>-->
-                                    <div class="item-slot">[[_slot(item)]]</div>
-                                    <span class="stats-header"
-                                          style$="color:[[_rarity(item.rarity)]]">
-                                        <b>[[item.rarity]]</b>
-                                    </span>
-                                    <stats-view class="item-stats" compact="true" selected="{{item}}"
-                                                style="display:block"></stats-view>
-                                    <div class="item-description">[[item.description]]</div>
-                                </div>
-                            </paper-tooltip>
-                            <div class="item-icon">
-                                <img src="[[realm.resources]]gui/item/icon/[[item.icon]]"/>
-                                <div class="icon-quantity">[[_quantity(item)]]</div>
-                            </div>
+                            <inventory-item item="[[item]]"></inventory-item>
                         </div>
                     </template>
                 </div>
@@ -206,41 +140,6 @@
                 application.onRealmLoaded((realm) => {
                     this.realm = realm;
                 })
-            }
-
-            _slot(item) {
-                switch (item.slot) {
-                    case 'weapon':
-                    case 'offhand':
-                        return item.weaponType;
-                    case 'none':
-                        return '';
-                    default:
-                        if (item.armorType !== 'none') {
-                            return item.armorType;
-                        } else {
-                            return item.slot;
-                        }
-                }
-            }
-
-            _quantity(item) {
-                return (item.quantity > 1) ? `${item.quantity}x` : '';
-            }
-
-            _rarity(level) {
-                switch (level) {
-                    case 'COMMON':
-                        return '#9f9ea4';
-                    case 'UNCOMMON':
-                        return '#006308';
-                    case 'RARE':
-                        return '#41a6a9';
-                    case 'EPIC':
-                        return '#7f005b';
-                    case 'LEGENDARY':
-                        return '#b2a600';
-                }
             }
 
             _loot(e) {
