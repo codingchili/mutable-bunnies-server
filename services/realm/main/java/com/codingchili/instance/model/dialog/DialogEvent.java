@@ -1,4 +1,7 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.dialog;
+
+import com.codingchili.instance.model.events.Event;
+import com.codingchili.instance.model.events.EventType;
 
 import com.codingchili.core.listener.Request;
 

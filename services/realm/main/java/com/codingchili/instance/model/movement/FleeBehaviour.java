@@ -3,7 +3,6 @@ package com.codingchili.instance.model.movement;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.Vector;
-import com.codingchili.instance.model.events.MovementEvent;
 import com.codingchili.instance.model.stats.Attribute;
 
 /**

@@ -1,7 +1,7 @@
 package com.codingchili.instance.model.npc;
 
 import com.codingchili.instance.model.entity.SimpleCreature;
-import com.codingchili.instance.model.events.DeathEvent;
+import com.codingchili.instance.model.spells.DeathEvent;
 import com.codingchili.instance.scripting.Bindings;
 
 import com.codingchili.core.protocol.Api;

@@ -1,4 +1,7 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.items;
+
+import com.codingchili.instance.model.events.Event;
+import com.codingchili.instance.model.events.EventType;
 
 /**
  * @author Robin Duda

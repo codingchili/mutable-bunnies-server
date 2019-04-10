@@ -1,6 +1,8 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.movement;
 
 import com.codingchili.instance.model.entity.Vector;
+import com.codingchili.instance.model.events.Event;
+import com.codingchili.instance.model.events.EventType;
 
 /**
  * @author Robin Duda

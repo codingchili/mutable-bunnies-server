@@ -3,7 +3,7 @@ package com.codingchili.instance.model.npc;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.entity.Vector;
-import com.codingchili.instance.model.events.ListEntityLootEvent;
+import com.codingchili.instance.model.items.ListEntityLootEvent;
 import com.codingchili.instance.model.items.Item;
 
 import java.util.*;

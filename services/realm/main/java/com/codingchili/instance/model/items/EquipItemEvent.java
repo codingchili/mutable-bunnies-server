@@ -1,4 +1,6 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.items;
+
+import com.codingchili.instance.model.events.*;
 
 /**
  * @author Robin Duda

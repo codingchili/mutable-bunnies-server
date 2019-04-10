@@ -3,7 +3,6 @@ package com.codingchili.instance.model.spells;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.entity.Creature;
-import com.codingchili.instance.model.events.SpellCycle;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.scripting.Bindings;
 

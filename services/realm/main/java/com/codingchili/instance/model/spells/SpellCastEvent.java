@@ -1,6 +1,6 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.spells;
 
-import com.codingchili.instance.model.spells.*;
+import com.codingchili.instance.model.events.*;
 
 /**
  * @author Robin Duda

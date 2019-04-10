@@ -1,6 +1,7 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.afflictions;
 
-import com.codingchili.instance.model.afflictions.ActiveAffliction;
+import com.codingchili.instance.model.events.Event;
+import com.codingchili.instance.model.events.EventType;
 import com.codingchili.instance.model.stats.Stats;
 
 /**

@@ -1,6 +1,8 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.spells;
 
 import com.codingchili.instance.model.entity.Creature;
+import com.codingchili.instance.model.events.Event;
+import com.codingchili.instance.model.events.EventType;
 
 /**
  * @author Robin Duda

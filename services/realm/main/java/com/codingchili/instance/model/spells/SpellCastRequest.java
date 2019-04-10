@@ -1,6 +1,5 @@
-package com.codingchili.instance.model.requests;
+package com.codingchili.instance.model.spells;
 
-import com.codingchili.instance.model.spells.SpellTarget;
 
 /**
  * @author Robin Duda

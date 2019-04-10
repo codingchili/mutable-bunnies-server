@@ -1,7 +1,7 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.spells;
 
-import com.codingchili.instance.model.spells.Spell;
-import com.codingchili.instance.model.spells.SpellState;
+import com.codingchili.instance.model.events.Event;
+import com.codingchili.instance.model.events.EventType;
 
 /**
  * @author Robin Duda

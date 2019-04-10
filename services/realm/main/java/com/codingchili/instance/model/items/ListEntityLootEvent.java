@@ -1,6 +1,7 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.items;
 
-import com.codingchili.instance.model.items.Item;
+import com.codingchili.instance.model.events.Event;
+import com.codingchili.instance.model.events.EventType;
 
 import java.util.List;
 

@@ -4,7 +4,8 @@ import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.EventProtocol;
 import com.codingchili.instance.model.events.*;
-import com.codingchili.instance.model.items.InventoryEngine;
+import com.codingchili.instance.model.items.*;
+import com.codingchili.instance.model.spells.DeathEvent;
 import com.codingchili.instance.transport.InstanceRequest;
 
 import java.util.UUID;

@@ -2,8 +2,8 @@ package com.codingchili.instance.controller;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.*;
-import com.codingchili.instance.model.requests.SpellCastRequest;
-import com.codingchili.instance.model.requests.SpellCastResponse;
+import com.codingchili.instance.model.spells.SpellCastRequest;
+import com.codingchili.instance.model.spells.SpellCastResponse;
 import com.codingchili.instance.model.spells.SpellEngine;
 import com.codingchili.instance.model.spells.SpellResult;
 import com.codingchili.instance.transport.InstanceRequest;

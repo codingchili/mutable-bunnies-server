@@ -1,6 +1,7 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.items;
 
 import com.codingchili.instance.model.entity.Creature;
+import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.stats.Stats;
 
 /**

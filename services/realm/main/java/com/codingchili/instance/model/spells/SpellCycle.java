@@ -1,4 +1,4 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.spells;
 
 /**
  * @author Robin Duda

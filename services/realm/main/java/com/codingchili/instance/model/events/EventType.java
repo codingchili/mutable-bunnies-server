@@ -26,5 +26,7 @@ public enum EventType {
     loot_list,
     dialog,
     error,
-    loot_unsubscribe, any
+    loot_unsubscribe,
+    inventory_update,
+    any
 }

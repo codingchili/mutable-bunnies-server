@@ -1,11 +1,12 @@
-package com.codingchili.instance.model.events;
+package com.codingchili.instance.model.items;
 
+import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.spells.SpellTarget;
 
 /**
  * @author Robin Duda
  */
-public class UseItemEvent implements Event{
+public class UseItemEvent implements Event {
     private SpellTarget target;
     private String itemId;
 
