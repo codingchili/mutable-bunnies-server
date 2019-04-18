@@ -59,21 +59,23 @@ ext {
 task polymer {
     doLast {
         exec {
-            workingDir "./prototype/website"
-            commandLine = [bowerBin, "install"]
+            workingDir './prototype/website'
+            commandLine = [bowerBin, 'install']
         }
         exec {
-            workingDir "./prototype/website"
-            commandLine = [polymerBin, "build"]
+            workingDir './prototype/website'
+            commandLine = [polymerBin, 'build']
         }
     }
+    inputs.files(fileTree(dir: './prototype/website', include: '**/*', exclude: '/build/**'))
+    outputs.dir('./prototype/website/build')
 }
 
 task archivePrototype(type: Zip, dependsOn: [subprojects.jar, polymer]) {
     archiveBaseName = 'prototype'
 
     into('/') {
-        from ('prototype/script') {
+        from('prototype/script') {
             fileMode = 0755
             include '**/*'
             expand(jar: jar.outputs.files[0].name, app: project.name, version: project.version)
