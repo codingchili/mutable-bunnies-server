@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import com.codingchili.core.context.TimerSource;
 import com.codingchili.core.logging.Logger;
 
 /**
@@ -69,7 +70,8 @@ public class GameContext {
 
         initialize(instance.settings());
 
-        instance.periodic(() -> TICK_INTERVAL_MS, instance.address(), this::tick);
+        instance.periodic(TimerSource.of(TICK_INTERVAL_MS).setName(instance.address()),
+                this::tick);
     }
 
     private void initialize(InstanceSettings settings) {
@@ -89,35 +91,35 @@ public class GameContext {
                 instance.skippedTicks(skippedTicks.getAndSet(0));
             }
 
-            instance.blocking(block -> {
-                Runnable runnable;
+            if (closed.get()) {
+                instance.cancel(timer);
+            } else {
+                instance.blocking(block -> {
+                    Runnable runnable;
 
-                while ((runnable = queue.poll()) != null) {
-                    runnable.run();
-                }
-
-                tickers.forEach(ticker -> {
-                    if (currentTick % ticker.get() == 0) {
-                        ticker.run();
+                    while ((runnable = queue.poll()) != null) {
+                        runnable.run();
                     }
-                });
 
-                block.complete();
-            }, (done) -> {
-                if (done.succeeded()) {
-                    if (closed.get()) {
-                        instance.cancel(timer);
-                    } else {
+                    tickers.forEach(ticker -> {
+                        if (currentTick % ticker.get() == 0) {
+                            ticker.run();
+                        }
+                    });
+
+                    block.complete();
+                }, (done) -> {
+                    if (done.succeeded()) {
                         currentTick++;
                         if (currentTick == Long.MAX_VALUE) {
                             currentTick = 0L;
                         }
+                    } else {
+                        logger.onError(done.cause());
                     }
-                } else {
-                    logger.onError(done.cause());
-                }
-                processing.set(false);
-            });
+                    processing.set(false);
+                });
+            }
         }
     }
 

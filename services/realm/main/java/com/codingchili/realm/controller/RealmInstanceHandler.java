@@ -13,8 +13,7 @@ import io.vertx.core.Future;
 
 import java.util.*;
 
-import com.codingchili.core.context.CoreRuntimeException;
-import com.codingchili.core.context.FutureHelper;
+import com.codingchili.core.context.*;
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
 import com.codingchili.core.listener.transport.Connection;
@@ -41,7 +40,7 @@ public class RealmInstanceHandler implements CoreHandler {
     public RealmInstanceHandler(RealmContext context) {
         this.context = context;
         this.logger = context.logger(getClass());
-        context.periodic(context::updateRate, getClass().getSimpleName(), this::registerRealm);
+        context.periodic(TimerSource.of(context::updateRate).setName(getClass().getSimpleName()), this::registerRealm);
         this.registerRealm(-1L);
     }
 

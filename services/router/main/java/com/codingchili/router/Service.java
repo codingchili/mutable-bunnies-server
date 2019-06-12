@@ -75,7 +75,7 @@ public class Service implements CoreService {
     private void start(Supplier<CoreListener> listener, WireType type, Future<String> future) {
         context.listener(() -> listener.get()
                 .handler(handler)
-                .settings(() -> context.getListener(type))).setHandler(future);
+                .settings(context.getListener(type))).setHandler(future);
     }
 
     public static void main(String[] args) {

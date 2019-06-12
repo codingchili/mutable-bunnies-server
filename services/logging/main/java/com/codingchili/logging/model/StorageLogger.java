@@ -31,4 +31,9 @@ public class StorageLogger extends DefaultLogger implements JsonLogger {
         });
         return this;
     }
+
+    @Override
+    public void close() {
+        // no-op.
+    }
 }

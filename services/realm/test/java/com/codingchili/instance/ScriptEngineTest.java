@@ -28,7 +28,7 @@ public class ScriptEngineTest {
     private CoreContext context;
 
     @Rule
-    public Timeout timeout = Timeout.seconds(120);
+    public Timeout timeout = Timeout.seconds(10);
 
     @Before
     public void setUp() {
@@ -42,7 +42,7 @@ public class ScriptEngineTest {
 
     @Test
     public void performance(TestContext test) {
-        BenchmarkGroup group = new BenchmarkGroupBuilder("scriptEngines", 12000);
+        BenchmarkGroup group = new BenchmarkGroupBuilder("scriptEngines", 20);
         Map<String, Scripted> scripts = new HashMap<>();
         Async async = test.async();
 

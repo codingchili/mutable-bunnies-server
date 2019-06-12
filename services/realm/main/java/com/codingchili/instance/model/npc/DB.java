@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import com.codingchili.core.context.CoreContext;
+import com.codingchili.core.context.TimerSource;
 import com.codingchili.core.files.*;
 import com.codingchili.core.logging.Logger;
 import com.codingchili.core.protocol.Serializer;
@@ -62,7 +63,7 @@ public class DB<E extends Storable> {
 
         FileWatcher.builder(core)
                 .onDirectory(path)
-                .rate(() -> POLL_FILE_MODIFY)
+                .rate(TimerSource.of(POLL_FILE_MODIFY))
                 .withListener(new FileStoreListener() {
                     @Override
                     public void onFileModify(Path modified) {

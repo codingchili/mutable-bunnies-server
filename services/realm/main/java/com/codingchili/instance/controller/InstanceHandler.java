@@ -107,6 +107,7 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
 
     @Override
     public void stop(Future<Void> future) {
+        game.close();
         context.onInstanceStopped(future, context.realm().getNode(), context.settings().getName());
     }
 

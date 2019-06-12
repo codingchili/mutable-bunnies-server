@@ -88,7 +88,7 @@ public class Service implements CoreService {
                 if (response.failed()) {
                     // If no response then the id is not already in use.
                     CoreListener listener = new WebsocketListener()
-                            .settings(() -> realm.get().getListener())
+                            .settings(realm.get().getListener())
                             .handler(new RealmClientHandler(rc));
 
                     // deploy handler for incoming messages from instances.

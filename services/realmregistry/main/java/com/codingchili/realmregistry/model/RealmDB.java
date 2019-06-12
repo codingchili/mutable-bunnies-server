@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.codingchili.core.context.TimerSource;
 import com.codingchili.core.security.Token;
 import com.codingchili.core.security.TokenFactory;
 import com.codingchili.core.storage.*;
@@ -31,7 +32,7 @@ public class RealmDB implements AsyncRealmStore {
     public RealmDB(AsyncStorage<RegisteredRealm> map) {
         this.realms = map;
 
-        this.watcher = new EntryWatcher<>(realms, this::getStaleQuery, this::getTimeout)
+        this.watcher = new EntryWatcher<>(realms, this::getStaleQuery, TimerSource.of(this::getTimeout))
                 .start(items -> items.forEach(item ->
                         realms.remove(item.getId(), (removed) -> {
                             if (removed.failed()) {
@@ -63,7 +64,7 @@ public class RealmDB implements AsyncRealmStore {
     public void getMetadataList(Handler<AsyncResult<List<RealmMetaData>>> future) {
         realms.values(map -> {
             if (map.succeeded()) {
-                List<RealmMetaData> list = map.result().stream()
+                List<RealmMetaData> list = map.result()
                         .map(RealmMetaData::new)
                         .collect(Collectors.toList());
 

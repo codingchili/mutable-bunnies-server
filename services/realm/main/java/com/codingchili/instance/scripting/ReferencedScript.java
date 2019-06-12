@@ -10,8 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.codingchili.core.context.CoreContext;
-import com.codingchili.core.context.CoreRuntimeException;
+import com.codingchili.core.context.*;
 import com.codingchili.core.files.*;
 import com.codingchili.core.logging.Logger;
 
@@ -66,7 +65,7 @@ public class ReferencedScript implements Scripted {
     private static void setupFileWatcher(CoreContext core, Logger logger) {
         FileWatcher.builder(core)
                 .onDirectory(SCRIPT_PATH)
-                .rate(() -> 1500)
+                .rate(TimerSource.of(1500))
                 .withListener(new FileStoreListener() {
                     @Override
                     public void onFileModify(Path path) {

@@ -82,6 +82,7 @@ public class SpellState {
     }
 
     /**
+     * @param ms the number of milliseconds the GCD is active for.
      * @return manually invoke gcd.
      */
     public SpellState setGcd(long ms) {

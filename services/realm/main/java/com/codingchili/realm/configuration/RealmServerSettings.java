@@ -2,6 +2,8 @@ package com.codingchili.realm.configuration;
 
 import com.codingchili.core.configuration.ServiceConfigurable;
 import com.codingchili.core.storage.IndexedMapPersisted;
+import com.codingchili.core.storage.IndexedMapVolatile;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -17,7 +19,7 @@ public class RealmServerSettings extends ServiceConfigurable {
     public static final String PATH_REALMSERVER = "conf/service/realmserver.yaml";
     private List<String> enabled = new ArrayList<>();
     private int realmUpdates = 3500;
-    private String storage = IndexedMapPersisted.class.getName();
+    private String storage = IndexedMapVolatile.class.getName();
 
     /**
      * @return get a list of enabled realms.

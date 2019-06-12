@@ -142,7 +142,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
                 .put(LOG_INSTANCE, instance)
                 .put(ID_REALM, realm).send();
 
-        Delay.forShutdown(future);
+        future.complete();
     }
 
     public void skippedTicks(int ticks) {

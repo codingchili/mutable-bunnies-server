@@ -116,8 +116,12 @@ public class RealmContext extends SystemContext implements ServiceContext {
 
     @Override
     public Logger logger(Class aClass) {
-        return super.logger(aClass)
-                .setMetadata(ID_REALM, settings.get()::getNode);
+        Logger logger = super.logger(aClass);
+
+        if (settings != null) {
+            logger.setMetadata(ID_REALM, settings.get()::getNode);
+        }
+        return logger;
     }
 
     public Map<String, Connection> connections() {
@@ -180,7 +184,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
         logger.event(LOG_REALM_STOP, ERROR)
                 .put(ID_REALM, realm).send();
 
-        Delay.forShutdown(future);
+        future.complete();
     }
 
     public void onRealmRegistered(String realm) {

@@ -1,6 +1,6 @@
 project.group = 'com.codingchili.service'
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-jsr223:3.0.0-alpha-3'
+    compile 'org.codehaus.groovy:groovy-jsr223:3.0.0-alpha-4'
     compile project(':common')
 }

@@ -46,7 +46,7 @@ public class FasterBusListener implements CoreListener {
     }
 
     @Override
-    public CoreListener settings(Supplier<ListenerSettings> settings) {
+    public CoreListener settings(ListenerSettings settings) {
         // no settings required.
         return this;
     }

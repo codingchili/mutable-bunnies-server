@@ -2,8 +2,7 @@ package com.codingchili.logging.controller;
 
 import com.codingchili.common.Strings;
 
-import com.codingchili.core.context.CoreContext;
-import com.codingchili.core.context.SystemContext;
+import com.codingchili.core.context.*;
 import com.codingchili.core.files.Configurations;
 import com.codingchili.core.logging.DefaultLogger;
 import com.codingchili.core.logging.Level;
@@ -79,7 +78,7 @@ public class SharedLogHandlerTest {
                 }, messageWithToken(token));
             }
         });
-        context.periodic(() -> 20, "", event -> {
+        context.periodic(TimerSource.of(20), event -> {
             context.storage().size(size -> {
                 if (size.result() == MESSAGE_COUNT) {
                     context.cancel(event);
@@ -106,6 +105,11 @@ public class SharedLogHandlerTest {
     class LogMessageGenerator extends DefaultLogger {
         public LogMessageGenerator(CoreContext context, Class aClass) {
             super(context, aClass);
+        }
+
+        @Override
+        public void close() {
+            // no-op.
         }
     }
 }
