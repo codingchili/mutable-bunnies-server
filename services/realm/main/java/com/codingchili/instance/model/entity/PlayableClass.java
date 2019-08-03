@@ -19,6 +19,7 @@ public class PlayableClass implements Storable {
     private Collection<ArmorType> armors = new ArrayList<>();
     private Collection<String> keywords = new ArrayList<>();
     private Collection<String> spells = new ArrayList<>();
+    private Collection<String> items = new ArrayList<>();
     private Model model = new Model();
     private String id = "no_id";
     private String name = "default";
@@ -51,6 +52,14 @@ public class PlayableClass implements Storable {
     public PlayableClass setDescription(String description) {
         this.description = description;
         return this;
+    }
+
+    public Collection<String> getItems() {
+        return items;
+    }
+
+    public void setItems(Collection<String> items) {
+        this.items = items;
     }
 
     public Collection<String> getSpells() {

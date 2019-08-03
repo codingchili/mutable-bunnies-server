@@ -1,0 +1,7 @@
+name: "Wizarding Shirt"
+description: "The previous owner is rumored to have cast a few simple spells in their lifetime."
+icon: "shirt.png"
+slot: "chest"
+stats:
+  intelligence: 2
+  wisdom: 2

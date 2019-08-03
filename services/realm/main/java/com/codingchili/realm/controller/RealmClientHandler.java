@@ -3,8 +3,8 @@ package com.codingchili.realm.controller;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.events.JoinMessage;
 import com.codingchili.instance.model.events.LeaveMessage;
-import com.codingchili.instance.model.items.Apple;
-import com.codingchili.instance.model.items.WoodenSword;
+import com.codingchili.instance.model.items.Inventory;
+import com.codingchili.instance.model.items.ItemDB;
 import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.realm.model.*;
 import io.vertx.core.Future;
@@ -33,10 +33,12 @@ public class RealmClientHandler implements CoreHandler {
     private final Protocol<Request> protocol = new Protocol<>(this);
     private AsyncCharacterStore characters;
     private RealmContext context;
+    private ItemDB items;
 
     public RealmClientHandler(RealmContext context) {
         this.context = context;
         this.characters = context.characters();
+        this.items = new ItemDB(context);
     }
 
     @Api(PUBLIC)
@@ -151,9 +153,14 @@ public class RealmClientHandler implements CoreHandler {
         creature.setAccount(request.account());
         creature.setClassId(request.classId());
 
-        creature.getInventory()
-                .add(new WoodenSword())
-                .add(new Apple());
+        Inventory inventory = creature.getInventory();
+
+        context.classes().getById(request.classId())
+                .ifPresent(classData -> {
+                    classData.getItems().forEach(item -> {
+                        items.getById(item).ifPresent(inventory::add);
+                    });
+                });
 
         characters.create(creation -> {
             if (creation.succeeded()) {

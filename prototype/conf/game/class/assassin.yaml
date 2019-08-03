@@ -21,6 +21,9 @@ spells:
   - "potent_venom"
   - "shadow_step"
   - "shadow escape"
+items:
+  - "dagger"
+  - "underwear"
 stats:
   strength: 16
   intelligence: 14

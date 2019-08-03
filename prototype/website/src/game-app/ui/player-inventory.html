@@ -91,6 +91,15 @@
                 justify-content: center;
             }
 
+            .slot_row {
+                display: flex;
+                justify-content: center;
+            }
+
+            .spacer {
+                width: 64px;
+            }
+
         </style>
 
         <div id="container">
@@ -99,13 +108,40 @@
             <paper-material elevation="3" class="interface-box" id="dialog">
                 <iron-icon icon="icons:close" id="dialog-close" on-down="_hide"></iron-icon>
 
-                <span class="dialog-entity">[[name]] inventory</span>
+                <span class="dialog-entity">[[name]]'s inventory</span>
 
-                <!-- display unique slots, with faded BG -->
+                <div class="slots">
+                    <div class="slot_row">
+                        <div class="spacer"></div>
+                        <inventory-item on-click="_unequip('head')" item="[[_slot('head', inventory)]]"></inventory-item>
+                        <inventory-item on-click="_unequip('cloak')" item="[[_slot('cloak', inventory)]]"></inventory-item>
+                    </div>
+
+                    <div class="slot_row">
+                        <inventory-item on-click="_unequip" item="[[_slot('offhand', inventory)]]"></inventory-item>
+                        <inventory-item on-click="_unequip" item="[[_slot('chest',inventory)]]"></inventory-item>
+                        <inventory-item on-click="_unequip" item="[[_slot('weapon', inventory)]]"></inventory-item>
+                    </div>
+
+                    <div class="slot_row">
+                        <div class="spacer"></div>
+                        <inventory-item item="[[_slot('legs', inventory)]]"></inventory-item>
+                        <div class="spacer"></div>
+                    </div>
+
+                    <div class="slot_row">
+                        <inventory-item item="[[_slot('neck',inventory)]]"></inventory-item>
+                        <inventory-item item="[[_slot('foot', inventory)]]"></inventory-item>
+                        <inventory-item item="[[_slot('ring', inventory)]]"></inventory-item>
+
+                    </div>
+                </div>
+
+                <hr>
 
                 <div id="loot-items">
                     <template is="dom-repeat" items="[[inventory.items]]" as="item">
-                        <div on-click="_equip">
+                        <div on-down="_equip">
                             <inventory-item item="[[item]]"></inventory-item>
                         </div>
                     </template>
@@ -122,7 +158,10 @@
 
             constructor() {
                 super();
-                this.inventory = [];
+                this.inventory = {
+                    equipped: {}
+                };
+                this.slots = ['head', 'chest', 'legs', 'weapon', 'offhand', 'ring', 'neck', 'cloak', 'foot'];
             }
 
             ready() {
@@ -151,16 +190,35 @@
                 });
             }
 
-            _unequip() {
-
+            _unequip(item) {
+                console.log(item);
             }
 
-            _equip() {
+            _equip(e) {
+                let item = e.model.item;
 
+                if (item.slot !== 'none') {
+                    game.inventory.equipItem(item);
+                } else {
+                    game.inventory.useItem(item);
+                }
             }
 
             _drop() {
 
+            }
+
+            _slot(slot) {
+                let equipped = this.inventory.equipped[slot];
+                if (equipped) {
+                    return equipped;
+                } else {
+                    // return placeholder icon.
+                    return {
+                        name: slot,
+                        icon: slot + ".svg"
+                    };
+                }
             }
 
             _open() {

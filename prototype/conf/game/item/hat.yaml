@@ -1,0 +1,8 @@
+icon: "feathered_hat.png"
+name: "Feathered Hat"
+description: "Robin Hood Vibes."
+slot: "head"
+rarity: "rare"
+stats:
+  dexterity: 6
+  movement: 16

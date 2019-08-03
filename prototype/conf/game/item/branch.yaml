@@ -1,0 +1,7 @@
+icon: "branch.png"
+slot: "offhand"
+name: "Leafy Branch"
+description: "You feel closer to nature."
+stats:
+  wisdom: 4
+  constitution: 4

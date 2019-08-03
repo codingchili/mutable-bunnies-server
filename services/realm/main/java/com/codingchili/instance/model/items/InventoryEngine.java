@@ -22,6 +22,8 @@ public class InventoryEngine {
     public static final String TARGET = "target";
     public static final int LOOT_RANGE = 164;
     public static final int ITEM_USE_GCD = 1000;
+    public static final String ITEM = "item";
+    public static final String SPELLS = "spells";
     private GameContext game;
 
     /**
@@ -91,23 +93,31 @@ public class InventoryEngine {
         Inventory inventory = source.getInventory();
         Item item = inventory.getById(itemId);
 
-        if (item.getOnUse().isPresent()) {
-            Scripted scripted = new ReferencedScript(item.onUse);
-            item.setQuantity(item.getQuantity() - 1);
+        if (source.getSpells().isOnGCD()) {
+            // notify client?
+        } else {
+            if (item.getOnUse() != null) {
+                Scripted scripted = new ReferencedScript(item.onUse);
+                item.setQuantity(item.getQuantity() - 1);
 
-            if (item.getQuantity() < 1) {
-                inventory.getItems().remove(item);
+                if (item.getQuantity() < 1) {
+                    inventory.getItems().remove(item);
+                }
+
+                Bindings bindings = new Bindings();
+                bindings.setContext(game)
+                        .set(ITEM, item)
+                        .set(SPELLS, game.spells())
+                        .setSource(source)
+                        .set(TARGET, target);
+
+                // default and allow scripts to override.
+                source.getSpells().setGcd(ITEM_USE_GCD);
+
+                scripted.apply(bindings);
+                update(source);
             }
-
-            Bindings bindings = new Bindings();
-            bindings.setContext(game)
-                    .setSource(source)
-                    .set(TARGET, target);
-
-            scripted.apply(bindings);
-            source.getSpells().setGcd(ITEM_USE_GCD);
         }
-        update(source);
     }
 
     /**

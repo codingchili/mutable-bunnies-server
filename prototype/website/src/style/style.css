@@ -55,6 +55,10 @@ paper-toolbar {
     border: 1px solid rgba(74, 20, 140, 0.5);
 }
 
+hr {
+    border-color: rgba(72, 20, 140, 1.0);
+}
+
 .noselect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;

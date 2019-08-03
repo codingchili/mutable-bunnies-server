@@ -23,4 +23,12 @@ window.Inventory = class Inventory {
             itemId: item.id
         });
     }
+
+    equipItem(item) {
+        server.connection.send('equip_item', {itemId: item.id});
+    }
+
+    useItem(item) {
+        server.connection.send('use_item', {itemId: item.id});
+    }
 };

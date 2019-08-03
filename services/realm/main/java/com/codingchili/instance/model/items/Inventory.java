@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import com.codingchili.core.context.CoreRuntimeException;
 
@@ -16,11 +14,9 @@ import com.codingchili.core.context.CoreRuntimeException;
  * Represents a characters inventory.
  */
 public class Inventory implements Serializable {
-    public static Inventory EMPTY = new Inventory();
-
-    private Map<Slot, Item> equipped = new ConcurrentHashMap<>();
+    private Map<Slot, Item> equipped = new LinkedHashMap<>();
     private Collection<Item> items = new ArrayList<>();
-    private Stats stats = new Stats();
+    private transient Stats stats = new Stats();
     private Integer space;
     private Integer currency = 1;
 
@@ -42,15 +38,16 @@ public class Inventory implements Serializable {
                 return item;
             }
         }
-        throw new CoreRuntimeException(String.format("Item with id '%d' does not exist.", id));
+        throw new CoreRuntimeException(String.format("Item with id '%s' does not exist.", id));
     }
 
     public Inventory add(Item item) {
         if (items.contains(item)) {
-            items = items.stream()
-                    .filter(existing -> existing.getId().equals(item.getId()))
-                    .map(existing -> existing.setQuantity(existing.quantity + item.quantity))
-                    .collect(Collectors.toList());
+            items.forEach(entry -> {
+                if (entry.getId().equals(item.getId())) {
+                    entry.setQuantity(entry.getQuantity() + item.quantity);
+                }
+            });
         } else {
             items.add(item);
         }

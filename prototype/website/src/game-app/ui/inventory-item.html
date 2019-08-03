@@ -37,6 +37,7 @@
 
             .stats-header {
                 display: block;
+                text-transform: uppercase;
             }
 
             .icon-quantity {
@@ -56,6 +57,8 @@
             .item-icon {
                 cursor: pointer;
                 position: relative;
+                width: 64px;
+                height: 64px;
             }
 
             .icon-quantity {
@@ -125,15 +128,15 @@
 
             _rarity(level) {
                 switch (level) {
-                    case 'COMMON':
+                    case 'common':
                         return '#9f9ea4';
-                    case 'UNCOMMON':
+                    case 'uncommon':
                         return '#006308';
-                    case 'RARE':
+                    case 'rare':
                         return '#41a6a9';
-                    case 'EPIC':
+                    case 'epic':
                         return '#7f005b';
-                    case 'LEGENDARY':
+                    case 'legendary':
                         return '#b2a600';
                 }
             }

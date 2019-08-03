@@ -20,6 +20,9 @@ spells:
   - "deaths emissary"
   - "consuming bolt"
   - "sword swing"
+items:
+  - "sword"
+  - "underwear"
 stats:
   strength: 10
   intelligence: 18

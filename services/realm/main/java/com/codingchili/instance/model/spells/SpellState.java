@@ -23,9 +23,9 @@ import java.util.*;
  */
 public class SpellState {
     private static final Integer GCD_MS = 250;
-    private Set<String> learned = new HashSet<>();
-    private Map<String, Long> casted = new HashMap<>();
-    private Map<String, Float> charges = new HashMap<>();
+    private Set<String> learned = new LinkedHashSet<>();
+    private Map<String, Long> casted = new LinkedHashMap<>();
+    private Map<String, Float> charges = new LinkedHashMap<>();
     private Long gcd = 0L;
 
     /**
@@ -69,7 +69,10 @@ public class SpellState {
         }
     }
 
-    private boolean isOnGCD() {
+    /**
+     * @return true if the global cooldown is active.
+     */
+    public boolean isOnGCD() {
         return System.currentTimeMillis() < gcd;
     }
 

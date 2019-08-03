@@ -23,6 +23,9 @@ spells:
   - "deadly aim"
   - "untrapped"
   - "fire bow"
+items:
+  - "bow"
+  - "underwear"
 stats:
   strength: 16
   intelligence: 10

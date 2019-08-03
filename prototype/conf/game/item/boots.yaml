@@ -1,0 +1,7 @@
+name: "Plain Boots"
+slot: "foot"
+icon: "boots.png"
+description: "There are no holes in them."
+stats:
+  dexterity: 4
+  movement: 42

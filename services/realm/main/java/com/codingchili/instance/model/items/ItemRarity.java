@@ -6,9 +6,9 @@ package com.codingchili.instance.model.items;
  * Indicates the rarity of an item.
  */
 public enum ItemRarity {
-    COMMON,
-    UNCOMMON,
-    RARE,
-    EPIC,
-    LEGENDARY
+    common,
+    uncommon,
+    rare,
+    epic,
+    legendary
 }

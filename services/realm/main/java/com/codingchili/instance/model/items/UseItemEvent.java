@@ -7,7 +7,7 @@ import com.codingchili.instance.model.spells.SpellTarget;
  * @author Robin Duda
  */
 public class UseItemEvent implements Event {
-    private SpellTarget target;
+    private SpellTarget itemTarget;
     private String itemId;
 
     @Override
@@ -28,11 +28,11 @@ public class UseItemEvent implements Event {
         this.itemId = itemId;
     }
 
-    public SpellTarget getTarget() {
-        return target;
+    public SpellTarget getItemTarget() {
+        return itemTarget;
     }
 
-    public void setTarget(SpellTarget target) {
-        this.target = target;
+    public void setItemTarget(SpellTarget itemTarget) {
+        this.itemTarget = itemTarget;
     }
 }

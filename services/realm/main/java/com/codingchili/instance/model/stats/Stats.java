@@ -1,6 +1,6 @@
 package com.codingchili.instance.model.stats;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.LinkedHashMap;
 
 /**
  * @author Robin Duda
@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Stats is a form of attribute values that may be applied to a
  * character or an item.
  */
-public class Stats extends ConcurrentHashMap<Attribute, Double> {
+public class Stats extends LinkedHashMap<Attribute, Double> {
 
     /**
      * Adds the given value to the attribute if existing or sets it if not.

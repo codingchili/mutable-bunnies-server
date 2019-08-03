@@ -1,10 +1,6 @@
 package com.codingchili.instance.model.items;
 
 import com.codingchili.instance.model.stats.Attribute;
-import com.codingchili.instance.scripting.ReferencedScript;
-import org.apache.commons.jexl2.*;
-
-import com.codingchili.core.protocol.Serializer;
 
 /**
  * Sample item configured as a java object.
@@ -15,7 +11,7 @@ public class WoodenSword extends Item {
         weaponType = WeaponType.sword2h;
         name = "Wooden Dagger";
         description = "Watch out for splinters.";
-        rarity = ItemRarity.RARE;
+        rarity = ItemRarity.rare;
 
         stats.update(Attribute.strength, 1);
         stats.update(Attribute.attackpower, 5);

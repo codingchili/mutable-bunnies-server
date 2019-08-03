@@ -15,6 +15,8 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
     protected transient AfflictionState afflictions = new AfflictionState();
     protected Inventory inventory = new Inventory();
     protected SpellState spells = new SpellState();
+
+    // computed property cannot be persisted - this will break object based keys.
     protected Stats stats = new Stats();
 
     @Override

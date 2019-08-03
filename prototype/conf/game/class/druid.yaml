@@ -21,6 +21,9 @@ spells:
   - "restoration"
   - "curse"
   - "staff whack"
+items:
+  - "branch"
+  - "underwear"
 stats:
   strength: 8
   intelligence: 14

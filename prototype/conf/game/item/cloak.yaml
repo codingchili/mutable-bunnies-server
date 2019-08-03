@@ -1,0 +1,8 @@
+name: "Tattered Cloak"
+description: "You feel like a superhero."
+slot: "cloak"
+icon: "cloak.png"
+rarity: "uncommon"
+stats:
+  intelligence: 2
+  magicResist: 2

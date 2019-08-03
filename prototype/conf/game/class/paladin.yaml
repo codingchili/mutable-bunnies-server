@@ -21,6 +21,9 @@ spells:
   - "holy power"
   - "blinding light"
   - "hammer blow"
+items:
+  - "battleaxe"
+  - "underwear"
 stats:
   strength: 16
   intelligence: 16

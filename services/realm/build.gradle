@@ -1,6 +1,9 @@
 project.group = 'com.codingchili.service'
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-jsr223:3.0.0-alpha-4'
+    // anything newer than alpha-3 results in java.lang.NoClassDefFoundError:
+    //     Could not initialize class org.codehaus.groovy.runtime.InvokerHelper
+    // tested up to beta-1.
+    compile 'org.codehaus.groovy:groovy-jsr223:3.0.0-alpha-3'
     compile project(':common')
 }

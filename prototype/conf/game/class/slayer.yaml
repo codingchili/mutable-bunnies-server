@@ -21,6 +21,9 @@ spells:
   - "break armor"
   - "blood rage"
   - "axe swing"
+items:
+  - "battleaxe"
+  - "underwear"
 stats:
   strength: 18
   intelligence: 8

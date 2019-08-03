@@ -25,7 +25,7 @@ public class Apple extends Item {
     }
 
     private enum AppleType {
-        RED(ItemRarity.COMMON), GREEN(ItemRarity.UNCOMMON), GOLDEN(ItemRarity.LEGENDARY);
+        RED(ItemRarity.common), GREEN(ItemRarity.uncommon), GOLDEN(ItemRarity.legendary);
 
         private ItemRarity rarity;
 

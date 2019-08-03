@@ -1,0 +1,12 @@
+name: "Heart Embroidered Underwear"
+description: "Only the bravest of adventurers wear only underwear to battle."
+icon: "underwear.png"
+slot: "legs"
+rarity: "epic"
+stats:
+  intelligence: 4
+  wisdom: 4
+  dexterity: 4
+  magicResist: -4
+  armorClass: -4
+  movement: 48

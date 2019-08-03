@@ -1,0 +1,9 @@
+name: "Magical Wand"
+description: "It is magical, albeit slightly."
+icon: "wand_1.png"
+slot: "weapon"
+rarity: "rare"
+stats:
+  intelligence: 6
+  wisdom: 6
+  magicResist: 12

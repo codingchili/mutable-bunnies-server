@@ -2,7 +2,6 @@ package com.codingchili.instance.model.items;
 
 import com.codingchili.instance.model.stats.Stats;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import com.codingchili.core.storage.Storable;
@@ -18,7 +17,7 @@ public class Item extends ItemType implements Storable {
     protected String name = "no name";
     protected String description = "no description.";
     protected Stats stats = new Stats();
-    protected ItemRarity rarity = ItemRarity.COMMON;
+    protected ItemRarity rarity = ItemRarity.common;
     protected Integer quantity = 1;
     protected String onDamaged = null;
     protected String onHit = null;
@@ -51,8 +50,8 @@ public class Item extends ItemType implements Storable {
         return this;
     }
 
-    public Optional<String> getOnHit() {
-        return Optional.ofNullable(onHit);
+    public String getOnHit() {
+        return onHit;
     }
 
     public Item setOnHit(String onHit) {
@@ -64,8 +63,8 @@ public class Item extends ItemType implements Storable {
         return onDamaged;
     }
 
-    public Optional<String> getOnUse() {
-        return Optional.ofNullable(onUse);
+    public String getOnUse() {
+        return onUse;
     }
 
     public Item setOnUse(String onUse) {

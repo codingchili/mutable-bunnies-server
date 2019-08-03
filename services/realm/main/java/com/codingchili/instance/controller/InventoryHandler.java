@@ -52,7 +52,7 @@ public class InventoryHandler implements GameHandler {
     @Api
     public void use_item(InstanceRequest request) {
         UseItemEvent event = request.raw(UseItemEvent.class);
-        inventory.use(creature(request), event.getTarget(), event.getItemId());
+        inventory.use(creature(request), event.getItemTarget(), event.getItemId());
     }
 
     @Api

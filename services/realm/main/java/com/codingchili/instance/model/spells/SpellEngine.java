@@ -244,20 +244,22 @@ public class SpellEngine {
      *
      * @param target the target to reduce the available energy of.
      * @param amount the amount of energy to deduct.
-     * @return true if the energy was available and consumed, otherwise false.
+     * @return true if the energy was available and consumed, otherwise false. Always returns
+     * true when energy is added.
      */
     public boolean energy(Creature target, double amount) {
         Stats stats = target.getBaseStats();
+        double max = stats.get(Attribute.maxenergy);
+        double current = stats.get(Attribute.energy);
 
-        if (amount < 0 && stats.get(Attribute.energy) < amount) {
+        if (amount < 0 && current < amount) {
             // cannot update energy to negative values.
             return false;
         } else {
-            if (amount > stats.get(Attribute.maxenergy)) {
+            if (amount + max > stats.get(Attribute.maxenergy)) {
                 // prevent updating over maximum.
                 amount = stats.get(Attribute.maxenergy);
             }
-
             stats.update(Attribute.energy, amount);
             target.handle(new StatsUpdateEvent(target));
             return true;
@@ -272,6 +274,7 @@ public class SpellEngine {
      * @param value  the amount of health to apply, may not exceed the max health of the being.
      */
     public void heal(Creature target, double value) {
+        Stats stats = target.getBaseStats();
         double max = target.getStats().get(Attribute.maxhealth);
         double current = target.getBaseStats().get(Attribute.health);
 

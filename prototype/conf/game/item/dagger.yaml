@@ -1,0 +1,8 @@
+icon: "dagger2.png"
+name: "Steel Dagger"
+description: "A dagger of the finer variety."
+slot: "weapon"
+weaponType: "dagger"
+rarity: "uncommon"
+stats:
+  dexterity: 4

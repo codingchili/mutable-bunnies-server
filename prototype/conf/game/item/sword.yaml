@@ -1,0 +1,8 @@
+name: "Steel Sword"
+description: "A fine non-magical sword."
+icon: "sword.png"
+slot: "weapon"
+stats:
+  strength: 6
+  dexterity: -2
+  movement: -16
