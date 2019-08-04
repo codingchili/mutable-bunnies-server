@@ -23,6 +23,7 @@ spells:
   - "shadow escape"
 items:
   - "dagger"
+  - "pleather_armor"
   - "underwear"
 stats:
   strength: 16
@@ -31,5 +32,5 @@ stats:
   constitution: 16
   dexterity: 18
   magicResist: 4
-  armorClass: 8
+  armorClass: 16
   movement: 310

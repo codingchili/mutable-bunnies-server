@@ -46,6 +46,7 @@ public class InventoryEngine {
             inventory.getItems().add(item);
         }
         update(source);
+        game.publish(new StatsUpdateEvent(source));
     }
 
     /**
@@ -59,23 +60,21 @@ public class InventoryEngine {
         Item item = inventory.getById(itemId);
 
         if (!item.getSlot().equals(Slot.none)) {
-
-            // remove item from pack.
+            int position = inventory.getItems().indexOf(item);
             inventory.getItems().remove(item);
 
             if (inventory.getEquipped().containsKey(item.getSlot())) {
-                // slot already equipped: move to pack.
-                inventory.getItems().add(
+                inventory.getItems().add(position,
                         inventory.getEquipped().replace(item.getSlot(), item));
             } else {
-                // slot not already equipped.
                 inventory.getEquipped().put(item.slot, item);
             }
             update(source);
 
-            // publish this so players can render equipped items.
+            game.publish(new StatsUpdateEvent(source));
             game.publish(new EquipItemEvent()
-                    .setItemId(itemId)
+                    .setItemId(item.getId())
+                    .setIcon(item.getIcon())
                     .setSource(source.getId()));
         } else {
             throw new CoreRuntimeException("Not able to equip item: " + item.getName());

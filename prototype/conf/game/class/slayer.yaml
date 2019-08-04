@@ -23,6 +23,7 @@ spells:
   - "axe swing"
 items:
   - "battleaxe"
+  - "plate"
   - "underwear"
 stats:
   strength: 18

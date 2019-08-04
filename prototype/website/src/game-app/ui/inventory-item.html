@@ -57,8 +57,13 @@
             .item-icon {
                 cursor: pointer;
                 position: relative;
-                width: 64px;
-                height: 64px;
+                width: 48px;
+                height: 48px;
+            }
+
+            .item-icon > img {
+                width: 48px;
+                height: 48px;
             }
 
             .icon-quantity {
@@ -70,7 +75,8 @@
             }
 
             .item-info {
-                min-width: 264px;
+                min-width: 224px;
+                max-width: 224px;
             }
 
         </style>
@@ -131,13 +137,13 @@
                     case 'common':
                         return '#9f9ea4';
                     case 'uncommon':
-                        return '#006308';
+                        return '#008408';
                     case 'rare':
-                        return '#41a6a9';
+                        return '#2fb2b2';
                     case 'epic':
-                        return '#7f005b';
+                        return '#f500ff';
                     case 'legendary':
-                        return '#b2a600';
+                        return '#b27d00';
                 }
             }
 

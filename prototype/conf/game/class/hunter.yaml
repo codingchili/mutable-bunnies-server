@@ -25,6 +25,7 @@ spells:
   - "fire bow"
 items:
   - "bow"
+  - "pleather_armor"
   - "underwear"
 stats:
   strength: 16
@@ -32,6 +33,6 @@ stats:
   wisdom: 10
   constitution: 16
   dexterity: 18
-  magicResist: 8
-  armorClass: 12
+  magicResist: 6
+  armorClass: 14
   movement: 290

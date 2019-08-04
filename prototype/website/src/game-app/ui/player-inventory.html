@@ -97,7 +97,7 @@
             }
 
             .spacer {
-                width: 64px;
+                width: 48px;
             }
 
         </style>
@@ -113,26 +113,26 @@
                 <div class="slots">
                     <div class="slot_row">
                         <div class="spacer"></div>
-                        <inventory-item on-click="_unequip('head')" item="[[_slot('head', inventory)]]"></inventory-item>
-                        <inventory-item on-click="_unequip('cloak')" item="[[_slot('cloak', inventory)]]"></inventory-item>
+                        <inventory-item on-down="_unequip" item="[[_slot('head', inventory)]]"></inventory-item>
+                        <inventory-item on-down="_unequip" item="[[_slot('cloak', inventory)]]"></inventory-item>
                     </div>
 
                     <div class="slot_row">
-                        <inventory-item on-click="_unequip" item="[[_slot('offhand', inventory)]]"></inventory-item>
-                        <inventory-item on-click="_unequip" item="[[_slot('chest',inventory)]]"></inventory-item>
-                        <inventory-item on-click="_unequip" item="[[_slot('weapon', inventory)]]"></inventory-item>
+                        <inventory-item on-down="_unequip" item="[[_slot('offhand', inventory)]]"></inventory-item>
+                        <inventory-item on-down="_unequip" item="[[_slot('chest',inventory)]]"></inventory-item>
+                        <inventory-item on-down="_unequip" item="[[_slot('weapon', inventory)]]"></inventory-item>
                     </div>
 
                     <div class="slot_row">
                         <div class="spacer"></div>
-                        <inventory-item item="[[_slot('legs', inventory)]]"></inventory-item>
+                        <inventory-item on-down="_unequip" item="[[_slot('legs', inventory)]]"></inventory-item>
                         <div class="spacer"></div>
                     </div>
 
                     <div class="slot_row">
-                        <inventory-item item="[[_slot('neck',inventory)]]"></inventory-item>
-                        <inventory-item item="[[_slot('foot', inventory)]]"></inventory-item>
-                        <inventory-item item="[[_slot('ring', inventory)]]"></inventory-item>
+                        <inventory-item on-down="_unequip" item="[[_slot('neck',inventory)]]"></inventory-item>
+                        <inventory-item on-down="_unequip" item="[[_slot('foot', inventory)]]"></inventory-item>
+                        <inventory-item on-down="_unequip" item="[[_slot('ring', inventory)]]"></inventory-item>
 
                     </div>
                 </div>
@@ -190,8 +190,8 @@
                 });
             }
 
-            _unequip(item) {
-                console.log(item);
+            _unequip(e) {
+                game.inventory.unequipItem(e.target.item);
             }
 
             _equip(e) {
@@ -216,7 +216,8 @@
                     // return placeholder icon.
                     return {
                         name: slot,
-                        icon: slot + ".svg"
+                        description: `Items with slot '${slot}' can be equipped here.`,
+                        icon: `slots/${slot}.svg`
                     };
                 }
             }

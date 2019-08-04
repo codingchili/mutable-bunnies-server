@@ -8,6 +8,7 @@ import com.codingchili.instance.model.events.*;
 public class EquipItemEvent implements Event {
     private String source;
     private String itemId;
+    private String icon;
 
     @Override
     public Broadcast getBroadcast() {
@@ -26,6 +27,15 @@ public class EquipItemEvent implements Event {
 
     public EquipItemEvent setSource(String source) {
         this.source = source;
+        return this;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public EquipItemEvent setIcon(String icon) {
+        this.icon = icon;
         return this;
     }
 

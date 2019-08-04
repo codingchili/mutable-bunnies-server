@@ -5,8 +5,8 @@ package com.codingchili.instance.model.items;
  */
 public class ItemType {
     protected Slot slot = Slot.none;
-    protected ArmorType armorType = ArmorType.none;
-    protected WeaponType weaponType = WeaponType.none;
+    protected ArmorType armorType = null;
+    protected WeaponType weaponType = null;
 
     public Slot getSlot() {
         return slot;

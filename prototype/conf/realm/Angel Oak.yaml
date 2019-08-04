@@ -19,7 +19,7 @@ availableClasses:
 - "slayer"
 levelScaling:
   jexl: |
-    source.stats[Attribute.level] * 80 + 100;
+    source.stats[Attribute.level] * 80.0 + 100.0;
 onPlayerJoin:
   jexl: |
     if (source.instance == null) {
@@ -37,13 +37,13 @@ authentication:
   properties:
     type: "HmacSHA512"
   domain: "Angel Oak.node"
-  key: "Uaor0ot8mK7GeaS5aLUHmJPxGgR0ZQlX1gqiauI546iyca/joyEd3JtFQjz4nHbQrykeorO0Ovzq6ad4AXxa1Q=="
-  expiry: 1555847852
-secret: "FQYzoYjHPHj7K6LTNzqjBemjWPoC/JkK/zvKGaYS5xemGf/eECZlzfrtdT0Q8Ikq3JtHopIttIMx9FC/4l8fbg=="
-global: "6HM0EB/xQDRF8u/iCs0+dzMPoh59yp5CUx0+2kf/MCTExIgVXfmAv7l4mweXPwN7fzhTd0MKNE5yHnkGhbSu+Q=="
+  key: "DdrDla68cP0ra41lvwLBABr1pidhupfEn+GDEYcfI1LVUc3pUNpv7cLukLSGs8j3wvZLur3PwtTkI2D8A3c52g=="
+  expiry: 1565458304
+secret: "fY8BJbzvoK69NYNi8bupBXNMYtoNRx0oP6lSp/GydPP/kOvZTltyBEhWekCWk0SqV51ONmbN+0HIUxQsJ/snxg=="
+global: "lesA9AwprsGZTnNhsI6oEgv7TnHai9JWxIwe1OR4T0u0mrA/zn2JcRnwc9W6LiznFi0CfU2mYeb9HZQnnEY0Ww=="
 logging:
   properties:
     type: "HmacSHA512"
   domain: "Angel Oak.node"
-  key: "V4/DW4Agt2r8GGsoer0qWX/ditAcmOFLeEBJ1U7w4L/5kcHAMIhlRtrL4osF3LJHJ1i+fHgdEYfpqTEPUjPiNg=="
-  expiry: 1555345353
+  key: "XKnzx1Q/cDKaj4L/EaAMv5bLJyQZM3dNwwk3x3xpXRW8Zl4d6F29sM0zRVlUndwLauzy2YtUSQ/QorHzaxC1IQ=="
+  expiry: 1565458304

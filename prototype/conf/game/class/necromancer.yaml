@@ -22,13 +22,15 @@ spells:
   - "sword swing"
 items:
   - "sword"
+  - "wizarding_shirt"
   - "underwear"
+  - "flaming_stick"
 stats:
   strength: 10
   intelligence: 18
   wisdom: 14
-  constitution: 10
+  constitution: 12
   dexterity: 8
-  magicResist: 16
-  armorClass: 12
+  magicResist: 20
+  armorClass: 20
   movement: 260

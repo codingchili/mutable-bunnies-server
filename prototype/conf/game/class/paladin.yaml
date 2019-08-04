@@ -22,7 +22,8 @@ spells:
   - "blinding light"
   - "hammer blow"
 items:
-  - "battleaxe"
+  - "flail"
+  - "plate"
   - "underwear"
 stats:
   strength: 16

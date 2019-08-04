@@ -23,6 +23,8 @@ spells:
   - "staff whack"
 items:
   - "branch"
+  - "wizarding_shirt"
+  - "wand"
   - "underwear"
 stats:
   strength: 8
@@ -30,6 +32,6 @@ stats:
   wisdom: 18
   constitution: 14
   dexterity: 12
-  magicResist: 12
+  magicResist: 18
   armorClass: 4
   movement: 230

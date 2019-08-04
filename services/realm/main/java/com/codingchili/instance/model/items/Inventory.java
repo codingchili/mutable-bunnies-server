@@ -15,8 +15,8 @@ import com.codingchili.core.context.CoreRuntimeException;
  */
 public class Inventory implements Serializable {
     private Map<Slot, Item> equipped = new LinkedHashMap<>();
-    private Collection<Item> items = new ArrayList<>();
-    private transient Stats stats = new Stats();
+    private List<Item> items = new ArrayList<>();
+    private transient Stats stats;
     private Integer space;
     private Integer currency = 1;
 
@@ -24,6 +24,9 @@ public class Inventory implements Serializable {
      * Updates the equipped stats after changing equipped items.
      */
     public void update() {
+        if (stats == null) {
+            stats = new Stats();
+        }
         stats.clear();
         equipped.forEach((slot, equipped) -> stats.apply(equipped.getStats()));
     }
@@ -67,6 +70,7 @@ public class Inventory implements Serializable {
     }
 
     public void setEquipped(Map<Slot, Item> equipped) {
+        // make sure to compute stats after deserialization.
         this.equipped = equipped;
     }
 
@@ -78,16 +82,19 @@ public class Inventory implements Serializable {
         this.space = space;
     }
 
-    public Collection<Item> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(Collection<Item> items) {
+    public void setItems(List<Item> items) {
         this.items = items;
     }
 
     @JsonIgnore
     public Stats getStats() {
+        if (stats == null) {
+            update();
+        }
         return stats;
     }
 }

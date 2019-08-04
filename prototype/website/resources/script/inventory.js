@@ -7,6 +7,10 @@ window.Inventory = class Inventory {
         server.connection.setHandler('inventory_update', (event) => {
             this.onInventoryUpdated(event.inventory);
         });
+
+        server.connection.setHandler('equip_item', (event) => {
+           // use this to update rendered equipment.
+        });
     }
 
     requestLootList(entity) {
@@ -26,6 +30,10 @@ window.Inventory = class Inventory {
 
     equipItem(item) {
         server.connection.send('equip_item', {itemId: item.id});
+    }
+
+    unequipItem(item) {
+        server.connection.send('unequip_item', {slot: item.slot});
     }
 
     useItem(item) {

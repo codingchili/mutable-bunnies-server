@@ -63,14 +63,12 @@ public class PlayerCreature extends SimpleCreature {
     }
 
     @Override
-    public Stats getStats() {
-        Stats stats = super.getStats();
+    protected void onStatsModifier(Stats calculated) {
         if (game != null) {
             game.classes().getById(classId).ifPresent(playableClass -> {
-                stats.apply(playableClass.getStats());
+                calculated.apply(playableClass.getStats());
             });
         }
-        return stats;
     }
 
     @Override
@@ -80,39 +78,31 @@ public class PlayerCreature extends SimpleCreature {
         Optional<PlayableClass> theClass = game.classes().getById(classId);
 
         if (theClass.isPresent()) {
+            logins++;
+
             Scripted scaling = game.instance().realm().getLevelScaling();
             Bindings bindings = new Bindings()
                     .setSource(this)
                     .setAttribute(Attribute.class);
 
-            Stats template = getStats();
             setModel(theClass.get().getModel());
 
-            stats.set(Attribute.maxhealth, template.get(Attribute.constitution) * 10);
-            stats.set(Attribute.maxenergy, template.get(Attribute.dexterity) * 20 + 100);
-            stats.setDefault(Attribute.health, stats.get(Attribute.maxhealth));
-            stats.setDefault(Attribute.energy, stats.get(Attribute.maxenergy));
             stats.setDefault(Attribute.experience, 15.0f);
-            stats.setDefault(Attribute.level, 1);
-
             stats.set(Attribute.nextlevel, scaling.apply(bindings));
+
+            // learn all enabled spells for the current class for now.
+            this.spells.getLearned().addAll(theClass.get().getSpells().stream()
+                    .filter(game.spells()::exists)
+                    .collect(Collectors.toList()));
+
+            game.instance().onPlayerJoin(this);
+            protocol.annotated(this);
+
+            for (EventType type : EventType.values()) {
+                protocol.use(type.toString(), this::handle);
+            }
         } else {
             throw new CoreRuntimeException("Class not available: " + classId);
-        }
-
-        // learn all enabled spells for the current class for now.
-        this.spells.getLearned().addAll(theClass.get().getSpells().stream()
-                .filter(game.spells()::exists)
-                .collect(Collectors.toList()));
-
-        logins++;
-        this.game = game;
-
-        game.instance().onPlayerJoin(this);
-        protocol.annotated(this);
-
-        for (EventType type : EventType.values()) {
-            protocol.use(type.toString(), this::handle);
         }
     }
 
