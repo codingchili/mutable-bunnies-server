@@ -155,7 +155,7 @@
                     case 'none':
                         return '';
                     default:
-                        if (item.armorType !== 'none') {
+                        if (item.armorType) {
                             return item.armorType;
                         } else {
                             return item.slot;
