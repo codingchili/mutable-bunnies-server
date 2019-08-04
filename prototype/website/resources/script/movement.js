@@ -20,6 +20,7 @@ window.MovementHandler = class MovementHandler {
             down: (key) => {
                 if (key === RUN_TOGGLE) {
                     this.run = !this.run;
+                    this._setRunningAnimation(game.player);
                 }
                 this._input();
             }
@@ -35,7 +36,6 @@ window.MovementHandler = class MovementHandler {
                 game.movement.moveTo(e.touches[0].clientX + game.camera.x, e.touches[0].clientY + game.camera.y);
             }
         };
-
         server.connection.setHandler('move', (event) => this._onMovement(event));
     }
 
@@ -139,7 +139,7 @@ window.MovementHandler = class MovementHandler {
         if (entity) {
             if (entity.velocity === 0) {
                 entity.acceleration = ACCELERATION_BASE;
-                entity.state.setAnimation(0, 'walk', true);
+                this._setRunningAnimation(entity);
             }
 
             if (event.vector.velocity === 0) {
@@ -161,5 +161,10 @@ window.MovementHandler = class MovementHandler {
             entity.velocity = event.vector.velocity;
             entity.direction = event.vector.direction;
         }
+    }
+
+    _setRunningAnimation(entity) {
+        let animation = (this.run) ? 'run' : 'walk';
+        entity.state.setAnimation(0, animation, true);
     }
 };

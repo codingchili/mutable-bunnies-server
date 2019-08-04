@@ -4,6 +4,8 @@
  */
 const CYCLE_CASTED = 'CASTED';
 const CYCLE_CASTING = 'CASTING';
+const CYCLE_INTERRUPTED = 'INTERRUPTED';
+const CYCLE_CANCELLED = 'CANCELLED';
 
 window.Spells = class Spells {
 
@@ -67,8 +69,6 @@ window.Spells = class Spells {
     emit() {
         let now = new Date().getTime();
 
-        console.log(this.state);
-
         for (let spell in this.state.charges) {
             this.charge(spell, Math.trunc(this.state.charges[spell]));
         }
@@ -118,6 +118,15 @@ window.Spells = class Spells {
 
         if (event.cycle === CYCLE_CASTED) {
             this._activateEffectByActiveSpell(event);
+        }
+
+        if (event.cycle === CYCLE_INTERRUPTED || event.cycle === CYCLE_CANCELLED || event.cycle === CYCLE_CASTED) {
+            let entity = game.lookup(event.source);
+
+            if (entity.velocity === 0) {
+                entity.state.setAnimation(0, 'idle', true);
+                entity.state.timeScale = entity.state.oldTimeScale;
+            }
         }
 
         if (event.cycle === CYCLE_CASTING) {
@@ -237,8 +246,12 @@ window.Spells = class Spells {
     }
 
     _activateCastingEffects(event) {
+        let entity = game.lookup(event.source);
+        entity.state.setAnimation(0, 'push-attack', true);
+        entity.state.oldTimeScale = entity.state.timeScale;
+        entity.state.timeScale = 0.6;
+
         if (event.spell === 'shadow_step') {
-            let entity = game.lookup(event.source);
             entity.tint = 0x000000;
             entity.alpha = 0.4;
         }

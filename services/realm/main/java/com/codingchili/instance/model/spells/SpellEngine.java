@@ -71,12 +71,12 @@ public class SpellEngine {
                         cancel(caster);
                         casting.put(active.getSource(), active);
 
-                        game.publish(new SpellCastEvent(active));
-
                         // restrict movement speed while casting.
                         if (!spell.get().getMobile()) {
                             game.movement().stop(caster);
                         }
+
+                        game.publish(new SpellCastEvent(active));
                         return SpellResult.CASTING;
                     } else {
                         return SpellResult.UNABLE;
