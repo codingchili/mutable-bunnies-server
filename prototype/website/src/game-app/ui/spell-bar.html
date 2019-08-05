@@ -142,7 +142,7 @@
 
         <paper-material elevation="3" class="spell-bar">
             <template is="dom-repeat" items="[[_list(spells, character)]]" as="spell">
-                <div on-down="_onCast" class="spell-button">
+                <div on-click="_onCast" class="spell-button">
                     <img class$="spell-icon {{_available(spell.id, charges.*, cooldown.*)}}"
                          src="[[realm.resources]]/gui/spell/[[spell.id]].svg">
                     <paper-tooltip class="spell-info" animation-delay="0" position="top">
