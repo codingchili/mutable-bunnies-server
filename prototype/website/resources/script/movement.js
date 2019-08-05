@@ -3,9 +3,11 @@ const LEFT = 'a';
 const DOWN = 's';
 const RIGHT = 'd';
 const RUN_TOGGLE = 'z';
+const WALKING_SPEED = 105.0; // constant to make all bunnies walk at the same speed.
 const PI = 3.1415927;
 const ACCELERATION_BASE = 0.4;
-const ACCELERATION_STEP = (1 - ACCELERATION_BASE) / Game.secondsToTicks(0.5);
+const ACCELERATION_STEP = (1 - ACCELERATION_BASE);
+const ACCELERATION_TIME = 0.84;
 
 window.MovementHandler = class MovementHandler {
 
@@ -46,17 +48,17 @@ window.MovementHandler = class MovementHandler {
                 entity.acceleration = entity.acceleration || 1;
 
                 if (entity.acceleration < 1.0) {
-                    entity.acceleration += (ACCELERATION_STEP * delta);
+                    entity.acceleration +=  ACCELERATION_STEP * (delta / ACCELERATION_TIME);
                 } else {
                     entity.acceleration = 1.0;
                 }
 
                 if (entity.state && entity.velocity > 0) {
-                    entity.state.timeScale = entity.velocity * entity.acceleration * delta * 2;
+                    entity.state.timeScale = entity.velocity * entity.acceleration * delta * 1.4;
                 }
                 if (entity.state && !entity.state.initialized) {
                     entity.state.initialized = true;
-                    entity.state.setAnimation(0, 'idle', true);
+                    this._setRunningAnimation(entity);
                 }
 
                 entity.x += Math.sin(entity.direction) * (entity.acceleration * entity.velocity) * delta;
@@ -86,7 +88,11 @@ window.MovementHandler = class MovementHandler {
     }
 
     _velocity() {
-        return game.player.stats.movement * (this.run ? 1.0 : 0.6);
+        if (this.run) {
+            return game.player.stats.movement;
+        } else {
+            return WALKING_SPEED;
+        }
     }
 
     _input() {
@@ -139,11 +145,6 @@ window.MovementHandler = class MovementHandler {
         if (entity) {
             if (entity.velocity === 0) {
                 entity.acceleration = ACCELERATION_BASE;
-                this._setRunningAnimation(entity);
-            }
-
-            if (event.vector.velocity === 0) {
-                entity.state.setAnimation(0, 'idle', true);
             }
 
             if (event.vector.direction > PI || event.vector.direction < 0) {
@@ -160,11 +161,22 @@ window.MovementHandler = class MovementHandler {
 
             entity.velocity = event.vector.velocity;
             entity.direction = event.vector.direction;
+
+            this._setRunningAnimation(entity);
         }
     }
 
     _setRunningAnimation(entity) {
-        let animation = (this.run) ? 'run' : 'walk';
-        entity.state.setAnimation(0, animation, true);
+        let animation = (entity.velocity > WALKING_SPEED) ? 'run' : 'walk';
+
+        if (entity.velocity === 0) {
+            animation = 'idle';
+        }
+
+        if (entity.state.initialized) {
+            if (entity.state.tracks.length === 0 || animation !== entity.state.tracks[0].animation.name) {
+                entity.state.setAnimation(0, animation, true);
+            }
+        }
     }
 };

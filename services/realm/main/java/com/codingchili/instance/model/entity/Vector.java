@@ -1,6 +1,5 @@
 package com.codingchili.instance.model.entity;
 
-import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.context.Ticker;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -18,7 +17,8 @@ import java.util.HashSet;
  */
 public class Vector {
     public static final float ACCELERATION_BASE = 0.4f;
-    private static final float ACCELERATION_STEP = (1 - ACCELERATION_BASE) / GameContext.secondsToTicks(0.5);
+    private static final float ACCELERATION_STEP = (1 - ACCELERATION_BASE);
+    private static final float ACCELERATION_TIME = 0.84f;
     private transient Collection<Integer> buckets = new HashSet<>();
     private transient float acceleration = ACCELERATION_BASE;
     private transient boolean dirty = false;
@@ -239,7 +239,7 @@ public class Vector {
     public void forward(Ticker ticker) {
         if (velocity > 0) {
             if (acceleration < 1) {
-                acceleration += ACCELERATION_STEP * ticker.delta();
+                acceleration += ACCELERATION_STEP * (ticker.delta() / ACCELERATION_TIME);
             } else {
                 acceleration = 1.0f;
             }
