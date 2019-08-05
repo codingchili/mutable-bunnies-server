@@ -4,6 +4,8 @@ import com.codingchili.instance.model.SpawnPoint;
 import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.events.*;
+import com.codingchili.instance.model.stats.Attribute;
+import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
 import com.codingchili.instance.transport.FasterRealmInstanceCodec;
@@ -15,7 +17,8 @@ import io.vertx.core.eventbus.DeliveryOptions;
 import java.util.Random;
 import java.util.function.Consumer;
 
-import com.codingchili.core.context.*;
+import com.codingchili.core.context.ServiceContext;
+import com.codingchili.core.context.SystemContext;
 import com.codingchili.core.files.Configurations;
 import com.codingchili.core.logging.Level;
 import com.codingchili.core.logging.Logger;
@@ -87,6 +90,40 @@ public class InstanceContext extends SystemContext implements ServiceContext {
      * @param player the player creature to SPAWN.
      */
     public void onPlayerJoin(PlayerCreature player) {
+        SpawnPoint point = getSpawnPoint(player);
+        Scripted onPlayerJoin = settings().getOnPlayerJoin();
+
+        if (onPlayerJoin != null) {
+            Bindings bindings = new Bindings()
+                    .setSource(player)
+                    .set("spawn", point)
+                    .set("settings", settings)
+                    .set("log", (Consumer<Object>) (object) -> {
+                        context.logger(getClass()).log(object.toString());
+                    });
+
+            onPlayerJoin.apply(bindings);
+        } else {
+            if (player.isFromAnotherInstance() || player.isDead()) {
+                player.getVector()
+                        .setX(point.getX())
+                        .setY(point.getY());
+            }
+        }
+        revive(player);
+        player.setFromAnotherInstance(false);
+    }
+
+    private void revive(PlayerCreature player) {
+        if (player.isDead()) {
+            Stats stats = player.getBaseStats();
+            Stats computed = player.getStats();
+            stats.set(Attribute.health, computed.get(Attribute.maxhealth) * 0.64);
+            stats.set(Attribute.energy, computed.get(Attribute.maxenergy) * 0.76);
+        }
+    }
+
+    private SpawnPoint getSpawnPoint(PlayerCreature player) {
         InstanceSettings settings = settings();
         SpawnPoint point;
 
@@ -102,27 +139,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
             point = settings.getSpawns().get(
                     new Random().nextInt(settings.getSpawns().size()));
         }
-
-        Scripted onPlayerJoin = settings.getOnPlayerJoin();
-
-        if (onPlayerJoin != null) {
-            Bindings bindings = new Bindings()
-                    .setSource(player)
-                    .set("spawn", point)
-                    .set("settings", settings)
-                    .set("log", (Consumer<Object>) (object) -> {
-                        context.logger(getClass()).log(object.toString());
-                    });
-
-            onPlayerJoin.apply(bindings);
-        } else {
-            if (player.isFromAnotherInstance()) {
-                player.getVector()
-                        .setX(point.getX())
-                        .setY(point.getY());
-            }
-        }
-        player.setFromAnotherInstance(false);
+        return point;
     }
 
     @Override

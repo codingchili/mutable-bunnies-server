@@ -63,7 +63,7 @@ spawns:
 onPlayerJoin:
   jexl: |
     // the vector must be reset when a player leaves an instance.
-    if (source.fromAnotherInstance) {
+    if (source.fromAnotherInstance || source.isDead()) {
       source.vector.x = spawn.x;
       source.vector.y = spawn.y;
     }
