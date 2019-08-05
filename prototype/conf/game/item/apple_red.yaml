@@ -1,0 +1,5 @@
+name: "Red Apple"
+icon: "apple_red.png"
+rarity: "uncommon"
+onUse: "apple_heal.groovy"
+description: "A juicy snack."

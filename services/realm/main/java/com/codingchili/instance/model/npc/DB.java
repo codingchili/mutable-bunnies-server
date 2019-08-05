@@ -124,10 +124,10 @@ public class DB<E extends Storable> {
      * @return database object matching the ID if present.
      */
     public Optional<E> getById(String id) {
-        E npc = items.get(id);
+        E item = items.get(id);
 
-        if (npc != null) {
-            return Optional.of(npc);
+        if (item != null) {
+            return Optional.of(item);
         } else {
             return Optional.empty();
         }
