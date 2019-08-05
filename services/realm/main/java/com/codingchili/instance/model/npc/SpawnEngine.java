@@ -45,6 +45,8 @@ public class SpawnEngine {
             setup(config.get(), npc);
             at(npc, x, y);
 
+
+
             game.add(npc);
             return Optional.of(npc);
         } else {

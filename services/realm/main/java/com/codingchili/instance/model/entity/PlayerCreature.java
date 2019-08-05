@@ -78,8 +78,6 @@ public class PlayerCreature extends SimpleCreature {
         Optional<PlayableClass> theClass = game.classes().getById(classId);
 
         if (theClass.isPresent()) {
-            logins++;
-
             Scripted scaling = game.instance().realm().getLevelScaling();
             Bindings bindings = new Bindings()
                     .setSource(this)
@@ -101,6 +99,8 @@ public class PlayerCreature extends SimpleCreature {
             for (EventType type : EventType.values()) {
                 protocol.use(type.toString(), this::handle);
             }
+
+            logins++;
         } else {
             throw new CoreRuntimeException("Class not available: " + classId);
         }

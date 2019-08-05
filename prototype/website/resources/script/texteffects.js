@@ -74,7 +74,7 @@ window.TextEffects = class TextEffects {
 
         return new PIXI.TextStyle({
             fontFamily: 'Verdana',
-            fontSize: 12,
+            fontSize: options.size || 12,
             //fontWeight: 'bold',
             fill: [options.begin, options.end],
             stroke: '#000000',
@@ -122,6 +122,7 @@ window.TextEffects = class TextEffects {
 
         this.counters.push(counter);
         game.stage.addChild(counter);
+        return counter;
     }
 
     physical(target, event) {
@@ -150,7 +151,9 @@ window.TextEffects = class TextEffects {
         game.texts._create(target, '+' + event.value, {
             begin: '#ffc200',
             end: '#ffc200',
-            float: true
+            float: true,
+            ttl: 2.6,
+            critical: true
         });
     }
 
@@ -175,6 +178,16 @@ window.TextEffects = class TextEffects {
             float: true,
             // longer chat messages has longer lifetime.
             ttl: 1.325 + event.text.length * 0.065
+        });
+    }
+
+    levelUp(target) {
+        game.texts._create(target, `Level Up!`, {
+            size: 18,
+            float: true,
+            ttl: 4.0,
+            begin: '#ffc200',
+            end: '#ffc200'
         });
     }
 };

@@ -49,6 +49,10 @@
                 margin-bottom: 0px;
             }
 
+            .system {
+                color: #ffc200;
+            }
+
             @media (max-width: 1268px) {
                 :host {
                     bottom: 0;
@@ -76,8 +80,8 @@
             <div class="list">
                 <ul class="messages">
                     <template is="dom-repeat" items="{{messages}}" as="message">
-                        <li class="text">
-                            [[message.source]]: [[message.text]]
+                        <li class$="text [[_system(message)]]">
+                            [[_name(message)]][[message.text]]
                         </li>
                     </template>
                 </ul>
@@ -116,7 +120,7 @@
                 game.chat.onChatMessage(msg => {
                     this.add(msg);
                 });
-                
+
                 input.onKeysListener({
                     down: () => {
                         if (this.shadowRoot.activeElement !== this.$.message) {
@@ -125,6 +129,10 @@
                     }
                 }, ['Enter']);
 
+            }
+
+            _system(message) {
+                return (message.system) ? 'system' : '';
             }
 
             send() {
@@ -141,6 +149,14 @@
                 }
                 while (this.messages.length >= 12) {
                     this.splice("messages", 0, 1);
+                }
+            }
+
+            _name(message) {
+                if (message.source && !message.system) {
+                    return game.lookup(message.source).name + ": ";
+                } else {
+                    return '';
                 }
             }
 

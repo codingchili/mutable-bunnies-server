@@ -3,7 +3,9 @@ package com.codingchili.instance.model.entity;
 import com.codingchili.instance.model.afflictions.AfflictionState;
 import com.codingchili.instance.model.items.Inventory;
 import com.codingchili.instance.model.spells.SpellState;
+import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Robin Duda
@@ -44,4 +46,7 @@ public interface Creature extends Entity {
      * items that is equipped.
      */
     Inventory getInventory();
+
+    @JsonIgnore
+    boolean isDead();
 }

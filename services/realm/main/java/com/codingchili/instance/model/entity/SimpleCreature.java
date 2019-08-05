@@ -38,6 +38,11 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
         return spells;
     }
 
+    @Override
+    public boolean isDead() {
+        return stats.getOrDefault(Attribute.health, 0.0) < 1;
+    }
+
     protected void onStatsModifier(Stats calculated) {
     }
 

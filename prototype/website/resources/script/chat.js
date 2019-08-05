@@ -8,7 +8,7 @@ window.ChatHandler = class ChatHandler {
         server.connection.setHandler('chat', (msg) => this._onChatMessage(msg));
 
         this.onChatMessage((msg) => {
-            if (msg.text) {
+            if (msg.text && msg.target) {
                 game.texts.chat(game.lookup(msg.source), this._parseColors(msg));
             }
         });

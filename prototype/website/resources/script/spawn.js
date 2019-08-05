@@ -90,6 +90,10 @@ window.SpawnHandler = class SpawnHandler {
             this._onLootableHook(sprite);
             this._onDescriptionHook(sprite);
 
+            if (entity.account) {
+                game.chat.add({text: `${entity.name} has joined.`, system: true});
+            }
+
             game.stage.addChild(sprite);
 
         }, this._graphicsToUrl(entity.model, animated)).begin();
@@ -200,18 +204,26 @@ window.SpawnHandler = class SpawnHandler {
     }
 
     death(target, source) {
+        target.dead = true;
+
         if (target.isPlayer) {
             // handle this more gracefully (death event fails because client disconnects before processing is done?)
             game.scriptShutdown();
             application.scriptShutdown();
             application.showCharacters();
         } else {
-            game.chat.add({'text': `${target.name} was undone by ${source.name}`, 'source': target.id});
+            if (target.account) {
+                game.chat.add({text: `${target.name} was undone by ${source.name}.`, source: target.id, system: true});
+            }
         }
     }
 
-    despawn(entity) {
-        game.stage.removeChild(entity);
-        delete game.entities[entity.id];
+    despawn(target) {
+        game.stage.removeChild(target);
+        delete game.entities[target.id];
+
+        if (target.account && !target.dead) {
+            game.chat.add({text: `${target.name} has left.`, system: true});
+        }
     }
 };

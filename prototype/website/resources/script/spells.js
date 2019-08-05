@@ -280,10 +280,39 @@ window.Spells = class Spells {
      */
     _stats(event) {
         let target = game.lookup(event.targetId);
+
+        if (this._statUpdated(target, event, 'level')) {
+            game.texts.levelUp(target);
+            game.chat.add({text: `${target.name} reached level ${event.stats['level']}!`, system: true});
+        } else {
+            // only show experience gains if not also a level up event.
+            if (this._statUpdated(target, event, 'experience')) {
+                let difference = event.stats['experience'] - target.stats['experience'];
+                game.texts.experience(target, {value: difference});
+
+                if (target.isPlayer) {
+                    game.chat.add({text: `gained ${difference} experience points.`, system: true});
+                }
+            }
+        }
+
         target.stats = event.stats;
 
         if (target.isPlayer) {
             application.characterUpdate(target);
+        }
+    }
+
+    _statUpdated(target, event, name) {
+        let updated = event.stats[name];
+        let current = target.stats[name];
+
+        if (updated && current) {
+            if (updated > current) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
