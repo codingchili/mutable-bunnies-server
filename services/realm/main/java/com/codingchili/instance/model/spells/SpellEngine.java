@@ -3,8 +3,7 @@ package com.codingchili.instance.model.spells;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.afflictions.*;
-import com.codingchili.instance.model.entity.Creature;
-import com.codingchili.instance.model.entity.Grid;
+import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.items.StatsUpdateEvent;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
@@ -24,6 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * - on interrupt etc..
  */
 public class SpellEngine {
+    public static final int XP_PER_CREATURE_LEVEL = 15;
     private Map<Creature, ActiveSpell> casting = new ConcurrentHashMap<>();
     private Collection<ActiveSpell> active = new ConcurrentLinkedQueue<>();
     private Collection<Projectile> projectiles = new ConcurrentLinkedQueue<>();
@@ -198,20 +198,25 @@ public class SpellEngine {
         Stats stats = target.getBaseStats();
 
         while (amount > 0) {
-            Double current = stats.get(Attribute.experience);
-            Double next = stats.get(Attribute.nextlevel) - current;
+            double current = stats.get(Attribute.experience);
+            double next = stats.get(Attribute.nextlevel) - current;
 
-            if (next.intValue() < amount) {
-                amount -= next.intValue();
+            if ((int) next < amount) {
+                amount -= (int) next;
                 stats.update(Attribute.level, 1);
                 stats.set(Attribute.experience, 0);
                 stats.set(Attribute.nextlevel, getNextLevelExp(target));
+
+                // set max energy/hp on level up.
+                Stats computed = target.getStats();
+                stats.set(Attribute.health, computed.get(Attribute.maxhealth));
+                stats.set(Attribute.energy, computed.get(Attribute.maxenergy));
             } else {
                 stats.update(Attribute.experience, amount);
                 amount = 0;
             }
         }
-        target.handle(new StatsUpdateEvent(target));
+        game.publish(new StatsUpdateEvent(target));
     }
 
     private Double getNextLevelExp(Creature target) {
@@ -326,12 +331,31 @@ public class SpellEngine {
      * @param type   the type of damage to apply, this may be healing as well..
      */
     public void damage(Creature source, Creature target, double value, DamageType type) {
-        target.getBaseStats().update(Attribute.health, (int) value);
+        Stats base = target.getBaseStats();
+        Stats computed = target.getStats();
+        base.update(Attribute.health, (int) value);
+
+        // apply resistances, one percent per point.
+        switch (type) {
+            case physical:
+                value *= 1 - (computed.getOrDefault(Attribute.armorClass, 0.0) / 100);
+                break;
+            case magical:
+                value *= 1 - (computed.getOrDefault(Attribute.magicResist, 0.0) / 100);
+                break;
+        }
 
         game.publish(new DamageEvent(target, value, type).setSource(source));
 
-        if (target.getStats().get(Attribute.health) < 0) {
+        if (target.isDead()) {
+            game.movement().stop(target);
             game.publish(new DeathEvent(target, source));
+
+            // award source with experience if player.
+            if (source instanceof PlayerCreature) {
+                experience(source, computed.getOrDefault(Attribute.level, 1.0).intValue() *
+                        XP_PER_CREATURE_LEVEL);
+            }
 
             // despawn the player: requires the player to issue a "join" to get re-spawned.
             game.remove(target);
