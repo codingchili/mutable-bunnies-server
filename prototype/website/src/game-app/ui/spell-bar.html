@@ -22,8 +22,6 @@
             }
 
             .spell-bar {
-                background-color: #000000;
-                opacity: 1.0;
                 height: 46px;
                 display: flex;
             }
@@ -126,7 +124,7 @@
 
             @media (max-width: 1268px) {
                 :host {
-                    bottom: 48px;
+                    right: 48px;
                 }
             }
 
@@ -138,9 +136,18 @@
                 position: relative;
             }
 
+            .spell-table-headers {
+                font-size: 11px;
+            }
+
+            .spell-table-values {
+                text-align: center;
+                font-size: 12px;
+            }
+
         </style>
 
-        <paper-material elevation="3" class="spell-bar">
+        <paper-material elevation="3" class="spell-bar interface-box">
             <template is="dom-repeat" items="[[_list(spells, character)]]" as="spell">
                 <div on-click="_onCast" class="spell-button">
                     <img class$="spell-icon {{_available(spell.id, charges.*, cooldown.*)}}"
@@ -149,12 +156,12 @@
                         <span class="title">[[spell.name]]</span>
 
                         <table class="info-table">
-                            <tr>
+                            <tr class="spell-table-headers">
                                 <th>Cooldown</th>
                                 <th>Cast</th>
                                 <th>Target</th>
                             </tr>
-                            <tr style="text-align: center;">
+                            <tr class="spell-table-values">
                                 <td class="cooldown">[[spell.cooldown]]s</td>
                                 <td class="casttime">[[spell.casttime]]s</td>
                                 <td class="target">[[spell.target]]</td>

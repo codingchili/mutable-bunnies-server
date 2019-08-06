@@ -24,8 +24,6 @@
                 width: 416px;
                 height: 246px;
                 display: block;
-                background-color: #000000;
-                opacity: 1;
             }
 
             .input {
@@ -100,7 +98,10 @@
 
             ready() {
                 super.ready();
-                this.set("messages", []);
+                this.set("messages", [{
+                    system: true,
+                    text: `Server version ${patch.version} ${patch.name}.`
+                }]);
                 this.set("message", "");
 
                 this.$.message.addEventListener('blur', () => {
