@@ -29,11 +29,6 @@
                 z-index: 999;
             }
 
-            .interface-box {
-                background-color: #000000;
-                opacity: 1;
-            }
-
             span {
                 padding: 0.28rem;
             }
@@ -43,10 +38,6 @@
                 padding-left: 16px;
                 display: block;
                 color: var(--paper-grey-300);
-            }
-
-            #dialog-close:hover {
-                color: var(--player-class-theme);
             }
 
             #dialog-close {
@@ -112,32 +103,34 @@
 
                 <span class="dialog-entity">[[name]]'s inventory</span>
 
-                <div class="slots">
-                    <div class="slot_row">
-                        <div class="spacer"></div>
-                        <inventory-item on-down="_unequip" item="[[_slot('head', inventory)]]"></inventory-item>
-                        <inventory-item on-down="_unequip" item="[[_slot('cloak', inventory)]]"></inventory-item>
-                    </div>
+                <template is="dom-if" if="[[name]]">
+                    <div class="slots">
+                        <div class="slot_row">
+                            <div class="spacer"></div>
+                            <inventory-item on-down="_unequip" item="[[_slot('head', inventory)]]"></inventory-item>
+                            <inventory-item on-down="_unequip" item="[[_slot('cloak', inventory)]]"></inventory-item>
+                        </div>
 
-                    <div class="slot_row">
-                        <inventory-item on-down="_unequip" item="[[_slot('offhand', inventory)]]"></inventory-item>
-                        <inventory-item on-down="_unequip" item="[[_slot('chest',inventory)]]"></inventory-item>
-                        <inventory-item on-down="_unequip" item="[[_slot('weapon', inventory)]]"></inventory-item>
-                    </div>
+                        <div class="slot_row">
+                            <inventory-item on-down="_unequip" item="[[_slot('offhand', inventory)]]"></inventory-item>
+                            <inventory-item on-down="_unequip" item="[[_slot('chest', inventory)]]"></inventory-item>
+                            <inventory-item on-down="_unequip" item="[[_slot('weapon', inventory)]]"></inventory-item>
+                        </div>
 
-                    <div class="slot_row">
-                        <div class="spacer"></div>
-                        <inventory-item on-down="_unequip" item="[[_slot('legs', inventory)]]"></inventory-item>
-                        <div class="spacer"></div>
-                    </div>
+                        <div class="slot_row">
+                            <div class="spacer"></div>
+                            <inventory-item on-down="_unequip" item="[[_slot('legs', inventory)]]"></inventory-item>
+                            <div class="spacer"></div>
+                        </div>
 
-                    <div class="slot_row">
-                        <inventory-item on-down="_unequip" item="[[_slot('neck',inventory)]]"></inventory-item>
-                        <inventory-item on-down="_unequip" item="[[_slot('foot', inventory)]]"></inventory-item>
-                        <inventory-item on-down="_unequip" item="[[_slot('ring', inventory)]]"></inventory-item>
+                        <div class="slot_row">
+                            <inventory-item on-down="_unequip" item="[[_slot('neck', inventory)]]"></inventory-item>
+                            <inventory-item on-down="_unequip" item="[[_slot('foot', inventory)]]"></inventory-item>
+                            <inventory-item on-down="_unequip" item="[[_slot('ring', inventory)]]"></inventory-item>
 
+                        </div>
                     </div>
-                </div>
+                </template>
 
                 <hr>
 
@@ -160,6 +153,10 @@
 
             constructor() {
                 super();
+                this._clear();
+            }
+
+            _clear() {
                 this.inventory = {
                     equipped: {}
                 };
@@ -170,23 +167,25 @@
                 super.ready();
 
                 application.onGameLoaded((game) => {
+                    this._clear();
+
                     input.onKeysListener({
                         down: () => {
                             if (this._open()) {
                                 this._hide();
                             } else {
-                                this._show()
+                                this._show();
                             }
                         }
                     }, 'i');
 
                     game.inventory.onInventoryUpdated = (inventory => {
                         this.inventory = inventory;
-                        this.notifyPath('inventory.items');
                     });
                 });
 
                 application.onCharacterLoaded(character => {
+                    this.classId = character.classId;
                     this.name = character.name;
                     this.inventory = character.inventory;
                 });
@@ -219,8 +218,22 @@
                     return {
                         name: slot,
                         description: `Items with slot '${slot}' can be equipped here.`,
-                        icon: `slots/${slot}.svg`
+                        icon: this._getIcon(slot)
                     };
+                }
+            }
+
+            _getIcon(slot) {
+                let armors = ['head', 'chest', 'legs'];
+                let template = application.realm.classes.get(this.classId);
+
+                // custom class specific slot icons.
+                if (armors.includes(slot)) {
+                    return `slots/${slot}_${template.armors[0]}.svg`;
+                } else if (slot === 'weapon') {
+                    return `slots/${slot}_${template.weapons[0]}.svg`;
+                } else {
+                    return `slots/${slot}.svg`;
                 }
             }
 
