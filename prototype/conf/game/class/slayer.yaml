@@ -9,7 +9,6 @@ model:
 weapons:
   - "battleaxe"
 armors:
-  - "mail"
   - "plate"
 spells:
   - "bloodlust"

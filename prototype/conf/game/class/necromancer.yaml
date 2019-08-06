@@ -7,7 +7,7 @@ model:
   skin: "violet"
   scale: 0.16
 weapons:
-  - "sword2h"
+  - "sword"
 armors:
   - "cloth"
 spells:

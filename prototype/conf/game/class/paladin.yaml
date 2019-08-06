@@ -9,7 +9,6 @@ model:
 weapons:
   - "hammer"
 armors:
-  - "mail"
   - "plate"
 spells:
   - "holy aura"

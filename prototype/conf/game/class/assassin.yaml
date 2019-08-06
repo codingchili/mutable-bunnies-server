@@ -8,9 +8,9 @@ model:
   scale: 0.16
 weapons:
   - "dagger"
-armor:
-  - "cloth"
+armors:
   - "leather"
+  - "cloth"
 spells:
   - "dagger"
   - "backstabber"

@@ -9,9 +9,7 @@ model:
 weapons:
   - "bow"
 armors:
-  - "cloth"
   - "leather"
-  - "mail"
 spells:
   - "haste"
   - "archery"
