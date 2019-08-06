@@ -42,20 +42,26 @@
                 justify-content: space-between;
             }
 
-            .name {
+            .penalty {
+                color: #ff0000;
             }
 
-            .value {
+            .bonus{
+                color: #00ff00;
+            }
+
+            .content {
+                font-size: 12px;
             }
 
         </style>
 
         <div class="container">
             <template is="dom-repeat" items="[[_toList(selected.stats.*)]]" as="attribute">
-                <div class$="{{_layout(compact)}}">
+                <div class$="content [[_layout(compact)]]">
                     <span class="name">[[attribute.name]]</span>
-                    <span class="value" style$="color:[[_color(selected)]];">
-                        <b>[[attribute.value]]</b>
+                    <span class$="value [[_style(attribute)]]">
+                        <i>[[_format(attribute.value)]]</i>
                     </span>
                 </div>
             </template>
@@ -88,11 +94,19 @@
             return 'attribute-' + ((this.compact) ? 'compact' : 'wide');
         }
 
-        _color() {
-            if (this.selected && this.selected.theme) {
-                return this.selected.theme;
+        _format(value) {
+            if (value < 0) {
+                return value;
             } else {
-                return document.body.style.getPropertyValue('--player-class-theme');
+                return `+${value}`;
+            }
+        }
+
+        _style(attribute) {
+            if (attribute.value < 0) {
+                return "penalty";
+            } else {
+                return "bonus";
             }
         }
 
