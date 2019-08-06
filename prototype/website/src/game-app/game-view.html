@@ -84,6 +84,24 @@
             ready() {
                 super.ready();
 
+                // ambient audio for pregame.
+                let bgsound = new Audio('/resources/sound/background.mp3');
+                bgsound.loop = true;
+
+                bgsound.addEventListener('loadeddata', () => {
+                    bgsound.play();
+                });
+
+                application.onScriptShutdown(() => {
+                    // play in pregame ui.
+                    bgsound.play();
+                });
+
+                application.onScriptsLoaded(() => {
+                    // pause in game.
+                    bgsound.pause();
+                });
+
                 application.onCompleteUpdate((event) => {
                     this.loading = true;
                     event.status('Initializing..');
@@ -91,8 +109,8 @@
                     window.server = event.server;
                     window.character = event.character;
                     window.patch = event.patch;
-                    window.onScriptsLoaded = () => {
-                    };
+
+                    window.onScriptsLoaded = () => {};
                     document.canvas = this.$.canvas;
 
                     try {
