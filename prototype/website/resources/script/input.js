@@ -22,7 +22,7 @@ window.InputManager = class InputManager {
         document.body.addEventListener('mouseup', this.onUpCallback);
 
         window.onblur = () => {
-            if (game.isPlaying) {
+            if (game.isPlaying && !game.player.dead) {
                 game.movement._send(0, 0);
             }
             this.keys = {};
