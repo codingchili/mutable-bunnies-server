@@ -207,10 +207,11 @@ window.SpawnHandler = class SpawnHandler {
         target.dead = true;
 
         if (target.isPlayer) {
-            // handle this more gracefully (death event fails because client disconnects before processing is done?)
-            game.scriptShutdown();
-            application.scriptShutdown();
-            application.showCharacters();
+            application.publish('player-death', () => {
+                game.scriptShutdown();
+                application.scriptShutdown();
+                application.showCharacters();
+            });
         } else {
             if (target.account) {
                 game.chat.add({text: `${target.name} was undone by ${source.name}.`, source: target.id, system: true});
