@@ -6,14 +6,17 @@ CA's to run https over localhost in chrome.
 1. Generate keypair
 
 ```console
-openssl req -x509 -nodes -days 730 -newkey rsa:3072 -keyout cert.key -out cert.pem -config req.cnf -sha256
+$ openssl req -x509 -nodes -days 730 -newkey rsa:3072 -keyout cert.key -out cert.pem -config req.cnf -sha256
+$ openssl pkcs12 -export -in cert.pem -inkey cert.key -out keystore.pkcs12 -name tlskey
  ```
  
  2. Import keypair into jks
 
 ```console
-$ keytool -keystore keystore.jks -importcert -trustcacerts -file cert.pem
+$ keytool -importkeystore -deststorepass secret -destkeypass secret -destkeystore keystore.jks -srckeystore keystore.pkcs12 -srcstoretype PKCS12 -srcstorepass secret -alias tlskey
 ```
+
+
 
 3. Configure keystore in config/security.yaml
 
