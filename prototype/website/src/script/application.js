@@ -8,10 +8,10 @@ class Application {
 
     constructor() {
         this.development = {
-            autologin: true,
-            selectFirstRealm: true,
+            autologin: false,
+            selectFirstRealm: false,
             selectFirstCharacter: false,
-            clearCache: true,
+            clearCache: false,
             rightClick: true,
             logEvents: false,
             hardResetXY: true,

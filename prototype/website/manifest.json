@@ -1,0 +1,21 @@
+{
+  "short_name": "Mutable Bunnies",
+  "name": "Mutable Bunnies",
+  "icons": [
+    {
+      "src": "src/images/icons-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "src/images/icons-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#161616",
+  "display": "fullscreen",
+  "scope": "/",
+  "theme_color": "#687f7d"
+}

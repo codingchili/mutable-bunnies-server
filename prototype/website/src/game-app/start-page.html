@@ -64,6 +64,7 @@
             </iron-pages>
 
             <paper-button raised class="primary flex" on-tap="start">ENTER GAME</paper-button>
+            <a href="#" on-click="_install">install</a>
         </paper-material>
     </template>
     <script>
@@ -80,6 +81,33 @@
 
             start() {
                 application.showLogin();
+            }
+
+            _install() {
+                /*window.addEventListener('load', () => {
+                    let btnAdd = document.getElementById('add');
+
+                    // Installation must be done by a user gesture! Here, the button click
+                    btnAdd.addEventListener('click', (e) => {*/
+
+                        console.log('DING');
+
+                        // hide our user interface that shows our A2HS button
+                      /*  btnAdd.style.display = 'none';*/
+                        // Show the prompt
+                        window.pwa.prompt();
+                        // Wait for the user to respond to the prompt
+                        window.pwa.userChoice
+                            .then((choiceResult) => {
+                                if (choiceResult.outcome === 'accepted') {
+                                    console.log('User accepted the A2HS prompt');
+                                } else {
+                                    console.log('User dismissed the A2HS prompt');
+                                }
+                                window.pwa = null;
+                            });
+                    /*});
+                });*/
             }
         }
 

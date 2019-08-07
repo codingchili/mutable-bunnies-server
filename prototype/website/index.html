@@ -2,7 +2,9 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>chili-game-ext</title>
+    <title>Mutable Bunnies</title>
+    <link rel="icon" href="src/images/favicon.ico" type="image/x-icon" />
+    <link rel="manifest" href="manifest.json">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>-->
     <meta name="viewport" content="initial-scale=1, maximum-scale=1,target-densitydpi=device-dpi, user-scalable=no">
     <script src="src/script/network.js"></script>
@@ -28,6 +30,21 @@
     </style>
     <script>
         Polymer.passiveTouchGestures = true
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service_worker.js').then((registration) => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, (err) => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+
+        window.addEventListener('beforeinstallprompt', function(e) {
+            e.preventDefault();
+            window.pwa = e;
+        });
     </script>
 </head>
 <body style="position: absolute;" oncontextmenu="return application.development.rightClick;">
