@@ -9,6 +9,8 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.junit.*;
 import org.junit.runner.RunWith;
 
+import java.io.File;
+
 import com.codingchili.core.context.SystemContext;
 import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.storage.IndexedMapPersisted;
@@ -28,7 +30,7 @@ public class CharacterDBTest {
         Async async = test.async();
         context = new SystemContext();
 
-        //new File("db/CharacterDBTest.sqlite").delete();
+        new File("db/CharacterDBTest.sqlite").delete();
 
         new StorageLoader<PlayerCreature>(context)
                 .withValue(PlayerCreature.class)
@@ -173,7 +175,7 @@ public class CharacterDBTest {
                 "      \"name\" : \"golden Apple\",\n" +
                 "      \"description\" : \"Shiny and juicy, heals some health.\",\n" +
                 "      \"stats\" : { },\n" +
-                "      \"rarity\" : \"LEGENDARY\",\n" +
+                "      \"rarity\" : \"legendary\",\n" +
                 "      \"quantity\" : 10\n" +
                 "    } ],\n" +
                 "    \"currency\" : 1\n" +
@@ -232,7 +234,7 @@ public class CharacterDBTest {
                         "      \"name\" : \"golden Apple\",\n" +
                         "      \"description\" : \"Shiny and juicy, heals some health.\",\n" +
                         "      \"stats\" : { },\n" +
-                        "      \"rarity\" : \"LEGENDARY\",\n" +
+                        "      \"rarity\" : \"legendary\",\n" +
                         "      \"quantity\" : 10\n" +
                         "    } ],\n" +
                         "    \"currency\" : 1\n" +

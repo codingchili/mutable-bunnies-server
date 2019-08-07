@@ -2,9 +2,8 @@
  * Service worker.
  */
 
-
-let CACHE_NAME = 'bunny-cache-v1';
-let urlsToCache = ['/'];
+let CACHE_NAME = 'bunny-cache-v5';
+let urlsToCache = ['/index.html'];
 
 self.addEventListener('install', function(event) {
     event.waitUntil(
@@ -17,6 +16,11 @@ self.addEventListener('install', function(event) {
 
 
 self.addEventListener('fetch', function(event) {
+    return false;
+    /*if (event.request.url.match("/resources/!*")) {
+        return false;
+    }*/
+
     event.respondWith(
         caches.match(event.request)
             .then((response) => {

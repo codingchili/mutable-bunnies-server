@@ -3,7 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Mutable Bunnies</title>
-    <link rel="icon" href="src/images/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="src/images/favicon.ico" type="image/x-icon"/>
     <link rel="manifest" href="manifest.json">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>-->
     <meta name="viewport" content="initial-scale=1, maximum-scale=1,target-densitydpi=device-dpi, user-scalable=no">
@@ -41,9 +41,21 @@
             });
         }
 
-        window.addEventListener('beforeinstallprompt', function(e) {
+        window.addEventListener('beforeinstallprompt', function (e) {
             e.preventDefault();
             window.pwa = e;
+        });
+
+        window.isPWA = (window.matchMedia('(display-mode: fullscreen)').matches)
+        || (window.matchMedia('(display-mode: standalone)').matches);
+
+        application.onAuthentication(() => {
+            if (window.isPWA) {
+                document.documentElement.requestFullscreen()
+                    .catch((e) => {
+                        console.log(e);
+                    });
+            }
         });
     </script>
 </head>
