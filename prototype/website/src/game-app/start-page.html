@@ -70,7 +70,7 @@
                 </div>
             </iron-pages>
 
-            <template is="dom-if" if="[[installable]]">
+            <template is="dom-if" if="[[!installed]]">
                 <a href="#" class="install-link" on-click="_install">install to desktop</a>
             </template>
             <paper-button raised class="primary flex" on-tap="start">ENTER GAME</paper-button>
@@ -85,14 +85,11 @@
 
             ready() {
                 super.ready();
-                this.installable = !!(window.pwa);
+                this.installed = !(window.pwa);
                 this.page = 0;
 
-                console.log(this.installable);
-
                 application.subscribe('installed', installed => {
-                    console.log('installed event: ' + this.installable);
-                    this.set('installable', !!window.pwa);
+                    this.set('installed', installed);
                 });
             }
 
@@ -105,7 +102,8 @@
                 window.pwa.userChoice
                     .then((choiceResult) => {
                         if (choiceResult.outcome === 'accepted') {
-                            console.log('User accepted the A2HS prompt');
+                            application.publish('installed', true);
+                            application.view('game-login');
                         } else {
                             console.log('User dismissed the A2HS prompt');
                         }

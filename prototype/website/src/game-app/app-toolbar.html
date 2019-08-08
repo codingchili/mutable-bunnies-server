@@ -85,8 +85,12 @@
 
             ready() {
                 super.ready();
-                this.website = !window.isPWA;
+                this.website = !(window.isPWA);
                 this.banner = {};
+
+                application.subscribe('installed', installed => {
+                    this.website = !installed;
+                });
 
                 application.onAuthentication(() => {
                     this.loggedin = true;
