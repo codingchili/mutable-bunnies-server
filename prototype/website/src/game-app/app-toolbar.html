@@ -49,11 +49,15 @@
                 display: block;
             }
 
+            #home-icon {
+                float: left;
+            }
+
         </style>
 
         <paper-material class="header" elevation="3">
             <template is="dom-if" if="[[website]]">
-                <iron-icon icon="icons:home" on-down="_home"></iron-icon>
+                <iron-icon id="home-icon" icon="icons:home" on-down="_home"></iron-icon>
             </template>
 
             <template is="dom-if" if="[[loggedin]]">

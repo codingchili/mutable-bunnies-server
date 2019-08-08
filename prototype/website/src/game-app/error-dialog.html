@@ -34,7 +34,8 @@
             .error-icon {
                 width: 96px;
                 left: 86px;
-                height: 96px
+                height: 96px;
+                pointer-events: none;
             }
 
             .error-text {
@@ -51,11 +52,7 @@
 
         <paper-dialog id="dialog" class="box" modal>
             <div>
-                <iron-icon icon="icons:error-outline" class="error-icon">
-                </iron-icon>
-                <paper-tooltip animation-delay="0" class="tooltip">
-                    <div class="tooltip-text">The error has been logged.</div>
-                </paper-tooltip>
+                <iron-icon icon="icons:error-outline" class="error-icon"></iron-icon>
             </div>
 
             <paper-dialog-scrollable class="error-text">

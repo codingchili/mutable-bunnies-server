@@ -84,12 +84,18 @@
             ready() {
                 super.ready();
 
-                // ambient audio for pregame, pause on blur?
-                let bgsound = new Audio('/resources/sound/background.mp3');
-                bgsound.loop = true;
+                application.subscribe('offline', offline => {
+                    // only play sound when online, to prevent interruptions on reconnects and
+                    // give the user feedback on when it's connected again.
+                    if (!offline) {
+                        let bgsound = new Audio('/resources/sound/background.mp3');
+                        bgsound.loop = true;
+                        bgsound.volume = 0.2;
 
-                bgsound.addEventListener('loadeddata', () => {
-                    bgsound.play();
+                        bgsound.addEventListener('loadeddata', () => {
+                            bgsound.play();
+                        });
+                    }
                 });
 
                 application.onScriptShutdown(() => {
@@ -110,7 +116,8 @@
                     window.character = event.character;
                     window.patch = event.patch;
 
-                    window.onScriptsLoaded = () => {};
+                    window.onScriptsLoaded = () => {
+                    };
                     document.canvas = this.$.canvas;
 
                     try {

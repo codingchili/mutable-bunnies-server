@@ -94,6 +94,10 @@ task archivePrototype(type: Zip, dependsOn: [subprojects.jar, polymer]) {
         from fileTree('prototype/website/resources/')
     }
 
+    into('/website') {
+        from 'prototype/website/manifest.json', 'prototype/website/service_worker.json'
+    }
+
     into('lib') {
         from(project(':common').configurations.compile)
         from(project(':services').configurations.compile)

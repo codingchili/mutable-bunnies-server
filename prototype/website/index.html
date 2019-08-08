@@ -29,25 +29,27 @@
         }
     </style>
     <script>
-        Polymer.passiveTouchGestures = true
+        Polymer.passiveTouchGestures = true;
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service_worker.js').then((registration) => {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                }, (err) => {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
+                navigator.serviceWorker.register('/service_worker.js')
+                    .then((registration) => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    }, (err) => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
             });
         }
 
         window.addEventListener('beforeinstallprompt', function (e) {
             e.preventDefault();
             window.pwa = e;
+            application.publish('installed', !window.pwa);
         });
 
         window.isPWA = (window.matchMedia('(display-mode: fullscreen)').matches)
-        || (window.matchMedia('(display-mode: standalone)').matches);
+            || (window.matchMedia('(display-mode: standalone)').matches);
 
         application.onAuthentication(() => {
             if (window.isPWA) {
@@ -57,6 +59,32 @@
                     });
             }
         });
+
+        function send_message_to_sw(msg) {
+            return new Promise(function (resolve, reject) {
+                let channel = new MessageChannel();
+
+                channel.port1.onmessage = function (event) {
+                    if (event.data.error) {
+                        reject(event.data.error);
+                    } else {
+                        resolve(event.data);
+                    }
+                };
+                navigator.serviceWorker.controller.postMessage(msg, [channel.port2]);
+            });
+        }
+
+        send_message_to_sw("is offline?").then(data => {
+            application.offline = data.offline;
+            console.log(`offline=${application.offline}`);
+            application.publish('offline', data.offline);
+
+            if (application.offline) {
+                application.view("offline-view");
+            }
+        });
+
     </script>
 </head>
 <body style="position: absolute;" oncontextmenu="return application.development.rightClick;">

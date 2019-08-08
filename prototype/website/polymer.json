@@ -15,10 +15,14 @@
       "bundle": true
     }
   ],
+  "extraDependencies": [
+  ],
   "lint": {
     "rules": [
       "polymer-2"
     ],
-    "ignoreWarnings": ["databind-with-unknown-property"]
+    "ignoreWarnings": [
+      "databind-with-unknown-property"
+    ]
   }
 }
