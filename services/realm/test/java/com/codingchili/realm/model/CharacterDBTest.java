@@ -30,7 +30,12 @@ public class CharacterDBTest {
         Async async = test.async();
         context = new SystemContext();
 
-        new File("db/CharacterDBTest.sqlite").delete();
+        File sqlite = new File("db/CharacterDBTest.sqlite");
+
+        if (sqlite.exists()) {
+            // if the file exists fail the test if it cannot be deleted.
+            test.assertTrue(sqlite.delete());
+        }
 
         new StorageLoader<PlayerCreature>(context)
                 .withValue(PlayerCreature.class)
