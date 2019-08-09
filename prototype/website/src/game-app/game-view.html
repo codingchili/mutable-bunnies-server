@@ -88,24 +88,28 @@
                     // only play sound when online, to prevent interruptions on reconnects and
                     // give the user feedback on when it's connected again.
                     if (!offline) {
-                        let bgsound = new Audio('/resources/sound/background.mp3');
-                        bgsound.loop = true;
-                        bgsound.volume = 0.2;
+                        this.bgsound = new Audio('/resources/sound/background.mp3');
+                        this.bgsound.loop = true;
+                        this.bgsound.volume = 0.2;
 
-                        bgsound.addEventListener('loadeddata', () => {
-                            bgsound.play();
+                        this.bgsound.addEventListener('loadeddata', () => {
+                            this.bgsound.play();
                         });
                     }
                 });
 
                 application.onScriptShutdown(() => {
                     // play in pregame ui.
-                    bgsound.play();
+                    if (this.bgsound) {
+                        this.bgsound.play();
+                    }
                 });
 
                 application.onScriptsLoaded(() => {
                     // pause in game.
-                    bgsound.pause();
+                    if (this.bgsound) {
+                        this.bgsound.pause();
+                    }
                 });
 
                 application.onCompleteUpdate((event) => {
