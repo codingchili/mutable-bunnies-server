@@ -20,6 +20,9 @@ public class CharacterDB implements AsyncCharacterStore {
     private final AsyncStorage<PlayerCreature> characters;
 
     public CharacterDB(AsyncStorage<PlayerCreature> map) {
+        map.addIndex(ID_ACCOUNT);
+        map.addIndex(ID_NAME);
+
         this.characters = map;
     }
 

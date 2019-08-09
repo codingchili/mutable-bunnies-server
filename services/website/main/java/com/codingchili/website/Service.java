@@ -53,7 +53,7 @@ public class Service implements CoreService {
 
             core.vertx().createHttpServer(options)
                     .requestHandler(router)
-                    .listen(settings.getListener().getPort(), untyped(blocking));
+                    .listen(settings.getListener().getPort(), untyped(blocking.future()));
         }, start);
     }
 }
