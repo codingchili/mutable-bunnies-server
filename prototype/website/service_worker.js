@@ -4,8 +4,9 @@
  * - prefer network.
  * - fallback on fail.
  */
-let CACHE_NAME = 'bunny-cache-v22';
-let urlsToCache = ['/', './index.html'];
+const CACHE_NAME = 'bunny-cache-v22';
+const  urlsToCache = ['/', './index.html'];
+const OFFLINE_LATCH_COUNT = 8;
 
 let failures = 0;
 let offline = false;
@@ -37,6 +38,11 @@ self.addEventListener('message', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+
+    if (event.request.method !== "GET") {
+        return false;
+    }
+
     if (offline) {
         event.respondWith(caches.open(CACHE_NAME)
             .then(cache => {
@@ -59,7 +65,7 @@ self.addEventListener('fetch', (event) => {
                         })
                         .catch(() => {
                             failures++;
-                            if (!offline && failures > 8) {
+                            if (!offline && failures > OFFLINE_LATCH_COUNT) {
                                 console.log('offline detected: defaulting to cache.');
                                 offline = true;
                             }
