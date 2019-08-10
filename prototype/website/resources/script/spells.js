@@ -211,8 +211,13 @@ window.Spells = class Spells {
      * @private
      */
     _activateEffectByActiveSpell(event) {
+        if (event.spell === 'dagger') {
+            sound.play('dagger.mp3')
+        }
+
         if (event.spell === 'potent_venom') {
             let target = event.spellTarget;
+            sound.play('glass_break.mp3');
 
             return game.particles.spawn('cloud', {
                 x: target.vector.x,
@@ -222,6 +227,7 @@ window.Spells = class Spells {
 
         if (event.spell === 'shadow_step') {
             let target = game.lookup(event.source);
+            sound.play('woosh.mp3');
 
             // sets starting point to old position.
             let start = {

@@ -19,7 +19,8 @@
     "script/input.js",
     "script/particles.js",
     "script/inventory.js",
-    "script/skybox.js"
+    "script/skybox.js",
+    "script/sound.js"
   ],
   "files": {
     "game/map/clouds/skybox_grey.png": {},
