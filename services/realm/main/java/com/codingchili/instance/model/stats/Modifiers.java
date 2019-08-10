@@ -24,7 +24,7 @@ public class Modifiers extends HashMap<Attribute, Float> {
 
     public Stats apply(Stats stats) {
         for (Attribute attribute : keySet()) {
-            if (stats.containsKey(attribute)) {
+            if (stats.has(attribute)) {
                 stats.set(attribute, Math.round(stats.get(attribute) * get(attribute)));
             }
         }

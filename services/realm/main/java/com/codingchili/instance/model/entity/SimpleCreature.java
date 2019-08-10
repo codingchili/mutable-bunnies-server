@@ -47,34 +47,39 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
     }
 
     public Stats getStats() {
-        calculated.clear();
+        if (inventory.getStats().isDirty() || afflictions.getStats().isDirty() || stats.isDirty()) {
+            calculated.clear();
 
-        onStatsModifier(calculated);
+            onStatsModifier(calculated);
 
-        calculated.apply(inventory.getStats())
-                .apply(afflictions.getStats())
-                .apply(stats)
-                .set(Attribute.maxhealth, calculateMaxHealth(calculated))
-                .set(Attribute.maxenergy, calculateMaxEnergy(calculated));
+            calculated.apply(inventory.getStats())
+                    .apply(afflictions.getStats())
+                    .apply(stats)
+                    .set(Attribute.maxhealth, calculateMaxHealth(calculated))
+                    .set(Attribute.maxenergy, calculateMaxEnergy(calculated));
 
-        if (!stats.containsKey(Attribute.energy)) {
-            stats.set(Attribute.energy, calculated.get(Attribute.maxenergy));
+            if (!stats.has(Attribute.energy)) {
+                stats.set(Attribute.energy, calculated.get(Attribute.maxenergy));
+            }
+
+            if (!stats.has(Attribute.health)) {
+                stats.set(Attribute.health, calculated.get(Attribute.maxhealth));
+            }
+
+            if (!calculated.has(Attribute.level)) {
+                stats.setDefault(Attribute.level, 1);
+            }
+
+            stats.set(Attribute.health,
+                    Math.min(stats.get(Attribute.health), calculated.get(Attribute.maxhealth)));
+
+            stats.set(Attribute.energy,
+                    Math.min(stats.get(Attribute.energy), calculated.get(Attribute.maxenergy)));
+
+            inventory.getStats().clean();
+            afflictions.getStats().clean();
+            stats.clean();
         }
-
-        if (!stats.containsKey(Attribute.health)) {
-            stats.set(Attribute.health, calculated.get(Attribute.maxhealth));
-        }
-
-        if (!calculated.containsKey(Attribute.level)) {
-            stats.setDefault(Attribute.level, 1);
-        }
-
-        stats.set(Attribute.health,
-                Math.min(stats.get(Attribute.health), calculated.get(Attribute.maxhealth)));
-
-        stats.set(Attribute.energy,
-                Math.min(stats.get(Attribute.energy), calculated.get(Attribute.maxenergy)));
-
         return calculated;
     }
 

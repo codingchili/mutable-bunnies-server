@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
  * character or an item.
  */
 public class Stats extends LinkedHashMap<Attribute, Double> {
+    private boolean dirty = true;
 
     /**
      * Adds the given value to the attribute if existing or sets it if not.
@@ -20,6 +21,7 @@ public class Stats extends LinkedHashMap<Attribute, Double> {
     public Stats update(Attribute type, double points) {
         double current = getOrDefault(type, 0.0) + points;
         put(type, current);
+        dirty = true;
         return this;
     }
 
@@ -32,6 +34,7 @@ public class Stats extends LinkedHashMap<Attribute, Double> {
      */
     public Stats set(Attribute type, double value) {
         put(type, value);
+        dirty = true;
         return this;
     }
 
@@ -52,7 +55,10 @@ public class Stats extends LinkedHashMap<Attribute, Double> {
      * @param value     the value to set if none exists.
      */
     public void setDefault(Attribute attribute, double value) {
-        putIfAbsent(attribute, value);
+        Object previous = putIfAbsent(attribute, value);
+        if (previous == null) {
+            dirty = true;
+        }
     }
 
     /**
@@ -63,6 +69,40 @@ public class Stats extends LinkedHashMap<Attribute, Double> {
      */
     public Stats apply(Stats stats) {
         stats.forEach(this::update);
+        dirty = true;
+        return this;
+    }
+
+    /**
+     * Clears all attributes and marks the object as dirty.
+     */
+    public void clear() {
+        super.clear();
+        dirty = true;
+    }
+
+    /**
+     * @param attribute the attribute to check if it has a value.
+     * @return true if the given attribute has a value.
+     */
+    public boolean has(Attribute attribute) {
+        return containsKey(attribute);
+    }
+
+    /**
+     * @return returns true if the stats object has been modified since calling clean.
+     */
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    /**
+     * clears the dirty flag of the stats object.
+     *
+     * @return fluent
+     */
+    public Stats clean() {
+        dirty = false;
         return this;
     }
 }

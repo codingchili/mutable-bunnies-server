@@ -372,9 +372,10 @@ public class SpellEngine {
     // update affliction state and spell cooldowns.
     private void updateCreatureSpellState(Ticker ticker) {
         creatures.all().forEach(entity -> {
-            boolean modified = entity.getAfflictions().tick(game, ticker);
+            AfflictionState afflictions = entity.getAfflictions();
+            boolean modified = afflictions.tick(game, ticker);
 
-            if (modified) {
+            if (modified && afflictions.getStats().isDirty()) {
                 game.publish(new StatsUpdateEvent(entity));
             }
 
