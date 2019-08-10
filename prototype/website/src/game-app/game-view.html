@@ -101,6 +101,7 @@
                 application.onScriptShutdown(() => {
                     // play in pregame ui.
                     if (this.bgsound) {
+                        this.bgsound.currentTime = 0;
                         this.bgsound.play();
                     }
                 });
