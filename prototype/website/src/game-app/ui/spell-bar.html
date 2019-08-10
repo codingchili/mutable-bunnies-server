@@ -147,7 +147,7 @@
 
         </style>
 
-        <paper-material elevation="3" class="spell-bar interface-box">
+        <paper-material elevation="3" class="spell-bar interface-box noselect">
             <template is="dom-repeat" items="[[_list(spells, character)]]" as="spell">
                 <div on-click="_onCast" class="spell-button">
                     <img class$="spell-icon {{_available(spell.id, charges.*, cooldown.*)}}"

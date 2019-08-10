@@ -50,7 +50,7 @@
 
         </style>
 
-        <paper-material class="container center-box" id="container" elevation="3">
+        <paper-material class="container center-box noselect" id="container" elevation="3">
             <div class="title">
                 <h4>{{title}}</h4>
             </div>
@@ -124,7 +124,7 @@
                     this.showToast(e.message);
                 },
                 failed: () => {
-                    application.error('Failed to establish a connection to the authentication server.')
+                    application.error('Failed to establish a connection to the authentication server.', true)
                 }
             }, this.username, this.password);
         }
@@ -150,7 +150,7 @@
                         this.showToast(e.message);
                     },
                     failed: () => {
-                        application.error("Failed to establish a connection to the authentication server.")
+                        application.error("Failed to establish a connection to the authentication server.", true)
                     }
                 }, this.username, this.password, this.email);
             } else {

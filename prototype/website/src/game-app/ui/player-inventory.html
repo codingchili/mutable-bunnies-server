@@ -120,7 +120,7 @@
         <div id="container">
             <div id="overlay"></div>
 
-            <paper-material elevation="3" class="interface-box" id="dialog">
+            <paper-material elevation="3" class="interface-box noselect" id="dialog">
                 <iron-icon icon="icons:close" id="dialog-close" on-down="_hide"></iron-icon>
 
                 <span class="dialog-entity">[[name]]'s inventory</span>
@@ -208,7 +208,7 @@
                         }
                     }, 'i');
 
-                    game.inventory.onInventoryUpdated = (inventory => {
+                    game.inventory.onInventoryUpdated(inventory => {
                         this.inventory = inventory;
                     });
                 });
