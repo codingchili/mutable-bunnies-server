@@ -11,7 +11,7 @@
 window.SoundManager = class SoundManager {
     play(url) {
         let effect = new Audio(`/resources/sound/${url}`);
-        effect.volume = 0.4;
+        effect.volume = 0.6;
 
         effect.addEventListener('loadeddata', () => {
             effect.play();
