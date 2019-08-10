@@ -207,11 +207,14 @@ window.SpawnHandler = class SpawnHandler {
         target.dead = true;
 
         if (target.isPlayer) {
+            sound.play("the_end.mp3");
+
             application.publish('player-death', () => {
                 game.shutdown();
                 application.showCharacters();
             });
         } else {
+            sound.play("drop_dead.mp3");
             if (target.account) {
                 game.chat.add({text: `${target.name} was undone by ${source.name}.`, source: target.id, system: true});
             }
