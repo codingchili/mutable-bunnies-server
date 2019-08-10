@@ -46,12 +46,14 @@ class Application {
         application.publish('onAuthentication', application);
     }
 
-    error(error) {
+    error(error, disconnect) {
+        let callback = (disconnect) ? application.showOffline : application.showLogin;
+
         application.publish('onLogout', {});
         application.view('error-dialog');
-        application.publish('onError', {text: error, callback: application.showLogin});
+        application.publish('onError', {text: error, callback: callback});
 
-        if (typeof game !== "undefined") {
+        if (!!game) {
             try {
                 game.shutdown();
             } catch (e) {
@@ -207,6 +209,10 @@ class Application {
     showStart() {
         application.view('page');
         application.publish('onViewStart', {});
+    }
+
+    showOffline() {
+        application.view('offline-view');
     }
 
     view(view) {

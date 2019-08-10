@@ -117,7 +117,7 @@
                 Object.keys(this.selected.stats).forEach((key, index) => {
                     stats.splice(index, 0, {
                         name: key,
-                        value: this.selected.stats[key].toFixed((key === 'movement' ? 1 : 0))
+                        value: this.selected.stats[key].toFixed(0)
                     });
                 });
             }

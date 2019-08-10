@@ -68,7 +68,7 @@ class Connection {
             if (this.ws.readyState === this.ws.OPEN) {
                 this.ws.send(JSON.stringify(data));
             } else {
-                application.error("connection to server closed.");
+                this.onerror();
             }
         } else {
             if (!this.clientClosed) {
@@ -93,7 +93,7 @@ class Connection {
     }
 
     onerror(event) {
-        application.error('Server error: connection closed.');
+        application.error('Server error: connection closed.', true);
     }
 
     onclose(event) {
