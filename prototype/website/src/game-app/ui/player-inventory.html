@@ -93,6 +93,28 @@
                 width: 48px;
             }
 
+            .currency-box {
+                width: 86px;
+                height: 16px;
+                position: absolute;
+                right: 8px;
+                display: flex;
+                justify-content: flex-end;
+                bottom: 108px;
+            }
+
+            .currency-text {
+                display: block;
+                padding: 0;
+                padding-right: 2px;
+                margin-top: -4px;
+            }
+
+            .currency-icon {
+                width: 16px;
+                margin-top: 0px;
+            }
+
         </style>
 
         <div id="container">
@@ -132,6 +154,11 @@
                     </div>
                 </template>
 
+                <div class="currency-box">
+                    <span class="currency-text">[[_currency(inventory)]]</span>
+                    <img class="currency-icon" src="[[realm.resources]]/gui/item/icon/slots/currency_coin.svg">
+                </div>
+
                 <hr>
 
                 <div id="loot-items">
@@ -158,13 +185,15 @@
 
             _clear() {
                 this.inventory = {
-                    equipped: {}
+                    equipped: {},
+                    currency: 0
                 };
                 this.slots = ['head', 'chest', 'legs', 'weapon', 'offhand', 'ring', 'neck', 'cloak', 'foot'];
             }
 
             ready() {
                 super.ready();
+                this.realm = {};
 
                 application.onGameLoaded((game) => {
                     this._clear();
@@ -184,11 +213,19 @@
                     });
                 });
 
+                application.onRealmLoaded(realm => {
+                    this.realm = realm;
+                });
+
                 application.onCharacterLoaded(character => {
                     this.classId = character.classId;
                     this.name = character.name;
                     this.inventory = character.inventory;
                 });
+            }
+
+            _currency() {
+                return this.inventory.currency.toLocaleString();
             }
 
             _unequip(e) {

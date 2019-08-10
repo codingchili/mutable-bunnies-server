@@ -18,7 +18,7 @@ public class Inventory implements Serializable {
     private List<Item> items = new ArrayList<>();
     private transient Stats stats;
     private Integer space;
-    private Integer currency = 1;
+    private Integer currency = 1000;
 
     /**
      * Updates the equipped stats after changing equipped items.
