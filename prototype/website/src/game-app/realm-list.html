@@ -108,6 +108,7 @@
 
             .description {
                 width: 65%;
+                font-size: 12px;
             }
 
             .red {
@@ -150,6 +151,14 @@
                 cursor: default;
             }
 
+            .info:hover {
+                color: var(--text-primary-color);;
+            }
+
+            .realm-description {
+                display: inline;
+            }
+
             .list {
                 padding-bottom: 12px;
             }
@@ -188,7 +197,7 @@
                     display: none;
                 }
 
-                .reset{
+                .reset {
                     display: none;
                 }
 
@@ -249,10 +258,12 @@
 
                         <div class$="ping {{realm.pingColor}}">{{realm.ping}}</div>
 
-                        <iron-icon class="info" icon="icons:info-outline"></iron-icon>
-                        <paper-tooltip animation-delay="0" class="tooltip">
-                            <span class="description">[[realm.description]]</span>
-                        </paper-tooltip>
+                        <div class="realm-description">
+                            <iron-icon class="info" icon="icons:info-outline"></iron-icon>
+                            <paper-tooltip animation-delay="0" class="tooltip">
+                                <span class="description">[[realm.attributes.description]]</span>
+                            </paper-tooltip>
+                        </div>
                     </paper-material>
                 </template>
             </div>
