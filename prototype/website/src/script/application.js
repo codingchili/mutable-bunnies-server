@@ -8,10 +8,10 @@ class Application {
 
     constructor() {
         this.development = {
-            autologin: false,
-            selectFirstRealm: false,
+            autologin: true,
+            selectFirstRealm: true,
             selectFirstCharacter: false,
-            clearCache: false,
+            clearCache: true,
             rightClick: true,
             logEvents: false,
             hardResetXY: true,
@@ -53,9 +53,9 @@ class Application {
         application.view('error-dialog');
         application.publish('onError', {text: error, callback: callback});
 
-        if (!!game) {
+        if (typeof game !== 'undefined') {
             try {
-                game.shutdown();
+                game.shutdown(disconnect);
             } catch (e) {
                 console.log(e);
             }

@@ -56,8 +56,7 @@ class RealmServer {
                 console.log('on player leave')
             },
             error: (e) => {
-                // failed to disconnect gracefully.
-                application.error(e.message);
+                // failed to disconnect gracefully - connection might have closed already.
             }
         });
     }
