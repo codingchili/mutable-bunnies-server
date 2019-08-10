@@ -90,7 +90,7 @@
                     if (!offline) {
                         this.bgsound = new Audio('/resources/sound/background.mp3');
                         this.bgsound.loop = true;
-                        this.bgsound.volume = 0.2;
+                        this.bgsound.volume = 0.5;
 
                         this.bgsound.addEventListener('loadeddata', () => {
                             this.bgsound.play();
@@ -101,7 +101,8 @@
                 application.onScriptShutdown(() => {
                     // play in pregame ui.
                     if (this.bgsound) {
-                        this.bgsound.currentTime = 0;
+                        this.bgsound.volume = 0.5;
+                        //this.bgsound.currentTime = 0;
                         this.bgsound.play();
                     }
                 });
@@ -109,7 +110,8 @@
                 application.onScriptsLoaded(() => {
                     // pause in game.
                     if (this.bgsound) {
-                        this.bgsound.pause();
+                        this.bgsound.volume = 0.15;
+                        //this.bgsound.pause();
                     }
                 });
 
