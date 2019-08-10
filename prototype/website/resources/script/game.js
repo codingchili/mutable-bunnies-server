@@ -44,14 +44,17 @@ window.Game = class Game extends Canvas {
         }, character.name);
     }
 
-    scriptShutdown() {
+    shutdown(disconnected) {
         if (game) {
-            game.shutdown();
-            input.shutdown();
+            game.isPlaying = false;
+
+            if (!disconnected) {
+                server.leave();
+            }
         }
-        if (game.lookup(application.character.id)) {
-            server.leave();
-        }
+        input.shutdown();
+        application.scriptShutdown();
+        super.shutdown();
     }
 
     init() {
@@ -81,12 +84,6 @@ window.Game = class Game extends Canvas {
 
     setPlayer(player) {
         this.player = player;
-    }
-
-    shutdown() {
-        this.isPlaying = false;
-        this.scriptShutdown();
-        super.shutdown();
     }
 
     lookup(id) {

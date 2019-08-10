@@ -49,9 +49,13 @@ window.Canvas = class {
             };
             document.body.removeChild(this.renderer.view);
         } catch (e) {
-            console.log(e);
+            //console.log(e);
         }
-        this.app.destroy(true);
+        try {
+            this.app.destroy(true);
+        } catch (ignored) {
+            //
+        }
     }
 
     resize() {

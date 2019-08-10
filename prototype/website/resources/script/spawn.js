@@ -208,8 +208,7 @@ window.SpawnHandler = class SpawnHandler {
 
         if (target.isPlayer) {
             application.publish('player-death', () => {
-                game.scriptShutdown();
-                application.scriptShutdown();
+                game.shutdown();
                 application.showCharacters();
             });
         } else {
