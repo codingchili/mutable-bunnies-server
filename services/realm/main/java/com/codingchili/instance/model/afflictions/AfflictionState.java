@@ -102,8 +102,6 @@ public class AfflictionState {
             if (active.shouldTick(ticker)) {
                 boolean remove = !active.tick(game);
 
-                System.out.println("TICK:" + active.getAffliction().getId());
-
                 if (remove) {
                     modified.set(true);
                 }

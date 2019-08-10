@@ -29,7 +29,7 @@ public class ActiveAffliction {
     private Creature target;
     private int ticks;
     private int interval;
-    private Float delta = 0f;
+    private int delta;
     private Long start = System.currentTimeMillis();
 
     /**
@@ -43,6 +43,7 @@ public class ActiveAffliction {
         this.affliction = affliction;
         this.ticks = GameContext.secondsToMs(affliction.getDuration());
         this.interval = GameContext.secondsToMs(affliction.getInterval());
+        this.delta = interval; // grant first tick immediately.
     }
 
     /**
@@ -68,12 +69,11 @@ public class ActiveAffliction {
      */
     public boolean tick(GameContext context) {
         try {
-            do {
+            while (this.delta > interval) {
                 affliction.tick(getBindings(context));
                 ticks -= interval;
                 this.delta -= interval;
-            } while (this.delta >= 1);
-
+            }
             return (ticks > 0);
         } catch (Exception e) {
             context.getLogger(getClass()).event("affliction.fail", Level.ERROR)
