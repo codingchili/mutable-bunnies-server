@@ -66,7 +66,12 @@ public class ActiveDialog {
 
         if (option.isAvailable(bindings)) {
             option.use(bindings);
-            cursor = option;
+
+            if (option.getRedirect() != null) {
+                cursor = dialog.get(option.getRedirect());
+            } else {
+                cursor = option;
+            }
         } else {
             throw new FilteredDialogOptionException(optionKey);
         }

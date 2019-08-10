@@ -27,7 +27,11 @@ public class ItemDB {
                 // create a copy of the item to prevent multiple inventories pointing
                 // to the same inventory item.
                 Item copy = kryo.copy(item.get());
-                copy.setId(UUID.randomUUID().toString());
+
+                // consumables are always stackable.
+                if (copy.getOnUse() == null) {
+                    copy.setId(UUID.randomUUID().toString());
+                }
                 return Optional.of(copy);
             } else {
                 return item;

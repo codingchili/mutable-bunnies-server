@@ -26,6 +26,15 @@ public class Option {
     private Scripted handler;
     private Scripted available;
     private String text;
+    private String redirect;
+
+    public String getRedirect() {
+        return redirect;
+    }
+
+    public void setRedirect(String redirect) {
+        this.redirect = redirect;
+    }
 
     public Set<Line> getNext() {
         return next;
