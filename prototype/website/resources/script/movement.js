@@ -15,6 +15,16 @@ window.MovementHandler = class MovementHandler {
         this.run = true;
         this.last = performance.now();
 
+        application.subscribe('player-death', () => {
+            for (let key in game.entities) {
+                let entity = game.lookup(key);
+                if (entity) {
+                    entity.velocity = 0;
+                    this._setAnimation(game.player);
+                }
+            }
+        });
+
         input.onKeysListener({
             up: (key) => {
                 this._input();
@@ -22,7 +32,7 @@ window.MovementHandler = class MovementHandler {
             down: (key) => {
                 if (key === RUN_TOGGLE) {
                     this.run = !this.run;
-                    this._setRunningAnimation(game.player);
+                    this._setAnimation(game.player);
                 }
                 this._input();
             }
@@ -48,7 +58,7 @@ window.MovementHandler = class MovementHandler {
                 entity.acceleration = entity.acceleration || 1;
 
                 if (entity.acceleration < 1.0) {
-                    entity.acceleration +=  ACCELERATION_STEP * (delta / ACCELERATION_TIME);
+                    entity.acceleration += ACCELERATION_STEP * (delta / ACCELERATION_TIME);
                 } else {
                     entity.acceleration = 1.0;
                 }
@@ -58,7 +68,7 @@ window.MovementHandler = class MovementHandler {
                 }
                 if (entity.state && !entity.state.initialized) {
                     entity.state.initialized = true;
-                    this._setRunningAnimation(entity);
+                    this._setAnimation(entity);
                 }
 
                 entity.x += Math.sin(entity.direction) * (entity.acceleration * entity.velocity) * delta;
@@ -162,11 +172,11 @@ window.MovementHandler = class MovementHandler {
             entity.velocity = event.vector.velocity;
             entity.direction = event.vector.direction;
 
-            this._setRunningAnimation(entity);
+            this._setAnimation(entity);
         }
     }
 
-    _setRunningAnimation(entity) {
+    _setAnimation(entity) {
         let animation = (entity.velocity > WALKING_SPEED) ? 'run' : 'walk';
 
         if (entity.velocity === 0) {
