@@ -85,6 +85,7 @@ window.Game = class Game extends Canvas {
 
     shutdown() {
         this.isPlaying = false;
+        this.scriptShutdown();
         super.shutdown();
     }
 
