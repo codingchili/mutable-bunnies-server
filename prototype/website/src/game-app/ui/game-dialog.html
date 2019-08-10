@@ -104,7 +104,7 @@
                     <span class="dialog-entity">[[entity]]</span>
                     <span class="dialog-text">[[text]]</span>
 
-                    <ul class="dialog-option-list">
+                    <ul class="dialog-option-list noselect">
                         <template is="dom-repeat" items="[[lines]]" as="line">
                             <li><span class="dialog-option" on-down="_select">[[_parse(line.text)]]</span></li>
                         </template>
