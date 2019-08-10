@@ -225,6 +225,10 @@ window.Spells = class Spells {
             }, 12.0); // get TTL from spell config?
         }
 
+        if (event.spell === 'regeneration') {
+            sound.play('leaves.mp3');
+        }
+
         if (event.spell === 'shadow_step') {
             let target = game.lookup(event.source);
             sound.play('woosh.mp3');
@@ -336,7 +340,8 @@ window.Spells = class Spells {
 
             let marker = new PIXI.Graphics();
             marker.layer = 0;
-            marker.lineStyle(2, this._theme(), 0.5);
+            //marker.lineStyle(2, this._theme(), 0.5);
+            marker.lineStyle(2, 0x00b0ff, 0.5);
             marker.drawEllipse(0, 0, 256, 128);
             this.loaded = {
                 marker: marker,
