@@ -11,7 +11,7 @@ options:
       text: "Nice to meet you."
     - id: "buff"
       text: "May I have the buff of haste?"
-    - id: "heal"
+    - id: "health"
       text: "I am in need of some healing."
     - id: "quest"
       text: "[complete quest] island expedition"
@@ -51,18 +51,62 @@ options:
     handler:
       jexl: |
         context.spells().afflict(source, 'haste');
-  heal:
-    text: "Enjoy some health."
+  health:
+    text: "Do you want me to heal you right now for 50gp?."
     handler:
       jexl: |
         context.spells().heal(source, 20.0);
     available:
         jexl: "return true;"
     next:
-    - id: "welcome"
-      text: "Who are you again?"
+    - id: "heal"
+      text: "Yes, heal me please."
+    - id: "apple"
+      text: "I'd rather buy an apple."
+  apple:
+    text: "Sure thing, an apple a day. Right?"
+    next:
+      - id: "red"
+        text: "I'll have a red apple for 15gp."
+      - id: "green"
+        text: "I'll have a green apple for 45gp."
+      - id: "gold"
+        text: "I'll have a golden apple for 235gp."
+      - id: "welcome"
+        text: "Actually I've changed my mind."
+  heal:
+    text: "Enjoy some health."
+    handler:
+      jexl: |
+        if (context.inventory().currency(source, -50)) {
+          context.spells().heal(source, source.stats[Attribute.maxhealth] * 0.2);
+        }
+    next:
+      - id: "welcome"
+        text: "back"
+  red:
+    redirect: "apple"
+    handler:
+      groovy: |
+        if (context.inventory().currency(source, -15)) {
+          context.inventory().item(source, "apple_red", 1);
+        }
+  green:
+    redirect: "apple"
+    handler:
+      groovy: |
+        if (context.inventory().currency(source, -45)) {
+          context.inventory().item(source, "apple_green", 1);
+        }
+  gold:
+    redirect: "apple"
+    handler:
+      groovy: |
+        if (context.inventory().currency(source, -235)) {
+          context.inventory().item(source, "apple_golden", 1);
+        }
   quest:
-    text: "You have completed your first quest! Enjoy 500 experience points."
+    text: "You have completed your first quest!\n\nEnjoy 500 experience points and some gold."
     available:
       jexl: |
         return source.attributes['quest#1'] == null;
@@ -70,6 +114,7 @@ options:
       jexl: |
         source.attributes['quest#1'] = true;
         context.spells().experience(source, 500);
+        context.inventory().currency(source, 500);
   insult:
     text: "Shut up ${player.name}, you're only level ${player.stats['level']} pfft."
     handler:

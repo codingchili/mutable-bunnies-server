@@ -2,14 +2,14 @@ package com.codingchili.instance.model.items;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.dialog.InteractionOutOfRangeException;
+import com.codingchili.instance.model.entity.Vector;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.npc.LootableEntity;
 import com.codingchili.instance.model.spells.SpellTarget;
 import com.codingchili.instance.scripting.*;
 import io.vertx.core.Future;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 import com.codingchili.core.context.CoreRuntimeException;
 
@@ -19,11 +19,12 @@ import com.codingchili.core.context.CoreRuntimeException;
  * Implements logic for modifying creature inventory.
  */
 public class InventoryEngine {
-    public static final String TARGET = "target";
-    public static final int LOOT_RANGE = 164;
-    public static final int ITEM_USE_GCD = 1000;
-    public static final String ITEM = "item";
-    public static final String SPELLS = "spells";
+    private static final String TARGET = "target";
+    private static final int LOOT_RANGE = 164;
+    private static final int ITEM_USE_GCD = 1000;
+    private static final String ITEM = "item";
+    private static final String SPELLS = "spells";
+    private ItemDB items;
     private GameContext game;
 
     /**
@@ -31,6 +32,47 @@ public class InventoryEngine {
      */
     public InventoryEngine(GameContext game) {
         this.game = game;
+        this.items = new ItemDB(game.instance());
+    }
+
+    /**
+     * Changes the amount of currency the given creature holds.
+     *
+     * @param target the target to modify the currency value of.
+     * @param amount the amount to modify with, can be negative.
+     * @return true if there was enough currency left to withdraw.
+     */
+    public boolean currency(Creature target, int amount) {
+        Inventory inventory = target.getInventory();
+        int current = inventory.getCurrency();
+
+        if (current + amount < 0) {
+            return false;
+        } else {
+            inventory.setCurrency(current + amount);
+            target.handle(new InventoryUpdateEvent(target));
+            return true;
+        }
+    }
+
+    /**
+     * Adds the given item to the targets inventory if the item exists
+     * in the database.
+     *
+     * @param target the creature of which inventory to add the item to.
+     * @param itemId the id of the item to add.
+     * @param amount the quantity of the item to add.
+     * @return true if the item was found and added to the targets inventory.
+     */
+    public boolean item(Creature target, String itemId, int amount) {
+        Optional<Item> item = this.items.getById(itemId);
+
+        item.ifPresent(found -> {
+            found.setQuantity(amount);
+            target.getInventory().add(found);
+            target.handle(new InventoryUpdateEvent(target));
+        });
+        return item.isPresent();
     }
 
     /**

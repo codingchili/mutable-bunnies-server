@@ -1,16 +1,40 @@
 window.Inventory = class Inventory {
 
     constructor() {
-        this.onInventoryUpdated = () => {
-        };
+        this.callbacks = [];
+        this.inventory = application.character.inventory;
 
         server.connection.setHandler('inventory_update', (event) => {
-            this.onInventoryUpdated(event.inventory);
+            this._handleCurrencyUpdate(event);
+
+            this.inventory = event.inventory;
+            this.callbacks.forEach(callback => {
+                callback(event.inventory);
+            });
         });
 
         server.connection.setHandler('equip_item', (event) => {
-           // use this to update rendered equipment.
+            // use this to update rendered equipment.
         });
+    }
+
+    _handleCurrencyUpdate(event) {
+        let current = this.inventory.currency;
+        let updated = event.inventory.currency;
+
+        if (current !== updated) {
+            if (current < updated) {
+                game.chat.add({text: `You gained ${updated - current}gp.`, system: true});
+            } else {
+                game.chat.add({text: `You lost ${Math.abs(current - updated)}gp.`, system: true});
+            }
+        }
+    }
+
+    onInventoryUpdated(callback) {
+        console.log('registering callback inventory');
+        this.callbacks.push(callback);
+        console.log('registered callback inventory');
     }
 
     requestLootList(entity) {
