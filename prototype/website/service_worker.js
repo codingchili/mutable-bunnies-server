@@ -5,7 +5,7 @@
  * - fallback on fail.
  */
 const CACHE_NAME = 'bunny-cache-v22';
-const  urlsToCache = ['/', './index.html'];
+const urlsToCache = ['/', './index.html'];
 const OFFLINE_LATCH_COUNT = 8;
 
 let failures = 0;
@@ -68,6 +68,12 @@ self.addEventListener('fetch', (event) => {
                             if (!offline && failures > OFFLINE_LATCH_COUNT) {
                                 console.log('offline detected: defaulting to cache.');
                                 offline = true;
+
+                                setTimeout(() => {
+                                    // reset circuit breaker because page reload isn't enough to reset vars.
+                                    offline = false;
+                                    failures = 0;
+                                }, 10000);
                             }
                             return caches.match(event.request);
                         })
