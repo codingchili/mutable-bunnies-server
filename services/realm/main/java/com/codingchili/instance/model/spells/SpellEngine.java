@@ -27,7 +27,7 @@ public class SpellEngine {
     private Map<Creature, ActiveSpell> casting = new ConcurrentHashMap<>();
     private Collection<ActiveSpell> active = new ConcurrentLinkedQueue<>();
     private Collection<Projectile> projectiles = new ConcurrentLinkedQueue<>();
-    private Grid<Creature> creatures;
+    private HashGrid<Creature> creatures;
     private AfflictionDB afflictions;
     private SpellDB spells;
     private GameContext game;

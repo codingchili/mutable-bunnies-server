@@ -37,8 +37,8 @@ public class GameContext {
     private AtomicBoolean processing = new AtomicBoolean(false);
     private AtomicBoolean closed = new AtomicBoolean(false);
     private InstanceContext instance;
-    private Grid<Creature> creatures;
-    private Grid<Entity> structures;
+    private HashGrid<Creature> creatures;
+    private HashGrid<Entity> structures;
 
     private SpellEngine spells;
     private MovementEngine movement;
@@ -54,8 +54,8 @@ public class GameContext {
         this.instance = instance;
 
         int width = instance.settings().getSize();
-        this.creatures = new Grid<>(width);
-        this.structures = new Grid<>(width);
+        this.creatures = new HashGrid<>(width);
+        this.structures = new HashGrid<>(width);
         this.classes = new ClassDB(instance);
         this.logger = instance.logger(getClass());
 
@@ -137,11 +137,11 @@ public class GameContext {
         return this.classes;
     }
 
-    public Grid<Creature> creatures() {
+    public HashGrid<Creature> creatures() {
         return creatures;
     }
 
-    public Grid<Entity> entities() {
+    public HashGrid<Entity> entities() {
         return structures;
     }
 
