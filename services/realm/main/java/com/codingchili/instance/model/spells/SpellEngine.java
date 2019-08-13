@@ -23,11 +23,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * - on interrupt etc..
  */
 public class SpellEngine {
-    public static final int XP_PER_CREATURE_LEVEL = 15;
+    private static final int XP_PER_CREATURE_LEVEL = 15;
     private Map<Creature, ActiveSpell> casting = new ConcurrentHashMap<>();
     private Collection<ActiveSpell> active = new ConcurrentLinkedQueue<>();
     private Collection<Projectile> projectiles = new ConcurrentLinkedQueue<>();
-    private HashGrid<Creature> creatures;
+    private Grid<Creature> creatures;
     private AfflictionDB afflictions;
     private SpellDB spells;
     private GameContext game;
@@ -371,7 +371,7 @@ public class SpellEngine {
 
     // update affliction state and spell cooldowns.
     private void updateCreatureSpellState(Ticker ticker) {
-        creatures.all().forEach(entity -> {
+        for (Creature entity : creatures.all()) {
             AfflictionState afflictions = entity.getAfflictions();
             boolean modified = afflictions.tick(game, ticker);
 
@@ -380,7 +380,7 @@ public class SpellEngine {
             }
 
             entity.getSpells().tick(entity, spells, ticker);
-        });
+        }
     }
 
     // update progress for spells currently being casted.

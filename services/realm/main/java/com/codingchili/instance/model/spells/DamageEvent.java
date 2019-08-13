@@ -13,6 +13,7 @@ public class DamageEvent implements Event {
     private Entity target;
     private Entity source;
     private DamageType damage;
+    private boolean critical = false;
     private double value;
 
     public DamageEvent(Creature target, double value, DamageType damage) {
@@ -32,6 +33,14 @@ public class DamageEvent implements Event {
         } else {
             return null;
         }
+    }
+
+    public boolean isCritical() {
+        return critical;
+    }
+
+    public void setCritical(boolean critical) {
+        this.critical = critical;
     }
 
     public String getTargetId() {
