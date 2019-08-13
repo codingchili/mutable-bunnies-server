@@ -1,144 +1,92 @@
 package com.codingchili.instance.model.entity;
 
-import io.vertx.core.Future;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-import com.codingchili.core.benchmarking.BenchmarkBuilder;
-import com.codingchili.core.benchmarking.BenchmarkConsoleListener;
-import com.codingchili.core.benchmarking.BenchmarkExecutor;
-import com.codingchili.core.benchmarking.BenchmarkGroupBuilder;
-import com.codingchili.core.benchmarking.reporting.BenchmarkHTMLReport;
-import com.codingchili.core.context.CoreContext;
-import com.codingchili.core.context.SystemContext;
 import com.codingchili.instance.context.Ticker;
+
+import java.util.*;
 
 /**
  * - consider width/height of entities
  * - reverse lookup for exists/remove/update
  * - linked lists for faster updates
- *
+ * <p>
  * improved vs hashmap..
- *  - does not require clear on update
- *  - can update single entries
- *  - cheaper overall :PPP
+ * - does not require clear on update
+ * - can update single entries
+ * - cheaper overall :PPP
  */
 public class LinkedGrid<T extends Entity> implements Grid<T> {
+    private static final int CELL_SIZE = 256;
+    private List<T> all = new ArrayList<>();
     private Map<String, GridEntry<T>> reverse = new HashMap<>();
-    private List<List<T>> lists;
+    private AreaSelector<T> selector;
+    private List<List<T>> cells;
+    private int width;
 
     /**
-     * @param cells
+     * @param width of the game world in px units.
      */
-    public LinkedGrid(int cells) {
-        lists = new ArrayList<>(cells);
+    public LinkedGrid(int width) {
+        this.width = width;
+        this.selector = new AreaSelector<>(this, CELL_SIZE);
+        int cellCount = (int) Math.pow(width * 1.0 / CELL_SIZE, 2.0);
 
-        for (int i = 0; i < cells; i++) {
-            lists.add(new LinkedList<>());
+        cells = new ArrayList<>(cellCount);
+
+        for (int i = 0; i < cellCount; i++) {
+            cells.add(new LinkedList<>());
         }
     }
 
-    private List<T> cell(int cell) {
-        return lists.get(cell);
-    }
-
-    public static void main(String[] args) {
-        CoreContext core = new SystemContext();
-
-        BenchmarkGroupBuilder builder =
-            new BenchmarkGroupBuilder("spatial-hashing", 99_000_000_0);
-
-        builder.add(new GridBenchmark("linked grid")
-            .setGrid(new LinkedGrid<>(512)).setGroup(builder));
-
-        Grid<Entity> g = new LinkedGrid<>(512);
-        GridBenchmark gb = new GridBenchmark("linked grid")
-            .setGrid(g);
-
-        System.out.println("size=" + g.all().size());
-
-        Future<Void> future = Future.future();
-        while (true) {
-            try {
-                Thread.sleep(16, 0);
-            } catch (InterruptedException e) {
-                //
-            }
-            gb.tick(future);
+    @Override
+    public Collection<T> get(Integer cell) {
+        if (cell >= 0 && cell < cells.size()) {
+            return cells.get(cell);
+        } else {
+            return new ArrayList<>();
         }
-
-        //builder.add(new GridBenchmark("map grid")
-        //  .setGrid(new HashGrid<>(512)).setGroup(builder));
-
-        /*new BenchmarkExecutor(core)
-            .setListener(new BenchmarkConsoleListener())
-            .start(builder)
-            .setHandler(done -> {
-                new BenchmarkHTMLReport(done.result()).display();
-                core.close();
-            });*/
     }
 
     @Override
     public Grid<T> update(Ticker ticker) {
-        for (GridEntry<T> g : reverse.values()) {
-            Collection<Integer> hash = g.entity.getVector().cells(512);
+        for (GridEntry<T> entry : reverse.values()) {
+            Collection<Integer> current = cells(entry.entity);
 
-            if (hash != g.cells) {
-                // remove oldcells from buckets
-                for (Integer cell : g.cells) {
-                    lists.get(cell).remove(g.entity);
+            // check if cells changed.
+            if (current != entry.cells) {
+                for (Integer old : entry.cells) {
+                    get(old).remove(entry.entity);
                 }
-
-                for (Integer cell : hash) {
-                    lists.get(cell).add(g.entity);
+                for (Integer updated : current) {
+                    get(updated).add(entry.entity);
                 }
-
-                g.cells = hash;
+                entry.cells = current;
             }
-
         }
-        /*reverse.forEach((id, entry) -> {
-            Collection<Integer> hash = entry.entity.getVector().cells(512);
-
-            // new memory address.
-            if (hash != entry.cells) {
-                // remove oldcells from buckets
-                entry.cells.forEach(cell -> {
-                    lists.get(cell).remove(entry.entity);
-                });
-                // add newcells to bucket
-                hash.forEach(cell -> {
-                    lists.get(cell).add(entry.entity);
-                });
-                // overwrite oldcells with newcells in reverse lookup.
-                entry.cells = hash;
-            }
-        });*/
         return this;
+    }
+
+    private Collection<Integer> cells(Entity entity) {
+        return entity.getVector().cells(CELL_SIZE, width);
     }
 
     @Override
     public Grid<T> add(T entity) {
-        System.out.println("add " + entity.getId());
-        reverse.put(entity.getId(), new GridEntry<T>(entity));
+        all.add(entity);
+        reverse.put(entity.getId(), new GridEntry<>(entity, cells(entity)));
         return this;
     }
 
     @Override
     public Grid<T> remove(String id) {
         GridEntry<T> entry = reverse.get(id);
-        entry.cells.forEach(cell -> {
-            cell(cell).remove(entry.entity);
-        });
+
+        if (entry != null) {
+            all.remove(entry.entity);
+
+            for (Integer cell: entry.cells) {
+                this.get(cell).remove(entry.entity);
+            }
+        }
         reverse.remove(id);
         return this;
     }
@@ -155,42 +103,50 @@ public class LinkedGrid<T extends Entity> implements Grid<T> {
 
     @Override
     public Collection<T> list(int col, int row) {
-        // todo translate from x,y to z.
-        return cell(col + row * 512);
+        int cellId = col + row * (width / CELL_SIZE);
+
+        if (cellId > 0 && cellId < cells.size()) {
+            return get(cellId);
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public Collection<T> all() {
-        return reverse.values()
-            .stream()
-            .map(GridEntry::entity)
-            .collect(Collectors.toList());
+        return all;
     }
 
     @Override
     public Collection<T> translate(int x, int y) {
-        // todo translate from x,y to z and get cells, using vector impl?
-        return new ArrayList<>();
+        return list(x / width, y / width);
     }
 
     @Override
     public Collection<T> partition(Vector vector) {
-        return new ArrayList<>();
+        return all();
     }
 
     @Override
     public Set<T> cone(Vector vector) {
-        return new HashSet<>();
+        return selector.cone(vector);
     }
 
     @Override
     public Set<T> radius(Vector vector) {
-        return new HashSet<>();
+        return selector.radius(vector);
     }
 
     @Override
     public Set<T> adjacent(Vector vector) {
-        return new HashSet<>();
+        Set<T> set = new HashSet<>();
+        vector.cells(CELL_SIZE, width).forEach(bucket -> set.addAll(get(bucket)));
+        return set;
+    }
+
+    @Override
+    public int width() {
+        return width;
     }
 
     private static class GridEntry<T extends Entity> {
@@ -200,17 +156,13 @@ public class LinkedGrid<T extends Entity> implements Grid<T> {
         /**
          * @param entity the entity that is stored as an entry.
          */
-        public GridEntry(T entity) {
+        GridEntry(T entity, Collection<Integer> cells) {
             this.entity = entity;
-            this.cells = entity.getVector().cells(512);
+            this.cells = cells;
         }
 
         public T entity() {
             return entity;
-        }
-
-        public Collection<Integer> cells() {
-            return cells;
         }
 
         @Override

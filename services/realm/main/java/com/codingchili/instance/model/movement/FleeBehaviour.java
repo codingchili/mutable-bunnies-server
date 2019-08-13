@@ -9,7 +9,7 @@ import com.codingchili.instance.model.stats.Attribute;
  * A behaviour that causes one creature to flee from another.
  */
 public class FleeBehaviour implements MovementBehaviour {
-    private static float FLEE_RANGE = 512.0f;
+    private static int FLEE_RANGE = 512;
     private Creature source;
     private Creature target;
 
@@ -35,7 +35,7 @@ public class FleeBehaviour implements MovementBehaviour {
         float targetX = following.getX();
         float targetY = following.getY();
 
-        if (vector.targetDistance(targetX, targetY) < FLEE_RANGE) {
+        if (vector.distance(targetX, targetY) < FLEE_RANGE) {
             float direction = vector.targetAngle(targetX, targetY);
             direction += Math.toRadians(180);
             vector.setDirection(direction);

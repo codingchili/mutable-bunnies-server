@@ -1,9 +1,9 @@
 package com.codingchili.instance.model.entity;
 
+import com.codingchili.instance.context.Ticker;
+
 import java.util.Collection;
 import java.util.Set;
-
-import com.codingchili.instance.context.Ticker;
 
 /**
  * Spatial hashing and querying of the game world.
@@ -31,6 +31,14 @@ public interface Grid<T extends Entity> {
      * @return fluent.
      */
     Grid<T> remove(String id);
+
+    /**
+     * Get a list of entities which reside in the given cell id.
+     *
+     * @param cell the number of the cell to retrieve entities from.
+     * @return a list of entities that reside in the specified cell.
+     */
+    Collection<T> get(Integer cell);
 
     /**
      * @param id the id of the entity to retrieve.
@@ -89,4 +97,9 @@ public interface Grid<T extends Entity> {
      * @return adjacent entities to the given vector.
      */
     Set<T> adjacent(Vector vector);
+
+    /**
+     * @return the width of the grid in pixels.
+     */
+    int width();
 }

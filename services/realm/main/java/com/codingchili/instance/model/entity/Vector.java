@@ -22,6 +22,7 @@ public class Vector {
     private transient Collection<Integer> buckets = new HashSet<>();
     private transient float acceleration = ACCELERATION_BASE;
     private transient boolean dirty = false;
+    private transient int index = -1;
     private float velocity = 0f;
     private float direction = 0.0f;
     private int size = 24;
@@ -172,8 +173,18 @@ public class Vector {
      * @param targetY the target y coordinate.
      * @return the distance between the given points.
      */
-    public float targetDistance(float targetX, float targetY) {
-        return (float) Math.hypot(Math.abs(x - targetX), Math.abs(y - targetY));
+    public int distance(float targetX, float targetY) {
+        return (int) Math.hypot(Math.abs(x - targetX), Math.abs(y - targetY));
+    }
+
+    /**
+     * calculates the distance from the vectors position to the target coordinates.
+     *
+     * @param vector the target vector to check the distance to.
+     * @return the distance between the given vectors.
+     */
+    public int distance(Vector vector) {
+        return distance(vector.getX(), vector.getY());
     }
 
     /**
@@ -212,23 +223,37 @@ public class Vector {
      * @param cellSize the size of the cells.
      * @return cell numbers that this vector exists within.
      */
-    public Collection<Integer> cells(final int cellSize) {
+    public Collection<Integer> cells(final int cellSize, final int width) {
         if (dirty) {
             dirty = false;
             Collection<Integer> cells = new HashSet<>();
 
-            int cellCount = (size * 2) / cellSize;
+            int cellX = (int) (x + width / 2) / cellSize;
             int cellY = (int) y / cellSize;
-            int cellX = (int) x / cellSize;
+            int current = cellX + cellY * (width / cellSize);
 
-            cells.add(cellY * cellSize + cellX);
+            // check if vector moved from one cell to another.
+            if (index != current) {
+                index = current;
 
-            for (int y = cellY; y < cellCount + cellY; y++) {
-                for (int x = cellX; x < cellCount + cellX; x++) {
-                    cells.add(((x - cellCount / 2) + (y - cellCount / 2) * cellSize));
-                }
+                cells.add(current);
+                cells.add(current - 1); // left
+                cells.add(current + 2); // right
+
+                // tbd: size not taken account of, entities should
+                // probably not be larger than the cell size.
+
+                int row = (width / cellSize);
+                cells.add(current - row - 1);
+                cells.add(current - row);
+                cells.add(current - row + 1);
+                cells.add(current + row - 1);
+                cells.add(current + row);
+                cells.add(current + row + 1);
+
+                // memory address changed, triggers a grid update.
+                buckets = cells;
             }
-            buckets = cells;
         }
         return buckets;
     }

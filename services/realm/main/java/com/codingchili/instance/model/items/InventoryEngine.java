@@ -251,10 +251,8 @@ public class InventoryEngine {
     }
 
     private boolean targetInRange(Entity source, Entity target) {
-        Vector vector = target.getVector().copy()
-                .setSize(LOOT_RANGE);
-
-        return game.creatures().radius(vector).contains(source);
+        int distance = source.getVector().distance(target.getVector());
+        return distance < LOOT_RANGE;
     }
 
     private void update(Creature source) {

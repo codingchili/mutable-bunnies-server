@@ -10,7 +10,7 @@ import com.codingchili.instance.model.stats.Attribute;
  * The behaviour is in effect until either creature leaves the context.
  */
 public class FollowBehaviour implements MovementBehaviour {
-    private static float FOLLOW_RANGE = 128.0f;
+    private static int FOLLOW_RANGE = 128;
     private Creature source;
     private Creature target;
 
@@ -36,7 +36,7 @@ public class FollowBehaviour implements MovementBehaviour {
         float targetX = following.getX();
         float targetY = following.getY();
 
-        if (vector.targetDistance(targetX, targetY) > FOLLOW_RANGE) {
+        if (vector.distance(targetX, targetY) > FOLLOW_RANGE) {
             float direction = vector.targetAngle(targetX, targetY);
             vector.setDirection(direction);
             vector.setVelocity((float) source.getStats().get(Attribute.movement));

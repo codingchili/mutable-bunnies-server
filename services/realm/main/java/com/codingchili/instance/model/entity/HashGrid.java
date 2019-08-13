@@ -5,7 +5,6 @@ import com.codingchili.instance.context.Ticker;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * @author Robin Duda
@@ -17,24 +16,25 @@ import java.util.stream.Collectors;
  * is cleared on every tick.
  */
 public class HashGrid<T extends Entity>  implements Grid<T> {
+    private static final int CELL_SIZE = 256;
     private ConcurrentHashMap<String, T> entities = new ConcurrentHashMap<>();
     private volatile Map<Integer, List<T>> cells = new HashMap<>();
-    private int cellSize = 256;
-    private int gridWidth;
+    private AreaSelector<T> selector;
+    private int width;
 
     /**
      * @param width the width of the grid
      */
     public HashGrid(int width) {
-        this.gridWidth = width;
+        this.width = width;
+        this.selector = new AreaSelector<>(this, CELL_SIZE);
     }
 
     @Override
     public HashGrid<T> update(Ticker ticker) {
         Map<Integer, List<T>> buffer = new HashMap<>();
         entities.values().forEach((entity) -> {
-
-            entity.getVector().cells(cellSize).forEach(id -> {
+            entity.getVector().cells(CELL_SIZE, width).forEach(id -> {
                 List<T> list = buffer.computeIfAbsent(id, key -> new ArrayList<>());
                 list.add(entity);
             });
@@ -58,6 +58,11 @@ public class HashGrid<T extends Entity>  implements Grid<T> {
     }
 
     @Override
+    public Collection<T> get(Integer cell) {
+        return cells.get(cell);
+    }
+
+    @Override
     public T get(String id) {
         T entity = entities.get(id);
         Objects.requireNonNull(entity, String.format("No entity with id '%s' found.", id));
@@ -71,7 +76,7 @@ public class HashGrid<T extends Entity>  implements Grid<T> {
 
     @Override
     public Collection<T> list(int col, int row) {
-        return cells.getOrDefault(col + row * gridWidth, Collections.emptyList());
+        return cells.getOrDefault(col + row * width, Collections.emptyList());
     }
 
     @Override
@@ -81,7 +86,7 @@ public class HashGrid<T extends Entity>  implements Grid<T> {
 
     @Override
     public Collection<T> translate(int x, int y) {
-        return cells.getOrDefault(x / cellSize + (y / cellSize) * gridWidth, Collections.emptyList());
+        return cells.getOrDefault(x / CELL_SIZE + (y / CELL_SIZE) * width, Collections.emptyList());
     }
 
     @Override
@@ -90,57 +95,29 @@ public class HashGrid<T extends Entity>  implements Grid<T> {
         return entities.values();
     }
 
-    /**
-     * Degree spread for cones.
-     */
-    private static final Integer DEGREES = 45;
-
     @Override
     public Set<T> cone(Vector vector) {
-        return radius(vector).stream()
-                .filter(entity -> {
-                    Vector other = entity.getVector();
-                    double deg = Math.toDegrees(
-                            Math.atan2(other.getY() - vector.getY(),
-                                    other.getX() - vector.getX()));
-
-                    deg = (deg + 360) % 360;
-                    return (vector.getDirection() - DEGREES <= deg && vector.getDirection() + 45 >= deg);
-
-                }).collect(Collectors.toSet());
+        return selector.cone(vector);
     }
 
     @Override
     public Set<T> radius(Vector vector) {
-        Set<T> results = new HashSet<>();
-
-        vector.cells(cellSize).forEach(bucket -> {
-
-            cells.getOrDefault(bucket, Collections.emptyList()).forEach(entity -> {
-                // check the distance from the given vector to entities in adjacent buckets.
-                int distance = (int) Math.hypot(
-                        entity.getVector().getX() - vector.getX(),
-                        entity.getVector().getY() - vector.getY());
-
-                // consider large entities.
-                int max = vector.getSize() + entity.getVector().getSize();
-
-                if (distance < max) {
-                    results.add(entity);
-                }
-            });
-        });
-        return results;
+        return selector.radius(vector);
     }
 
     @Override
     public Set<T> adjacent(Vector vector) {
         Set<T> set = new HashSet<>();
 
-        vector.cells(cellSize).forEach(bucket -> {
+        vector.cells(CELL_SIZE, width).forEach(bucket -> {
             set.addAll(cells.getOrDefault(bucket, Collections.emptyList()));
         });
 
         return set;
+    }
+
+    @Override
+    public int width() {
+        return width;
     }
 }

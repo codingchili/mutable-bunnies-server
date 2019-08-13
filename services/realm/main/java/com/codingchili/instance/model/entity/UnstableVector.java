@@ -20,7 +20,7 @@ public class UnstableVector extends Vector {
     }
 
     @Override
-    public Collection<Integer> cells(int cellSize) {
+    public Collection<Integer> cells(int cellSize, int width) {
         /**Set<Integer> cells = new HashSet<>();
         for (int i = 0; i < 4; i++) {
             cells.add(random.nextInt(128));
