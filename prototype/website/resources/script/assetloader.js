@@ -6,7 +6,7 @@ window.AssetLoader = class AssetLoader {
         this.completers = [];
         this.loading = false;
         this.queue = [];
-        this.resources = PIXI.loader.resources;
+        this.resources = PIXI.Loader.shared.resources;
     }
 
     load(callback, assetName) {
@@ -31,7 +31,7 @@ window.AssetLoader = class AssetLoader {
         this.processing = this.queue;
         this.queue = [];
 
-        let loader = PIXI.loader.pre((res, next) => {
+        let loader = PIXI.Loader.shared.pre((res, next) => {
             // load files that has been loaded by the patcher.
             if (patch.files[res.url] !== undefined) {
                 res.xhr = patch.files[res.url].xhr;
@@ -50,7 +50,7 @@ window.AssetLoader = class AssetLoader {
         let isAllLoaded = true;
 
         this.processing.forEach((asset) => {
-            let resource = PIXI.loader.resources[asset.assetName];
+            let resource = PIXI.Loader.shared.resources[asset.assetName];
             if (!resource) {
                 loader.add(asset.assetName);
                 isAllLoaded = false;
@@ -68,9 +68,9 @@ window.AssetLoader = class AssetLoader {
                 let resource;
 
                 if (current.assetName.endsWith('.json')) {
-                    resource = PIXI.loader.resources[current.assetName].data;
+                    resource = PIXI.Loader.shared.resources[current.assetName].data;
                 } else {
-                    resource = new PIXI.Sprite(PIXI.loader.resources[current.assetName].texture);
+                    resource = new PIXI.Sprite(PIXI.Loader.shared.resources[current.assetName].texture);
                 }
                 current.callback(resource);
             }
