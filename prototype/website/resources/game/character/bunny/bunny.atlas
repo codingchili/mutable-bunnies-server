@@ -1,132 +1,132 @@
 
 bunny.png
-size: 512,512
+size: 412,144
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 arm-down
   rotate: false
-  xy: 375, 174
-  size: 58, 104
-  orig: 60, 106
-  offset: 1, 1
+  xy: 321, 2
+  size: 30, 53
+  orig: 30, 53
+  offset: 0, 0
   index: -1
 arm-up
-  rotate: false
-  xy: 312, 170
-  size: 62, 108
-  orig: 64, 109
-  offset: 1, 0
+  rotate: true
+  xy: 353, 2
+  size: 32, 55
+  orig: 32, 55
+  offset: 0, 0
   index: -1
 body
   rotate: false
-  xy: 0, 241
-  size: 217, 267
-  orig: 220, 269
-  offset: 2, 1
+  xy: 2, 7
+  size: 110, 135
+  orig: 110, 135
+  offset: 0, 0
   index: -1
 ear-behind
   rotate: false
-  xy: 75, 34
-  size: 69, 206
-  orig: 71, 208
-  offset: 1, 1
+  xy: 283, 38
+  size: 36, 104
+  orig: 36, 104
+  offset: 0, 0
   index: -1
 ear-front
   rotate: false
-  xy: 0, 19
-  size: 74, 221
-  orig: 76, 223
-  offset: 1, 1
+  xy: 243, 30
+  size: 38, 112
+  orig: 38, 112
+  offset: 0, 0
   index: -1
 eye-behind-eyebrow
   rotate: false
-  xy: 0, 0
-  size: 25, 18
-  orig: 27, 20
-  offset: 1, 1
+  xy: 243, 2
+  size: 14, 10
+  orig: 14, 10
+  offset: 0, 0
   index: -1
 eye-behind-light
   rotate: false
-  xy: 188, 46
-  size: 20, 26
-  orig: 22, 28
-  offset: 1, 1
+  xy: 243, 14
+  size: 11, 14
+  orig: 11, 14
+  offset: 0, 0
   index: -1
 eye-behind-pupil
-  rotate: false
-  xy: 470, 401
-  size: 33, 52
-  orig: 35, 54
-  offset: 1, 1
+  rotate: true
+  xy: 180, 6
+  size: 18, 27
+  orig: 18, 27
+  offset: 0, 0
   index: -1
 eye-behind-white
-  rotate: false
-  xy: 145, 12
-  size: 42, 60
-  orig: 44, 62
-  offset: 1, 1
+  rotate: true
+  xy: 114, 2
+  size: 22, 31
+  orig: 22, 31
+  offset: 0, 0
   index: -1
 eye-front-eyebrow
-  rotate: false
-  xy: 470, 378
-  size: 32, 22
-  orig: 34, 24
-  offset: 1, 1
+  rotate: true
+  xy: 229, 7
+  size: 17, 12
+  orig: 17, 12
+  offset: 0, 0
   index: -1
 eye-front-light
   rotate: false
-  xy: 434, 178
-  size: 33, 29
-  orig: 35, 31
-  offset: 1, 1
+  xy: 209, 8
+  size: 18, 16
+  orig: 18, 16
+  offset: 0, 0
   index: -1
 eye-front-pupil
-  rotate: false
-  xy: 434, 208
-  size: 56, 70
-  orig: 58, 72
-  offset: 1, 1
+  rotate: true
+  xy: 283, 7
+  size: 29, 36
+  orig: 29, 36
+  offset: 0, 0
   index: -1
 eye-front-white
-  rotate: false
-  xy: 228, 68
-  size: 73, 79
-  orig: 75, 81
-  offset: 1, 1
+  rotate: true
+  xy: 365, 36
+  size: 38, 41
+  orig: 38, 41
+  offset: 0, 0
   index: -1
 foot
   rotate: false
-  xy: 145, 73
-  size: 82, 167
-  orig: 84, 169
-  offset: 1, 1
+  xy: 321, 57
+  size: 42, 85
+  orig: 42, 85
+  offset: 0, 0
   index: -1
 head
   rotate: false
-  xy: 218, 279
-  size: 251, 229
-  orig: 253, 231
-  offset: 1, 1
+  xy: 114, 26
+  size: 127, 116
+  orig: 127, 116
+  offset: 0, 0
   index: -1
 mouth
-  rotate: false
-  xy: 470, 454
-  size: 32, 54
-  orig: 36, 62
-  offset: 4, 5
+  rotate: true
+  xy: 147, 6
+  size: 18, 31
+  orig: 18, 31
+  offset: 0, 0
   index: -1
 nose
-  rotate: false
-  xy: 312, 152
-  size: 27, 17
-  orig: 29, 19
-  offset: 1, 1
+  rotate: true
+  xy: 353, 40
+  size: 15, 10
+  orig: 15, 10
+  offset: 0, 0
   index: -1
 tail
   rotate: false
-  xy: 228, 148
-  size: 83, 130
-  orig: 85, 132
-  offset: 1, 1
+  xy: 365, 76
+  size: 43, 66
+  orig: 43, 66
+  offset: 0, 0
   index: -1
