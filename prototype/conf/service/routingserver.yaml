@@ -12,7 +12,7 @@ transport:
       target: "patching.node"
       route: "gameinfo"
   type: "REST"
-  secure: false
+  secure: true
   port: 1443
   timeout: 3000
   maxRequestBytes: 512
@@ -20,10 +20,10 @@ transport:
 external:
   client.authentication.node: ".*"
   client.realmregistry.node: ".*"
-global: "6HM0EB/xQDRF8u/iCs0+dzMPoh59yp5CUx0+2kf/MCTExIgVXfmAv7l4mweXPwN7fzhTd0MKNE5yHnkGhbSu+Q=="
+global: "KV6u7RNJxVuSBOjPsO3sXN3+fBcVDJVUEUHCrurFuNYgVxuhWGCZFc23MNq81gSXy+UQeznZsVq1yxfdkVGJKg=="
 logging:
   properties:
     type: "HmacSHA512"
   domain: "routing.node"
-  key: "BGX2LU6MbLNOq1738pq56TDzFo/jV5BXhrezMJqj4KfmZpK/iaL48DE3gvdkkSnUwLvpDsGAF5unl6/J0kLBiQ=="
-  expiry: 1555847852
+  key: "sVf0TyuBsiy8gMSzWckMAS75Ar9EuDXfC29Em/LyBEoHVkXIphIZXxi53vBnJPRFjGkyUKOI98XdIbQwuLtBng=="
+  expiry: 1566064580
