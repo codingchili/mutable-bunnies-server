@@ -20,6 +20,7 @@ public class RealmMetaData extends Attributes {
     private String lifetime;
     private Boolean trusted;
     private Boolean secure;
+    private Boolean binaryWebsocket;
     private int size;
     private int port;
     private int players = 0;
@@ -29,6 +30,7 @@ public class RealmMetaData extends Attributes {
 
     public RealmMetaData(RegisteredRealm settings) {
         this.setNode(settings.getNode())
+                .setBinaryWebsocket(settings.getBinaryWebsocket())
                 .setResources(settings.getResources())
                 .setVersion(settings.getVersion())
                 .setSize(settings.getSize())
@@ -47,6 +49,15 @@ public class RealmMetaData extends Attributes {
 
     private RealmMetaData setUpdated(long updated) {
         this.updated = updated;
+        return this;
+    }
+
+    public Boolean getBinaryWebsocket() {
+        return binaryWebsocket;
+    }
+
+    public RealmMetaData setBinaryWebsocket(Boolean binaryWebsocket) {
+        this.binaryWebsocket = binaryWebsocket;
         return this;
     }
 

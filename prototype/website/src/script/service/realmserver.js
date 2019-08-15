@@ -5,7 +5,7 @@ class RealmServer {
 
     constructor(realm) {
         this.realm = realm;
-        this.connection = new Connection(realm.host, realm.port, realm.secure);
+        this.connection = new Connection(realm);
     }
 
     connect(callback) {

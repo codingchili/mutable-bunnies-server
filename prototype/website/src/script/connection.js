@@ -1,29 +1,31 @@
 /**
  * handles network communication for websockets.
  */
+const PING_INTERVAL = 12000;
+
 class Connection {
 
-    constructor(host, port, secure) {
+    constructor(realm) {
         this.clientClosed = false;
-        this.binaryWebsocket = false;
-        this.port = port;
-        this.host = host;
+        this.binaryWebsocket = true;
+        this.port = realm.port;
+        this.host = realm.host;
+        this.binaryWebsocket = realm.binaryWebsocket;
         this.handlers = {};
         this.onConnectHandlers = [];
 
-        this.protocol = (secure) ? "wss://" : "ws://";
+        this.protocol = (realm.secure) ? "wss://" : "ws://";
 
         this.ws = new WebSocket(this.protocol + this.host + ":" + this.port + "/");
         this.ws.binaryType = 'arraybuffer';
 
         this.decoder = new TextDecoder("UTF-8");
         this.ws.onmessage = (event) => {
+            let data = (this.binaryWebsocket) ?
+                this.decoder.decode(event.data) :
+                event.data;
 
-            if (this.binaryWebsocket) {
-                event.data = this.decoder.decode(event.data)
-            }
-
-            this.onmessage(event.data);
+            this.onmessage(data);
         };
         this.ws.onopen = () => {
             this.open = true;
@@ -31,6 +33,14 @@ class Connection {
                 this.onConnectHandlers[i]();
             }
             this.onConnectHandlers = [];
+
+            this.ping = setInterval(() => {
+                if (this.open && this.ws.readyState === this.ws.OPEN) {
+                    this.send('ping', {}, () => {});
+                } else {
+                    clearInterval(this.ping);
+                }
+            }, PING_INTERVAL);
         };
         this.ws.onerror = (evt) => {
             this.onerror(evt);
@@ -93,11 +103,15 @@ class Connection {
     }
 
     onerror(event) {
+        this.open = false;
         application.error('Server error: connection closed.', true);
     }
 
     onclose(event) {
-        if (!event.wasClean)
-            application.error('The connection to the ' + this.realm.name + ' server was lost, please retry.');
+        this.open = false;
+        if (!event.wasClean) {
+            application.error(`The connection to the ${this.realm.name} ' +
+                'server was lost, please retry.`);
+        }
     }
 }

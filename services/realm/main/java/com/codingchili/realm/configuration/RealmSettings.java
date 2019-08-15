@@ -66,6 +66,7 @@ public class RealmSettings extends AttributeConfigurable {
      */
     public RegisteredRealm toMetadata() {
         return new RegisteredRealm()
+                .setBinaryWebsocket(listener.isBinaryWebsockets())
                 .setNode(node)
                 .setSize(size)
                 .setHost(host)

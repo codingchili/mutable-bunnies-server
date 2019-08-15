@@ -20,6 +20,7 @@ public class RegisteredRealm implements Storable {
     private String node;
     private Boolean trusted;
     private Boolean secure;
+    private Boolean binaryWebsocket;
     private long updated;
     private int players = 0;
     private int port;
@@ -240,6 +241,21 @@ public class RegisteredRealm implements Storable {
      */
     public RegisteredRealm setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
+        return this;
+    }
+
+    /**
+     * @return true if websockets use the binary protocol.
+     */
+    public Boolean getBinaryWebsocket() {
+        return binaryWebsocket;
+    }
+
+    /**
+     * @param binaryWebsocket true if websockets use the binary protocol.
+     */
+    public RegisteredRealm setBinaryWebsocket(Boolean binaryWebsocket) {
+        this.binaryWebsocket = binaryWebsocket;
         return this;
     }
 
