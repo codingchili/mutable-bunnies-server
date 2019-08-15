@@ -52,12 +52,12 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
 
             settings.getStructures().forEach(entity -> {
                 Point point = entity.getPoint();
-                spawner.structure(entity.getName(), point.getX(), point.getY());
+                spawner.structure(entity.getId(), point.getX(), point.getY());
             });
 
             settings.getNpcs().forEach(npc -> {
                 Point point = npc.getPoint();
-                spawner.npc(npc.getName(), point.getX(), point.getY());
+                spawner.npc(npc.getId(), point.getX(), point.getY());
             });
             future.complete();
         });

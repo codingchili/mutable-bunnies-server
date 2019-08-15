@@ -19,6 +19,7 @@ import com.codingchili.core.storage.Storable;
  */
 public class EntityConfiguration implements Storable {
     private List<LootTableItem> loot = new ArrayList<>();
+    private String id;
     private Model model;
     private String name;
     private String description;
@@ -51,7 +52,7 @@ public class EntityConfiguration implements Storable {
 
     @Override
     public String getId() {
-        return name;
+        return id;
     }
 
     public String getName() {

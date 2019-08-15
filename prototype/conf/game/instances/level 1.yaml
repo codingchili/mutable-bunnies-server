@@ -7,19 +7,23 @@ skybox:
   sky: "#CC0041"
   clouds: "#FFFFFF"
 structures:
-- name: "Redwood"
+- id: "redwood"
   point:
     x: 200
     y: 200
-- name: "Redwood"
+- id: "redwood"
   point:
     x: 275
     y: 364
 npcs:
-- name: "Lilith"
+- id: "lilith"
   point:
     x: 300
     y: 300
+- id: "johnny"
+  point:
+    x: 600
+    y: 800
 spawns:
 - x: 300
   y: 325

@@ -4,52 +4,52 @@ limit: 50
 size: 1920
 texture: "game/map/tiles/stone.png"
 structures:
-- name: "Wyrmwood"
+- id: "wyrmwood"
   point:
     x: 400
     y: 400
-- name: "Wyrmwood"
+- id: "wyrmwood"
   point:
     x: 400
     y: 600
-- name: "Wyrmwood"
+- id: "wyrmwood"
   point:
     x: 800
     y: 500
-- name: "Wyrmwood"
+- id: "wyrmwood"
   point:
     x: 225
     y: 500
-- name: "Redwood"
+- id: "redwood"
   point:
     x: 40
     y: 600
-- name: "Aluminum"
+- id: "aluminum"
   point:
     x: 500
     y: 800
-- name: "Copper"
+- id: "copper"
   point:
     x: 600
     y: 800
-- name: "Gold"
+- id: "gold"
   point:
     x: 700
     y: 800
-- name: "Jade"
+- id: "jade"
   point:
     x: 800
     y: 800
-- name: "Rubies"
+- id: "rubies"
   point:
     x: 900
     y: 800
 npcs:
-- name: "Lilith"
+- id: "lilith"
   point:
     x: 600
     y: 600
-- name: "Gargazar"
+- id: "gargazar"
   point:
     x: 425
     y: 865

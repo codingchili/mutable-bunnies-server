@@ -7,7 +7,7 @@ spawns:
 - x: 300
   y: 325
 npcs:
-- name: "Lilith"
+- id: "lilith"
   point:
     x: 600
     y: 600
