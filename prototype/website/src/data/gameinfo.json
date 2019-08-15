@@ -1,4 +1,0 @@
-{
-  "content": "The chili-core is a lightweight architecture for creating online games with focus on modularity, security and scalability. The backend uses Vert.x and the current frontend is based on HTML5, websockets and Polymer. The purpose of the project is to provide a complete architecture with a bundled game, that may be modified in any way.",
-  "title": "Introduction"
-}

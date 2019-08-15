@@ -45,16 +45,16 @@ window.Canvas = class {
 
     shutdown() {
         try {
+            this.app.destroy(true);
+        } catch (ignored) {
+            //
+        }
+        try {
             window.onresize = () => {
             };
             document.body.removeChild(this.renderer.view);
         } catch (e) {
             //console.log(e);
-        }
-        try {
-            this.app.destroy(true);
-        } catch (ignored) {
-            //
         }
     }
 

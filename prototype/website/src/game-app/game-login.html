@@ -23,6 +23,7 @@
         <style>
             :host {
                 display: block;
+                padding-top: 326px;
             }
 
             .title {
@@ -31,16 +32,20 @@
             }
 
             .container {
-                margin: 326px auto auto;
+                margin: auto;
                 width: 525px;
                 min-width: 326px;
                 display: block;
             }
 
-            @media (max-width: 632px) {
+            @media (max-width: 728px) {
+                :host {
+                    padding-top: 0px;
+                }
+
                 .container {
-                    width: 96%;
-                    margin: 46px auto auto;
+                    width: 100%;
+                    padding-top: 40px;
                 }
             }
 

@@ -13,7 +13,7 @@
     Polymer element for use as a login box.
  -->
 
-<dom-module id="page-gameinfo">
+<dom-module id="page-about">
     <link rel="import" href="../style/theme.css" type="css">
     <link rel="import" href="../style/style.css" type="css">
     <template>
@@ -35,6 +35,7 @@
 
             .text {
                 margin-left: 32px;
+                margin-right: 32px;
                 padding-bottom: 24px;
             }
 
@@ -62,17 +63,17 @@
             </paper-material>
         </div>
 
-        <iron-ajax auto url="src/data/gameinfo.json" handle-as="json" last-response="{{data}}"></iron-ajax>
+        <iron-ajax auto url="src/data/about.json" handle-as="json" last-response="{{data}}"></iron-ajax>
 
     </template>
     <script>
-        class PageGameInfo extends Polymer.Element {
+        class PageAbout extends Polymer.Element {
 
             static get is() {
-                return 'page-gameinfo';
+                return 'page-about';
             }
         }
 
-        window.customElements.define(PageGameInfo.is, PageGameInfo);
+        window.customElements.define(PageAbout.is, PageAbout);
     </script>
 </dom-module>

@@ -33,7 +33,7 @@ window.SpawnHandler = class SpawnHandler {
     _init(texture, size) {
         Loader.load((sprite) => {
             let container = new PIXI.Container();
-            let tiling = new PIXI.extras.TilingSprite(
+            let tiling = new PIXI.TilingSprite(
                 sprite.texture,
                 size,
                 size

@@ -15,10 +15,11 @@
         <style>
             :host {
                 display: block;
+                padding-top: 326px;
             }
 
             .container {
-                margin: 326px auto auto;
+                margin: auto;
                 width: 525px;
                 min-width: 326px;
                 min-height: 274px;
@@ -33,6 +34,16 @@
             .text {
                 padding: 64px;
                 text-align: center;
+            }
+
+            @media (max-width: 728px) {
+                :host {
+                    padding-top: 40px;
+                }
+
+                .container {
+                    width: 100%;
+                }
             }
 
         </style>

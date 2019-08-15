@@ -2,6 +2,8 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 
 <!--
     @author Robin Duda
@@ -20,10 +22,9 @@
                 left: 16px;
             }
 
-            .interface-box {
+            .chat-box {
                 width: 416px;
                 height: 246px;
-                display: block;
             }
 
             .input {
@@ -31,7 +32,7 @@
                 display: block;
                 bottom: 2px;
                 left: 0px;
-                right: 0px;
+                right: 16px;
             }
 
             --paper-input-container-input {
@@ -53,43 +54,62 @@
 
             @media (max-width: 1268px) {
                 :host {
-                    bottom: 0;
-                    left: 0px;
-                    right: 0px;
+                    bottom: 64px;
                     height: 47px;
                     display: block;
+                    left: 50%;
+                    transform: translateX(-50%);
                 }
 
-                .interface-box {
-                    height: 47px;
-                    left: 0px;
-                    right: 0px;
-                    width: unset;
-                }
-
-                .messages {
-                    display: none;
+                .chat-box {
+                    bottom: 216px;
                 }
             }
+
+            .hide-chat {
+                position: absolute;
+                right: 8px;
+                top: 8px;
+            }
+
+            .chat-icon {
+                margin-right: 6px;
+                width: 32px;
+                height: 32px;
+                margin-left: 6px;
+                margin-top: 4px;
+            }
+
         </style>
 
+        <template is="dom-if" if="[[!minimized]]">
+            <paper-material elevation="3" class="interface-box chat-box">
+                <iron-icon on-down="_minimize" class="hide-chat" icon="icons:close"></iron-icon>
 
-        <paper-material elevation="3" class="interface-box">
-            <div class="list">
-                <ul class="messages">
-                    <template is="dom-repeat" items="{{messages}}" as="message">
-                        <li class$="text [[_system(message)]]">
-                            [[_name(message)]][[message.text]]
-                        </li>
-                    </template>
-                </ul>
-            </div>
-            <paper-input value="{{message}}" id="message" class="input" maxlength="60" placeholder="message"
-                         on-keydown="submit"></paper-input>
-        </paper-material>
+                <div class="list">
+                    <ul class="messages">
+                        <template is="dom-repeat" items="{{messages}}" as="message">
+                            <li class$="text [[_system(message)]]">
+                                [[_name(message)]][[message.text]]
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+                <paper-input value="{{message}}" id="message" class="input" maxlength="60" placeholder="message"
+                             on-keydown="submit"></paper-input>
+
+            </paper-material>
+        </template>
+
+        <template is="dom-if" if="[[minimized]]">
+            <paper-material elevation="3" class="interface-box chat-button">
+                <iron-icon class="chat-icon" on-down="_maximize" icon="icons:speaker-notes"></iron-icon>
+            </paper-material>
+        </template>
+
     </template>
     <script>
-        class ChatBox extends Polymer.Element {
+        class ChatBox extends Polymer.GestureEventListeners(Polymer.Element) {
 
             static get is() {
                 return 'chat-box';
@@ -97,23 +117,30 @@
 
             ready() {
                 super.ready();
+
+                this.listeners = false;
+                this.minimized = true;
+
                 this.set("messages", [{
                     system: true,
                     text: `Server version ${patch.version} ${patch.name}.`
                 }]);
+
                 this.set("message", "");
-
-                this.$.message.addEventListener('blur', () => {
-                    input.unblock();
-                }, true);
-
-                this.$.message.addEventListener('focus', () => {
-                    input.block();
-                }, true);
-
                 application.onGameLoaded(() => {
                     this._setHandler();
                 });
+            }
+
+            _minimize() {
+                this.minimized = true;
+            }
+
+            _maximize() {
+                this.minimized = false;
+                setTimeout(() => {
+                    this._focus();
+                }, 1);
             }
 
             _setHandler() {
@@ -123,12 +150,17 @@
 
                 input.onKeysListener({
                     down: () => {
-                        if (this.shadowRoot.activeElement !== this.$.message) {
-                            this.$.message.focus();
-                        }
+                        this._focus();
                     }
                 }, ['Enter']);
 
+            }
+
+            _focus() {
+                let message = this.shadowRoot.querySelector('#message');
+                if (this.shadowRoot.activeElement !== message) {
+                    message.focus();
+                }
             }
 
             _system(message) {
@@ -139,7 +171,7 @@
                 if (this.message.length !== 0) {
                     game.chat.send(this.message);
                     this.set("message", "");
-                    this.$.message.blur();
+                    this.shadowRoot.querySelector('#message').blur();
                 }
             }
 
@@ -161,10 +193,22 @@
             }
 
             submit(event) {
+                if (!this.listeners) {
+                    this.shadowRoot.querySelector('#message').addEventListener('blur', () => {
+                        input.unblock();
+                    }, true);
+
+                    this.shadowRoot.querySelector('#message').addEventListener('focus', () => {
+                        input.block();
+                    }, true);
+
+                    input.block();
+                }
+
                 if (event.key === 'Enter')
                     this.send();
                 if (event.key === 'Escape') {
-                    this.$.message.blur();
+                    this.shadowRoot.querySelector('#message').blur();
                 }
             }
         }

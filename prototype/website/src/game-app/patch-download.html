@@ -22,6 +22,7 @@
         <style>
             :host {
                 display: block;
+                padding-top: 128px;
             }
 
             .container {
@@ -29,15 +30,17 @@
                 width: 80%;
                 max-width: 825px;
                 display: block;
-                margin-top: 128px;
             }
 
             .download-progress {
-                margin-top: 128px;
                 margin-left: auto;
                 margin-right: auto;
                 width: 95%;
                 top: 130px;
+            }
+
+            .total-progress {
+                padding-top: 128px;
             }
 
             paper-progress {
@@ -109,22 +112,31 @@
                 top: 64px;
                 position: relative;
             }
+
+            @media (max-width: 728px) {
+                :host {
+                    padding-top: 40px;
+                }
+
+                .container {
+                    width: 100%;
+                }
+            }
+
         </style>
 
-        <paper-material class="container center-box" elevation="3">
+        <paper-material class="container center-box noselect" elevation="3">
 
             <span class="patch-name">[[patch.name]]</span>
             <span class="patch-version">[[patch.version]]</span>
 
             <template is="dom-if" if="[[downloading]]">
+
                 <paper-progress class="download-progress transiting" min="0" max="[[patch.size]]"
-                                value="[[patch.transferred]]">
-                </paper-progress>
+                                value="[[patch.transferred]]"></paper-progress>
 
-                <paper-progress class="download-progress transiting" min="0" max="[[patch.file.size]]"
-                                value="[[patch.downloaded]]">
-
-                </paper-progress>
+                <paper-progress class="download-progress total-progress transiting" min="0" max="[[patch.file.size]]"
+                                value="[[patch.downloaded]]"></paper-progress>
 
                 <span class="patch-count">[[patch.current]]/[[patch.count]]</span>
                 <span class="patch-file">[[fileName]]</span>

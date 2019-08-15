@@ -12,9 +12,7 @@ body, html {
 }
 
 body {
-    background-image: url("/resources/gui/background/active.png");
-    background-repeat: repeat-x;
-    background-attachment: fixed;
+
 }
 
 paper-input {

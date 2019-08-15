@@ -32,9 +32,7 @@ window.Inventory = class Inventory {
     }
 
     onInventoryUpdated(callback) {
-        console.log('registering callback inventory');
         this.callbacks.push(callback);
-        console.log('registered callback inventory');
     }
 
     requestLootList(entity) {

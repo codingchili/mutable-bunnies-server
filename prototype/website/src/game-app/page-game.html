@@ -1,0 +1,120 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+
+<!--
+    @author Robin Duda
+    Polymer element for use as a login box.
+ -->
+
+<dom-module id="page-game">
+    <link rel="import" href="../style/theme.css" type="css">
+    <link rel="import" href="../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+                width: 100%;
+            }
+
+            .title {
+                text-align: left;
+                padding-top: 16px;
+            }
+
+            .title {
+                padding-top: 16px;
+                margin-left: 16px;
+            }
+
+            .text {
+                margin-left: 32px;
+                padding-bottom: 24px;
+            }
+
+            .item {
+                margin-bottom: 32px;
+                margin-top: 32px;
+            }
+
+            #demo-video {
+                text-align: center;
+                margin: 32px;
+            }
+
+            .gif {
+                display: block;
+                margin: auto;
+            }
+
+        </style>
+
+        <div class="container">
+            <paper-material elevation="0">
+
+                <paper-material elevation="1" class="item">
+
+                    <!--<div id="demo-video">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/WETENsMuUKQ"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                    </div>-->
+
+                    <div class="text">
+                        <p>
+                            Mutable Bunnies is a two-dimensional online role playing game that
+                            spans multiple dimensions, planes, transcends species and beliefs.
+                        </p>
+
+                        <img class="gif" src="src/images/bunbun.gif">
+
+                        <p>
+                            Bunnies have been chosen for an extraordinary quest, a quest that
+                            will change life as it's currently known. The salvation of species
+                            and the end of others, is there a bigger plot? Will you bring
+                            the end of the world.. or save it? It's a matter of perspective, of which
+                            there are many throughout the planes..
+                        </p>
+
+                        <img class="gif" src="src/images/squito.gif">
+
+                        <p>
+                            Take on your worst bunny-fears and face all manners of scary creatures
+                            from alternate dimensions. Grow stronger through your adventures,
+                            learn new skills and meet unexpected friends. The multiverse is in your
+                            paws bunbun.
+                        </p>
+
+                        <!-- penguin gif? -->
+
+
+                        <!--<h4>Screenshots</h4>-->
+                        <!-- 3x2 in game screenshots -->
+
+                    </div>
+                </paper-material>
+
+            </paper-material>
+        </div>
+
+        <iron-ajax auto url="src/data/about.json" handle-as="json" last-response="{{data}}"></iron-ajax>
+
+    </template>
+    <script>
+        class PageGame extends Polymer.Element {
+
+            static get is() {
+                return 'page-game';
+            }
+        }
+
+        window.customElements.define(PageGame.is, PageGame);
+    </script>
+</dom-module>
