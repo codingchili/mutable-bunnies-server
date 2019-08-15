@@ -4,7 +4,7 @@ description: "Restores the balance of all things nature with their staff, aids t
 theme: "#48fd06"
 model:
   graphics: "game/character/bunny/bunny"
-  skin: "white"
+  skin: "white-grey"
   scale: 0.16
 weapons:
   - "staff"
