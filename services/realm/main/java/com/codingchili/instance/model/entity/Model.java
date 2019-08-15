@@ -10,6 +10,7 @@ public class Model {
     private String skin;
     private float scale = 1.0f;
     private boolean blocking = false;
+    private boolean revertX = false;
     private Hitbox hitbox = new Hitbox();
     private int layer = 5;
 
@@ -77,5 +78,13 @@ public class Model {
 
     public void setSkin(String skin) {
         this.skin = skin;
+    }
+
+    public boolean isRevertX() {
+        return revertX;
+    }
+
+    public void setRevertX(boolean revertX) {
+        this.revertX = revertX;
     }
 }

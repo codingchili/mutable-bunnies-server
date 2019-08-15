@@ -158,9 +158,9 @@ window.MovementHandler = class MovementHandler {
             }
 
             if (event.vector.direction > PI || event.vector.direction < 0) {
-                entity.scale.x = -entity.scale.y;
+                entity.scale.x = (entity.model.revertX) ? entity.scale.y : -entity.scale.y;
             } else if (event.vector.direction > 0 && event.vector.direction < PI) {
-                entity.scale.x = entity.scale.y;
+                entity.scale.x = (entity.model.revertX) ? -entity.scale.y : entity.scale.y;
             }
 
             if (application.development.hardResetXY) {
