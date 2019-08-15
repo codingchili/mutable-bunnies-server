@@ -1,0 +1,16 @@
+---
+name: "Johnny"
+description: "A peddler of some sorts."
+dialog: "johnny"
+model:
+  graphics: "game/character/pengling/pengling"
+  scale: 0.068
+  blocking: false
+  revertX: true
+  hitbox:
+    type: rectangular
+stats:
+  level: 5
+  health: 400
+  maxhealth: 400
+  movement: 210

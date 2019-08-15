@@ -1,0 +1,25 @@
+---
+start: "welcome"
+options:
+  welcome:
+    text: "Hello, ${player.name}. I need your help.."
+    next:
+      - id: "help"
+        text: "How come?"
+      - id: "later"
+        text: "Not right now."
+  later:
+    text: ~
+  water:
+    text: "Oh, thank you! Missy will be most pleased!"
+  slayer:
+    text: "Ah, we got a violent one over here."
+  help:
+    text: "My little friend is so thirsty, the big bad squitos have monopolized the water fountain. She just needs a bit of water please."
+    next:
+      - id: "slayer"
+        text: "I'll slay those foul beasts."
+      - id: "water"
+        text: "I'll bring you some water."
+      - id: "later"
+        text: "Maybe later."
