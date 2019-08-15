@@ -6364,7 +6364,6 @@ var pixi_spine;
             });
             Object.defineProperty(TextureRegion.prototype, "offsetY", {
                 get: function () {
-                    console.warn("Deprecation Warning: @Hackerham: I guess, if you are using PIXI-SPINE ATLAS region.offsetY, you want a texture, right? Use region.texture from now on.");
                     return this.spineOffsetY;
                 },
                 enumerable: true,
