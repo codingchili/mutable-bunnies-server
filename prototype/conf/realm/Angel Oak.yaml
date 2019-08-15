@@ -1,13 +1,13 @@
 ---
 node: "Angel Oak"
-host: "192.168.10.183"
+host: "localhost"
 version: 1
 size: 5000
 resources: "/resources/"
 attributes:
   drop: 1
   lifetime: "weekly"
-  description: "Stable realm, PvP Aggressive."
+  description: "Development & Demo Server. Characters may be deleted at any time."
   leveling: 1
   type: "PvP"
 availableClasses:
@@ -29,7 +29,7 @@ onPlayerJoin:
       source.instance = 'level 1';
     }
 listener:
-  secure: false
+  secure: true
   port: 9301
   timeout: 3000
   binaryWebsockets: false
@@ -37,13 +37,13 @@ authentication:
   properties:
     type: "HmacSHA512"
   domain: "Angel Oak.node"
-  key: "DdrDla68cP0ra41lvwLBABr1pidhupfEn+GDEYcfI1LVUc3pUNpv7cLukLSGs8j3wvZLur3PwtTkI2D8A3c52g=="
-  expiry: 1565458304
-secret: "fY8BJbzvoK69NYNi8bupBXNMYtoNRx0oP6lSp/GydPP/kOvZTltyBEhWekCWk0SqV51ONmbN+0HIUxQsJ/snxg=="
-global: "lesA9AwprsGZTnNhsI6oEgv7TnHai9JWxIwe1OR4T0u0mrA/zn2JcRnwc9W6LiznFi0CfU2mYeb9HZQnnEY0Ww=="
+  key: "gPJqmxFNgKI9vQHVDVlbR0sPcChZXN86dSjXJsVwhKf2R7gD7xFfWow/ITwcIqX5Q4Br98/eUL7CLr6CrSvaxQ=="
+  expiry: 1566064580
+secret: "zVwYozShxx9Y5KtNNGBwRLn8vzfRiHzlHhveJJezn7IT1Br+fAVC266jLMpax0jRT8pCfbhzGZpGupZ6YMXFxQ=="
+global: "KV6u7RNJxVuSBOjPsO3sXN3+fBcVDJVUEUHCrurFuNYgVxuhWGCZFc23MNq81gSXy+UQeznZsVq1yxfdkVGJKg=="
 logging:
   properties:
     type: "HmacSHA512"
   domain: "Angel Oak.node"
-  key: "XKnzx1Q/cDKaj4L/EaAMv5bLJyQZM3dNwwk3x3xpXRW8Zl4d6F29sM0zRVlUndwLauzy2YtUSQ/QorHzaxC1IQ=="
-  expiry: 1565458304
+  key: "aspEjEWOx17skFfIlhHvCviEqyyWr4vvGP6gOBrIr/ZRjlREVauSdg/U94TkKGW/iXWaglxuqHANYy68cVkGFw=="
+  expiry: 1566064580
