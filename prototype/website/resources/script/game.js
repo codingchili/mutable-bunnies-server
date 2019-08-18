@@ -149,17 +149,19 @@ window.Game = class Game extends Canvas {
         this.counters = this.counters || 0;
 
         let counter = new PIXI.Text(text, this.texts.style());
-        counter.y = 16 * (this.counters++) + 128;
-        counter.x = 16;
+        counter.id = this.counters++;
+        counter.y = 16 * counter.id + 16;
         counter.layer = 100;
+        counter.text = text();
 
         let update = setInterval(() => {
             if (game.isPlaying) {
                 counter.text = text();
+                counter.x = this._width() - 128;
             } else {
                 clearInterval(update);
             }
-        }, 1000);
+        }, 500);
         this.root.addChild(counter);
     }
 };
