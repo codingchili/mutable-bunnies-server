@@ -12,7 +12,7 @@ class Application {
             selectFirstRealm: true,
             selectFirstCharacter: true,
             clearCache: true,
-            rightClick: true,
+            rightClick: false,
             logEvents: false,
             hardResetXY: true,
             metrics: true
