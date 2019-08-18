@@ -21,7 +21,7 @@ public class Vector {
     private static final float ACCELERATION_TIME = 0.84f;
     private transient Collection<Integer> buckets = new HashSet<>();
     private transient float acceleration = ACCELERATION_BASE;
-    private transient boolean dirty = false;
+    private transient boolean dirty = true;
     private transient int index = -1;
     private float velocity = 0f;
     private float direction = 0.0f;

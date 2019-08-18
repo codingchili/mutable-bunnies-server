@@ -19,7 +19,7 @@ import com.codingchili.core.storage.Storable;
  * if the filter of a referenced option allows it.
  */
 public class Dialog implements Storable {
-    private Map<String, Option> options = new HashMap<>();
+    private Map<String, Option> options = new LinkedHashMap<>();
     private Scripted enabled;
     private String id;
     private String start;

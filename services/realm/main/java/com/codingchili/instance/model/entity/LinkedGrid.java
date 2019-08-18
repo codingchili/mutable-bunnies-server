@@ -72,7 +72,7 @@ public class LinkedGrid<T extends Entity> implements Grid<T> {
     @Override
     public Grid<T> add(T entity) {
         all.add(entity);
-        reverse.put(entity.getId(), new GridEntry<>(entity, cells(entity)));
+        reverse.put(entity.getId(), new GridEntry<>(entity, Collections.emptyList()));
         return this;
     }
 
@@ -83,7 +83,7 @@ public class LinkedGrid<T extends Entity> implements Grid<T> {
         if (entry != null) {
             all.remove(entry.entity);
 
-            for (Integer cell: entry.cells) {
+            for (Integer cell : entry.cells) {
                 this.get(cell).remove(entry.entity);
             }
         }
@@ -150,8 +150,8 @@ public class LinkedGrid<T extends Entity> implements Grid<T> {
     }
 
     private static class GridEntry<T extends Entity> {
-        private T entity;
         private Collection<Integer> cells;
+        private T entity;
 
         /**
          * @param entity the entity that is stored as an entry.
