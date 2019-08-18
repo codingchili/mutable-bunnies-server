@@ -88,7 +88,7 @@ window.SpawnHandler = class SpawnHandler {
             this._onPlayerSpawnHook(sprite);
             this._onDialogSupportedHook(sprite);
             this._onLootableHook(sprite);
-            this._onDescriptionHook(sprite);
+            this._onContextMenuHook(sprite);
 
             if (entity.account) {
                 game.chat.add({text: `${entity.name} has joined.`, system: true});
@@ -157,19 +157,18 @@ window.SpawnHandler = class SpawnHandler {
         }
     }
 
-    _onDescriptionHook(entity) {
-        let description = entity.attributes['description'] || entity.name;
-
-        if (description) {
-            entity.interactive = true;
-            entity.on('pointerdown', (e) => {
-                input.ifRightMouse(() => {
-                    if (e.data.originalEvent.altKey) {
-                        game.texts.chat(entity, {text: description});
-                    }
-                });
+    _onContextMenuHook(entity) {
+        entity.interactive = true;
+        entity.on('pointerdown', (e) => {
+            input.ifRightMouse(() => {
+                if (e.data.originalEvent.altKey) {
+                    application.publish('context-menu', {
+                        pointer: e,
+                        target: entity
+                    });
+                }
             });
-        }
+        });
     }
 
     _onDialogSupportedHook(entity) {
@@ -216,7 +215,7 @@ window.SpawnHandler = class SpawnHandler {
         } else {
             sound.play("drop_dead.mp3");
             if (target.account) {
-                game.chat.add({text: `${target.name} was undone by ${source.name}.`, source: target.id, system: true});
+                game.chat.add({text: `${target.name} was undone by ${source.name}.`, system: true});
             }
         }
     }
