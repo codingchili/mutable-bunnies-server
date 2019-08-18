@@ -1,0 +1,133 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+
+<!--
+    @author Robin Duda
+    Game context menu.
+ -->
+
+<dom-module id="context-menu">
+    <link rel="import" href="../../style/theme.css" type="css">
+    <link rel="import" href="../../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+                display: none;
+                position: absolute;
+            }
+
+            span {
+                padding: 0.28rem;
+            }
+
+            .item {
+                padding: 8px;
+                cursor: pointer;
+                font-size: smaller;
+            }
+
+            .item:hover {
+                /*background-color: #323232;*/
+                color: var(--accent-color);
+            }
+        </style>
+
+        <paper-material elevation="3" class="interface-box noselect">
+
+            <template is="dom-if" if="[[_isPlayer(target)]]">
+                <paper-material class="item">
+                    Party
+                    <paper-ripple></paper-ripple>
+                </paper-material>
+            </template>
+
+            <template is="dom-if" if="[[_hasDialog(target)]]">
+                <paper-material on-click="_dialog" class="item">
+                    Talk
+                    <paper-ripple></paper-ripple>
+                </paper-material>
+            </template>
+
+            <paper-material on-click="_describe" class="item">
+                Examine
+                <paper-ripple></paper-ripple>
+            </paper-material>
+
+            <template is="dom-if" if="[[_isPlayer(target)]]">
+                <paper-material class="item">
+                    Trade
+                    <paper-ripple></paper-ripple>
+                </paper-material>
+            </template>
+
+            <paper-material on-click="_hide" class="item">
+                Cancel
+                <paper-ripple></paper-ripple>
+            </paper-material>
+        </paper-material>
+
+    </template>
+    <script>
+        class ContextMenu extends Polymer.GestureEventListeners(Polymer.Element) {
+
+            static get is() {
+                return 'context-menu';
+            }
+
+            ready() {
+                super.ready();
+
+                application.subscribe('context-menu', event => {
+                    this.target = event.target;
+
+                    /* set menu options here. */
+
+                    this.style.top = `${event.pointer.data.global.y}px`;
+                    this.style.left = `${event.pointer.data.global.x}px`;
+                    this._show();
+                });
+            }
+
+            _isPlayer() {
+                return this.target.account && (game.player.account !== this.target.account);
+            }
+
+            _hasDialog() {
+                return this.target.interactions.includes('dialog');
+            }
+
+            _describe() {
+                let description = this.target.attributes['description'] || this._read(this.target);
+                game.texts.chat(this.target, {text: description});
+                this._hide();
+            }
+
+            _read(target) {
+                if (target.stats && target.stats['level']) {
+                    return `${target.name} lv.${target.stats['level']}`
+                } else {
+                    return target.name;
+                }
+            }
+
+            _dialog() {
+                game.dialogs.start(this.target.id);
+                this._hide();
+            }
+
+            _show() {
+                this.style.display = 'block';
+                input.block();
+            }
+
+            _hide() {
+                this.style.display = 'none';
+                input.unblock();
+            }
+        }
+
+        window.customElements.define(ContextMenu.is, ContextMenu);
+    </script>
+</dom-module>
