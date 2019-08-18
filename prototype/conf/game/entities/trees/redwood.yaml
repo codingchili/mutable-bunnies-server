@@ -1,6 +1,6 @@
 ---
 name: "Redwood"
-description: "Wood. Common wood."
+description: "Wood. Common wood.\nMaybe if you knew how.. you could cut it down."
 model:
   graphics: "game/map/trees/cyan.png"
   scale: 1.0
