@@ -1,10 +1,16 @@
 window.Canvas = class {
 
     constructor() {
+        PIXI.settings.TARGET_FPMS = 0.12;
+        //PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+        PIXI.settings.RESOLUTION = window.devicePixelRatio;
+        PIXI.settings.ANISOTROPIC_LEVEL = 16;
+
         this.app = new PIXI.Application({
             antialias: true,
+            forceFXAA: true,
             transparent: false,
-            resolution: 1,
+            resolution: window.devicePixelRatio,
             backgroundColor: 0x0
         });
 
@@ -22,9 +28,6 @@ window.Canvas = class {
         }
         this.renderer.view.id = 'canvas';
         this.renderer.view.style.animation = "fadein 0.4s ease-in 1";
-
-        PIXI.settings.TARGET_FPMS = 0.12;
-        //PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
         window.onresize = () => this.resize();
         this.resize();
