@@ -27,6 +27,8 @@
                 max-width: 428px;
                 min-height: 112px;
                 z-index: 999;
+                /* super important property that fixes a 1px jump on hover. */
+                backface-visibility: hidden;
             }
 
             span {
@@ -80,8 +82,8 @@
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: left;
-                padding: 24px;
                 min-height: 48px;
+                padding: 8px 22px;
             }
 
             .slot_row {
@@ -100,7 +102,7 @@
                 right: 8px;
                 display: flex;
                 justify-content: flex-end;
-                bottom: 108px;
+                top: 216px;
             }
 
             .currency-text {
@@ -126,17 +128,23 @@
                 <span class="dialog-entity">[[name]]'s inventory</span>
 
                 <template is="dom-if" if="[[name]]">
+
                     <div class="slots">
                         <div class="slot_row">
                             <div class="spacer"></div>
                             <inventory-item on-down="_unequip" item="[[_slot('head', inventory)]]"></inventory-item>
-                            <inventory-item on-down="_unequip" item="[[_slot('cloak', inventory)]]"></inventory-item>
+                            <inventory-item on-down="_unequip"
+                                            item="[[_slot('cloak', inventory)]]"></inventory-item>
                         </div>
 
+
                         <div class="slot_row">
-                            <inventory-item on-down="_unequip" item="[[_slot('offhand', inventory)]]"></inventory-item>
-                            <inventory-item on-down="_unequip" item="[[_slot('chest', inventory)]]"></inventory-item>
-                            <inventory-item on-down="_unequip" item="[[_slot('weapon', inventory)]]"></inventory-item>
+                            <inventory-item on-down="_unequip"
+                                            item="[[_slot('offhand', inventory)]]"></inventory-item>
+                            <inventory-item on-down="_unequip"
+                                            item="[[_slot('chest', inventory)]]"></inventory-item>
+                            <inventory-item on-down="_unequip"
+                                            item="[[_slot('weapon', inventory)]]"></inventory-item>
                         </div>
 
                         <div class="slot_row">
@@ -198,19 +206,17 @@
                 application.onGameLoaded((game) => {
                     this._clear();
 
-                    input.onKeysListener({
-                        down: () => {
-                            if (this._open()) {
-                                this._hide();
-                            } else {
-                                this._show();
-                            }
-                        }
-                    }, 'i');
-
                     game.inventory.onInventoryUpdated(inventory => {
                         this.inventory = inventory;
                     });
+                });
+
+                application.subscribe('show-inventory', () => {
+                    if (this._open()) {
+                        this._hide();
+                    } else {
+                        this._show();
+                    }
                 });
 
                 application.onRealmLoaded(realm => {

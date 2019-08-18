@@ -13,6 +13,12 @@ window.Inventory = class Inventory {
             });
         });
 
+        input.onKeysListener({
+            down: () => {
+                application.publish('show-inventory');
+            }
+        }, 'i');
+
         server.connection.setHandler('equip_item', (event) => {
             // use this to update rendered equipment.
         });

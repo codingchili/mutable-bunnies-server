@@ -2,6 +2,7 @@
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
 
 <!--
     @author Robin Duda
@@ -19,18 +20,105 @@
             .interface-box {
                 cursor: pointer;
                 position: absolute;
-                top: 16px;
+                top: 50%;
+                transform: translateY(-50%);
                 right: 16px;
                 display: block;
-                height: 28px;
                 padding-left: 8px;
                 padding-right: 8px;
                 z-index: 500;
             }
+
+            .menu-icon {
+                display: block;
+                max-height: 32px;
+                max-width: 32px;
+                margin-top: 6px;
+                margin-bottom: 6px;
+                fill: #fff;
+            }
+
+            .menu-icon-disabled {
+                fill: #646464;
+            }
+
+            .menu-icon:hover {
+                fill: var(--accent-color);
+            }
+
+            .menu-icon-disabled:hover {
+                fill: #646464;
+            }
+
         </style>
 
-        <paper-material elevation="3" class="interface-box" on-down="_characters">
-            <iron-icon icon="icons:close" class="menu-icon"></iron-icon>
+        <!-- svg icons are inlined to allow changing the fill color on hover. -->
+        <paper-material elevation="3" class="interface-box">
+
+            <template is="dom-if" if="{{_loaded(realm)}}">
+                <div>
+                    <svg on-down="_inventory" class="menu-icon">
+                        <use href$="[[realm.resources]]gui/menu/inventory.svg#root"></use>
+                    </svg>
+                    <paper-tooltip animation-delay="0" class="tooltip" position="left">
+                        <span class="description">Inventory [H]</span>
+                    </paper-tooltip>
+                </div>
+
+                <div>
+                    <svg class="menu-icon menu-icon-disabled">
+                        <use href$="[[realm.resources]]gui/menu/spell-book.svg#root"></use>
+                    </svg>
+                    <paper-tooltip animation-delay="0" class="tooltip" position="left">
+                        <span class="description">Spells & Abilities [N]</span>
+                    </paper-tooltip>
+                </div>
+
+                <div>
+                    <svg class="menu-icon menu-icon-disabled">
+                        <use href$="[[realm.resources]]gui/menu/skills.svg#root"></use>
+                    </svg>
+                    <paper-tooltip animation-delay="0" class="tooltip" position="left">
+                        <span class="description">Skills [M]</span>
+                    </paper-tooltip>
+                </div>
+
+                <div>
+                    <svg class="menu-icon menu-icon-disabled">
+                        <use href$="[[realm.resources]]gui/menu/quests.svg#root"></use>
+                    </svg>
+                    <paper-tooltip animation-delay="0" class="tooltip" position="left">
+                        <span class="description">Quests [K]</span>
+                    </paper-tooltip>
+                </div>
+
+                <div>
+                    <svg class="menu-icon menu-icon-disabled">
+                        <use href$="[[realm.resources]]gui/menu/friends.svg#root"></use>
+                    </svg>
+                    <paper-tooltip animation-delay="0" class="tooltip" position="left">
+                        <span class="description">Friends [J]</span>
+                    </paper-tooltip>
+                </div>
+
+                <div>
+                    <svg on-down="_settings" class="menu-icon menu-icon-disabled">
+                        <use href$="[[realm.resources]]gui/menu/settings.svg#root"></use>
+                    </svg>
+                    <paper-tooltip animation-delay="0" class="tooltip" position="left">
+                        <span class="description">Settings [P]</span>
+                    </paper-tooltip>
+                </div>
+
+                <div>
+                    <svg on-down="_characters" class="menu-icon">
+                        <use href$="[[realm.resources]]gui/menu/leave.svg#root"></use>
+                    </svg>
+                    <paper-tooltip animation-delay="0" class="tooltip" position="left">
+                        <span class="description">Leave [L]</span>
+                    </paper-tooltip>
+                </div>
+            </template>
         </paper-material>
 
     </template>
@@ -43,6 +131,21 @@
 
             constructor() {
                 super();
+
+                application.onRealmLoaded(realm => {
+                    this.realm = realm;
+                });
+            }
+
+            _loaded() {
+                return (typeof this.realm !== 'undefined');
+            }
+
+            _inventory() {
+                application.publish('show-inventory');
+            }
+
+            _settings() {
             }
 
             _characters(e) {
