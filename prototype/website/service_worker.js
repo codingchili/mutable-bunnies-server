@@ -28,7 +28,7 @@ self.addEventListener('install', (event) => {
     );
 });
 
-self.addEventListener('activate', () => {
+self.addEventListener('activate', event => {
     console.log('service worker activated on ' + CACHE_NAME);
 });
 

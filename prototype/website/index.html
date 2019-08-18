@@ -31,6 +31,30 @@
     <script>
         Polymer.passiveTouchGestures = true;
 
+        function send_message_to_sw(msg) {
+            return new Promise((resolve, reject) => {
+                let channel = new MessageChannel();
+
+                channel.port1.onmessage = (event) => {
+                    if (event.data.error) {
+                        reject(event.data.error);
+                    } else {
+                        resolve(event.data);
+                    }
+                };
+                if (navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage(msg, [channel.port2]);
+                } else {
+                    // failed to retrieve controller, assume online.
+                    resolve({
+                        data: {
+                            offline: false
+                        }
+                    });
+                }
+            });
+        }
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service_worker.js')
@@ -40,9 +64,21 @@
                         console.log('ServiceWorker registration failed: ', err);
                     });
             });
+
+            navigator.serviceWorker.ready.then(() => {
+                send_message_to_sw("is offline?").then(data => {
+                    application.offline = data.offline;
+                    console.log(`offline=${application.offline}`);
+                    application.publish('offline', data.offline);
+
+                    if (application.offline) {
+                        application.view("offline-view");
+                    }
+                });
+            });
         }
 
-        window.addEventListener('beforeinstallprompt', function (e) {
+        window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             window.pwa = e;
             application.publish('installed', !window.pwa);
@@ -59,32 +95,6 @@
                     });
             }
         });
-
-        function send_message_to_sw(msg) {
-            return new Promise(function (resolve, reject) {
-                let channel = new MessageChannel();
-
-                channel.port1.onmessage = function (event) {
-                    if (event.data.error) {
-                        reject(event.data.error);
-                    } else {
-                        resolve(event.data);
-                    }
-                };
-                navigator.serviceWorker.controller.postMessage(msg, [channel.port2]);
-            });
-        }
-
-        send_message_to_sw("is offline?").then(data => {
-            application.offline = data.offline;
-            console.log(`offline=${application.offline}`);
-            application.publish('offline', data.offline);
-
-            if (application.offline) {
-                application.view("offline-view");
-            }
-        });
-
     </script>
 </head>
 <body oncontextmenu="return application.development.rightClick;">
