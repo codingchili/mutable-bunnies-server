@@ -292,6 +292,14 @@ window.Spells = class Spells {
         let target = game.lookup(event.targetId);
 
         if (this._statUpdated(target, event, 'level')) {
+
+            if (target.isPlayer) {
+                application.publish('notification', {
+                    text: `Congratulations! You've reached level ${event.stats['level']}.`,
+                    duration: 4500
+                });
+            }
+
             game.texts.levelUp(target);
             game.chat.add({text: `${target.name} reached level ${event.stats['level']}!`, system: true});
         } else {

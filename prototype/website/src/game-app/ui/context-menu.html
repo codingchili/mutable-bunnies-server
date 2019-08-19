@@ -37,7 +37,7 @@
         <paper-material elevation="3" class="interface-box noselect">
 
             <template is="dom-if" if="[[_isPlayer(target)]]">
-                <paper-material class="item">
+                <paper-material on-click="_party" class="item">
                     Party
                     <paper-ripple></paper-ripple>
                 </paper-material>
@@ -56,7 +56,7 @@
             </paper-material>
 
             <template is="dom-if" if="[[_isPlayer(target)]]">
-                <paper-material class="item">
+                <paper-material on-click="_trade" class="item">
                     Trade
                     <paper-ripple></paper-ripple>
                 </paper-material>
@@ -88,6 +88,10 @@
                     this.style.left = `${event.pointer.data.global.x}px`;
                     this._show();
                 });
+
+                application.onRealmLoaded(realm => {
+                    this.realm = realm;
+                });
             }
 
             _isPlayer() {
@@ -100,13 +104,22 @@
 
             _describe() {
                 let description = this.target.attributes['description'] || this._read(this.target);
-                game.texts.chat(this.target, {text: description});
+                //game.texts.chat(this.target, {text: description});
+                application.publish('notification', description);
                 this._hide();
+            }
+
+            _party() {
+                application.publish('notification', 'Partying with other players is not yet implemented.');
+            }
+
+            _trade() {
+                application.publish('notification', 'Trading with other players is not yet implemented.');
             }
 
             _read(target) {
                 if (target.stats && target.stats['level']) {
-                    return `${target.name} lv.${target.stats['level']}`
+                    return `${target.classId ? this.realm.classes.get(target.classId).name + ' ' : ''}${target.name} lv.${target.stats['level']}`
                 } else {
                     return target.name;
                 }

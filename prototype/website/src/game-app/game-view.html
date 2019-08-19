@@ -1,5 +1,4 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="./mega-loader.html">
 <link rel="import" href="./ui/chat-box.html">
 <link rel="import" href="./ui/player-status.html">
@@ -10,6 +9,7 @@
 <link rel="import" href="./ui/loot-dialog.html">
 <link rel="import" href="./ui/player-inventory.html">
 <link rel="import" href="./ui/context-menu.html">
+<link rel="import" href="./ui/notification-toaster.html">
 
 <!--
     @author Robin Duda
@@ -27,13 +27,6 @@
                 height: 100%;
                 margin-bottom: -3px;
                 padding: 0;
-            }
-
-            #canvas {
-                animation: fadein 0.6s ease 1;
-                position: absolute;
-                width: 100%;
-                height: 100%;
             }
 
             @keyframes fadein {
@@ -57,9 +50,10 @@
             #interface * {
                 pointer-events: all;
             }
+
         </style>
         <div id="interface">
-
+            <notification-toaster></notification-toaster>
             <template is="dom-if" if="[[!loading]]">
                 <player-status></player-status>
                 <game-dialog></game-dialog>
@@ -72,8 +66,6 @@
                 <context-menu></context-menu>
             </template>
         </div>
-
-        <!--<canvas id="canvas"></canvas>-->
 
     </template>
     <script>

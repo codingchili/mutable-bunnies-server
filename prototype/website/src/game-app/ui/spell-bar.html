@@ -56,7 +56,7 @@
                 top: -36px;
                 display: inline;
                 width: 100%;
-                animation: 0.6s fadein ease 1;
+                animation: 0.72s fadein ease 1;
             }
 
             #casting-progress-bar {
@@ -263,7 +263,9 @@
                                     '--paper-progress-transition-duration',
                                     (ms / 1000).toFixed(1) + 's'
                                 );
-                                setTimeout(() => {bar.value = 100;}, 96);
+                                setTimeout(() => {
+                                    bar.value = 100;
+                                }, 96);
                             }, 96);
 
                             setTimeout(() => {
@@ -359,21 +361,20 @@
                             }, spell.casttime * 1000);
                         });
                     } else {
-                        let player = game.lookup(application.character.id);
+                        let spell = game.spells.getById(casted.spellId);
 
                         if (casted.result === 'UNABLE') {
-                            game.texts.chat(player, {text: "unable to cast spell."});
+                            application.publish('notification', `unable to cast ${spell.name}.`);
                         }
 
                         if (casted.result === 'COOLDOWN') {
-                            game.texts.chat(player, {text: "spell is on cooldown."});
+                            application.publish('notification', `${spell.name} is on cooldown.`);
                         }
 
                         if (casted.result === 'UNKNOWN_SPELL') {
-                            game.texts.chat(player, {text: "unknown spell."});
+                            application.publish('notification', `unknown spell ${casted.spellId}.`);
                         }
                     }
-
                 }, spell.id, {});
             }
 

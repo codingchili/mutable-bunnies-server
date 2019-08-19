@@ -1,0 +1,108 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+
+<!--
+    @author Robin Duda
+    Notification area view.
+ -->
+
+<dom-module id="notification-toaster">
+    <link rel="import" href="../../style/theme.css" type="css">
+    <link rel="import" href="../../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+            }
+
+            #toast {
+                position: absolute;
+                display: none;
+                z-index: 1001;
+
+                top: 32px;
+                max-width: 364px;
+                left: 50%;
+                transform: translateX(-50%);
+
+                padding: 16px 24px;
+                font-size: 14px;
+                @apply --paper-font-common-base;
+            }
+
+            .visible {
+                animation: fade 0.3s ease 1;
+                animation-direction: normal;
+            }
+
+            .hidden {
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            @keyframes fade {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            span {
+                white-space: pre-wrap;
+            }
+
+        </style>
+
+        <paper-material id="toast" class="interface-box noselect hidden">
+            <span>[[toastText]]</span>
+        </paper-material>
+
+    </template>
+    <script>
+        class NotificationToaster extends Polymer.Element {
+
+            static get is() {
+                return 'notification-toaster';
+            }
+
+            ready() {
+                super.ready();
+
+                application.subscribe('notification', (event) => {
+                    this.set('toastText', event.text || event);
+                    let duration = event.duration || this._durationFromText();
+                    this._open(duration);
+                });
+            }
+
+            _durationFromText() {
+                return 2250 + this.toastText.length * 8;
+            }
+
+            _open(duration) {
+                if (this.open) {
+                    clearInterval(this.timer);
+                } else {
+                    this.$.toast.style.display = 'block';
+                    this.$.toast.classList.remove('hidden');
+                    this.$.toast.classList.add('visible');
+                    this.open = true;
+                }
+
+                this.timer = setTimeout(() => {
+                    this.$.toast.classList.remove('visible');
+                    this.$.toast.classList.add('hidden');
+                    setTimeout(() => {
+                        if (!this.open) {
+                            this.$.toast.style.display = 'none';
+                        }
+                    }, 300);
+                    this.open = false;
+                }, duration);
+            }
+        }
+
+        window.customElements.define(NotificationToaster.is, NotificationToaster);
+    </script>
+</dom-module>

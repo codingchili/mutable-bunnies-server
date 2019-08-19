@@ -66,6 +66,7 @@ paper-toolbar {
     border-radius: 2px;
     background-color: #161616;
     opacity: 0.97;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
 
 hr {
