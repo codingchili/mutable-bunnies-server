@@ -112,20 +112,22 @@
             ready() {
                 super.ready();
 
-                server.connection.setHandler('loot_list', {
-                    accepted: (e) => {
-                        this.set('target', game.entities[e.targetId]);
-                        this.set('loot', e.lootList);
+                application.onGameLoaded(() => {
+                    server.connection.setHandler('loot_list', {
+                        accepted: (e) => {
+                            this.set('target', game.entities[e.targetId]);
+                            this.set('loot', e.lootList);
 
-                        if (e.lootList.length > 0) {
-                            this._start();
-                        } else {
-                            this._stop();
+                            if (e.lootList.length > 0) {
+                                this._start();
+                            } else {
+                                this._stop();
+                            }
+                        },
+                        error: (event) => {
+                            application.publish('notification', event.message);
                         }
-                    },
-                    error: (event) => {
-                        game.texts.chat(game.player, {text: event.message});
-                    }
+                    });
                 });
 
                 application.onRealmLoaded((realm) => {

@@ -14,7 +14,7 @@ window.DialogHandler = class DialogHandler {
 
         server.connection.setHandler('talk', {
             error: (event) => {
-                game.texts.chat(game.player, {text: event.message});
+                application.publish('notification', event.message);
             }
         });
     }
