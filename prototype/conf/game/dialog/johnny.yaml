@@ -1,5 +1,8 @@
 ---
 start: "welcome"
+enabled:
+  groovy: |
+    return !source.quests.complete('johnny_and_the_dragonfly');
 options:
   welcome:
     text: "Hello, ${player.name}. I need your help.."
@@ -8,12 +11,40 @@ options:
         text: "How come?"
       - id: "later"
         text: "Not right now."
+      - id: "squito_slay"
+        text: "The squitos are no more."
+  squito_slay:
+    available:
+      groovy: |
+        return source.quests.at('johnny_and_the_dragonfly', 'bring_water');
+    handler:
+      groovy: |
+        quests.advance(source, 'johnny_and_the_dragonfly')
   later:
     text: ~
+    available:
+      groovy: |
+        return !source.quests.has('johnny_and_the_dragonfly');
   water:
     text: "Oh, thank you! Missy will be most pleased!"
+    available:
+      groovy: |
+        return !source.quests.has('johnny_and_the_dragonfly');
+    handler:
+      groovy: |
+        quests.start(source, 'johnny_and_the_dragonfly');
   slayer:
     text: "Ah, we got a violent one over here."
+    available:
+      groovy: |
+        return !source.quests.has('johnny_and_the_dragonfly');
+    handler:
+      groovy: |
+        quests.start(source, 'johnny_and_the_dragonfly');
+  working:
+    available:
+      groovy: |
+        return source.quests.has('johnny_and_the_dragonfly');
   help:
     text: "My little friend is so thirsty, the big bad squitos have monopolized the water fountain. She just needs a bit of water please."
     next:
@@ -23,3 +54,5 @@ options:
         text: "I'll bring you some water."
       - id: "later"
         text: "Maybe later."
+      - id: "working"
+        text: "I'm working on it."

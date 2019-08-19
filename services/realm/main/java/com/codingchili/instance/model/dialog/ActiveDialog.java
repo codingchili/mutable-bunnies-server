@@ -18,6 +18,7 @@ import static com.codingchili.common.Strings.ID_LOG;
  * Reduces memory usage by referencing a dialog instance and keeps a cursor for an active dialog.
  */
 public class ActiveDialog {
+    private static final String ID_QUESTS = "quests";
     private GameContext game;
     private Bindings bindings;
     private Dialog dialog;
@@ -32,6 +33,7 @@ public class ActiveDialog {
     public ActiveDialog(GameContext game, Dialog dialog, Entity source, Entity target) {
         this.bindings = new Bindings()
                 .setContext(game)
+                .set(ID_QUESTS, game.quests())
                 .setState(new HashMap<>())
                 .set(ID_LOG, (Consumer<String>) this::log)
                 .setSource(source)

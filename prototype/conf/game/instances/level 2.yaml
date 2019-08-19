@@ -70,4 +70,4 @@ onPlayerJoin:
 onStartup:
   jexl: |
     // done by config now, wow.
-    // context.npcs().spawn("Illicit Lilith");
+    // game.npcs().spawn("Illicit Lilith");

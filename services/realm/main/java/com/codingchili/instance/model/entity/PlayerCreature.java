@@ -3,6 +3,7 @@ package com.codingchili.instance.model.entity;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.events.Event;
 import com.codingchili.instance.model.events.EventType;
+import com.codingchili.instance.model.questing.QuestState;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Bindings;
@@ -21,6 +22,7 @@ import com.codingchili.core.context.CoreRuntimeException;
  */
 public class PlayerCreature extends SimpleCreature {
     private transient boolean fromAnotherInstance = false;
+    private QuestState quests = new QuestState();
     private Integer logins = 0;
     private String instance;
     private String classId;
@@ -129,6 +131,14 @@ public class PlayerCreature extends SimpleCreature {
 
     public void setClassId(String classId) {
         this.classId = classId;
+    }
+
+    public QuestState getQuests() {
+        return quests;
+    }
+
+    public void setQuests(QuestState quests) {
+        this.quests = quests;
     }
 
     @Override

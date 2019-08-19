@@ -28,9 +28,9 @@ public class ClassDB implements MetadataStore<PlayableClass> {
     }
 
     @Override
-    public Optional<PlayableClass> getById(String name) {
-        if (isEnabled(name)) {
-            return classes.getById(name);
+    public Optional<PlayableClass> getById(String id) {
+        if (isEnabled(id)) {
+            return classes.getById(id);
         } else {
             return Optional.empty();
         }

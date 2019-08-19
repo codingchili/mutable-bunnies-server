@@ -84,7 +84,7 @@
                 </div>
 
                 <div>
-                    <svg class="menu-icon menu-icon-disabled">
+                    <svg on-down="_quests" class="menu-icon">
                         <use href$="[[realm.resources]]gui/menu/quests.svg#root"></use>
                     </svg>
                     <paper-tooltip animation-delay="0" class="tooltip" position="left">
@@ -145,7 +145,12 @@
                 application.publish('show-inventory');
             }
 
+            _quests() {
+                application.publish('show-quests');
+            }
+
             _settings() {
+                application.publish('show-settings');
             }
 
             _characters(e) {

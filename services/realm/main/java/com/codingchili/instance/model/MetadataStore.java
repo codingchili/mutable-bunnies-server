@@ -2,7 +2,8 @@ package com.codingchili.instance.model;
 
 import io.vertx.core.buffer.Buffer;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Robin Duda
@@ -14,10 +15,10 @@ public interface MetadataStore<T> {
     /**
      * Retrieves an item from the store given its name.
      *
-     * @param name the name as a unique id to retrieve a specific item/
+     * @param id unique id to retrieve a specific item.
      * @return an item if one exists, empty otherwise.
      */
-    Optional<T> getById(String name);
+    Optional<T> getById(String id);
 
     /**
      * Retrieve the database as a map. Good for local operations.

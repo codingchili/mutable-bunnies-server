@@ -33,9 +33,9 @@ death:
   jexl: "return true;"
 tick:
   groovy: |
-    for (creature : context.creatures().all()) {
+    for (creature : game.creatures().all()) {
       if (!creature.getName().equals('Lilith') && !creature.getName().equals('Gargazar')) {
-        context.movement().follow(source, creature);
+        game.movement().follow(source, creature);
         break;
       }
     }

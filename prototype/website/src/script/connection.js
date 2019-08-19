@@ -36,7 +36,8 @@ class Connection {
 
             this.ping = setInterval(() => {
                 if (this.open && this.ws.readyState === this.ws.OPEN) {
-                    this.send('ping', {}, () => {});
+                    this.send('ping', {}, () => {
+                    });
                 } else {
                     clearInterval(this.ping);
                 }

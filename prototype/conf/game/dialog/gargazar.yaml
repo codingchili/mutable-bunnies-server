@@ -17,7 +17,7 @@ options:
     handler:
       jexl: |
         // player is aggressive, punish them with some mighty tbd debuffs.
-        context.spells().afflict(source, 'haste');
+        game.spells().afflict(source, 'haste');
   fool:
     text: "Ha-Ha you will do no such thing, silly player!"
     handler:

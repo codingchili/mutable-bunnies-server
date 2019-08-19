@@ -10,15 +10,15 @@ stats:
   level: 5
 death:
   jexl: |
-    context.dialogs().say(source, "TRAP SPRUNG!");
+    game.dialogs().say(source, "TRAP SPRUNG!");
 tick:
   groovy: |
     // trigger trap: first found creature within radius.
-    for (creature : context.creatures().radius()) {
+    for (creature : game.creatures().radius()) {
       // trap level depends on caster.
       damage = source[Attribute.LEVEL] * 5 + 10;
-      context.spells().damage(source, target, damage, DamageType.PHYSICAL);
+      game.spells().damage(source, target, damage, DamageType.PHYSICAL);
 
       // end
-      context.spells().die(source);
+      game.spells().die(source);
     }

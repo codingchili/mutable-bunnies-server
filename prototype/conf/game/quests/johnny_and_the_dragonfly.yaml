@@ -1,0 +1,16 @@
+name: "Johnny & the Dragonfly"
+description: "Johnny's Dragonfly is suffering from dehydration and the bad bad squitos have monopolized the fountain!"
+stage:
+  - id: "bring_water"
+    title: "Hydrate the Dragonfly"
+    description: "Find some water or chase away the big bad squitos from the fountain."
+    enter:
+      groovy: |
+        // grant quest items etc.
+  # when hit the engine will notice this is the last and mark as complete.
+  - id: "dragonfly_hydrated"
+    title: "Happy Dragonfly"
+    description: "The dragonfly has finally gotten some water and decided to give an introduction of this plane."
+    completed:
+      groovy: |
+        game.spells.experience(source, 500);

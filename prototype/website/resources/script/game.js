@@ -67,7 +67,8 @@ window.Game = class Game extends Canvas {
         this.texts = new TextEffects();
         this.particles = new Particles();
         this.skybox = new Skybox();
-        this.inventory = new Inventory();
+        this.inventory = new InventoryHandler();
+        this.quests = new QuestHandler();
         this.fps = 60;
 
         this.frames = 0;

@@ -19,7 +19,7 @@ import java.util.Map;
  * For native scripts this class provides typed access to binding variables.
  */
 public class Bindings extends HashMap<String, Object> {
-    private static final String CONTEXT = "context";
+    private static final String GAME = "game";
     private static final String ATTRIBUTE = "Attribute";
     private static final String AFFLICTION = "affliction";
     private static final String STATS = "stats";
@@ -35,7 +35,7 @@ public class Bindings extends HashMap<String, Object> {
     }
 
     public Bindings setContext(GameContext context) {
-        put(CONTEXT, context);
+        put(GAME, context);
         return this;
     }
 
@@ -64,7 +64,7 @@ public class Bindings extends HashMap<String, Object> {
     }
 
     public GameContext getContext() {
-        return (GameContext) get(CONTEXT);
+        return (GameContext) get(GAME);
     }
 
     public Affliction getAffliction() {

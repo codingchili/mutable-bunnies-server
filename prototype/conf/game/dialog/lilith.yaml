@@ -28,19 +28,19 @@ options:
   travel-1:
     handler:
       jexl: |
-        context.movement().travel(source, 'level 1');
+        game.movement().travel(source, 'level 1');
   travel-2:
     handler:
       jexl: |
-        context.movement().travel(source, 'level 2');
+        game.movement().travel(source, 'level 2');
   travel-3:
     handler:
       jexl: |
-        context.movement().travel(source, 'level 3');
+        game.movement().travel(source, 'level 3');
   travel-X:
     handler:
       jexl: |
-        context.movement().travel(source, 'level X');
+        game.movement().travel(source, 'level X');
   greeting:
     text: "Likewise."
     available:
@@ -50,12 +50,12 @@ options:
       jexl: "return true;"
     handler:
       jexl: |
-        context.spells().afflict(source, 'haste');
+        game.spells().afflict(source, 'haste');
   health:
     text: "Do you want me to heal you right now for 50gp?."
     handler:
       jexl: |
-        context.spells().heal(source, 20.0);
+        game.spells().heal(source, 20.0);
     available:
         jexl: "return true;"
     next:
@@ -78,8 +78,8 @@ options:
     text: "Enjoy some health."
     handler:
       jexl: |
-        if (context.inventory().currency(source, -50)) {
-          context.spells().heal(source, source.stats[Attribute.maxhealth] * 0.2);
+        if (game.inventory().currency(source, -50)) {
+          game.spells().heal(source, source.stats[Attribute.maxhealth] * 0.2);
         }
     next:
       - id: "welcome"
@@ -88,22 +88,22 @@ options:
     redirect: "apple"
     handler:
       groovy: |
-        if (context.inventory().currency(source, -15)) {
-          context.inventory().item(source, "apple_red", 1);
+        if (game.inventory().currency(source, -15)) {
+          game.inventory().item(source, "apple_red", 1);
         }
   green:
     redirect: "apple"
     handler:
       groovy: |
-        if (context.inventory().currency(source, -45)) {
-          context.inventory().item(source, "apple_green", 1);
+        if (game.inventory().currency(source, -45)) {
+          game.inventory().item(source, "apple_green", 1);
         }
   gold:
     redirect: "apple"
     handler:
       groovy: |
-        if (context.inventory().currency(source, -235)) {
-          context.inventory().item(source, "apple_golden", 1);
+        if (game.inventory().currency(source, -235)) {
+          game.inventory().item(source, "apple_golden", 1);
         }
   quest:
     text: "You have completed your first quest!\n\nEnjoy 500 experience points and some gold."
@@ -113,8 +113,8 @@ options:
     handler:
       jexl: |
         source.attributes['quest#1'] = true;
-        context.spells().experience(source, 500);
-        context.inventory().currency(source, 500);
+        game.spells().experience(source, 500);
+        game.inventory().currency(source, 500);
   insult:
     text: "Shut up ${player.name}, you're only level ${player.stats['level']} pfft."
     handler:

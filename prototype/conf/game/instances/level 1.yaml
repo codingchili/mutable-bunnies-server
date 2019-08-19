@@ -36,4 +36,4 @@ onPlayerJoin:
     }
 onStartup:
   jexl: |
-    //context.spawner().npc("Illicit Lilith", 300, 300);
+    //game.spawner().npc("Illicit Lilith", 300, 300);

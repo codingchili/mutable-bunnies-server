@@ -40,6 +40,7 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
         handlers.add(new SpellHandler(game));
         handlers.add(new DialogHandler(game));
         handlers.add(new InventoryHandler(game));
+        handlers.add(new QuestHandler(game));
 
         handlers.forEach(protocol::annotated);
     }

@@ -29,8 +29,8 @@ public class SpellDB implements MetadataStore<Spell> {
     }
 
     @Override
-    public Optional<Spell> getById(String name) {
-        return spells.getById(name);
+    public Optional<Spell> getById(String id) {
+        return spells.getById(id);
     }
 
     @Override

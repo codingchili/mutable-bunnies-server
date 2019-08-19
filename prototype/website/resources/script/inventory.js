@@ -1,4 +1,4 @@
-window.Inventory = class Inventory {
+window.InventoryHandler = class InventoryHandler {
 
     constructor() {
         this.callbacks = [];

@@ -10,6 +10,7 @@
 <link rel="import" href="./ui/player-inventory.html">
 <link rel="import" href="./ui/context-menu.html">
 <link rel="import" href="./ui/notification-toaster.html">
+<link rel="import" href="./ui/quest-log.html">
 
 <!--
     @author Robin Duda
@@ -55,6 +56,7 @@
         <div id="interface">
             <notification-toaster></notification-toaster>
             <template is="dom-if" if="[[!loading]]">
+                <quest-log></quest-log>
                 <player-status></player-status>
                 <game-dialog></game-dialog>
                 <death-dialog></death-dialog>

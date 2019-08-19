@@ -13,5 +13,5 @@ npcs:
     y: 600
 onStartup:
   jexl: |
-    //context.npcs().spawn("Illicit Lilith");
+    //game.npcs().spawn("Illicit Lilith");
   # how to handle the world layout? in this file?

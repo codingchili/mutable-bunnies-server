@@ -29,8 +29,8 @@ public class AfflictionDB implements MetadataStore<Affliction> {
     }
 
     @Override
-    public Optional<Affliction> getById(String name) {
-        return db.getById(name);
+    public Optional<Affliction> getById(String id) {
+        return db.getById(id);
     }
 
     @Override
