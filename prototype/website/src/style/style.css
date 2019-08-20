@@ -69,6 +69,14 @@ paper-toolbar {
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
 
+.center-dialog {
+    pointer-events: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
 hr {
     border-color: var(--game-theme);
 }
@@ -100,4 +108,45 @@ hr {
 
 paper-toast {
     text-align: center;
+}
+
+.dialog-container {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    display: none;
+    pointer-events: all;
+    z-index: 500;
+}
+
+.dialog-overlay {
+    width: 100%;
+    height: 100%;
+    z-index: 400;
+    background-color: black;
+    opacity: 0.64;
+    animation: overlay-fadein 1.2s ease 1;
+    pointer-events: none;
+}
+
+@keyframes overlay-fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0.64;
+    }
+}
+
+.dialog-center {
+    pointer-events: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    /* super important property that fixes a 1px jump on hover. */
+    backface-visibility: hidden;
 }

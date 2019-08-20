@@ -19,15 +19,8 @@
             }
 
             #dialog {
-                pointer-events: auto;
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                min-width: 428px;
                 max-width: 428px;
                 min-height: 112px;
-                z-index: 999;
             }
 
             span {
@@ -47,36 +40,6 @@
                 top: 8px;
             }
 
-            @keyframes fadein {
-                from {
-                    opacity: 0;
-                }
-                to {
-                    opacity: 0.64;
-                }
-            }
-
-            #container {
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                position: absolute;
-                display: none;
-                pointer-events: all;
-                z-index: 500;
-            }
-
-            #overlay {
-                width: 100%;
-                height: 100%;
-                z-index: 400;
-                background-color: black;
-                opacity: 0.64;
-                animation: fadein 1.2s ease 1;
-                pointer-events: none;
-            }
-
             #loot-items {
                 display: flex;
                 flex-wrap: wrap;
@@ -84,10 +47,10 @@
             }
         </style>
 
-        <div id="container">
-            <div id="overlay"></div>
+        <div class="dialog-container" id="container">
+            <div class="dialog-overlay"></div>
 
-            <paper-material elevation="3" class="interface-box noselect" id="dialog">
+            <paper-material elevation="3" class="interface-box noselect dialog-center" id="dialog">
                 <iron-icon icon="icons:close" id="dialog-close" on-down="_stop"></iron-icon>
 
                 <span class="dialog-entity">[[target.name]]</span>

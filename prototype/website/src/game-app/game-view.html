@@ -56,12 +56,15 @@
         <div id="interface">
             <notification-toaster></notification-toaster>
             <template is="dom-if" if="[[!loading]]">
+
                 <quest-log></quest-log>
-                <player-status></player-status>
                 <game-dialog></game-dialog>
-                <death-dialog></death-dialog>
                 <loot-dialog></loot-dialog>
+                <death-dialog></death-dialog>
                 <player-inventory></player-inventory>
+
+
+                <player-status></player-status>
                 <chat-box></chat-box>
                 <spell-bar></spell-bar>
                 <game-menu></game-menu>
