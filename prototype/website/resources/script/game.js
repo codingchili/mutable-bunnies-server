@@ -58,6 +58,7 @@ window.Game = class Game extends Canvas {
     }
 
     init() {
+        this.bus = new EventBus();
         this.camera = new Camera();
         this.spawner = new SpawnHandler(this.camera);
         this.movement = new MovementHandler();
@@ -81,6 +82,21 @@ window.Game = class Game extends Canvas {
 
         this.isPlaying = true;
         this.loop();
+    }
+
+    publish(event, data) {
+        this.bus.publish(event, data);
+    }
+
+    subscribe(event, callback) {
+        this.bus.subscribe(event, callback);
+    }
+
+    resize() {
+        super.resize();
+        if (this.skybox) {
+            this.skybox.resize(this._width(), this._height());
+        }
     }
 
     setPlayer(player) {

@@ -10,8 +10,9 @@ window.Skybox = class {
     init(skybox) {
         Loader.load(background => {
             this.background = background;
+            this.width = window.innerWidth;
 
-            let ratio = Math.max(window.innerWidth / 2048, window.innerHeight / 1536);
+            let ratio = Math.max(this.width / 2048, window.innerHeight / 1536);
             background.scale.x = ratio;
             background.scale.y = ratio;
             background.tint = parseInt(skybox.sky.replace('#', '0x'));
@@ -23,7 +24,7 @@ window.Skybox = class {
                         let cloud = new PIXI.Sprite(loaded.texture);
                         this._reset(cloud);
 
-                        cloud.x = Math.random() * window.innerWidth;
+                        cloud.x = Math.random() * this.width;
                         cloud.tint = parseInt(skybox.clouds.replace('#', '0x'));
                         cloud.velocity = Math.random() * 42 + 16;
 
@@ -36,18 +37,19 @@ window.Skybox = class {
     }
 
     _reset(cloud) {
-        //let scale = (cloud.velocity / 68); // large velocity = larger
-        //cloud.scale.x = scale;
-        //cloud.scale.y = scale;
-        //cloud.layer = (-1) - scale;
         cloud.x = -cloud.width;
         cloud.y = Math.random() * window.innerHeight;
+    }
+
+    resize(width, height) {
+        this.width = width;
+        this.height = height;
     }
 
     update(delta) {
         for (let cloud of this.clouds) {
             cloud.x += cloud.velocity * delta;
-            if (cloud.x - cloud.width > window.innerWidth) {
+            if (cloud.x - cloud.width > this.width) {
                 this._reset(cloud);
             }
         }

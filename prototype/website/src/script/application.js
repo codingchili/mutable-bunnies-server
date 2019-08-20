@@ -18,7 +18,7 @@ class Application {
             metrics: true
         };
 
-        this.handlers = {};
+        this.bus = new EventBus();
 
         if (this.development.clearCache) {
             localStorage.clear();
@@ -220,20 +220,11 @@ class Application {
     }
 
     subscribe(event, callback) {
-        if (this.handlers[event] == null)
-            this.handlers[event] = [];
-
-        this.handlers[event].push(callback);
+        this.bus.subscribe(event, callback);
     }
 
     publish(event, data) {
-        if (application.development.logEvents) {
-            console.log(`publishing event ${event}`);
-        }
-
-        if (this.handlers[event])
-            for (let subscriber = 0; subscriber < this.handlers[event].length; subscriber++)
-                this.handlers[event][subscriber](data);
+        this.bus.publish(event, data);
     }
 }
 
