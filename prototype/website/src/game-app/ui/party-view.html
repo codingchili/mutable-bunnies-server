@@ -1,0 +1,87 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
+
+<link rel="import" href="./player-status.html">
+
+<!--
+    @author Robin Duda
+    Realm chat.
+ -->
+
+<dom-module id="party-view">
+    <link rel="import" href="../../style/theme.css" type="css">
+    <link rel="import" href="../../style/style.css" type="css">
+    <template>
+        <style>
+            :host {
+            }
+
+            .container {
+                position: absolute;
+                top: 12%;
+                left: 32px;
+                display: flex;
+                flex-direction: column;
+                z-index: 400;
+            }
+
+            .member {
+                position: relative;
+                margin-bottom: 16px;
+                top: 0;
+                left: 0;
+            }
+
+        </style>
+
+        <div class="container">
+            <player-status class="member" compact="1"></player-status>
+            <player-status class="member" compact></player-status>
+            <player-status class="member" compact="true"></player-status>
+        </div>
+
+    </template>
+    <script>
+        class PartyView extends Polymer.GestureEventListeners(Polymer.Element) {
+
+            static get is() {
+                return 'party-view';
+            }
+
+            constructor() {
+                super();
+
+                application.onRealmLoaded(realm => {
+                    this.realm = realm;
+                });
+            }
+
+            _loaded() {
+                return (typeof this.realm !== 'undefined');
+            }
+
+            _inventory() {
+                application.publish('show-inventory');
+            }
+
+            _quests() {
+                application.publish('show-quests');
+            }
+
+            _settings() {
+                application.publish('show-settings');
+            }
+
+            _characters(e) {
+                game.shutdown();
+                application.scriptShutdown();
+                application.showCharacters();
+            }
+        }
+
+        window.customElements.define(PartyView.is, PartyView);
+    </script>
+</dom-module>

@@ -11,6 +11,7 @@
 <link rel="import" href="./ui/context-menu.html">
 <link rel="import" href="./ui/notification-toaster.html">
 <link rel="import" href="./ui/quest-log.html">
+<link rel="import" href="./ui/party-view.html">
 
 <!--
     @author Robin Duda
@@ -64,7 +65,14 @@
                 <player-inventory></player-inventory>
 
 
+                <!-- target -->
+                <player-status style="right: 16px; left: unset;" target="game.player"></player-status>
+
+                <!-- player -->
                 <player-status></player-status>
+
+                <party-view></party-view>
+
                 <chat-box></chat-box>
                 <spell-bar></spell-bar>
                 <game-menu></game-menu>

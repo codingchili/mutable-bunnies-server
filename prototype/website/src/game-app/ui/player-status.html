@@ -21,9 +21,9 @@
                 width: 416px;
             }
 
-            #frame {
+            .frame {
                 display: block;
-                height: 84px;
+                height: 68px;
                 z-index: 495;
             }
 
@@ -38,22 +38,41 @@
                 position: absolute;
                 left: 66px;
                 opacity: 0.7;
-                top: 16px;
+                top: 12px;
                 font: 16px 'LeagueGothicRegular';
             }
 
             .health-bar {
                 margin-left: 64px;
+                margin-right: 8px;
+                margin-top: 32px;
                 padding: 4px;
-                width: 338px;
                 --paper-progress-active-color: #8c0006;
                 --paper-progress-container-color: #8c000632;
             }
 
-            .energy-bar {
-                margin-left: 64px;
-                width: 338px;
+            .health-bar-mini {
                 margin-top: 6px;
+            }
+
+            .portrait-mini {
+                width: 24px;
+                left: 8px;
+                top: -10px;
+                position: absolute;
+            }
+
+            .frame-mini {
+                height: 40px;
+                width: 276px;
+            }
+
+            .energy-bar {
+                top: 32px;
+                left: 64px;
+                margin-left: 64px;
+                margin-right: 8px;
+                margin-top: 4px;
                 padding: 4px;
                 --paper-progress-active-color: #4db6ac;
                 --paper-progress-container-color: #4db6ac32;
@@ -62,10 +81,11 @@
             .level {
                 display: block;
                 position: absolute;
-                top: 48px;
-                left: 8px;
+                top: 4px;
+                right: 14px;
                 width: 48px;
-                text-align: center;
+                text-align: right;
+                font-size: larger;
             }
 
             .exp-bar {
@@ -160,32 +180,40 @@
             }
 
             .class-icon {
-                width: 64px;
+                position: absolute;
             }
 
             .stats-tooltip {
                 margin-left: 64px;
+                z-index: 99999;
+            }
+
+            .class-stats {
+                z-index: 999999;
             }
 
         </style>
 
 
-        <paper-material elevation="3" id="frame" class="interface-box noselect">
-            <span class="level">[[character.stats.level]]</span>
-            <span class="name">[[character.name]]</span>
+        <paper-material elevation="3" id="frame" class="interface-box noselect frame">
+
+            <template is="dom-if" if="[[!compact]]">
+                <span class="level">[[character.stats.level]]</span>
+                <span class="name">[[character.name]]</span>
+            </template>
 
             <div class="class-icon">
                 <paper-tooltip animation-delay="0" position="bottom" class="stats-tooltip">
                     <div class="class-stats">
                         Stats
                         <stats-view id="stats" compact="true" selected="{{character}}"
-                                         style="display:block"></stats-view>
+                                    style="display:block"></stats-view>
                     </div>
                 </paper-tooltip>
-                <img class="portrait" src="[[realm.resources]]/gui/class/[[character.classId]].svg">
+                <img id="portrait" class="portrait" src="[[realm.resources]]/gui/class/[[character.classId]].svg">
             </div>
 
-            <div class="health-bar">
+            <div class="health-bar" id="health-bar">
                 <paper-tooltip class="spell-info" animation-delay="0" position="bottom">
                     <span>[[character.stats.health]] / [[character.stats.maxhealth]]</span>
                 </paper-tooltip>
@@ -242,9 +270,19 @@
                 return 'player-status';
             }
 
+            static get properties() {
+                return {
+                    compact: {
+                        type: Boolean,
+                        value: false
+                    }
+                }
+            }
+
             constructor() {
                 super();
                 this.afflictions = [];
+                this.compact = false;
             }
 
             ready() {
@@ -267,6 +305,12 @@
                 application.onRealmLoaded(realm => {
                     this.realm = realm;
                 });
+
+                if (this.compact) {
+                    this.$['health-bar'].classList.add('health-bar-mini');
+                    this.$.frame.classList.add('frame-mini');
+                    this.$.portrait.classList.add('portrait-mini')
+                }
             }
 
             _updatePlayerState(character) {

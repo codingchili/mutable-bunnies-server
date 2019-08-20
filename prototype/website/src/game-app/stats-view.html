@@ -46,7 +46,7 @@
                 color: #ff0000;
             }
 
-            .bonus{
+            .bonus {
                 color: #00ff00;
             }
 
@@ -58,12 +58,14 @@
 
         <div class="container">
             <template is="dom-repeat" items="[[_toList(selected.stats.*)]]" as="attribute">
-                <div class$="content [[_layout(compact)]]">
-                    <span class="name">[[attribute.name]]</span>
-                    <span class$="value [[_style(attribute)]]">
+                <template is="dom-if" if="[[_visible(attribute)]]">
+                    <div class$="content [[_layout(compact)]]">
+                        <span class="name">[[attribute.name]]</span>
+                        <span class$="value [[_style(attribute)]]">
                         <i>[[_format(attribute.value)]]</i>
                     </span>
-                </div>
+                    </div>
+                </template>
             </template>
         </div>
 
@@ -75,6 +77,7 @@
         constructor() {
             super();
             this.compact = false;
+            this.hide = ['level', 'nextlevel', 'maxhealth', 'maxenergy', 'experience', 'energy', 'health'];
         }
 
         static get is() {
@@ -92,6 +95,10 @@
 
         _layout() {
             return 'attribute-' + ((this.compact) ? 'compact' : 'wide');
+        }
+
+        _visible(attribute) {
+            return !this.hide.includes(attribute.name);
         }
 
         _format(value) {
