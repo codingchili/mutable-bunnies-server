@@ -9,6 +9,7 @@ public class LogEntry {
     public String id;
     public String name;
     public String description;
+    public boolean complete;
 
     public String getId() {
         return id;
@@ -34,6 +35,15 @@ public class LogEntry {
 
     public LogEntry setDescription(String description) {
         this.description = description;
+        return this;
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public LogEntry setComplete(boolean complete) {
+        this.complete = complete;
         return this;
     }
 }

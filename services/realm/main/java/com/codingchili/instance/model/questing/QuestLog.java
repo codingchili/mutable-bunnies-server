@@ -24,13 +24,17 @@ public class QuestLog {
         this.complete = current.isComplete();
 
         for (QuestStage stage : quest.getStage()) {
-            entries.add(new LogEntry()
+            LogEntry entry = new LogEntry()
                     .setName(stage.getTitle())
                     .setDescription(stage.getDescription())
                     .setId(stage.getId())
-            );
+                    .setComplete(true);
+
+            entries.add(entry);
+
             // only show events up to and including current.
-            if (current.getId().equals(stage.getId())) {
+            if (current.getStage().equals(stage.getId())) {
+                entry.setComplete(false);
                 break;
             }
         }
