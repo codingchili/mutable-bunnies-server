@@ -5,7 +5,6 @@ import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.stats.Stats;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
@@ -15,9 +14,8 @@ import java.util.function.Predicate;
  * <p>
  * The affliction state contains applied afflictions to a single creature.
  */
-public class AfflictionState {
-    private Stats stats = new Stats();
-    private Queue<ActiveAffliction> list = new ConcurrentLinkedQueue<>();
+public class AfflictionState extends ConcurrentLinkedQueue<ActiveAffliction> {
+    private transient Stats stats = new Stats();
 
     @JsonIgnore
     public Stats getStats() {
@@ -30,27 +28,13 @@ public class AfflictionState {
     }
 
     /**
-     * @return a list of afflictions that are active.
-     */
-    public Queue<ActiveAffliction> getList() {
-        return list;
-    }
-
-    /**
-     * @param list a list of afflictions to set.
-     */
-    public void setList(Queue<ActiveAffliction> list) {
-        this.list = list;
-    }
-
-    /**
      * adds a new affliction.
      *
      * @param affliction the affliction to add.
      * @param game       the game context to send updates to.
      */
     public void add(ActiveAffliction affliction, GameContext game) {
-        list.add(affliction);
+        add(affliction);
         update(game);
     }
 
@@ -61,7 +45,7 @@ public class AfflictionState {
      * @return true if the affliction is active in this state.
      */
     public boolean has(String afflictionName) {
-        for (ActiveAffliction active : list) {
+        for (ActiveAffliction active : this) {
             if (active.getAffliction().getName().equals(afflictionName)) {
                 return true;
             }
@@ -77,7 +61,7 @@ public class AfflictionState {
      */
     public void removeIf(Predicate<ActiveAffliction> predicate, GameContext game) {
         AtomicBoolean modified = new AtomicBoolean(false);
-        list.removeIf((affliction) -> {
+        removeIf((affliction) -> {
             if (predicate.test(affliction)) {
                 modified.set(true);
                 return true;
@@ -92,7 +76,7 @@ public class AfflictionState {
     /**
      * Updates the state of afflictions and removes those that have expired.
      *
-     * @param game  a reference to the game context for sending updates on change.
+     * @param game   a reference to the game context for sending updates on change.
      * @param ticker the delta time to consider on update operations.
      * @return true if an afflication has been removed.
      */
@@ -114,7 +98,7 @@ public class AfflictionState {
 
     private void update(GameContext game) {
         stats.clear();
-        list.forEach(active ->
+        forEach(active ->
                 stats = stats.apply(active.modify(game)));
     }
 }

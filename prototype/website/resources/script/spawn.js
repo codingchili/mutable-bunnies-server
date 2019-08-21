@@ -89,6 +89,8 @@ window.SpawnHandler = class SpawnHandler {
             this._onDialogSupportedHook(sprite);
             this._onLootableHook(sprite);
             this._onContextMenuHook(sprite);
+            this._onTargetHook(sprite);
+            this._processAfflictionsHook(sprite);
 
             if (entity.account) {
                 game.chat.add({text: `${entity.name} has joined.`, system: true});
@@ -183,13 +185,32 @@ window.SpawnHandler = class SpawnHandler {
         }
     }
 
+    _onTargetHook(entity) {
+        entity.interactive = true;
+        entity.on('pointerdown', (e) => {
+            input.ifLeftMouse(() => {
+                game.publish('character-target', entity);
+            });
+        });
+    }
+
     _onPlayerSpawnHook(sprite) {
         if (this.isPlayer(sprite)) {
             sprite.isPlayer = true;
-            application.characterLoaded(sprite);
             game.setPlayer(sprite);
+            application.characterLoaded(sprite);
+            game.publish('character-update', sprite);
             this.camera.set(sprite.vector.x, sprite.vector.y);
             this.camera.focus(sprite);
+        }
+    }
+
+    _processAfflictionsHook(sprite) {
+        if (sprite.afflictions) {
+            for (let item of sprite.afflictions) {
+                item.loaded = true;
+                game.spells.affliction(item);
+            }
         }
     }
 

@@ -38,9 +38,9 @@
         </style>
 
         <div class="container">
-            <player-status class="member" compact="1"></player-status>
-            <player-status class="member" compact></player-status>
-            <player-status class="member" compact="true"></player-status>
+            <player-status target="[[target]]" class="member" compact="1"></player-status>
+            <player-status target="[[target]]" class="member" compact></player-status>
+            <player-status target="[[target]]" class="member" compact="true"></player-status>
         </div>
 
     </template>
@@ -56,6 +56,14 @@
 
                 application.onRealmLoaded(realm => {
                     this.realm = realm;
+                });
+
+                application.onGameLoaded(() => {
+                    game.subscribe('character-update', target => {
+                        if (!this.target) {
+                            this.target = target;
+                        }
+                    });
                 });
             }
 

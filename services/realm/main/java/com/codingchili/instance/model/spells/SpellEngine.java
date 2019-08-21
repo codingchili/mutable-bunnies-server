@@ -91,6 +91,13 @@ public class SpellEngine {
     }
 
     /**
+     * @return affliction database.
+     */
+    public AfflictionDB afflictions() {
+        return afflictions;
+    }
+
+    /**
      * Checks if the given target is casting a spell.
      *
      * @param caster the caster.
@@ -239,8 +246,8 @@ public class SpellEngine {
     public void afflict(Creature source, Creature target, String name) {
         afflictions.getById(name).ifPresent(affliction -> {
             ActiveAffliction active = affliction.apply(source, target);
-            source.getAfflictions().add(active, game);
-            game.publish(new AfflictionEvent(active));
+            target.getAfflictions().add(active, game);
+            game.publish(new AfflictionEvent(target, active));
         });
     }
 
@@ -265,7 +272,7 @@ public class SpellEngine {
                 amount = max - current;
             }
             target.getBaseStats().update(Attribute.energy, amount);
-            target.handle(new StatsUpdateEvent(target));
+            game.publish(new StatsUpdateEvent(target));
             return true;
         }
     }

@@ -66,10 +66,10 @@
 
 
                 <!-- target -->
-                <player-status style="right: 16px; left: unset;" target="game.player"></player-status>
+                <player-status target="[[target]]" style="right: 16px; left: unset;"></player-status>
 
                 <!-- player -->
-                <player-status></player-status>
+                <player-status target="[[player]]"></player-status>
 
                 <party-view></party-view>
 
@@ -88,8 +88,24 @@
                 return 'game-view';
             }
 
+            loaded() {
+                this.loading = false;
+            }
+
             ready() {
                 super.ready();
+
+                application.onGameLoaded(() => {
+                    game.subscribe('character-update', character => {
+                        if (character === game.player) {
+                            this.player = character;
+                        }
+                    });
+
+                    game.subscribe('character-target', character => {
+                        this.target = character;
+                    });
+                });
 
                 application.subscribe('offline', offline => {
                     // only play sound when online, to prevent interruptions on reconnects and
@@ -166,7 +182,7 @@
                                     accepted: () => {
                                         // use the patching UI for loading the game scripts.
                                         application.showGame();
-                                        this.loading = false;
+                                        this.loaded();
                                     },
                                     error: (msg) => {
                                         this._handleError(new Error(msg));

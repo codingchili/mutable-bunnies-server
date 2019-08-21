@@ -7,7 +7,6 @@ import com.codingchili.instance.model.spells.DamageType;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Bindings;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,14 +22,34 @@ import static com.codingchili.core.configuration.CoreStrings.ID_NAME;
 public class ActiveAffliction {
     private transient Bindings bindings;
     private Map<String, Object> state = new HashMap<>(); // used by scripts to store data.
-    private Stats stats = new Stats();
-    private Affliction affliction;
-    private Creature source;
-    private Creature target;
+    private transient Stats stats = new Stats();
+    private String afflictionId;
+    private String sourceId;
+    private String targetId;
     private int ticks;
     private int interval;
     private int delta;
-    private Long start = System.currentTimeMillis();
+
+    // cannot be persisted.
+    private transient Affliction affliction;
+    private transient GameContext game;
+    private transient Creature source;
+    private transient Creature target;
+
+    public ActiveAffliction() {
+    }
+
+    /**
+     * Required call after serialization to initialize any old afflictions.
+     *
+     * @param game the current game context to retrieve metadata from.
+     */
+    public void init(GameContext game) {
+        this.game = game;
+        game.spells().afflictions().getById(afflictionId).ifPresent(affliction -> {
+            this.affliction = affliction;
+        });
+    }
 
     /**
      * @param source     the source of the affliction.
@@ -38,12 +57,16 @@ public class ActiveAffliction {
      * @param affliction the affliction that was created by source on target.
      */
     public ActiveAffliction(Creature source, Creature target, Affliction affliction) {
-        this.source = source;
-        this.target = target;
         this.affliction = affliction;
         this.ticks = GameContext.secondsToMs(affliction.getDuration());
         this.interval = GameContext.secondsToMs(affliction.getInterval());
         this.delta = interval; // grant first tick immediately.
+        this.sourceId = source.getId();
+        this.targetId = target.getId();
+        this.afflictionId = affliction.getId();
+
+        this.source = source;
+        this.target = target;
     }
 
     /**
@@ -56,11 +79,6 @@ public class ActiveAffliction {
         stats.clear();
         affliction.apply(getBindings(game).setStats(stats));
         return stats;
-    }
-
-    @JsonIgnore
-    public Long getStart() {
-        return start;
     }
 
     /**
@@ -94,8 +112,8 @@ public class ActiveAffliction {
                     .setContext(context)
                     .setState(state)
                     .set("spells", context.spells())
-                    .set("source", source)
-                    .set("target", target)
+                    .set("source", source())
+                    .set("target", target())
                     .set("DamageType", DamageType.class)
                     .set("log", (Consumer<Object>) (message) -> {
                         context.getLogger(getClass()).event("affliction", Level.INFO)
@@ -107,6 +125,26 @@ public class ActiveAffliction {
         return bindings;
     }
 
+    private Creature target() {
+        return (target != null) ? target : game.getById(targetId);
+    }
+
+    private Creature source() {
+        return (source != null) ? source : game.getById(sourceId);
+    }
+
+    public String getAfflictionId() {
+        return afflictionId;
+    }
+
+    public void setAfflictionId(String afflictionId) {
+        this.afflictionId = afflictionId;
+    }
+
+    public float getDuration() {
+        return GameContext.msToSeconds(ticks);
+    }
+
     public Affliction getAffliction() {
         return affliction;
     }
@@ -116,20 +154,26 @@ public class ActiveAffliction {
     }
 
     public String getSourceId() {
-        return source.getId();
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
     }
 
     public String getTargetId() {
-        return target.getId();
+        return targetId;
     }
 
-    @JsonIgnore
-    public Creature getSource() {
-        return source;
+    public Map<String, Object> getState() {
+        return state;
     }
 
-    @JsonIgnore
-    public Creature getTarget() {
-        return target;
+    public void setState(Map<String, Object> state) {
+        this.state = state;
     }
 }

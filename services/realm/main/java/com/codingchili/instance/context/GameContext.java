@@ -287,4 +287,8 @@ public class GameContext {
     public static Integer secondsToMs(Float seconds) {
         return (int) (seconds * 1000);
     }
+
+    public static float msToSeconds(long ms) {
+        return ms / 1000;
+    }
 }

@@ -28,6 +28,8 @@ window.TextEffects = class TextEffects {
                 application.characterUpdate(target);
             }
 
+            game.publish('character-update', target);
+
             event.value = event.value.toFixed(1);
             this.effects[event.damage](target, event);
         });

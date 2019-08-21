@@ -1,5 +1,6 @@
 package com.codingchili.instance.model.afflictions;
 
+import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.events.Event;
 import com.codingchili.instance.model.events.EventType;
 import com.codingchili.instance.model.stats.Stats;
@@ -11,9 +12,9 @@ public class AfflictionEvent implements Event {
     private ActiveAffliction active;
     private Stats stats;
 
-    public AfflictionEvent(ActiveAffliction affliction) {
+    public AfflictionEvent(Creature target, ActiveAffliction affliction) {
         this.active = affliction;
-        this.stats = affliction.getSource().getStats();
+        this.stats = target.getStats();
     }
 
     public Stats getStats() {
@@ -21,27 +22,19 @@ public class AfflictionEvent implements Event {
     }
 
     public String getSourceId() {
-        return active.getSource().getId();
+        return active.getSourceId();
     }
 
     public String getTargetId() {
-        return active.getTarget().getId();
-    }
-
-    public String getId() {
-        return active.getAffliction().getId();
-    }
-
-    public String getName() {
-        return active.getAffliction().getName();
-    }
-
-    public String getDescription() {
-        return active.getAffliction().getDescription();
+        return active.getTargetId();
     }
 
     public Float getDuration() {
         return active.getAffliction().getDuration();
+    }
+
+    public Affliction getAffliction() {
+        return active.getAffliction();
     }
 
     @Override

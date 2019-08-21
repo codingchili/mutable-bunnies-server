@@ -12,7 +12,7 @@ import com.codingchili.instance.model.stats.Stats;
  * basic class for creatures.
  */
 public abstract class SimpleCreature extends SimpleEntity implements Creature {
-    protected transient AfflictionState afflictions = new AfflictionState();
+    protected AfflictionState afflictions = new AfflictionState();
     private transient Stats calculated = new Stats();
     protected Inventory inventory = new Inventory();
     protected SpellState spells = new SpellState();

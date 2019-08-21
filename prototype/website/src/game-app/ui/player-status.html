@@ -192,71 +192,76 @@
                 z-index: 999999;
             }
 
+            img[src=""] {
+                display: none;
+            }
+
         </style>
 
 
         <paper-material elevation="3" id="frame" class="interface-box noselect frame">
 
             <template is="dom-if" if="[[!compact]]">
-                <span class="level">[[character.stats.level]]</span>
-                <span class="name">[[character.name]]</span>
+                <span class="level">[[target.stats.level]]</span>
+                <span class="name">[[target.name]]</span>
             </template>
 
             <div class="class-icon">
                 <paper-tooltip animation-delay="0" position="bottom" class="stats-tooltip">
                     <div class="class-stats">
                         Stats
-                        <stats-view id="stats" compact="true" selected="{{character}}"
+                        <stats-view id="stats" compact="true" selected="{{target}}"
                                     style="display:block"></stats-view>
                     </div>
                 </paper-tooltip>
-                <img id="portrait" class="portrait" src="[[realm.resources]]/gui/class/[[character.classId]].svg">
+                <img id="portrait" class="portrait" src$="[[_portrait(target.classId)]]">
             </div>
 
             <div class="health-bar" id="health-bar">
                 <paper-tooltip class="spell-info" animation-delay="0" position="bottom">
-                    <span>[[character.stats.health]] / [[character.stats.maxhealth]]</span>
+                    <span>[[_integer(target.stats.health)]] / [[_integer(target.stats.maxhealth)]]</span>
                 </paper-tooltip>
-                <paper-progress class="transiting" min="0" max="[[character.stats.maxhealth]]"
-                                value="[[character.stats.health]]"></paper-progress>
+                <paper-progress class="transiting" min="0" max="[[target.stats.maxhealth]]"
+                                value="[[target.stats.health]]"></paper-progress>
             </div>
 
             <div class="energy-bar">
                 <paper-tooltip class="spell-info" animation-delay="0" position="bottom">
-                    <span>[[character.stats.energy]] / [[character.stats.maxenergy]]</span>
+                    <span>[[_integer(target.stats.energy)]] / [[_integer(target.stats.maxenergy)]]</span>
                 </paper-tooltip>
-                <paper-progress class="transiting" min="0" max="[[character.stats.maxenergy]]"
-                                value="[[character.stats.energy]]"></paper-progress>
+                <paper-progress class="transiting" min="0" max="[[target.stats.maxenergy]]"
+                                value="[[target.stats.energy]]"></paper-progress>
             </div>
 
             <div class="exp-bar">
                 <paper-tooltip class="spell-info" animation-delay="0" position="bottom">
-                    <span>[[character.stats.experience]] / [[character.stats.nextlevel]]</span>
+                    <span>[[_integer(target.stats.experience)]] / [[_integer(target.stats.nextlevel)]]</span>
                 </paper-tooltip>
-                <paper-progress class="transiting" min="0" max="[[character.stats.nextlevel]]"
-                                value="[[character.stats.experience]]"></paper-progress>
+                <paper-progress class="transiting" min="0" max="[[target.stats.nextlevel]]"
+                                value="[[target.stats.experience]]"></paper-progress>
             </div>
+
         </paper-material>
 
         <div id="afflictions">
-            <template is="dom-repeat" items="{{afflictions}}" as="affliction">
+            <template is="dom-repeat" items="{{afflictions}}" as="active">
                 <div class="affliction interface-box">
-                    <img src="[[realm.resources]]/gui/afflictions/[[affliction.id]].svg" class="affliction-icon"
+                    <img src="[[realm.resources]]/gui/afflictions/[[active.affliction.id]].svg" class="affliction-icon"
                          alt="affliction">
 
                     <paper-tooltip class="spell-info" animation-delay="0" position="bottom">
-                        <span class="title">[[affliction.name]]</span>
+                        <span class="title">[[active.affliction.name]]</span>
 
                         <table class="info-table">
                             <tr>
                                 <th>Duration</th>
                             </tr>
                             <tr style="text-align: center;">
-                                <td class="duration">[[affliction.duration]]s</td>
+                                <td class="duration">[[active.duration]]s</td>
                             </tr>
                         </table>
 
-                        <span class="description">{{_description(affliction)}}</span>
+                        <span class="description">{{_description(active.affliction)}}</span>
                     </paper-tooltip>
                 </div>
             </template>
@@ -275,6 +280,11 @@
                     compact: {
                         type: Boolean,
                         value: false
+                    },
+                    target: {
+                        type: Object,
+                        notify: true,
+                        observer: '_notifyTargetChange'
                     }
                 }
             }
@@ -283,6 +293,7 @@
                 super();
                 this.afflictions = [];
                 this.compact = false;
+                this.target = {};
             }
 
             ready() {
@@ -294,12 +305,8 @@
                     }
                 }, 1000);
 
-                application.onCharacterUpdate(character => {
-                    this._updatePlayerState(character);
-                });
-
-                application.onCharacterLoaded(character => {
-                    this._updatePlayerState(character);
+                application.onGameLoaded(() => {
+                    this._listen();
                 });
 
                 application.onRealmLoaded(realm => {
@@ -313,17 +320,57 @@
                 }
             }
 
-            _updatePlayerState(character) {
-                this.character = character;
+            _integer(number) {
+                return Math.round(number);
+            }
+
+            _listen() {
+                game.subscribe('character-update', (creature) => {
+                    if (creature.id === this.target.id) {
+                        this._updatePlayerState(creature);
+                    }
+                });
+            }
+
+            _portrait() {
+                if (this.target && this.realm && this.target.classId) {
+                    return `${this.realm.resources}/gui/class/${this.target.classId}.svg`;
+                } else {
+                    //return 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+                    return "";
+                }
+            }
+
+            _notifyTargetChange(target) {
+                if (target && target.afflictions) {
+                    this._updatePlayerState(target);
+                }
+            }
+
+            _updatePlayerState(target) {
+                this._default(target, 'experience');
+                this._default(target, 'nextlevel', 100);
+                this._default(target, 'energy');
+
+                this.target = target;
+
                 this.afflictions = [];
-                this.afflictions = character.afflictions.list;
+                this.afflictions = target.afflictions;
+
                 this.notifyPath("afflictions");
-                this.shadowRoot.querySelector('#stats').update(character);
+                this.notifyPath("target.classId");
+                this.shadowRoot.querySelector('#stats').update(target);
             }
 
 
             _description(affliction) {
                 return eval('`' + affliction.description + '`');
+            }
+
+            _default(target, attribute, def) {
+                if (!target.stats[attribute]) {
+                    target.stats[attribute] = (def) ? def : 0;
+                }
             }
         }
 

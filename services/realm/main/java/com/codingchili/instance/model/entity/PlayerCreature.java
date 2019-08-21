@@ -1,6 +1,7 @@
 package com.codingchili.instance.model.entity;
 
 import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.model.afflictions.ActiveAffliction;
 import com.codingchili.instance.model.events.Event;
 import com.codingchili.instance.model.events.EventType;
 import com.codingchili.instance.model.questing.QuestState;
@@ -89,6 +90,10 @@ public class PlayerCreature extends SimpleCreature {
 
             stats.setDefault(Attribute.experience, 15.0f);
             stats.set(Attribute.nextlevel, scaling.apply(bindings));
+
+            for (ActiveAffliction affliction : afflictions) {
+                affliction.init(game);
+            }
 
             // learn all enabled spells for the current class for now.
             this.spells.getLearned().addAll(theClass.get().getSpells().stream()

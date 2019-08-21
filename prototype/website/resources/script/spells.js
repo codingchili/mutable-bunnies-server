@@ -43,7 +43,7 @@ window.Spells = class Spells {
         server.connection.setHandler('spell', (event) => this._spell(event));
         server.connection.setHandler('stats', (event) => this._stats(event));
         server.connection.setHandler('cleanse', (event) => this._cleanse(event));
-        server.connection.setHandler('affliction', (event) => this._affliction(event));
+        server.connection.setHandler('affliction', (event) => this.affliction(event));
         server.connection.setHandler('spellstate', (event) => this._spellstate(event));
     }
 
@@ -146,36 +146,42 @@ window.Spells = class Spells {
      * @param event an event that is emitted whenever an entity is afflicted.
      * @private
      */
-    _affliction(event) {
+    affliction(event) {
         let current = game;
         let target = game.lookup(event.targetId);
+        let active = event;
+        active.effect = this._activateEffectByAffliction(target, active);
+        active.reference = Math.random().toString(36).substring(7);
 
-        let affliction = event;
-        affliction.effect = this._activateEffectByAffliction(target, affliction);
-
-        affliction.reference = Math.random().toString(36).substring(7);
-        target.afflictions.list.push(affliction);
-        target.stats = event.stats;
+        console.log(active.loaded);
+        if (!active.loaded) {
+            console.log('not loaded! adding!');
+            console.log(active);
+            target.stats = active.stats;
+            target.afflictions.push(active);
+        }
 
         setTimeout(() => {
-            let afflictions = target.afflictions.list;
+            let afflictions = target.afflictions;
 
             if (current.isPlaying) {
                 for (let i = 0; i < afflictions.length; i++) {
-                    if (afflictions[i].reference === affliction.reference) {
-                        target.afflictions.list.splice(i, 1);
+                    if (afflictions[i].reference === active.reference) {
+                        target.afflictions.splice(i, 1);
 
                         if (target.isPlayer) {
                             application.characterUpdate(target);
                         }
+                        game.publish('character-update', target);
                     }
                 }
             }
-        }, Math.trunc(affliction.duration * 1000));
+        }, Math.trunc(active.duration * 1000));
 
         if (target.isPlayer) {
             application.characterUpdate(target);
         }
+        game.publish('character-update', target);
     }
 
     /**
@@ -193,14 +199,14 @@ window.Spells = class Spells {
      * @returns {string} a unique id of the effect so that it can be cancelled.
      * @private
      */
-    _activateEffectByAffliction(target, affliction) {
-        switch (affliction.id) {
+    _activateEffectByAffliction(target, active) {
+        switch (active.affliction.id) {
             case "poison":
-                return game.particles.following('cloud', target, affliction.duration);
+                return game.particles.following('cloud', target, active.duration);
             case "regeneration":
-                return game.particles.following('leaf', target, affliction.duration);
+                return game.particles.following('leaf', target, active.duration);
             case "haste":
-                return game.particles.following('burst', target, affliction.duration);
+                return game.particles.following('burst', target, active.duration);
         }
     }
 
@@ -319,6 +325,7 @@ window.Spells = class Spells {
         if (target.isPlayer) {
             application.characterUpdate(target);
         }
+        game.publish('character-update', target);
     }
 
     _statUpdated(target, event, name) {
