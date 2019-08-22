@@ -355,6 +355,7 @@ public class SpellEngine {
         game.publish(new DamageEvent(target, value, type).setSource(source));
 
         if (target.isDead()) {
+            target.getAfflictions().clearOnDeath();
             game.movement().stop(target);
             game.publish(new DeathEvent(target, source));
 

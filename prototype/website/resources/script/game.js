@@ -31,7 +31,7 @@ window.Game = class Game extends Canvas {
                 this.spells.init(event);
 
                 if (!this.loaded) {
-                    this._setup();
+                    game.display();
                     application.gameLoaded(game);
                     this.loaded = true;
                 }

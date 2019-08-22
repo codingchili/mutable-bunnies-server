@@ -2,7 +2,8 @@ package com.codingchili.instance.model.movement;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.*;
-import com.codingchili.instance.model.events.*;
+import com.codingchili.instance.model.events.ErrorEvent;
+import com.codingchili.instance.model.events.PlayerTravelMessage;
 import com.codingchili.instance.model.stats.Attribute;
 import io.vertx.core.json.JsonObject;
 
@@ -40,7 +41,7 @@ public class MovementEngine {
         }, GameContext.secondsToTicks(BEHAVIOUR_UPDATE_INTERVAL));
 
         game.ticker(ticker -> {
-            for (Entity creature: game.creatures().all()) {
+            for (Entity creature : game.creatures().all()) {
                 creature.getVector().forward(ticker);
             }
         }, GameContext.onAllTicks());
@@ -123,9 +124,11 @@ public class MovementEngine {
      * @param source the creature to stop.
      */
     public void stop(Creature source) {
-        source.getVector().stop();
-        cancel(source);
-        update(source);
+        if (source.getVector().isMoving() || behaviours.containsKey(source)) {
+            source.getVector().stop();
+            cancel(source);
+            update(source);
+        }
     }
 
     /**

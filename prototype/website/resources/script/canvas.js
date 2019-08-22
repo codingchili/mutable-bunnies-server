@@ -28,7 +28,7 @@ window.Canvas = class {
             document.body.appendChild(this.renderer.view);
         }
         this.renderer.view.id = 'canvas';
-        this.renderer.view.style.animation = "fadein 0.4s ease-in 1";
+        this.renderer.view.style.display = "none";
 
         window.onresize = () => this.resize();
         this.resize();
@@ -62,9 +62,12 @@ window.Canvas = class {
         }
     }
 
+    display() {
+        this.renderer.view.style.display = "block";
+    }
+
     resize() {
         this.renderer.view.style.position = "absolute";
-        this.renderer.view.style.display = "block";
         this.renderer.view.style.top = "0px";
         this.renderer.view.style.left = "0px";
         this.renderer.view.style.right = "0px";
