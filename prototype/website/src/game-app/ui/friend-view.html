@@ -101,6 +101,18 @@
                 margin-top: 8px;
             }
 
+            .actions {
+                position: absolute;
+                display: flex;
+                flex-direction: row;
+                right: 8px;
+                top: 6px;
+            }
+
+            .action-icon {
+
+            }
+
         </style>
 
         <div class="dialog-container" id="container">
@@ -113,27 +125,55 @@
 
                 <hr>
                 <div id="friends">
-                    <template is="dom-repeat" items="[[list]]" as="friend">
-                        <paper-material class="friend-item"
-                                        style$="background-color:[[_selected(entry, quest)]];" elevation="0"
-                                        on-down="_details">
 
-                            <span class="friend-name">[[friend]]</span>
-                            <paper-ripple></paper-ripple>
-                        </paper-material>
+                    <template is="dom-if" if="[[_hasFriends(list)]]">
+                        <template is="dom-repeat" items="[[list]]" as="friend">
+                            <paper-material class="friend-item" elevation="0">
+
+                                <span class="friend-name">[[friend]]</span>
+                                <paper-ripple></paper-ripple>
+                            </paper-material>
+                        </template>
+                        <hr>
                     </template>
 
-                    <hr>
-                    <span>Pending</span>
+                    <template is="dom-if" if="[[_hasRequests(requests)]]">
+                        <span>Incoming</span>
 
-                    <template is="dom-repeat" items="[[pending]]" as="pendant">
-                        <paper-material class="friend-item"
-                                        style$="background-color:[[_selected(entry, quest)]];" elevation="0"
-                                        on-down="_details">
+                        <template is="dom-repeat" items="[[requests]]" as="request">
+                            <paper-material class="friend-item" elevation="0">
 
-                            <span class="friend-name">[[pendant]]</span>
-                            <paper-ripple></paper-ripple>
-                        </paper-material>
+                                <span class="friend-name">[[request]]</span>
+
+                                <div class="actions">
+                                    <iron-icon icon="icons:check" class="action-icon" on-tap="_accept"></iron-icon>
+                                    <iron-icon icon="icons:close" class="action-icon" on-tap="_reject"></iron-icon>
+                                </div>
+
+                                <paper-ripple></paper-ripple>
+                            </paper-material>
+                        </template>
+
+                        <hr>
+                    </template>
+
+                    <template is="dom-if" if="[[_hasPending(pending)]]">
+                        <span>Pending</span>
+
+                        <template is="dom-repeat" items="[[pending]]" as="pendant">
+                            <paper-material class="friend-item"
+                                            style$="background-color:[[_selected(entry, quest)]];" elevation="0"
+                                            on-down="_details">
+
+                                <span class="friend-name">[[pendant]]</span>
+                                <div class="actions">
+                                    <!-- no support for canceling requests yet. -->
+                                    <!--<iron-icon icon="icons:close" class="action-icon" on-tap="_cancel"></iron-icon>-->
+                                </div>
+
+                                <paper-ripple></paper-ripple>
+                            </paper-material>
+                        </template>
                     </template>
                 </div>
 
@@ -155,7 +195,6 @@
                         </template>
                     </div>
                 </div>
-
             </paper-material>
         </div>
     </template>
@@ -166,10 +205,15 @@
                 return 'friend-view';
             }
 
-            ready() {
-                super.ready();
+            constructor() {
+                super();
                 this.list = [];
                 this.pending = [];
+                this.requests = [];
+            }
+
+            ready() {
+                super.ready();
                 this.friends = new Friends();
 
                 application.subscribe('show-friends', () => {
@@ -200,6 +244,31 @@
                     this.pending = event.pending;
                     this.notifyPath('pending');
                 });
+            }
+
+            _accept(e) {
+                this.friends.accept(event => {
+                    this._list();
+                    this._pending();
+                }, e.model.request);
+            }
+
+            _hasRequests() {
+                return this.requests.length > 0;
+            }
+
+            _hasPending() {
+                return this.pending.length > 0;
+            }
+
+            _hasFriends() {
+                return this.list.length > 0;
+            }
+
+            _reject(e) {
+                this.friends.reject(event => {
+                    this._list();
+                }, e.model.request);
             }
 
             _keydown(e) {

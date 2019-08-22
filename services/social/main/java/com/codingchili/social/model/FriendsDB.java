@@ -26,8 +26,12 @@ public class FriendsDB implements AsyncFriendStore {
         Future<Void> future = Future.future();
 
         getOrCreate(to, list -> {
-            list.request(from);
-            friends.put(list, (ignored) -> future.complete());
+            if (!list.getFriends().contains(to)) {
+                list.request(from);
+                friends.put(list, (ignored) -> future.complete());
+            } else {
+                future.complete();
+            }
         });
 
         return future;
