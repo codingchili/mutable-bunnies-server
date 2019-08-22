@@ -76,10 +76,16 @@ window.Canvas = class {
     }
 
     _width() {
-        return Math.min(window.outerWidth, window.innerWidth);
+        // because clientWidth doesn't work when decreasing the width.
+        // and innerWidth doesn't give the correct result in fullscreen.
+        // #justbrowserthings
+        return Math.max(document.documentElement.clientWidth, window.innerWidth);
     }
 
     _height() {
-        return Math.min(window.outerHeight, window.innerHeight);
+        // because clientHeight doesn't work when decreasing the height.
+        // and innerHeight doesn't give the correct result in fullscreen.
+        // #justbrowserthings
+        return Math.max(document.documentElement.clientHeight, window.innerHeight);
     }
 };
