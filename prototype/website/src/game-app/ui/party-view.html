@@ -38,9 +38,10 @@
         </style>
 
         <div class="container">
-            <player-status target="[[target]]" class="member" compact="1"></player-status>
-            <player-status target="[[target]]" class="member" compact></player-status>
-            <player-status target="[[target]]" class="member" compact="true"></player-status>
+            <template is="dom-repeat" items="[[members]]" as="member">
+                <player-status target="[[member]]" class="member" style$="[[_index(index)]]"
+                               compact></player-status>
+            </template>
         </div>
 
     </template>
@@ -53,6 +54,9 @@
 
             constructor() {
                 super();
+                this.members = [];
+                this.target = false;
+
 
                 application.onRealmLoaded(realm => {
                     this.realm = realm;
@@ -62,9 +66,14 @@
                     game.subscribe('character-update', target => {
                         if (!this.target) {
                             this.target = target;
+                            this.members = [this.target, this.target, this.target];
                         }
                     });
                 });
+            }
+
+            _index(index) {
+                return `z-index: ${10 - index};`;
             }
 
             _loaded() {

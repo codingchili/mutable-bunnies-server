@@ -19,6 +19,7 @@
                 left: 16px;
                 top: 16px;
                 width: 416px;
+                z-index: 800;
             }
 
             .frame {
@@ -49,22 +50,6 @@
                 padding: 4px;
                 --paper-progress-active-color: #8c0006;
                 --paper-progress-container-color: #8c000632;
-            }
-
-            .health-bar-mini {
-                margin-top: 6px;
-            }
-
-            .portrait-mini {
-                width: 24px;
-                left: 8px;
-                top: -10px;
-                position: absolute;
-            }
-
-            .frame-mini {
-                height: 40px;
-                width: 276px;
             }
 
             .energy-bar {
@@ -109,6 +94,38 @@
                 width: 100%;
             }
 
+            .class-icon {
+                position: absolute;
+            }
+
+            /* compact display classes ends with -mini. */
+            .health-bar-mini {
+                margin-top: 8px;
+            }
+
+            .portrait-mini {
+                width: 24px;
+                height: 24px;
+                left: 8px;
+                top: -2px;
+                position: absolute;
+            }
+
+            .frame-mini {
+                height: 40px;
+                width: 276px;
+            }
+
+            .afflictions-mini {
+                position: absolute;
+                left: 222px;
+                top: 0px;
+            }
+
+            .class-icon-mini {
+                position: unset;
+            }
+
             @media (max-width: 728px) {
                 :host {
                     top: 0px;
@@ -130,6 +147,7 @@
                 margin-left: 62px;
                 display: flex;
                 flex-wrap: wrap;
+                z-index: 850;
             }
 
             .affliction-icon {
@@ -179,10 +197,6 @@
                 width: 176px;
             }
 
-            .class-icon {
-                position: absolute;
-            }
-
             .stats-tooltip {
                 margin-left: 64px;
                 z-index: 99999;
@@ -196,6 +210,17 @@
                 display: none;
             }
 
+            .stats-level {
+                display: block;
+                right: 12px;
+                position: absolute;
+                top: 8px;
+            }
+
+            #stats {
+                margin-top: 8px;
+            }
+
         </style>
 
 
@@ -206,15 +231,16 @@
                 <span class="name">[[target.name]]</span>
             </template>
 
-            <div class="class-icon">
+            <div class="class-icon" id="class-icon">
                 <paper-tooltip animation-delay="0" position="bottom" class="stats-tooltip">
                     <div class="class-stats">
-                        Stats
+                        <span class="stats-header">[[target.name]]'s stats</span>
+                        <span class="stats-level">lv. [[target.stats.level]]</span>
                         <stats-view id="stats" compact="true" selected="{{target}}"
                                     style="display:block"></stats-view>
                     </div>
                 </paper-tooltip>
-                <img id="portrait" class="portrait" src$="[[_portrait(target.classId)]]">
+                <img id="portrait" class="portrait" src$="[[_portrait(target, realm)]]">
             </div>
 
             <div class="health-bar" id="health-bar">
@@ -316,7 +342,10 @@
                 if (this.compact) {
                     this.$['health-bar'].classList.add('health-bar-mini');
                     this.$.frame.classList.add('frame-mini');
-                    this.$.portrait.classList.add('portrait-mini')
+                    this.$.portrait.classList.add('portrait-mini');
+                    this.$.afflictions.classList.add('afflictions-mini');
+                    this.$['class-icon'].classList.add('class-icon-mini');
+                    this.style.width = '276px';
                 }
             }
 
