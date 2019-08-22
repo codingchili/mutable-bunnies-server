@@ -38,6 +38,11 @@ public enum EventType {
     quest_complete,
     quest_update,
 
+    party_request,
+    party_leave,
+    party_accept,
+    party_decline,
+
     error,
     any
 }

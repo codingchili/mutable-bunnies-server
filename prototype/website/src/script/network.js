@@ -40,9 +40,9 @@ class Network {
         response.onreadystatechange = (response) => {
             response = response.currentTarget;
 
-            if (response.readyState == 4) {
+            if (response.readyState === 4) {
                 if (response.status >= 200 && response.status <= 300) {
-                    var data = JSON.parse(response.responseText);
+                    let data = JSON.parse(response.responseText);
 
                     if (callback.any) {
                         callback.any(data);

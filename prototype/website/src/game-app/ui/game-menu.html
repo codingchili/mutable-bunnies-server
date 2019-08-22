@@ -93,7 +93,7 @@
                 </div>
 
                 <div>
-                    <svg class="menu-icon menu-icon-disabled">
+                    <svg on-down="_friends" class="menu-icon">
                         <use href$="[[realm.resources]]gui/menu/friends.svg#root"></use>
                     </svg>
                     <paper-tooltip animation-delay="0" class="tooltip" position="left">
@@ -147,6 +147,10 @@
 
             _quests() {
                 application.publish('show-quests');
+            }
+
+            _friends() {
+                application.publish('show-friends');
             }
 
             _settings() {
