@@ -97,7 +97,7 @@ public class GameContext {
             if (closed.get()) {
                 instance.cancel(timer);
             } else {
-                instance.blocking(block -> {
+                //instance.blocking(block -> {
                     Runnable runnable;
 
                     while ((runnable = queue.poll()) != null) {
@@ -110,18 +110,18 @@ public class GameContext {
                         }
                     });
 
-                    block.complete();
-                }, (done) -> {
-                    if (done.succeeded()) {
+                  //  block.complete();
+                //}, (done) -> {
+                  //  if (done.succeeded()) {
                         currentTick++;
                         if (currentTick == Long.MAX_VALUE) {
                             currentTick = 0L;
                         }
-                    } else {
-                        logger.onError(done.cause());
-                    }
+                    //} else {
+                    //    logger.onError(done.cause());
+                    //}
                     processing.set(false);
-                });
+                //});
             }
         }
     }
