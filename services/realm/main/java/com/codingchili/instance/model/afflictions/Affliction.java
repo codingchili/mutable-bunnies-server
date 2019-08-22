@@ -23,6 +23,7 @@ public class Affliction implements Storable {
     private Float chance = 1.0f;
     private Scripted modifier;
     private Scripted tick;
+    private boolean persist;
 
     public ActiveAffliction apply(Creature source, Creature target) {
         return new ActiveAffliction(source, target, this);
@@ -35,6 +36,14 @@ public class Affliction implements Storable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public boolean isPersist() {
+        return persist;
+    }
+
+    public void setPersist(boolean persist) {
+        this.persist = persist;
     }
 
     public String getName() {

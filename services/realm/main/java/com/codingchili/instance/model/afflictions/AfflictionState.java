@@ -101,4 +101,8 @@ public class AfflictionState extends ConcurrentLinkedQueue<ActiveAffliction> {
         forEach(active ->
                 stats = stats.apply(active.modify(game)));
     }
+
+    public void clearOnDeath() {
+        removeIf(active -> !active.getAffliction().isPersist());
+    }
 }
