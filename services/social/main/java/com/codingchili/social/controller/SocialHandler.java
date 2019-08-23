@@ -28,7 +28,8 @@ public class SocialHandler implements CoreHandler {
     public void init(CoreContext core) {
         protocol.use(Strings.ID_PING, Request::accept, Role.PUBLIC);
         protocol.annotated(new FriendHandler(context));
-        protocol.annotated(new PartyHandler());
+        protocol.annotated(new PartyHandler(context));
+        protocol.annotated(new MessageHandler(context));
     }
 
     @Authenticator

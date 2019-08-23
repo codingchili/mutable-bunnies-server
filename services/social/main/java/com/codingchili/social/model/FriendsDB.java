@@ -15,9 +15,11 @@ import com.codingchili.core.storage.*;
 public class FriendsDB implements AsyncFriendStore {
     private static final String ID_REQUESTED = "requests[]";
     private AsyncStorage<FriendList> friends;
+    private OnlineDB online;
 
-    public FriendsDB(AsyncStorage<FriendList> storage) {
+    public FriendsDB(AsyncStorage<FriendList> storage, OnlineDB online) {
         this.friends = storage;
+        this.online = online;
         friends.addIndex(ID_REQUESTED);
     }
 
@@ -50,7 +52,7 @@ public class FriendsDB implements AsyncFriendStore {
                     getOrCreate(friend, other -> {
                         other.accepted(account);
                         friends.put(other, (ignored) -> {
-                            future.complete();
+                            future.complete(list);
                         });
                     });
                 });
@@ -68,7 +70,7 @@ public class FriendsDB implements AsyncFriendStore {
 
         getOrCreate(account, list -> {
             list.reject(requestor);
-            friends.put(list, (ignored) -> future.complete(list));
+            friends.put(list, (ignored) -> future.complete(setOnlineStatus(list)));
         });
         return future;
     }
@@ -76,7 +78,7 @@ public class FriendsDB implements AsyncFriendStore {
     @Override
     public Future<FriendList> list(String account) {
         Future<FriendList> future = Future.future();
-        getOrCreate(account, future::complete);
+        getOrCreate(account, list -> future.complete(setOnlineStatus(list)));
         return future;
     }
 
@@ -108,7 +110,7 @@ public class FriendsDB implements AsyncFriendStore {
                 getOrCreate(friend, second -> {
                     second.remove(account);
                     friends.put(second, (saved) -> {
-                        future.complete(second);
+                        future.complete(setOnlineStatus(second));
                     });
                 });
 
@@ -116,6 +118,15 @@ public class FriendsDB implements AsyncFriendStore {
 
         });
         return future;
+    }
+
+    private FriendList setOnlineStatus(FriendList list) {
+        list.getFriends().forEach(friend -> {
+            if (online.is(friend)) {
+                list.online(friend, online.realms(friend));
+            }
+        });
+        return list;
     }
 
     @Override

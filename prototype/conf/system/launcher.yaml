@@ -9,7 +9,7 @@ blocks:
   - com.codingchili.authentication.Service
   - com.codingchili.realm.Service
   - com.codingchili.router.Service
-  - com.codingchili.social.controller.SocialHandler
+  - com.codingchili.social.Service
   - com.codingchili.website.Service
   - com.codingchili.realmregistry.Service
   router:

@@ -59,35 +59,29 @@ public class RealmClientHandler implements CoreHandler {
 
     @Api(route = CLIENT_INSTANCE_JOIN)
     public void join(RealmRequest request) {
-        if (context.isConnected(request.account())) {
-            throw new CoreRuntimeException("Account is already connected to this realm.");
-        } else {
-            characters.findOne(find -> {
-                if (find.succeeded()) {
-                    PlayerCreature creature = find.result();
+        characters.findOne(find -> {
+            if (find.succeeded()) {
+                PlayerCreature creature = find.result();
 
-                    context.onPlayerJoin(creature);
+                context.onPlayerJoin(creature);
 
-                    JoinMessage join = new JoinMessage()
-                            .setPlayer(find.result())
-                            .setRealmName(context.realm().getNode());
+                JoinMessage join = new JoinMessage()
+                        .setPlayer(find.result())
+                        .setRealmName(context.realm().getNode());
 
-                    // store the player character and account names on the connection.
-                    request.connection().setProperty(ID_NAME, creature.getName());
+                // store the player character and account names on the connection.
+                request.connection().setProperty(ID_NAME, creature.getName());
 
-                    // notify the remote instance when the client disconnects - register handler only once.
-                    request.connection().onCloseHandler("leaveInstances", () -> {
-                        leave(request);
-                    });
+                // notify the remote instance when the client disconnects - register handler only once.
+                request.connection().onCloseHandler("leaveInstances", () -> leave(request));
 
-                    // save the instance the player is connected to on the request object.
-                    context.connect(creature, request.connection());
-                    context.sendInstance(request.instance(), join).setHandler(request::result);
-                } else {
-                    request.result(find);
-                }
-            }, request.account(), request.character());
-        }
+                // save the instance the player is connected to on the request object.
+                context.connect(creature, request.connection());
+                context.sendInstance(request.instance(), join).setHandler(request::result);
+            } else {
+                request.result(find);
+            }
+        }, request.account(), request.character());
     }
 
     @Api(route = CLIENT_INSTANCE_LEAVE)
@@ -179,22 +173,38 @@ public class RealmClientHandler implements CoreHandler {
 
     @Authenticator
     public Future<Role> authenticator(Request request) {
+        Connection connection = request.connection();
         Future<Role> future = Future.future();
 
         // websockets are persistent: only need to verify users token once.
-        if ((request.connection().getProperty(ID_ACCOUNT).isPresent())) {
+        if ((connection.getProperty(ID_ACCOUNT).isPresent())) {
             future.complete(Role.USER);
         } else {
             Token token = request.token();
-            context.verifyToken(token).setHandler(verify -> {
-                if (verify.succeeded()) {
-                    request.connection().setProperty(ID_ACCOUNT, token.getDomain());
-                    future.complete(Role.USER);
-                } else {
-                    future.complete(Role.PUBLIC);
-                }
-            });
+
+            if (context.isConnected(token.getDomain())) {
+                throw new CoreRuntimeException("Account is already connected to this realm.");
+            } else {
+                context.verifyToken(token).setHandler(verify -> {
+                    if (verify.succeeded()) {
+
+                        // handle social offline/online notifications.
+                        notify(token.getDomain(), true);
+                        connection.onCloseHandler("notify-social", () -> notify(token.getDomain(), false));
+
+                        connection.setProperty(ID_ACCOUNT, token.getDomain());
+                        future.complete(Role.USER);
+                    } else {
+                        future.complete(Role.PUBLIC);
+                    }
+                });
+            }
         }
         return future;
+    }
+
+    private void notify(String account, boolean online) {
+        context.bus().send(ONLINE_SOCIAL_NODE, Serializer.json(
+                new OnlineStatusMessage(account, context.realm().getNode(), online)));
     }
 }

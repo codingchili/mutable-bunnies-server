@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.context.SystemContext;
+import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.storage.IndexedMapPersisted;
 import com.codingchili.core.storage.StorageLoader;
 
@@ -34,7 +35,7 @@ public class FriendListTest {
                 .withValue(FriendList.class)
                 .build(storage -> {
                     if (storage.succeeded()) {
-                        friends = new FriendsDB(storage.result());
+                        friends = new FriendsDB(storage.result(), new OnlineDB(core));
                         async.complete();
                     } else {
                         test.fail(storage.cause());
@@ -164,5 +165,14 @@ public class FriendListTest {
                                 async.complete();
                             });
                 });
+    }
+
+    @Test
+    public void serializeFriendList() {
+        FriendList list = new FriendList();
+        list.getFriends().add("friend_a");
+        list.getRequests().add("requested");
+        list.setAccount("admin");
+        Serializer.json(list);
     }
 }

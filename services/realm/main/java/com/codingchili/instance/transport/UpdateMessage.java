@@ -1,5 +1,6 @@
 package com.codingchili.instance.transport;
 
+import com.codingchili.common.ReceivableMessage;
 import com.codingchili.instance.model.events.Event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;

@@ -1,12 +1,19 @@
 package com.codingchili.social.controller;
 
 
+import com.codingchili.social.configuration.SocialContext;
+
 import com.codingchili.core.listener.Request;
 
 /**
  * @author Robin Duda
  */
 public class PartyHandler implements SocialServiceHandler {
+
+
+    public PartyHandler(SocialContext context) {
+
+    }
 
     // list of requests
     // list of current parties

@@ -9,7 +9,7 @@ import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
 import com.codingchili.instance.transport.FasterRealmInstanceCodec;
-import com.codingchili.instance.transport.ReceivableMessage;
+import com.codingchili.common.ReceivableMessage;
 import com.codingchili.realm.configuration.*;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.DeliveryOptions;

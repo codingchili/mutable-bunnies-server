@@ -1,4 +1,6 @@
-package com.codingchili.instance.transport;
+package com.codingchili.common;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Robin Duda
@@ -11,10 +13,12 @@ public interface ReceivableMessage {
      * @return the connection identifier on the realm server - typically the
      * clients account name.
      */
+    @JsonProperty("target")
     String target();
 
     /**
      * @return the name of the event.
      */
+    @JsonProperty("route")
     String route();
 }

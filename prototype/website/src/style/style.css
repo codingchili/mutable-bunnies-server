@@ -69,6 +69,11 @@ paper-toolbar {
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
 
+.border {
+    border: 1px solid var(--game-theme-opaque);
+    border-radius: 2px;
+}
+
 .center-dialog {
     pointer-events: auto;
     position: absolute;

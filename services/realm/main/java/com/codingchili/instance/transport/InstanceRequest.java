@@ -1,5 +1,6 @@
 package com.codingchili.instance.transport;
 
+import com.codingchili.common.ReceivableMessage;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 

@@ -4,6 +4,9 @@ import com.codingchili.core.listener.Request;
 import com.codingchili.core.listener.RequestWrapper;
 import com.codingchili.core.protocol.Serializer;
 
+import static com.codingchili.common.Strings.ID_REALM;
+import static com.codingchili.core.configuration.CoreStrings.ID_MESSAGE;
+
 /**
  * @author Robin Duda
  * <p>
@@ -34,6 +37,14 @@ public class SocialRequest implements RequestWrapper {
 
     public String friend() {
         return data().getString(ID_FRIEND);
+    }
+
+    public String message() {
+        return data().getString(ID_MESSAGE);
+    }
+
+    public String realm() {
+        return data().getString(ID_REALM);
     }
 
     @Override

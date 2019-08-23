@@ -249,10 +249,12 @@
             }
 
             _show() {
+                input.block();
                 this.$.container.style.display = 'block';
             }
 
             _hide() {
+                input.unblock();
                 this.$.container.style.display = 'none';
             }
         }

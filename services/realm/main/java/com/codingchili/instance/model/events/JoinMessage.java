@@ -1,7 +1,7 @@
 package com.codingchili.instance.model.events;
 
 import com.codingchili.instance.model.entity.PlayerCreature;
-import com.codingchili.instance.transport.ReceivableMessage;
+import com.codingchili.common.ReceivableMessage;
 
 import static com.codingchili.common.Strings.CLIENT_INSTANCE_JOIN;
 

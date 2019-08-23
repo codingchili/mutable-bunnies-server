@@ -79,13 +79,16 @@
 
             .add-area {
                 position: absolute;
-                left: 264px;
-                width: 286px;
+                left: 198px;
+                right: 8px;
+                bottom: 0px;
+                top: 54px;
             }
 
             .add-controls {
                 display: flex;
                 flex-direction: row;
+                justify-content: center;
             }
 
             .suggestion-title {
@@ -95,6 +98,24 @@
 
             .add-input {
                 width: 100%;
+            }
+
+            .message {
+                width: 60%;
+                padding: 8px;
+                margin: 4px;
+                font-size: smaller;
+            }
+
+            .sender {
+                display: block;
+                font-size: x-small;
+                text-align: right;
+                padding: 0;
+            }
+
+            .to {
+                margin-left: 34%;
             }
 
             .suggestions {
@@ -113,6 +134,41 @@
 
             }
 
+            .close-chat {
+                top: 22px;
+            }
+
+            .send-icon {
+                display: block;
+                margin-top: 24px;
+            }
+
+            #message {
+                width: 100%;
+            }
+
+            #messages {
+                overflow-y: scroll;
+                overflow-x: hidden;
+                word-break: break-word;
+                position: absolute;
+                top: 0px;
+                bottom: 48px;
+                right: 8px;
+                left: 0px;
+            }
+
+            #message-send {
+                position: absolute;
+                bottom: -4px;
+                right: 8px;
+                left: 0px;
+            }
+
+            #send-controls {
+                display: flex;
+            }
+
         </style>
 
         <div class="dialog-container" id="container">
@@ -127,11 +183,21 @@
                 <div id="friends">
 
                     <template is="dom-if" if="[[_hasFriends(list)]]">
-                        <template is="dom-repeat" items="[[list]]" as="friend">
-                            <paper-material class="friend-item" elevation="0">
-
+                        <template is="dom-repeat" items="[[_friendList(unread, friends, online)]]" as="friend">
+                            <paper-material on-tap="_chat" class="friend-item" elevation="0"
+                                            style$="background-color:[[_highlight(friend, chat)]];
+                                                    color:[[_locality(friend, online)]];
+                                                    [[_index(index)]]">
                                 <span class="friend-name">[[friend]]</span>
-                                <paper-ripple></paper-ripple>
+
+                                <template is="dom-if" if="[[_online(friend, online, unread)]]">
+                                    <paper-ripple></paper-ripple>
+                                    <span class="thread-unread">[[_unread(friend, unread)]]</span>
+                                </template>
+
+                                <paper-tooltip animation-delay="0" class="tooltip">
+                                    [[_description(friend, online)]]
+                                </paper-tooltip>
                             </paper-material>
                         </template>
                         <hr>
@@ -161,9 +227,7 @@
                         <span>Pending</span>
 
                         <template is="dom-repeat" items="[[pending]]" as="pendant">
-                            <paper-material class="friend-item"
-                                            style$="background-color:[[_selected(entry, quest)]];" elevation="0"
-                                            on-down="_details">
+                            <paper-material class="friend-item" elevation="0">
 
                                 <span class="friend-name">[[pendant]]</span>
                                 <div class="actions">
@@ -178,22 +242,52 @@
                 </div>
 
                 <div class="add-area">
-                    <div class="add-controls">
-                        <paper-input value="{{friend}}" id="friend" label="Add Friend" on-keydown="_keydown"
-                                     type="text" class="add-input" always-float-label></paper-input>
 
-                        <iron-icon icon="icons:add" class="add-icon" on-tap="_request"></iron-icon>
-                    </div>
+                    <template is="dom-if" if="[[!_isChat(chat)]]">
+                        <div class="add-controls">
+                            <paper-input value="{{friend}}" id="friend" label="Add Friend" on-input="_requestSuggested"
+                                         on-keydown="_keydown"
+                                         type="text" class="add-input" always-float-label autofocus></paper-input>
 
-                    <div class="suggestions">
-                        <span class="suggestion-title">Suggestions</span>
-                        <template is="dom-repeat" items="[[suggestions]]" as="suggestion">
-                            <paper-material class="friend-item" elevation="0" on-down="_requestSuggested">
-                                <span class="friend-name">[[suggestion]]</span>
-                                <paper-ripple></paper-ripple>
-                            </paper-material>
+                            <iron-icon icon="icons:add" class="add-icon" on-tap="_request"></iron-icon>
+                        </div>
+
+                        <template is="dom-if" if="[[_hasSuggestions(suggestions)]]">
+                            <div class="suggestions">
+                                <span class="suggestion-title">Suggestions</span>
+                                <template is="dom-repeat" items="[[suggestions]]" as="suggestion">
+                                    <paper-material class="friend-item" elevation="0" on-down="_requestFromSuggested">
+                                        <span class="friend-name">[[suggestion]]</span>
+                                        <paper-ripple></paper-ripple>
+                                    </paper-material>
+                                </template>
+                            </div>
                         </template>
-                    </div>
+                    </template>
+
+
+                    <template is="dom-if" if="[[_isChat(chat)]]">
+                        <div id="messages">
+                            <template is="dom-repeat" items="[[thread]]" as="message">
+                                <div class$="message border [[_direction(message)]]">
+                                    <span class="sender">[[message.from]]</span>
+                                    [[message.message]]
+                                </div>
+                            </template>
+                        </div>
+
+                        <div id="message-send">
+                            <div id="send-controls">
+                                <iron-icon icon="icons:reply" class="close-chat" on-tap="_findFriends"></iron-icon>
+                                <paper-input value="{{message}}" id="message" label="Message"
+                                             on-keydown="_sendMessage"
+                                             type="text" class="add-input" always-float-label autofocus></paper-input>
+
+                                <iron-icon icon="icons:send" class="send-icon" on-tap="_message"></iron-icon>
+                            </div>
+                        </div>
+                    </template>
+
                 </div>
             </paper-material>
         </div>
@@ -207,14 +301,30 @@
 
             constructor() {
                 super();
+                this.chat = false;
                 this.list = [];
                 this.pending = [];
                 this.requests = [];
+                this.suggestions = [];
+                this.online = {};
+                this.messages = {};
+                this.thread = [];
+                this.unread = {};
             }
 
             ready() {
                 super.ready();
-                this.friends = new Friends();
+                this.friends = new Social();
+
+                application.onGameLoaded(() => {
+                    input.onKeysListener({
+                        down: () => {
+                            application.publish('show-friends');
+                        }
+                    }, 'j');
+
+                    this._listen();
+                });
 
                 application.subscribe('show-friends', () => {
                     if (this._open()) {
@@ -223,15 +333,132 @@
                         this._pending();
                         this._list();
 
+                        this.suggestions = [];
+                        this.friend = '';
+
                         this._show();
                     }
                 });
+            }
+
+            _friendList() {
+                return this.list;
+            }
+
+            _unread(friend) {
+                this.unread[friend] = this.unread[friend] || 0;
+                let unread = this.unread[friend];
+                console.log('unread trigger: ' + unread);
+                return (unread > 0) ? unread : '';
+            }
+
+            _listen() {
+                server.connection.setHandler('friend_message', event => {
+                    if (!this.messages[event.from]) {
+                        this.messages[event.from] = [];
+                    }
+
+                    this.messages[event.from].push(event);
+
+                    if (this.chat !== event.from) {
+                        this.set(`unread.${event.from}`, (this.unread[event.from] || 0) + 1);
+                        this.notifyPath('unread', Object.assign({}, this.unread));
+                    } else {
+                        this.notifySplices('thread');
+                        this._scroll();
+                    }
+                });
+
+                server.connection.setHandler('social_offline', event => {
+                    this.online[event.friend] = this.online[event.friend] || [];
+                    this.online[event.friend] = this.online[event.friend]
+                        .filter(function (value, index, arr) {
+                            return value !== event.realm;
+                        });
+                    this.notifyPath(`online`, Object.assign({}, this.online));
+                });
+
+                server.connection.setHandler('social_online', event => {
+                    application.publish('notification', `${event.friend} is now online.`);
+                    this.online[event.friend] = this.online[event.friend] || [];
+                    this.online[event.friend].push(event.realm);
+                    this.notifyPath(`online`, Object.assign({}, this.online));
+                });
+            }
+
+            _locality(friend) {
+                let realms = this.online[friend];
+                if (realms && realms.length > 0) {
+                    return (realms.includes(application.realm.node)) ? 'lime' : 'orange';
+                } else {
+                    return 'red';
+                }
+            }
+
+            _description(friend) {
+                let realms = this.online[friend];
+                if (realms && realms.length > 0) {
+                    return (realms.includes(application.realm.node)) ? application.realm.node : realms[0];
+                } else {
+                    return "Offline";
+                }
+            }
+
+            _index(index) {
+                return `z-index: ${500 - index};`;
+            }
+
+            _findFriends() {
+                this.chat = false;
+            }
+
+            _direction(message) {
+                return (message.from === application.token.domain) ? 'from' : 'to';
+            }
+
+            _online(friend) {
+                return (this.online[friend]);
+            }
+
+            _chat(e) {
+                if (this._online(e.model.friend)) {
+                    this.chat = e.model.friend;
+                    this.unread[this.chat] = 0;
+                    this.notifyPath('unread', Object.assign({}, this.unread));
+
+                    if (!this.messages[this.chat]) {
+                        this.messages[this.chat] = [];
+                    }
+                    this.thread = this.messages[this.chat];
+                    this._scroll();
+                }
+            }
+
+            _scroll() {
+                setTimeout(() => {
+                    try {
+                        let element = this.shadowRoot.querySelector('#messages');
+                        element.scrollTop = element.scrollHeight;
+                    } catch (e) {
+                        // do nothing.
+                    }
+                }, 1);
+            }
+
+            _isChat(friend) {
+                return !!friend;
+            }
+
+            _highlight(friend) {
+                let color = getComputedStyle(this).getPropertyValue('--accent-color') + '40';
+                return (friend === this.chat) ? color : '';
             }
 
             _list() {
                 this.friends.list(event => {
                     this.list = event.friends;
                     this.requests = event.requests;
+                    this.online = event.online;
                 });
             }
 
@@ -248,7 +475,8 @@
 
             _accept(e) {
                 this.friends.accept(event => {
-                    this._list();
+                    this.list = event.friends;
+                    this.requests = event.requests;
                     this._pending();
                 }, e.model.request);
             }
@@ -265,6 +493,10 @@
                 return this.list.length > 0;
             }
 
+            _hasSuggestions() {
+                return this.suggestions.length > 0;
+            }
+
             _reject(e) {
                 this.friends.reject(event => {
                     this._list();
@@ -274,23 +506,32 @@
             _keydown(e) {
                 if (e.keyCode === 13) {
                     this._request();
-                } else {
-                    if (this.friend.length >= 3) {
-                        this.friends.suggestion(event => {
-                            this.suggestions = event.suggestions;
-                            this.notifyPath("suggestions");
-                        }, this.friend);
-                    }
                 }
             }
 
             _requestSuggested(event) {
-                this._sendRequest(event.model.suggestion);
+                if (this.friend.length >= 1) {
+                    this.friends.suggestion(event => {
+                        this.suggestions = event.suggestions;
+                        this.notifyPath("suggestions");
+                    }, this.friend);
+                } else {
+                    this.suggestions = [];
+                }
+            }
+
+            _requestFromSuggested(e) {
+                this._sendRequest(e.model.suggestion);
+                this.suggestions = [];
+                this.notifyPath("suggestions");
+                this.friend = "";
             }
 
             _request() {
-                this._sendRequest(this.friend);
-                this.friend = "";
+                if (this.friend.length > 0) {
+                    this._sendRequest(this.friend);
+                    this.friend = "";
+                }
             }
 
             _sendRequest(target) {
@@ -309,11 +550,34 @@
             }
 
             _show() {
+                input.block();
                 this.$.container.style.display = 'block';
             }
 
             _hide() {
+                input.unblock();
                 this.$.container.style.display = 'none';
+            }
+
+            _message() {
+                if (this.message.length > 0) {
+                    this.friends.message((e) => {
+                        this.thread.push({
+                            message: this.message,
+                            from: application.token.domain,
+                            to: this.chat
+                        });
+                        this.message = '';
+                        this.notifySplices('thread');
+                        this._scroll();
+                    }, this.chat, this.message);
+                }
+            }
+
+            _sendMessage(e) {
+                if (e.keyCode === 13) {
+                    this._message();
+                }
             }
         }
 

@@ -1,11 +1,15 @@
 package com.codingchili.social.configuration;
 
 import com.codingchili.social.model.*;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
+
+import java.util.*;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.context.SystemContext;
 import com.codingchili.core.files.Configurations;
+import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.security.Token;
 import com.codingchili.core.security.TokenFactory;
 import com.codingchili.core.storage.StorageLoader;
@@ -16,12 +20,14 @@ import com.codingchili.core.storage.StorageLoader;
  * Context wrapper for the social service.
  */
 public class SocialContext extends SystemContext {
-    private AsyncFriendStore db;
+    private OnlineDB online;
+    private AsyncFriendStore friends;
     private TokenFactory factory;
 
     private SocialContext(CoreContext core) {
         super(core);
         this.factory = new TokenFactory(core, settings().getClientSecret());
+        this.online = new OnlineDB(this);
     }
 
     /**
@@ -39,7 +45,7 @@ public class SocialContext extends SystemContext {
                 .withValue(FriendList.class)
                 .build(storage -> {
                     if (storage.succeeded()) {
-                        context.setDb(new FriendsDB(storage.result()));
+                        context.setFriends(new FriendsDB(storage.result(), context.online()));
                         future.complete(context);
                     } else {
                         future.fail(storage.cause());
@@ -48,15 +54,23 @@ public class SocialContext extends SystemContext {
         return future;
     }
 
-    private void setDb(AsyncFriendStore db) {
-        this.db = db;
+    private void setFriends(AsyncFriendStore db) {
+        this.friends = db;
     }
 
     /**
      * @return database used to store friend relations.
      */
-    public AsyncFriendStore db() {
-        return db;
+    public AsyncFriendStore friends() {
+        return friends;
+    }
+
+
+    /**
+     * @return in-memory database for tracking online accounts.
+     */
+    public OnlineDB online() {
+        return online;
     }
 
     /**
@@ -72,5 +86,27 @@ public class SocialContext extends SystemContext {
      */
     public SocialSettings settings() {
         return Configurations.get(SocialSettings.PATH, SocialSettings.class);
+    }
+
+    /**
+     * Sends a client message to all realms.
+     *
+     * @param target the receiver account id of the message.
+     * @param message the message to send.
+     */
+    public CompositeFuture send(String target, Object message) {
+        List<Future> futures = new ArrayList<>();
+        for (String realm : online.realms(target)) {
+            Future<Void> future = Future.future();
+            futures.add(future);
+            bus().request(realm, Serializer.json(message), done -> {
+                if (done.succeeded()) {
+                    future.complete();
+                } else {
+                    future.fail(done.cause());
+                }
+            });
+        }
+        return CompositeFuture.all(futures);
     }
 }

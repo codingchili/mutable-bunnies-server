@@ -2,7 +2,7 @@
  * Friend API.
  */
 
-class Friends {
+class Social {
 
     constructor() {
         this.network = new Network('social.node');
@@ -36,15 +36,20 @@ class Friends {
         this._send(callback, 'friend_suggest', friend);
     }
 
-    _send(callback, route, friend) {
+    message(callback, friend, message) {
+        this._send(callback, 'friend_message', friend, message);
+    }
+
+    _send(callback, route, friend, message) {
         this.network.rest({
             accepted: callback,
             error: (e) => {
-                application.error("Failed to call friends API.");
+                application.publish('notification', e.message);
             }
         }, route, {
             token: application.token,
-            friend: friend
+            friend: friend,
+            message: message
         });
     }
 }

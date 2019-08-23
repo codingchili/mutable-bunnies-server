@@ -96,6 +96,7 @@
 
                 application.onDialogEvent(dialog => {
                     // call update instead of start.
+                    input.block();
                     this._update(dialog);
                 });
             }
@@ -126,6 +127,7 @@
             _stop() {
                 this.$.container.style.display = 'none';
                 game.dialogs.end();
+                input.unblock();
             }
 
             _select(e) {

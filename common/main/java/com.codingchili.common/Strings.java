@@ -4,8 +4,8 @@ import com.codingchili.core.configuration.CoreStrings;
 
 /**
  * @author Robin Duda
- *         <p>
- *         Override of strings in core and adds some new service-specific.
+ * <p>
+ * Override of strings in core and adds some new service-specific.
  */
 public abstract class Strings extends CoreStrings {
     public static final String PATH_REALM = "conf/realm/";
@@ -32,6 +32,9 @@ public abstract class Strings extends CoreStrings {
     public static final String CLIENT_REALM_TOKEN = "realmtoken";
     public static final String CLIENT_REALM_LIST = "realmlist";
     public static final String CLIENT_CLOSE = "close";
+
+    public static final String SOCIAL_ONLINE = "social_online";
+    public static final String SOCIAL_OFFLINE = "social_offline";
 
     public static final String REALM_UPDATE = "realm.update";
 
@@ -67,6 +70,7 @@ public abstract class Strings extends CoreStrings {
     public static final String NODE_CLIENT_LOGGING = "client.logging.node";
     public static final String NODE_ROUTER = "routing.node";
     public static final String SOCIAL_NODE = "social.node";
+    public static final String ONLINE_SOCIAL_NODE = "online.social.node";
 
     public static final String COLLECTION_REALMS = "realms";
     public static final String COLLECTION_ACCOUNTS = "accounts";

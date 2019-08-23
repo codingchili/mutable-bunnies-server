@@ -18,7 +18,7 @@ public class FriendHandler implements SocialServiceHandler {
     private AsyncFriendStore friends;
 
     public FriendHandler(SocialContext context) {
-        friends = context.db();
+        friends = context.friends();
     }
 
     @Api

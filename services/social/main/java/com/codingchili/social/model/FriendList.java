@@ -1,7 +1,6 @@
 package com.codingchili.social.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.codingchili.core.storage.Storable;
 
@@ -12,8 +11,9 @@ import com.codingchili.core.storage.Storable;
  */
 public class FriendList implements Storable {
     private String account;
-    private List<String> friends = new ArrayList<>();
-    private List<String> requests = new ArrayList<>();
+    private transient Map<String, Set<String>> online = new HashMap<>();
+    private Set<String> friends = new HashSet<>();
+    private Set<String> requests = new HashSet<>();
 
     public FriendList() {
     }
@@ -22,19 +22,19 @@ public class FriendList implements Storable {
         this.account = account;
     }
 
-    public List<String> getFriends() {
+    public Set<String> getFriends() {
         return friends;
     }
 
-    public void setFriends(List<String> friends) {
+    public void setFriends(Set<String> friends) {
         this.friends = friends;
     }
 
-    public List<String> getRequests() {
+    public Set<String> getRequests() {
         return requests;
     }
 
-    public void setRequests(List<String> requests) {
+    public void setRequests(Set<String> requests) {
         this.requests = requests;
     }
 
@@ -52,7 +52,9 @@ public class FriendList implements Storable {
     }
 
     public void request(String from) {
-        requests.add(from);
+        if (!friends.contains(from) && !account.equals(from)) {
+            requests.add(from);
+        }
     }
 
     public void reject(String from) {
@@ -66,6 +68,22 @@ public class FriendList implements Storable {
         } else {
             return false;
         }
+    }
+
+    public Map<String, Set<String>> getOnline() {
+        return online;
+    }
+
+    public void setOnline(Map<String, Set<String>> online) {
+        this.online = online;
+    }
+
+    public void online(String account, Set<String> realm) {
+        this.online.put(account, realm);
+    }
+
+    public boolean isFriend(String other) {
+        return friends.contains(other);
     }
 
     public void remove(String friend) {

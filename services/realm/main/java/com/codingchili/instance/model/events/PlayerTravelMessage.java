@@ -1,7 +1,7 @@
 package com.codingchili.instance.model.events;
 
 import com.codingchili.instance.model.entity.PlayerCreature;
-import com.codingchili.instance.transport.ReceivableMessage;
+import com.codingchili.common.ReceivableMessage;
 
 /**
  * Message sent from an instance to a realm to request player transfer.
