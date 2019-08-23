@@ -4,7 +4,8 @@ import com.codingchili.social.model.*;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.context.SystemContext;
@@ -23,11 +24,16 @@ public class SocialContext extends SystemContext {
     private OnlineDB online;
     private AsyncFriendStore friends;
     private TokenFactory factory;
+    private PartyEngine party;
+
+    protected SocialContext() {
+    }
 
     private SocialContext(CoreContext core) {
         super(core);
         this.factory = new TokenFactory(core, settings().getClientSecret());
         this.online = new OnlineDB(this);
+        this.party = new PartyEngine(this);
     }
 
     /**
@@ -74,6 +80,13 @@ public class SocialContext extends SystemContext {
     }
 
     /**
+     * @return the party manager.
+     */
+    public PartyEngine party() {
+        return party;
+    }
+
+    /**
      * @param token a client token to verify the signature of.
      * @return future.
      */
@@ -91,7 +104,7 @@ public class SocialContext extends SystemContext {
     /**
      * Sends a client message to all realms.
      *
-     * @param target the receiver account id of the message.
+     * @param target  the receiver account id of the message.
      * @param message the message to send.
      */
     public CompositeFuture send(String target, Object message) {

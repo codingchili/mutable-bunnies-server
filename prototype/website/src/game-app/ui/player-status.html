@@ -225,6 +225,8 @@
 
         <paper-material elevation="3" id="frame" class="interface-box noselect frame">
 
+            <slot></slot>
+
             <template is="dom-if" if="[[!compact]]">
                 <span class="level">[[target.stats.level]]</span>
                 <span class="name">[[target.name]]</span>

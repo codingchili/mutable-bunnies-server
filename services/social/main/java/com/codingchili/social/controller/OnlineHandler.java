@@ -37,18 +37,17 @@ public class OnlineHandler implements CoreHandler {
 
     @Api
     public void social_online(SocialRequest request) {
-        System.out.println("ONLINE = " + request.target() + " REALM = " + request.realm());
-
         online.add(request.target(), request.realm());
         notifyAllFriends(new FriendOnlineEvent(request, true));
     }
 
     @Api
     public void social_offline(SocialRequest request) {
-        System.out.println("OFFLINE = " + request.target() + " REALM = " + request.realm());
-
         if (online.is(request.target())) {
             notifyAllFriends(new FriendOnlineEvent(request, false));
+
+            // leave current parties
+            context.party().leave(request.target());
         }
         online.remove(request.target(), request.realm());
     }

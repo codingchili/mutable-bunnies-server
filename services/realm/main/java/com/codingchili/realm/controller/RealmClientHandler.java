@@ -73,10 +73,10 @@ public class RealmClientHandler implements CoreHandler {
                 request.connection().setProperty(ID_NAME, creature.getName());
 
                 // notify the remote instance when the client disconnects - register handler only once.
-                request.connection().onCloseHandler("leaveInstances", () -> leave(request));
+                request.connection().onCloseHandler("leave-instances", () -> leave(request));
 
                 // save the instance the player is connected to on the request object.
-                context.connect(creature, request.connection());
+                context.setInstance(creature, request.connection());
                 context.sendInstance(request.instance(), join).setHandler(request::result);
             } else {
                 request.result(find);
@@ -86,11 +86,15 @@ public class RealmClientHandler implements CoreHandler {
 
     @Api(route = CLIENT_INSTANCE_LEAVE)
     public void leave(RealmRequest request) {
-        context.remove(request);
+        // already left the instance, unregister the close handler to prevent blocking next.
+        request.connection().removeCloseHandler("leave-instances");
+
         request.connection().getProperty(ID_NAME).ifPresent(character -> {
             context.sendInstance(request.instance(), new LeaveMessage()
                     .setPlayerName(character)
                     .setAccountName(request.account()));
+
+            context.clearInstance(request);
         });
     }
 
@@ -182,29 +186,20 @@ public class RealmClientHandler implements CoreHandler {
         } else {
             Token token = request.token();
 
-            if (context.isConnected(token.getDomain())) {
-                throw new CoreRuntimeException("Account is already connected to this realm.");
-            } else {
-                context.verifyToken(token).setHandler(verify -> {
-                    if (verify.succeeded()) {
-
-                        // handle social offline/online notifications.
-                        notify(token.getDomain(), true);
-                        connection.onCloseHandler("notify-social", () -> notify(token.getDomain(), false));
-
+            context.verifyToken(token).setHandler(verify -> {
+                if (verify.succeeded()) {
+                    if (context.isConnected(token.getDomain())) {
+                        future.fail(new CoreRuntimeException("Account is already connected to this realm."));
+                    } else {
+                        context.connect(connection, token.getDomain());
                         connection.setProperty(ID_ACCOUNT, token.getDomain());
                         future.complete(Role.USER);
-                    } else {
-                        future.complete(Role.PUBLIC);
                     }
-                });
-            }
+                } else {
+                    future.complete(Role.PUBLIC);
+                }
+            });
         }
         return future;
-    }
-
-    private void notify(String account, boolean online) {
-        context.bus().send(ONLINE_SOCIAL_NODE, Serializer.json(
-                new OnlineStatusMessage(account, context.realm().getNode(), online)));
     }
 }

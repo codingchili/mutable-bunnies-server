@@ -14,6 +14,7 @@ import static com.codingchili.core.configuration.CoreStrings.ID_MESSAGE;
  */
 public class SocialRequest implements RequestWrapper {
     private static final String ID_FRIEND = "friend";
+    private static final String ID_PARTY = "party";
     private Request request;
 
     public SocialRequest(Request request) {
@@ -33,6 +34,10 @@ public class SocialRequest implements RequestWrapper {
 
     public String account() {
         return request.token().getDomain();
+    }
+
+    public String party() {
+        return request.data().getString(ID_PARTY);
     }
 
     public String friend() {

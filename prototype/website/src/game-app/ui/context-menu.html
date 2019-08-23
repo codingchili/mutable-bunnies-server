@@ -110,7 +110,9 @@
             }
 
             _party() {
-                application.publish('notification', 'Partying with other players is not yet implemented.');
+                social.party_invite(() => {
+                    application.publish('notification', 'Party invite sent.');
+                }, this.target.account);
                 this._hide();
             }
 

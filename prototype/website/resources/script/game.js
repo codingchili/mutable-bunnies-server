@@ -107,6 +107,16 @@ window.Game = class Game extends Canvas {
         return this.entities[id];
     }
 
+    getByAccount(account) {
+        for (let id in this.entities) {
+            let entity = this.entities[id];
+            if (entity.account === account) {
+                return entity;
+            }
+        }
+        console.log('no entity found for account ' + account);
+    }
+
     ticker(callback) {
         this.app.ticker.add(callback);
     }

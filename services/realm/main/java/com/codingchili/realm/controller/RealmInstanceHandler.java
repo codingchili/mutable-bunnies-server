@@ -83,7 +83,7 @@ public class RealmInstanceHandler implements CoreHandler {
                 message.getPlayer().setInstance(message.getInstance());
 
                 context.characters().update(message.getPlayer());
-                String destination = context.connect(message.getPlayer(), connection);
+                String destination = context.setInstance(message.getPlayer(), connection);
 
                 JoinMessage join = new JoinMessage()
                         .setPlayer(message.getPlayer())

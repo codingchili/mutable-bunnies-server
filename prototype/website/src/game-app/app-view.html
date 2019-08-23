@@ -96,7 +96,8 @@
 
             ready() {
                 super.ready();
-                this.view = (window.isPWA) ? 'game-login' : 'start-page';
+                let start = (application.development.skipStart) ? 'game-login' : 'start-page';
+                this.view = (window.isPWA) ? 'game-login' : start;
 
                 application.subscribe('view', (view) => {
                     this.view = view;

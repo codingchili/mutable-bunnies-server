@@ -2,54 +2,80 @@
  * Friend API.
  */
 
-class Social {
+window.Social = class Social {
 
     constructor() {
         this.network = new Network('social.node');
     }
 
-    list(callback) {
+    friend_list(callback) {
         this._send(callback, 'friend_list');
     }
 
-    pending(callback) {
+    friend_pending(callback) {
         this._send(callback, 'friend_pending');
     }
 
-    request(callback, friend) {
-        this._send(callback, 'friend_request', friend);
+    friend_request(callback, friend) {
+        this._send(callback, 'friend_request', {friend: friend});
     }
 
-    accept(callback, friend) {
-        this._send(callback, 'friend_accept', friend);
+    friend_accept(callback, friend) {
+        this._send(callback, 'friend_accept', {friend: friend});
     }
 
-    reject(callback, friend) {
-        this._send(callback, 'friend_reject', friend);
+    friend_reject(callback, friend) {
+        this._send(callback, 'friend_reject', {friend: friend});
     }
 
-    remove(callback, friend) {
-        this._send(callback, 'friend_remove', friend);
+    friend_remove(callback, friend) {
+        this._send(callback, 'friend_remove', {friend: friend});
     }
 
-    suggestion(callback, friend) {
-        this._send(callback, 'friend_suggest', friend);
+    friend_suggestion(callback, friend) {
+        this._send(callback, 'friend_suggest', {friend: friend});
     }
 
-    message(callback, friend, message) {
-        this._send(callback, 'friend_message', friend, message);
+    friend_message(callback, friend, message) {
+        this._send(callback, 'friend_message', {friend: friend, message: message});
     }
 
-    _send(callback, route, friend, message) {
+    party_invite(callback, friend) {
+        this._send(callback, 'party_invite', {friend: friend});
+    }
+
+    party_leave(callback) {
+        this._send(callback, 'party_leave');
+    }
+
+    party_accept(callback, party) {
+        this._send(callback, 'party_accept', {party: party});
+    }
+
+    party_decline(callback, party) {
+        this._send(callback, 'party_decline', {party: party});
+    }
+
+    party_message(callback, message) {
+        this._send(callback, 'party_message', {message: message});
+    }
+
+    party_list(callback) {
+        this._send(callback, 'party_list');
+    }
+
+    _send(callback, route, msg) {
         this.network.rest({
-            accepted: callback,
-            error: (e) => {
-                application.publish('notification', e.message);
-            }
-        }, route, {
-            token: application.token,
-            friend: friend,
-            message: message
-        });
+                accepted: callback,
+                error: (e) => {
+                    application.publish('notification', e.message);
+                }
+            }, route,
+            Object.assign({
+                token: application.token,
+            }, msg || {}));
     }
-}
+};
+
+
+var social = new Social();

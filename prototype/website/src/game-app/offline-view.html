@@ -78,10 +78,14 @@
 
             application.subscribe('view', view => {
                 if (view === 'offline-view') {
-                    setTimeout(() => {
+                    this.timer = setTimeout(() => {
                         this.connecting = true;
                         window.location.reload();
                     }, 20000);
+                } else {
+                    if (this.timer) {
+                        window.clearInterval(this.timer);
+                    }
                 }
             });
         }

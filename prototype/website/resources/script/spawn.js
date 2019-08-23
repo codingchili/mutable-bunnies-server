@@ -203,6 +203,10 @@ window.SpawnHandler = class SpawnHandler {
             this.camera.set(sprite.vector.x, sprite.vector.y);
             this.camera.focus(sprite);
         }
+        if (sprite.account) {
+            console.log('publishing player-spawn');
+            game.publish('player-spawn', sprite);
+        }
     }
 
     _processAfflictionsHook(sprite) {
@@ -247,6 +251,10 @@ window.SpawnHandler = class SpawnHandler {
 
         if (target.account && !target.dead) {
             game.chat.add({text: `${target.name} has left.`, system: true});
+        }
+        if (target.account) {
+            console.log('publishing player-leave');
+            game.publish('player-leave', target);
         }
     }
 };

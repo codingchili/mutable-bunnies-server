@@ -25,6 +25,7 @@ import com.codingchili.core.listener.ListenerSettings;
 import com.codingchili.core.listener.transport.Connection;
 import com.codingchili.core.logging.Level;
 import com.codingchili.core.logging.Logger;
+import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.security.Token;
 import com.codingchili.core.security.TokenFactory;
 import com.codingchili.core.storage.StorageLoader;
@@ -205,29 +206,40 @@ public class RealmContext extends SystemContext implements ServiceContext {
                 .send();
     }
 
-    public String connect(PlayerCreature creature, Connection connection) {
+    public String setInstance(PlayerCreature creature, Connection connection) {
         String address = realm().getNode() + "." + creature.getInstance();
-
         connection.setProperty(ID_INSTANCE, address);
-        connections.put(creature.getAccount(), connection);
-
-        logger.log("Account " + creature.getAccount() + " connecting with character " + creature.getName() + " to " + creature.getInstance());
-
-        connection.onCloseHandler("removeConnection", () -> {
-            logger.log("Account " + creature.getAccount() + " disconnected with character " + creature.getName());
-            connections.remove(creature.getAccount());
-        });
-
         return address;
     }
 
-    public boolean isConnected(String account) {
-        Connection connection = connections.get(account);
-        return connection != null && connection.getProperty(ID_INSTANCE).isPresent();
+    public void connect(Connection connection, String account) {
+        connections.put(account, connection);
+
+        logger.log("Account " + account + " connected to " + settings.get().getNode());
+
+        connection.onCloseHandler("remove-connection", () -> {
+            logger.log("Account " + account + " disconnected from " + settings.get().getNode());
+            connections.remove(account);
+            notify(account, false);
+        });
+        notify(account, true);
     }
 
-    public void remove(RealmRequest request) {
-        connections.remove(request.account());
+    private void notify(String account, boolean online) {
+        bus().send(ONLINE_SOCIAL_NODE, Serializer.json(
+                new OnlineStatusMessage(account, realm().getNode(), online)));
+    }
+
+    public void clearInstance(RealmRequest request) {
+        request.connection().setProperty(ID_INSTANCE, null);
+    }
+
+    public boolean isConnected(String account) {
+        return connections.containsKey(account);
+    }
+
+    public void remove(String account) {
+        connections.remove(account);
     }
 
     public void onPlayerJoin(PlayerCreature creature) {
@@ -243,5 +255,4 @@ public class RealmContext extends SystemContext implements ServiceContext {
             scripted.apply(bindings);
         }
     }
-
 }
