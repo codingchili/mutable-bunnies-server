@@ -32,6 +32,7 @@ window.Game = class Game extends Canvas {
 
                 if (!this.loaded) {
                     game.display();
+                    this._counters();
                     application.gameLoaded(game);
                     this.loaded = true;
                 }
@@ -155,8 +156,9 @@ window.Game = class Game extends Canvas {
         this.fpsMetrics.text = this.fps;
     }
 
-    _setup() {
+    _counters() {
         if (application.development.metrics) {
+            console.log('is metrics = true');
             this._counter(() => {
                 return `fps: ${this.fps}`;
             });
@@ -178,6 +180,7 @@ window.Game = class Game extends Canvas {
         let counter = new PIXI.Text(text, this.texts.style());
         counter.id = this.counters++;
         counter.y = (this._height() - 128) + 16 * counter.id + 16;
+        counter.x = this._width() - 128;
         counter.layer = 100;
         counter.text = text();
 
