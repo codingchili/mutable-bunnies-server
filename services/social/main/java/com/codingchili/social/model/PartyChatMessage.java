@@ -8,13 +8,14 @@ import com.codingchili.common.ReceivableMessage;
  * Chat message for party members.
  */
 public class PartyChatMessage implements ReceivableMessage {
-    private String sender;
-    private String message;
+    private boolean party = true;
+    private String source;
+    private String text;
     private String target;
 
-    public PartyChatMessage(String from, String message) {
-        this.sender = from;
-        this.message = message;
+    public PartyChatMessage(String from, String text) {
+        this.source = from;
+        this.text = text;
     }
 
     public PartyChatMessage setTarget(String target) {
@@ -22,12 +23,16 @@ public class PartyChatMessage implements ReceivableMessage {
         return this;
     }
 
-    public String getSender() {
-        return sender;
+    public String getSource() {
+        return source;
     }
 
-    public String getMessage() {
-        return message;
+    public String getText() {
+        return text;
+    }
+
+    public boolean isParty() {
+        return party;
     }
 
     @Override

@@ -54,6 +54,13 @@
                 right: 0px;
             }
 
+            .party-leave {
+                display: block;
+                position: absolute;
+                left: 0px;
+                top: -24px;
+            }
+
         </style>
 
         <div class="dialog-container" id="container">
@@ -75,6 +82,11 @@
         </div>
 
         <div class="container">
+
+            <template is="dom-if" if="[[_inParty(members)]]">
+                <iron-icon icon="icons:close" class="party-leave" on-down="_leave"></iron-icon>
+            </template>
+
             <template is="dom-repeat" items="[[members]]" as="member">
                 <player-status target="[[_member(member, members)]]" class="member" style$="[[_index(index)]]"
                                compact>
@@ -103,36 +115,36 @@
                 });
 
                 application.onGameLoaded((game) => {
+                    this.account = application.token.domain;
                     this.game = game;
                     this._listen();
                 });
             }
 
+            _leave() {
+                social.party_leave(() => {
+                    this.members = [];
+                    this._refresh();
+                });
+            }
+
+            _inParty(members) {
+                console.log(members);
+                return members.length > 0;
+            }
+
             _listen() {
                 this.game.subscribe('player-spawn', event => {
                     // update members when a player changes character.
-                    console.log(event);
-                    if (this.members.includes(event.account)) {
-                        console.log('player join: update target');
-                        let tmp = this.members;
-                        this.members = [];
-                        this.members = tmp;
-                        //this.notifyPath('members');
-                        this.notifySplices('members', this.members.splice());
-                        console.log(this.members);
+                    if (this.members.includes(event.account) || event.account === this.account) {
+                        this._refresh();
                     }
                 });
 
                 this.game.subscribe('player-leave', event => {
                     // set a placeholder when a player is connected but not in the game.
-                    console.log(event);
                     if (this.members.includes(event.account)) {
-                        console.log('player left: replace with holder');
-                        let tmp = this.members;
-                        this.members = [];
-                        this.members = tmp;
-                        //this.notifyPath('members');
-                        this.notifySplices('members', this.members.splice());
+                        this._refresh();
                     }
                 });
 
@@ -145,15 +157,25 @@
                     this.members = this.members.filter(member => {
                         return member !== event.member;
                     });
-                    this.notifySplices('members', this.members.splice());
+                    this._refresh();
                 });
 
                 server.connection.setHandler('party_invite_response', event => {
                     if (event.accepted) {
                         this.members.push(event.from);
-                        this.notifySplices('members', this.members.splice());
+                        this._refresh();
+                    } else {
+                        game.chat.add({text: `${event.from} has declined the invite.`, party: true});
                     }
                 });
+            }
+
+            _refresh() {
+                let tmp = this.members;
+                this.members = [];
+                this.members = tmp;
+                this.notifySplices('members', this.members.splice());
+                this.notifyPath('members');
             }
 
             _member(account) {
@@ -183,7 +205,7 @@
                             if (member !== application.token.domain) {
                                 this.members.push(member);
                             }
-                            this.notifySplices('members', this.members.splice());
+                            this._refresh();
                         }
                     });
 
@@ -193,7 +215,6 @@
 
             _decline() {
                 social.party_decline(event => {
-                    console.log(event);
                 }, this.invite.partyId);
                 this._hide();
             }

@@ -52,6 +52,10 @@
                 color: #ffc200;
             }
 
+            .party {
+                color: #2bc7ff;
+            }
+
             @media (max-width: 1268px) {
                 :host {
                     bottom: 64px;
@@ -80,6 +84,10 @@
                 margin-top: 4px;
             }
 
+            .list {
+                margin-top: 8px;
+            }
+
         </style>
 
         <template is="dom-if" if="[[!minimized]]">
@@ -89,13 +97,14 @@
                 <div class="list">
                     <ul class="messages">
                         <template is="dom-repeat" items="{{messages}}" as="message">
-                            <li class$="text [[_system(message)]]">
+                            <li class$="text [[_system(message)]] [[_party(message)]]">
                                 [[_name(message)]][[message.text]]
                             </li>
                         </template>
                     </ul>
                 </div>
-                <paper-input value="{{message}}" id="message" class="input" maxlength="60" placeholder="message"
+                <paper-input value="{{message}}" id="message" class="input" on-input="_input" maxlength="60"
+                             placeholder="[[channel]]"
                              on-keydown="submit"></paper-input>
 
             </paper-material>
@@ -118,6 +127,7 @@
             ready() {
                 super.ready();
 
+                this.MAX_MESSAGES = 14;
                 this.listeners = false;
                 this.minimized = true;
 
@@ -128,6 +138,7 @@
 
                 this.set("message", "");
                 application.onGameLoaded(() => {
+                    this.channel = 'say';
                     this._setHandler();
                 });
             }
@@ -141,6 +152,17 @@
                 setTimeout(() => {
                     this._focus();
                 }, 1);
+            }
+
+            _input() {
+                if (this.message === '/s') {
+                    this.channel = 'say';
+                    this.message = "";
+                }
+                if (this.message === '/p') {
+                    this.channel = 'party';
+                    this.message = "";
+                }
             }
 
             _setHandler() {
@@ -167,9 +189,19 @@
                 return (message.system) ? 'system' : '';
             }
 
+            _party(message) {
+                return (message.party) ? 'party' : '';
+            }
+
             send() {
                 if (this.message.length !== 0) {
-                    game.chat.send(this.message);
+                    if (this.channel === 'party') {
+                        social.party_message(() => {
+                            //
+                        }, this.message.replace('/p', ''));
+                    } else {
+                        game.chat.send(this.message);
+                    }
                     this.set("message", "");
                     this.shadowRoot.querySelector('#message').blur();
                 }
@@ -179,14 +211,23 @@
                 if (message.text) {
                     this.push("messages", message);
                 }
-                while (this.messages.length >= 12) {
+                while (this.messages.length >= this.MAX_MESSAGES) {
                     this.splice("messages", 0, 1);
                 }
             }
 
             _name(message) {
                 if (message.source && !message.system) {
-                    return game.lookup(message.source).name + ": ";
+                    if (message.party) {
+                        return `${message.source}: `;
+                    } else {
+                        if (message.name) {
+                            return message.name;
+                        } else {
+                            message.name = game.lookup(message.source).name;
+                            return `${message.name}: `;
+                        }
+                    }
                 } else {
                     return '';
                 }

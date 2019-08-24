@@ -6,6 +6,8 @@ import com.codingchili.instance.model.entity.Entity;
  * @author Robin Duda
  */
 public class ChatEvent implements Event {
+    private boolean party;
+    private boolean system;
     private String source;
     private String text;
 
@@ -16,6 +18,22 @@ public class ChatEvent implements Event {
 
     public String getText() {
         return text;
+    }
+
+    public void setParty(boolean party) {
+        this.party = party;
+    }
+
+    public void setSystem(boolean system) {
+        this.system = system;
+    }
+
+    public boolean isParty() {
+        return party;
+    }
+
+    public boolean isSystem() {
+        return system;
     }
 
     @Override

@@ -33,29 +33,6 @@ public class DialogHandler implements GameHandler {
     @Api
     public void chat(InstanceRequest request) {
         String message = request.data().getString(ID_MESSAGE);
-
-        if (message.startsWith("/afflict")) {
-            String[] args = message.replaceFirst("/afflict", "").trim().split(" ");
-            game.spells().afflict(game.getById(args[1]), game.getById(args[2]), args[0]);
-        }
-
-        if (message.startsWith("/spell")) {
-            JsonObject response = new JsonObject();
-            SpellResult result = game.spells().cast(game.getById(request.target()),
-                    new SpellTarget().setTargetId(request.target()), message.split(" ")[1]);
-            response.put("spellResult", result);
-            request.write(response);
-        }
-
-        if (message.startsWith("/spawn")) {
-            TalkingPerson talking = new TalkingPerson();
-            talking.getVector()
-                    .setX(300 + new Random().nextInt(300))
-                    .setY(300 + new Random().nextInt(300));
-
-            game.add(talking);
-
-        }
         dialogs.say(request.target(), message);
     }
 

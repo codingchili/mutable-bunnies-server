@@ -204,7 +204,6 @@ window.SpawnHandler = class SpawnHandler {
             this.camera.focus(sprite);
         }
         if (sprite.account) {
-            console.log('publishing player-spawn');
             game.publish('player-spawn', sprite);
         }
     }
