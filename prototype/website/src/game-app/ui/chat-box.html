@@ -56,6 +56,10 @@
                 color: #2bc7ff;
             }
 
+            .private {
+                color: #ff0085;
+            }
+
             @media (max-width: 1268px) {
                 :host {
                     bottom: 64px;
@@ -97,7 +101,7 @@
                 <div class="list">
                     <ul class="messages">
                         <template is="dom-repeat" items="{{messages}}" as="message">
-                            <li class$="text [[_system(message)]] [[_party(message)]]">
+                            <li class$="text [[_system(message)]] [[_party(message)]] [[_private(message)]]">
                                 [[_name(message)]][[message.text]]
                             </li>
                         </template>
@@ -191,6 +195,10 @@
 
             _party(message) {
                 return (message.party) ? 'party' : '';
+            }
+
+            _private(message) {
+                return (message.private) ? 'private' : '';
             }
 
             send() {

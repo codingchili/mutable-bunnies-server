@@ -352,6 +352,10 @@
                         this.notifySplices('thread');
                         this._scroll();
                     }
+
+                    if (!this._open()) {
+                        game.chat.add({text: `${event.from}: ${event.message}`, private: true});
+                    }
                 });
 
                 server.connection.setHandler('social_offline', event => {
