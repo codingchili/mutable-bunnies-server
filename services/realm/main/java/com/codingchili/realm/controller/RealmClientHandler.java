@@ -73,7 +73,7 @@ public class RealmClientHandler implements CoreHandler {
                 request.connection().setProperty(ID_NAME, creature.getName());
 
                 // notify the remote instance when the client disconnects - register handler only once.
-                request.connection().onCloseHandler("leave-instances", () -> leave(request));
+                request.connection().onCloseHandler("leave-instances", () -> leaveInstance(request));
 
                 // save the instance the player is connected to on the request object.
                 context.setInstance(creature, request.connection());
@@ -88,7 +88,10 @@ public class RealmClientHandler implements CoreHandler {
     public void leave(RealmRequest request) {
         // already left the instance, unregister the close handler to prevent blocking next.
         request.connection().removeCloseHandler("leave-instances");
+        leaveInstance(request);
+    }
 
+    private void leaveInstance(RealmRequest request) {
         request.connection().getProperty(ID_NAME).ifPresent(character -> {
             context.sendInstance(request.instance(), new LeaveMessage()
                     .setPlayerName(character)
