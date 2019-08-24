@@ -41,6 +41,8 @@ import static io.vertx.core.eventbus.ReplyFailure.*;
  * Context for realms.
  */
 public class RealmContext extends SystemContext implements ServiceContext {
+    private static final String ID_CONNECT = "realm.connect";
+    private static final String ID_DISCONNECT = "realm.disconnect";
     private Map<String, Connection> connections = new ConcurrentHashMap<>();
     private AsyncCharacterStore characters;
     private Supplier<RealmSettings> settings;
@@ -214,15 +216,28 @@ public class RealmContext extends SystemContext implements ServiceContext {
 
     public void connect(Connection connection, String account) {
         connections.put(account, connection);
-
-        logger.log("Account " + account + " connected to " + settings.get().getNode());
+        onConnected(connection, account);
 
         connection.onCloseHandler("remove-connection", () -> {
-            logger.log("Account " + account + " disconnected from " + settings.get().getNode());
             connections.remove(account);
+            onDisconnected(connection, account);
             notify(account, false);
         });
         notify(account, true);
+    }
+
+    private void onConnected(Connection connection, String account) {
+        logger.event(ID_CONNECT)
+                .put(ID_REMOTE, connection.remote())
+                .put(ID_ACCOUNT, account)
+                .send();
+    }
+
+    private void onDisconnected(Connection connection, String account) {
+        logger.event(ID_DISCONNECT)
+                .put(ID_REMOTE, connection.remote())
+                .put(ID_ACCOUNT, account)
+                .send();
     }
 
     private void notify(String account, boolean online) {

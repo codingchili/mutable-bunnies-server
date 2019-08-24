@@ -86,8 +86,8 @@ public abstract class Strings extends CoreStrings {
     public static final String LOG_REALM_START = "realm.start";
     public static final String LOG_REALM_STOP = "realm.stop";
     public static final String LOG_MESSAGE = "message";
-    public static final String LOG_ACCOUNT_UNAUTHORIZED = "account.unauthorized";
-    public static final String LOG_ACCOUNT_AUTHENTICATED = "authenticate";
+    public static final String LOG_ACCOUNT_UNAUTHORIZED = "auth.fail";
+    public static final String LOG_ACCOUNT_AUTHENTICATED = "auth.success";
     public static final String LOG_ACCOUNT_REGISTERED = "account.registered";
     public static final String LOG_REALM_REGISTERED = "realm.register";
     public static final String LOG_REALM_DISCONNECT = "realm.disconnect";

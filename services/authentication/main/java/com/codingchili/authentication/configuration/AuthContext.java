@@ -65,13 +65,13 @@ public class AuthContext extends SystemContext implements ServiceContext {
 
     public void onAuthenticated(String username, String host) {
         logger.event(LOG_ACCOUNT_AUTHENTICATED)
-                .put(LOG_USER, username)
+                .put(LOG_ACCOUNT, username)
                 .put(LOG_REMOTE, host).send();
     }
 
     public void onRegistered(String username, String host) {
         logger.event(LOG_ACCOUNT_REGISTERED)
-                .put(LOG_USER, username)
+                .put(LOG_ACCOUNT, username)
                 .put(LOG_REMOTE, host).send();
     }
 }

@@ -1,5 +1,6 @@
 package com.codingchili.instance.context;
 
+import com.codingchili.common.ReceivableMessage;
 import com.codingchili.instance.model.SpawnPoint;
 import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.PlayerCreature;
@@ -9,7 +10,6 @@ import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
 import com.codingchili.instance.transport.FasterRealmInstanceCodec;
-import com.codingchili.common.ReceivableMessage;
 import com.codingchili.realm.configuration.*;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.DeliveryOptions;
@@ -169,14 +169,14 @@ public class InstanceContext extends SystemContext implements ServiceContext {
 
     public void onPlayerJoin(JoinMessage join) {
         logger.event(PLAYER_JOIN, Level.INFO)
-                .put(ID_NAME, join.getPlayer().getName())
+                .put(ID_CHARACTER, join.getPlayer().getName())
                 .put(ID_ACCOUNT, join.getPlayer().getAccount())
                 .send();
     }
 
     public void onPlayerLeave(LeaveMessage leave) {
         logger.event(PLAYER_LEAVE, Level.INFO)
-                .put(ID_NAME, leave.getPlayerName())
+                .put(ID_CHARACTER, leave.getPlayerName())
                 .put(ID_ACCOUNT, leave.getAccountName())
                 .send();
     }
