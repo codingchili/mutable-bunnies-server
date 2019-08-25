@@ -19,7 +19,7 @@ public class Affliction implements Storable {
     private String name = "missing name";
     private String description = "missing description";
     private Float duration = 8.0f;
-    private Float interval = 2.0f;
+    private Float interval = 1.0f;
     private Float chance = 1.0f;
     private Scripted modifier;
     private Scripted tick;

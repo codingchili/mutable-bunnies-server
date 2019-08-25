@@ -83,6 +83,9 @@ window.SpawnHandler = class SpawnHandler {
             sprite.layer = entity.model.layer;
             sprite.id = entity.id;
 
+            // not needed, unwrapped.
+            delete sprite.vector;
+
             game.entities[entity.id] = sprite;
 
             this._onPlayerSpawnHook(sprite);
@@ -200,7 +203,7 @@ window.SpawnHandler = class SpawnHandler {
             game.setPlayer(sprite);
             application.characterLoaded(sprite);
             game.publish('character-update', sprite);
-            this.camera.set(sprite.vector.x, sprite.vector.y);
+            this.camera.set(sprite.x, sprite.y);
             this.camera.focus(sprite);
         }
         if (sprite.account) {
@@ -255,5 +258,6 @@ window.SpawnHandler = class SpawnHandler {
             console.log('publishing player-leave');
             game.publish('player-leave', target);
         }
+        game.publish('creature-despawn', target);
     }
 };

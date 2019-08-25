@@ -16,7 +16,7 @@ public class StatsUpdateEvent implements Event {
 
     public StatsUpdateEvent(Creature creature) {
         this.targetId = creature.getId();
-        this.stats = creature.getStats();
+        this.stats = creature.getStats().copy();
     }
 
     public String getTargetId() {

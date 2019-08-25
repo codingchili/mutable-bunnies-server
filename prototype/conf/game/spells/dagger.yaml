@@ -8,7 +8,7 @@ charges: 5
 target: caster
 onCastBegin:
   jexl:
-    return spells.energy(source, -15);
+    return spells.energy(source, -5);
 onCastComplete:
   groovy: |
     import com.codingchili.instance.model.stats.Attribute;

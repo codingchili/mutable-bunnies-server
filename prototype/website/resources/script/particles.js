@@ -14,11 +14,15 @@ window.Particles = class Particles {
      * @param id an id returned by any of the create methods.
      */
     stop(id) {
-        this.emitters[id].emit = false;
-        setTimeout(() => {
-            this.emitters[id].destroy();
-            delete this.emitters[id];
-        }, 5000);
+        let emitter = this.emitters[id];
+
+        if (emitter) {
+            emitter.emit = false;
+            setTimeout(() => {
+                emitter.destroy();
+                delete this.emitters[id];
+            }, 3000);
+        }
     }
 
     /**

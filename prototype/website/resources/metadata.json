@@ -8,6 +8,7 @@
     "script/canvas.js",
     "script/game.js",
     "script/spells.js",
+    "script/spelleffects.js",
     "script/assetloader.js",
     "script/camera.js",
     "script/skybox.js",

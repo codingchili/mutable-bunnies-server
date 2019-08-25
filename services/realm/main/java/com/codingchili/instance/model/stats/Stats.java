@@ -105,4 +105,13 @@ public class Stats extends LinkedHashMap<Attribute, Double> {
         dirty = false;
         return this;
     }
+
+    /**
+     * @return a copy.
+     */
+    public Stats copy() {
+        Stats stats = new Stats();
+        stats.apply(this);
+        return stats;
+    }
 }

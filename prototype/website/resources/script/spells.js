@@ -2,14 +2,15 @@
  * Handles spells by invoking the SpellHandler API's..
  * @type {Window.Spells}
  */
-const CYCLE_CASTED = 'CASTED';
-const CYCLE_CASTING = 'CASTING';
-const CYCLE_INTERRUPTED = 'INTERRUPTED';
-const CYCLE_CANCELLED = 'CANCELLED';
+window.CYCLE_CASTED = 'CASTED';
+window.CYCLE_CASTING = 'CASTING';
+window.CYCLE_INTERRUPTED = 'INTERRUPTED';
+window.CYCLE_CANCELLED = 'CANCELLED';
 
 window.Spells = class Spells {
 
     constructor() {
+        this.effects = new SpellEffects();
         this.gcd = (e) => {
         };
         this.cooldown = (e) => {
@@ -60,13 +61,13 @@ window.Spells = class Spells {
 
     _damage(event) {
         let target = game.lookup(event.targetId);
+        let source = game.lookup(event.sourceId);
 
         target.stats.health += event.value;
 
         if (target.isPlayer) {
             application.characterUpdate(target);
         }
-
         game.publish('character-update', target);
 
         if (event.value < 20) {
@@ -74,8 +75,11 @@ window.Spells = class Spells {
         } else {
             event.value = event.value.toFixed(0);
         }
-
         game.texts.effects[event.type](target, event);
+
+        event.target = target;
+        event.source = source;
+        this.effects.damage(event);
     }
 
     _cancel() {
@@ -139,7 +143,7 @@ window.Spells = class Spells {
         }
 
         if (event.cycle === CYCLE_CASTED) {
-            this._activateEffectByActiveSpell(event);
+            this.effects.casted(event);
         }
 
         if (event.cycle === CYCLE_INTERRUPTED || event.cycle === CYCLE_CANCELLED || event.cycle === CYCLE_CASTED) {
@@ -152,7 +156,7 @@ window.Spells = class Spells {
         }
 
         if (event.cycle === CYCLE_CASTING) {
-            this._activateCastingEffects(event);
+            this.effects.casting(event);
         }
     }
 
@@ -172,13 +176,10 @@ window.Spells = class Spells {
         let current = game;
         let target = game.lookup(event.targetId);
         let active = event;
-        active.effect = this._activateEffectByAffliction(target, active);
-        active.reference = Math.random().toString(36).substring(7);
 
-        console.log(active.loaded);
+        this.effects.affliction(target, active);
+
         if (!active.loaded) {
-            console.log('not loaded! adding!');
-            console.log(active);
             target.stats = active.stats;
             target.afflictions.push(active);
         }
@@ -194,6 +195,7 @@ window.Spells = class Spells {
                         if (target.isPlayer) {
                             application.characterUpdate(target);
                         }
+                        this.effects.stop(active);
                         game.publish('character-update', target);
                     }
                 }
@@ -207,95 +209,6 @@ window.Spells = class Spells {
     }
 
     /**
-     * @param affliction the given affliction to disable spell effects for.
-     * @private
-     */
-    _disableEffects(affliction) {
-        game.particles.stop(affliction.effect);
-    }
-
-    /**
-     * Activates affliction effects for the given target/affliction.
-     * @param target the target of the affliction.
-     * @param affliction the affliction being applied.
-     * @returns {string} a unique id of the effect so that it can be cancelled.
-     * @private
-     */
-    _activateEffectByAffliction(target, active) {
-        switch (active.affliction.id) {
-            case "poison":
-                return game.particles.following('cloud', target, active.duration);
-            case "regeneration":
-                return game.particles.following('leaf', target, active.duration);
-            case "haste":
-                return game.particles.following('burst', target, active.duration);
-        }
-    }
-
-    /**
-     * Activates spell effects for a spell, during channeling or activation.
-     * @param event the event that contains information about the spell being activated.
-     * @returns {string} a unique id of the effect so that it can be cancelled.
-     * @private
-     */
-    _activateEffectByActiveSpell(event) {
-        if (event.spell === 'dagger') {
-            sound.play('dagger.mp3')
-        }
-
-        if (event.spell === 'potent_venom') {
-            let target = event.spellTarget;
-            sound.play('glass_break.mp3');
-
-            return game.particles.spawn('cloud', {
-                x: target.vector.x,
-                y: target.vector.y
-            }, 12.0); // get TTL from spell config?
-        }
-
-        if (event.spell === 'regeneration') {
-            sound.play('leaves.mp3');
-        }
-
-        if (event.spell === 'shadow_step') {
-            let target = game.lookup(event.source);
-            sound.play('woosh.mp3');
-
-            // sets starting point to old position.
-            let start = {
-                x: target.x,
-                y: target.y
-            };
-
-            // set target point to new position with updates.
-            target.x = event.spellTarget.vector.x;
-            target.y = event.spellTarget.vector.y;
-            target.alpha = 0.0;
-
-            game.particles.moving('flash', start, {
-                destination: target,
-                velocity: 1200.0,
-                complete: () => {
-                    target.alpha = 1.0;
-                    target.tint = 0xffffff;
-                }
-            });
-        }
-    }
-
-    _activateCastingEffects(event) {
-        let entity = game.lookup(event.source);
-        entity.state.setAnimation(0, 'push-attack', true);
-        entity.state.oldTimeScale = entity.state.timeScale;
-        entity.state.timeScale = 0.6;
-
-        if (event.spell === 'shadow_step') {
-            entity.tint = 0x000000;
-            entity.alpha = 0.4;
-        }
-    }
-
-    /**
      * @param event an event that causes an affliction to be cleared.
      * @private
      */
@@ -303,7 +216,7 @@ window.Spells = class Spells {
         let target = game.lookup(event.targetId);
         target.stats = event.stats;
         target.afflictions = target.afflictions.filter((value) => {
-            this._disableEffects(value);
+            this.effects.stop(value);
             return !event.cleansed.contains(value.name);
         });
 
@@ -403,13 +316,14 @@ window.Spells = class Spells {
         return game.renderer.plugins.interaction.mouse.global;
     }
 
-    update() {
+    update(delta) {
         if (this.loaded) {
             let marker = this.loaded.marker;
             marker.x = this._mouse().x + game.camera.x;
             marker.y = this._mouse().y + game.camera.y;
             // todo if marker out of range do something.
         }
+        this.effects.update(delta);
     }
 
     _theme() {

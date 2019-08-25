@@ -1,6 +1,6 @@
 ---
 name: "Shadow Step"
-description: "Moves quickly through the shadows in one direction."
+description: "Moves quickly through the shadows in one direction and gains Ethereal for 4s of damage reduction when casting."
 recharge: 10
 casttime: 1.5
 charges: 2
@@ -8,7 +8,11 @@ charges: 2
 target: area
 onCastBegin:
   jexl:
-    return spells.energy(source, -10.0);
+    energy = spells.energy(source, -20.0);
+    if (energy) {
+      spells.afflict(source, 'ethereal');
+    }
+    return energy;
 onCastComplete:
   jexl: |
     // clients are updated using the spelltarget.

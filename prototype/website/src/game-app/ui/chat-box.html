@@ -230,7 +230,7 @@
                         return `${message.source}: `;
                     } else {
                         if (message.name) {
-                            return message.name;
+                            return `${message.name}: `;
                         } else {
                             message.name = game.lookup(message.source).name;
                             return `${message.name}: `;

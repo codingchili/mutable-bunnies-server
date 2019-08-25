@@ -3,7 +3,6 @@ package com.codingchili.instance.model.afflictions;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.entity.Creature;
-import com.codingchili.instance.model.spells.DamageType;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Bindings;
@@ -58,9 +57,12 @@ public class ActiveAffliction {
      */
     public ActiveAffliction(Creature source, Creature target, Affliction affliction) {
         this.affliction = affliction;
-        this.ticks = GameContext.secondsToMs(affliction.getDuration());
         this.interval = GameContext.secondsToMs(affliction.getInterval());
-        this.delta = interval; // grant first tick immediately.
+
+        // grant first tick immediately.
+        this.ticks = GameContext.secondsToMs(affliction.getDuration()) + interval;
+        this.delta = interval;
+
         this.sourceId = source.getId();
         this.targetId = target.getId();
         this.afflictionId = affliction.getId();

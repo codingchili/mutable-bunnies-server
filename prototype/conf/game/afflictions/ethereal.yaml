@@ -1,0 +1,8 @@
+---
+name: "Ethereal"
+duration: 4.0
+description: "One foot in each plane, physical damage reduced by 40% and magical by 20%."
+modifier:
+  jexl: |
+    stats[Attribute.armorClass] = 40.0d;
+    stats[Attribute.magicResist] = 20.0d;

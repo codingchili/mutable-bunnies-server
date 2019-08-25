@@ -67,8 +67,10 @@
                 <friend-view></friend-view>
 
 
-                <!-- target -->
-                <player-status target="[[target]]" style="right: 16px; left: unset;"></player-status>
+                <template is="dom-if" if="[[target]]">
+                    <!-- target -->
+                    <player-status target="[[target]]" style="right: 16px; left: unset;"></player-status>
+                </template>
 
                 <!-- player -->
                 <player-status target="[[player]]"></player-status>
@@ -92,6 +94,7 @@
 
             loaded() {
                 this.loading = false;
+                this.target = false;
             }
 
             ready() {
@@ -107,6 +110,12 @@
                     game.subscribe('character-target', character => {
                         this.target = character;
                     });
+                    game.subscribe('creature-despawn', creature => {
+                        if (creature.id === this.target.id) {
+                            this.target = false;
+                            this.notifyPath('target');
+                        }
+                    })
                 });
 
                 application.subscribe('offline', offline => {

@@ -29,8 +29,9 @@ public class LootableEntity extends SimpleEntity {
         this.items = items;
         this.interactions.add("loot");
         this.name = name;
-
         this.vector.stop();
+
+        model.setGraphics("game/corpse.png");
     }
 
     @Override
