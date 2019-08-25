@@ -384,6 +384,7 @@ public class SpellEngine {
             boolean modified = afflictions.tick(game, ticker);
 
             if (modified && afflictions.getStats().isDirty()) {
+                game.movement().update(entity);
                 game.publish(new StatsUpdateEvent(entity));
             }
 
