@@ -45,7 +45,9 @@ window.Spells = class Spells {
         server.connection.setHandler('cleanse', (event) => this._cleanse(event));
         server.connection.setHandler('affliction', (event) => this.affliction(event));
         server.connection.setHandler('spellstate', (event) => this._spellstate(event));
+        server.connection.setHandler('damage', event => this._damage(event));
     }
+
 
     /**
      * @param event initializes the spell handler with the given player spell state.
@@ -54,6 +56,26 @@ window.Spells = class Spells {
         this.state = event.spellState;
         this.spells = application.realm.spells;
         this.classes = application.realm.classes;
+    }
+
+    _damage(event) {
+        let target = game.lookup(event.targetId);
+
+        target.stats.health += event.value;
+
+        if (target.isPlayer) {
+            application.characterUpdate(target);
+        }
+
+        game.publish('character-update', target);
+
+        if (event.value < 20) {
+            event.value = event.value.toFixed(1);
+        } else {
+            event.value = event.value.toFixed(0);
+        }
+
+        game.texts.effects[event.type](target, event);
     }
 
     _cancel() {

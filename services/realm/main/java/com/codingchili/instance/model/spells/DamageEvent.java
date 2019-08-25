@@ -12,14 +12,63 @@ import com.codingchili.instance.model.events.*;
 public class DamageEvent implements Event {
     private Entity target;
     private Entity source;
-    private DamageType damage;
+    private DamageType type;
+    private String effect;
     private boolean critical = false;
     private double value;
+    private Runnable completer;
 
-    public DamageEvent(Creature target, double value, DamageType damage) {
+    public DamageEvent(Creature source, Creature target) {
+        this.source = source;
         this.target = target;
-        this.damage = damage;
+    }
+
+    public DamageEvent completer(Runnable completer) {
+        this.completer = completer;
+        return this;
+    }
+
+    public void apply() {
+        completer.run();
+    }
+
+    public DamageEvent target(Creature target) {
+        this.target = target;
+        return this;
+    }
+
+    public DamageEvent source(Creature source) {
+        this.source = source;
+        return this;
+    }
+
+    public DamageEvent heal(Double value) {
+        this.type = DamageType.heal;
         this.value = value;
+        return this;
+    }
+
+    public DamageEvent poison(Double value) {
+        this.type = DamageType.poison;
+        this.value = value;
+        return this;
+    }
+
+    public DamageEvent magical(Double value) {
+        this.type = DamageType.magical;
+        this.value = value;
+        return this;
+    }
+
+    public DamageEvent physical(Double value) {
+        this.type = DamageType.physical;
+        this.value = value;
+        return this;
+    }
+
+    public DamageEvent effect(String effect) {
+        this.effect = effect;
+        return this;
     }
 
     public DamageEvent setSource(Creature source) {
@@ -39,16 +88,30 @@ public class DamageEvent implements Event {
         return critical;
     }
 
-    public void setCritical(boolean critical) {
-        this.critical = critical;
+    public DamageEvent critical(Boolean is) {
+        this.critical = is;
+        return this;
+    }
+
+    public DamageEvent normal() {
+        this.critical = false;
+        return this;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public String getEffect() {
+        return effect;
     }
 
     public String getTargetId() {
         return target.getId();
     }
 
-    public DamageType getDamage() {
-        return damage;
+    public DamageType getType() {
+        return type;
     }
 
     public double getValue() {

@@ -9,5 +9,7 @@ damage = source.stats[Attribute.dexterity] / 2
 
 creatures.each {
     amplified = it.stats[Attribute.maxhealth] * 0.02 + damage
-    spells.damage(source, it, -amplified, DamageType.poison)
+    spells.damage(source, it)
+        .poison(-amplified)
+        .apply();
 }

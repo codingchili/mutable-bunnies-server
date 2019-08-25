@@ -18,21 +18,6 @@ window.TextEffects = class TextEffects {
                 text: event.message
             });
         });
-
-        server.connection.setHandler('damage', event => {
-            let target = game.lookup(event.targetId);
-
-            target.stats.health += event.value;
-
-            if (target.isPlayer) {
-                application.characterUpdate(target);
-            }
-
-            game.publish('character-update', target);
-
-            event.value = event.value.toFixed(1);
-            this.effects[event.damage](target, event);
-        });
     }
 
     update(delta) {
@@ -131,6 +116,7 @@ window.TextEffects = class TextEffects {
         game.texts._create(target, event.value, {
             begin: '#ff1800',
             end: '#ff0f00',
+            critical: event.critical
         });
     }
 
@@ -138,7 +124,8 @@ window.TextEffects = class TextEffects {
         game.texts._create(target, '+' + event.value, {
             begin: '#06ff00',
             end: '#13ff01',
-            float: true
+            float: true,
+            critical: event.critical
         });
     }
 
@@ -146,6 +133,7 @@ window.TextEffects = class TextEffects {
         game.texts._create(target, event.value, {
             begin: '#ff03f5',
             end: '#ff00cf',
+            critical: event.critical
         });
     }
 
@@ -163,6 +151,7 @@ window.TextEffects = class TextEffects {
         game.texts._create(target, event.value, {
             begin: '#ffeaf9',
             end: '#ff0702',
+            critical: event.critical
         });
     }
 
@@ -170,6 +159,7 @@ window.TextEffects = class TextEffects {
         game.texts._create(target, event.value, {
             begin: '#ffcc00',
             end: '#0bb001',
+            critical: event.critical
         });
     }
 

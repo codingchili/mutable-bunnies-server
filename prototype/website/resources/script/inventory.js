@@ -17,7 +17,7 @@ window.InventoryHandler = class InventoryHandler {
             down: () => {
                 application.publish('show-inventory');
             }
-        }, 'h');
+        }, 'i');
 
         server.connection.setHandler('equip_item', (event) => {
             // use this to update rendered equipment.

@@ -5,7 +5,10 @@ duration: 12
 interval: 0.5
 chance: 0.5
 tick:
-  jexl: |
+  groovy: |
     damage = this.target.stats[Attribute.maxhealth] * 0.02;
     damage = damage + this.source.stats[Attribute.dexterity] / 2;
-    spells.damage(this.source, this.target, -damage, DamageType.poison);
+
+    spells.damage(source, target)
+      .poison(-damage)
+      .apply();

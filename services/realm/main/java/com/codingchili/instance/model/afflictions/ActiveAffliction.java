@@ -106,17 +106,16 @@ public class ActiveAffliction {
         return ((this.delta += ticker.deltaMS()) >= interval);
     }
 
-    private Bindings getBindings(GameContext context) {
+    private Bindings getBindings(GameContext game) {
         if (bindings == null) {
             bindings = new Bindings()
-                    .setContext(context)
+                    .setContext(game)
                     .setState(state)
-                    .set("spells", context.spells())
+                    .set("spells", game.spells())
                     .set("source", source())
                     .set("target", target())
-                    .set("DamageType", DamageType.class)
                     .set("log", (Consumer<Object>) (message) -> {
-                        context.getLogger(getClass()).event("affliction", Level.INFO)
+                        game.getLogger(getClass()).event("affliction", Level.INFO)
                                 .put("name", affliction.getName())
                                 .send(message.toString());
                     })
@@ -126,11 +125,11 @@ public class ActiveAffliction {
     }
 
     private Creature target() {
-        return (target != null) ? target : game.getById(targetId);
+        return (target != null) ? target : (Creature) game.getById(targetId);
     }
 
     private Creature source() {
-        return (source != null) ? source : game.getById(sourceId);
+        return (source != null) ? source : (Creature) game.getById(sourceId);
     }
 
     public String getAfflictionId() {

@@ -284,15 +284,20 @@ public class SpellEngine {
      * @param target the target to apply the health to.
      * @param value  the amount of health to apply, may not exceed the max health of the being.
      */
-    public void heal(Creature target, double value) {
+    public void heal(Creature target, final double value) {
+        DamageEvent event = new DamageEvent(null, target);
+
         double max = target.getStats().get(Attribute.maxhealth);
         double current = target.getBaseStats().get(Attribute.health);
 
         if (current + value > max) {
-            value = Math.max(0, max - current);
+            event.heal(Math.max(0, max - current));
+        } else {
+            event.heal(value);
         }
+
         target.getBaseStats().update(Attribute.health, value);
-        game.publish(new DamageEvent(target, value, DamageType.heal));
+        game.publish(event);
     }
 
     /**
@@ -305,6 +310,52 @@ public class SpellEngine {
         Projectile projectile = new Projectile(game, spell);
         projectiles.add(projectile);
         return projectile;
+    }
+
+    /**
+     * Damages the given creature using the given value and damage type.
+     *
+     * @param source the source that applies the damage to the target.
+     * @param target the target the damage is to be applied to.
+     * @return a damage event builder, invoke apply to commit.
+     */
+    public DamageEvent damage(Creature source, Creature target) {
+        DamageEvent event = new DamageEvent(source, target);
+
+        event.completer(() -> {
+            int value = (int) event.getValue();
+            Stats base = target.getBaseStats();
+            Stats computed = target.getStats();
+            base.update(Attribute.health, value);
+
+            // apply resistances, one percent per point.
+            switch (event.getType()) {
+                case physical:
+                    value *= 1 - (computed.getOrDefault(Attribute.armorClass, 0.0) / 100);
+                    break;
+                case magical:
+                    value *= 1 - (computed.getOrDefault(Attribute.magicResist, 0.0) / 100);
+                    break;
+            }
+            event.setValue(value);
+            game.publish(event);
+
+            if (target.isDead()) {
+                target.getAfflictions().clearOnDeath();
+                game.movement().stop(target);
+                game.publish(new DeathEvent(target, source));
+
+                // award source with experience if player.
+                if (source instanceof PlayerCreature) {
+                    experience(source, computed.getOrDefault(Attribute.level, 1.0).intValue() *
+                            XP_PER_CREATURE_LEVEL);
+                }
+
+                // despawn the player: requires the player to issue a "join" to get re-spawned.
+                game.remove(target);
+            }
+        });
+        return event;
     }
 
     /**
@@ -327,47 +378,6 @@ public class SpellEngine {
      */
     public boolean exists(String spellName) {
         return spells.getById(spellName).isPresent();
-    }
-
-    /**
-     * Damages the given creature using the given value and damage type.
-     *
-     * @param source the source that applies the damage to the target.
-     * @param target the target the damage is to be applied to.
-     * @param value  the amount of damage to apply.
-     * @param type   the type of damage to apply, this may be healing as well..
-     */
-    public void damage(Creature source, Creature target, double value, DamageType type) {
-        Stats base = target.getBaseStats();
-        Stats computed = target.getStats();
-        base.update(Attribute.health, (int) value);
-
-        // apply resistances, one percent per point.
-        switch (type) {
-            case physical:
-                value *= 1 - (computed.getOrDefault(Attribute.armorClass, 0.0) / 100);
-                break;
-            case magical:
-                value *= 1 - (computed.getOrDefault(Attribute.magicResist, 0.0) / 100);
-                break;
-        }
-
-        game.publish(new DamageEvent(target, value, type).setSource(source));
-
-        if (target.isDead()) {
-            target.getAfflictions().clearOnDeath();
-            game.movement().stop(target);
-            game.publish(new DeathEvent(target, source));
-
-            // award source with experience if player.
-            if (source instanceof PlayerCreature) {
-                experience(source, computed.getOrDefault(Attribute.level, 1.0).intValue() *
-                        XP_PER_CREATURE_LEVEL);
-            }
-
-            // despawn the player: requires the player to issue a "join" to get re-spawned.
-            game.remove(target);
-        }
     }
 
     private void tick(Ticker ticker) {

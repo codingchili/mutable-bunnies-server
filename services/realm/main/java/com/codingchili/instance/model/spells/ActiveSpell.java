@@ -19,13 +19,11 @@ import static com.codingchili.common.Strings.*;
  * A spell that is being casted or has been casted.
  */
 public class ActiveSpell {
-    private static final String TICK = "tick";
     private static final String SOURCE = "source";
     private static final String TARGET = "target";
     private static final String GAME = "game";
     private static final String ACTIVE = "active";
     private static final String SPELLS = "spells";
-    private static final String DAMAGE_TYPE = "DamageType";
     private transient Bindings bindings = null;
     private transient int interval;
     private SpellCycle cycle = SpellCycle.CASTING;
@@ -114,7 +112,6 @@ public class ActiveSpell {
             bindings.put(TARGET, target);
             bindings.put(SPELLS, game.spells());
             bindings.put(GAME, game);
-            bindings.put(DAMAGE_TYPE, DamageType.class);
             bindings.put(ID_LOG, (Consumer<String>) (line) -> {
                 game.getLogger(getClass()).event("spell", Level.INFO)
                         .put(ID_NAME, spell.getId())
@@ -124,6 +121,19 @@ public class ActiveSpell {
             bindings.put(ACTIVE, this);
         }
         return bindings;
+    }
+
+    @FunctionalInterface
+    private interface DamageWrapper {
+        /**
+         * Wraps the damage function to automatically provide source and spell name to the
+         * spell engine.
+         *
+         * @param target the target receiving the damage.
+         * @param value the amount of damage to deal.
+         * @param type the type of damage to deal.
+         */
+        void damage(Creature target, Float value, DamageType type);
     }
 
     public Spell getSpell() {
