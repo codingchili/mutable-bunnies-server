@@ -92,14 +92,20 @@ window.Camera = class Camera {
             let y = sprite.y;
             let visible = false;
 
+            if (!sprite.cachedBounds) {
+                sprite.width_cache = sprite.width;
+                sprite.height_cache = sprite.height;
+                sprite.cachedBounds = true;
+            }
+
             if (sprite.particles) {
                 // don't cull particle systems; no access to emitters ownerPos here.
                 sprite.visible = true;
             } else {
                 // left and right.
-                if (x + sprite.width > this.x && x - sprite.width < boundX) {
+                if (x + sprite.width_cache > this.x && x - sprite.width_cache < boundX) {
                     // top and bottom.
-                    if (y + sprite.height / 2 > this.y && y - sprite.height < boundY) {
+                    if (y + sprite.height_cache / 2 > this.y && y - sprite.height_cache < boundY) {
                         visible = true;
                     }
                 }
