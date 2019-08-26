@@ -11,5 +11,6 @@ onCastBegin:
   jexl:
     return spells.energy(source, -10.0);
 onCastComplete:
-  jexl: |
-    spells.afflict(source, 'regeneration');
+  groovy: |
+    creature = game.getById(target.getTargetId());
+    spells.afflict(creature, 'regeneration');
