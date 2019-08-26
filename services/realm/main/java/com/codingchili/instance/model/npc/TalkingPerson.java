@@ -41,7 +41,7 @@ public class TalkingPerson extends SimpleCreature {
     // todo: respond to dialog interaction by starting dialog
 
     public void tick(Ticker ticker) {
-        if (stats.get(Attribute.health) > 0) {
+        if (baseStats.get(Attribute.health) > 0) {
             game.dialogs().say(getId(), "hello guys.");
         } else {
             ticker.disable();

@@ -5,6 +5,7 @@ import com.codingchili.instance.model.entity.SimpleCreature;
 import com.codingchili.instance.model.items.Item;
 import com.codingchili.instance.model.items.ItemDB;
 import com.codingchili.instance.model.spells.DeathEvent;
+import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Bindings;
 
 import java.util.Random;
@@ -40,6 +41,11 @@ public class Npc extends SimpleCreature {
                 });
             }
         });
+    }
+
+    @Override
+    protected boolean onClassModifier(Stats calculated) {
+        return true;
     }
 
     @Api(route = "death")

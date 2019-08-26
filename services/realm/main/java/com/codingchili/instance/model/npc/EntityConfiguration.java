@@ -1,8 +1,7 @@
 package com.codingchili.instance.model.npc;
 
 import com.codingchili.instance.model.entity.Model;
-import com.codingchili.instance.model.stats.Attribute;
-import com.codingchili.instance.model.stats.Stats;
+import com.codingchili.instance.model.stats.*;
 import com.codingchili.instance.scripting.JexlScript;
 import com.codingchili.instance.scripting.Scripted;
 

@@ -20,11 +20,11 @@ public class ListeningPerson extends SimpleCreature {
     public ListeningPerson() {
         super();
         // to be loaded from template.
-        stats.set(Attribute.maxhealth, 200);
-        stats.set(Attribute.health, 200);
-        stats.set(Attribute.level, 1);
-        stats.set(Attribute.constitution, 5);
-        stats.set(Attribute.dexterity, 5);
+        baseStats.set(Attribute.maxhealth, 200);
+        baseStats.set(Attribute.health, 200);
+        baseStats.set(Attribute.level, 1);
+        baseStats.set(Attribute.constitution, 5);
+        baseStats.set(Attribute.dexterity, 5);
     }
 
     // npcs/structures can listen for events.
