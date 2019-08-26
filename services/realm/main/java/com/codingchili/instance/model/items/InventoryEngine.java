@@ -2,7 +2,6 @@ package com.codingchili.instance.model.items;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.dialog.InteractionOutOfRangeException;
-import com.codingchili.instance.model.entity.Vector;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.npc.LootableEntity;
 import com.codingchili.instance.model.spells.SpellTarget;
@@ -153,7 +152,7 @@ public class InventoryEngine {
                         .set(TARGET, target);
 
                 // default and allow scripts to override.
-                source.getSpells().setGcd(ITEM_USE_GCD);
+                source.getSpells().triggerGcd(ITEM_USE_GCD);
 
                 scripted.apply(bindings);
                 update(source);

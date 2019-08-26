@@ -1,10 +1,11 @@
 package com.codingchili.instance.model.items;
 
-import com.codingchili.instance.model.stats.Stats;
+import com.codingchili.instance.model.stats.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import com.codingchili.core.context.CoreRuntimeException;
 
@@ -14,8 +15,8 @@ import com.codingchili.core.context.CoreRuntimeException;
  * Represents a characters inventory.
  */
 public class Inventory implements Serializable {
-    private Map<Slot, Item> equipped = new LinkedHashMap<>();
-    private List<Item> items = new ArrayList<>();
+    private Map<Slot, Item> equipped = CollectionFactory.map();
+    private List<Item> items = CollectionFactory.list();
     private transient Stats stats;
     private Integer space;
     private Integer currency = 1000;

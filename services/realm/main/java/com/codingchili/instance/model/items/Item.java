@@ -1,6 +1,6 @@
 package com.codingchili.instance.model.items;
 
-import com.codingchili.instance.model.stats.Stats;
+import com.codingchili.instance.model.stats.*;
 
 import java.util.UUID;
 
@@ -8,7 +8,7 @@ import com.codingchili.core.storage.Storable;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * Model of an item, which may be usable, equippable of consumable.
  */
 public class Item extends ItemType implements Storable {
