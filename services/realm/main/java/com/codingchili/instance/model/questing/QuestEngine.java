@@ -23,8 +23,11 @@ public class QuestEngine {
     }
 
     /**
-     * @param creature
-     * @param questId
+     * Starts the quest with the given id if it exists and the player does not already
+     * have the quest.
+     *
+     * @param creature the creature that is starting the quest.
+     * @param questId  the id of the quest to be started.
      */
     public void start(Creature creature, String questId) {
         quests.getById(questId).ifPresent(quest -> {
@@ -52,14 +55,16 @@ public class QuestEngine {
 
 
     /**
-     * @param creature
-     * @return
+     * Lists all quests for the given creature.
+     *
+     * @param creature the creature to list quest state for.
+     * @return a list of quest entries.
      */
     public Collection<QuestEntry> list(Creature creature) {
         return isPlayer(creature).map(player -> {
             Collection<QuestEntry> list = new ArrayList<>();
 
-            player.getQuests().asMap().forEach((questId, progress) -> {
+            player.getQuests().getProgress().forEach((questId, progress) -> {
                 quests.getById(questId).ifPresent(quest -> {
                     list.add(new QuestEntry()
                             .setId(quest.getId())
@@ -74,8 +79,10 @@ public class QuestEngine {
     }
 
     /**
-     * @param source
-     * @param questId
+     * Attempts to forward the quest cursor for the given quest and character.
+     *
+     * @param source  the creature that is advancing in the quest sequence.
+     * @param questId the id of the quest to advance.
      */
     public void advance(Creature source, String questId) {
         isPlayer(source).ifPresent(player -> {
@@ -108,9 +115,12 @@ public class QuestEngine {
     }
 
     /**
-     * @param creature
-     * @param questId
-     * @return
+     * Retrieves the quest log for the given quest id.
+     *
+     * @param creature the creature to retrieve the quest log for.
+     * @param questId  the quest id for which to retrieve the log.
+     * @return the quest log for the given quest id, which includes
+     * the description of each completed stage and the first incomplete (current).
      */
     public QuestLog log(Creature creature, String questId) {
         return isPlayer(creature).map(player -> {
