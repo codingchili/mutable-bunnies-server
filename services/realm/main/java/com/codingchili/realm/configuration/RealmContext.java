@@ -83,7 +83,9 @@ public class RealmContext extends SystemContext implements ServiceContext {
         new StorageLoader<PlayerCreature>(new StorageContext<>(context))
                 .withPlugin(context.service().getStorage())
                 .withValue(PlayerCreature.class)
-                .withCollection(settings.get().getNode() + "." + COLLECTION_CHARACTERS)
+                .withCollection(settings.get().getNode()
+                        .toLowerCase()
+                        .replaceAll("[ ]+", "_") + "." + COLLECTION_CHARACTERS)
                 .build(storage -> {
                     if (storage.succeeded()) {
                         context.characters = new CharacterDB(storage.result());
