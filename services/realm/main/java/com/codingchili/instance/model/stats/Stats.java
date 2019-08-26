@@ -1,6 +1,7 @@
 package com.codingchili.instance.model.stats;
 
 import java.util.LinkedHashMap;
+import java.util.function.BiConsumer;
 
 /**
  * @author Robin Duda
@@ -107,11 +108,11 @@ public class Stats extends LinkedHashMap<Attribute, Double> {
     }
 
     /**
-     * @return a copy.
+     * @param iterator the iterator to invoke for each entry.
      */
-    public Stats copy() {
-        Stats stats = new Stats();
-        stats.apply(this);
-        return stats;
+    public void each(BiConsumer<Attribute, Double> iterator) {
+        entrySet().forEach(entry -> {
+            iterator.accept(entry.getKey(), entry.getValue());
+        });
     }
 }
