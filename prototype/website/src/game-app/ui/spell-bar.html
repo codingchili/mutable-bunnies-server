@@ -217,6 +217,7 @@
                 this.spells = [];
                 this.charges = {};
                 this.cooldown = {};
+                this.target = {};
                 this.character = {
                     spells: {
                         learned: []
@@ -243,6 +244,10 @@
                             this._cast(this._getSpellById(spellId));
                         }
                     }, this.hotkeys);
+
+                    game.subscribe('character-target', character => {
+                        this.target = character;
+                    });
 
                     game.spells.onCharge((spellId, charges) => {
                         this.set(`charges.${spellId}`, charges);
@@ -375,7 +380,7 @@
                             application.publish('notification', `unknown spell ${casted.spellId}.`);
                         }
                     }
-                }, spell.id, {});
+                }, spell.id, {targetId: this.target.id});
             }
 
             _learned(spell) {

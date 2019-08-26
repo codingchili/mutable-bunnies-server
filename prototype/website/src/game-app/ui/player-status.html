@@ -147,6 +147,8 @@
                 display: flex;
                 flex-wrap: wrap;
                 z-index: 850;
+                flex-direction: row;
+                width: 296px;
             }
 
             .affliction-icon {
@@ -220,6 +222,10 @@
                 margin-top: 8px;
             }
 
+            .spell-info {
+                width: 192px;
+            }
+
         </style>
 
 
@@ -232,7 +238,7 @@
                 <span class="name">[[target.name]]</span>
             </template>
 
-            <div class="class-icon" id="class-icon">
+            <div on-click="_target" class="class-icon" id="class-icon">
                 <paper-tooltip animation-delay="0" position="bottom" class="stats-tooltip">
                     <div class="class-stats">
                         <span class="stats-header">[[target.name]]'s stats</span>
@@ -328,7 +334,7 @@
 
                 setInterval(() => {
                     for (let i = 0; i < this.afflictions.length; i++) {
-                        this.set(`afflictions.${i}.duration`, this.afflictions[i].duration - 1);
+                        this.notifyPath(`afflictions.${i}.duration`);
                     }
                 }, 1000);
 
@@ -348,6 +354,10 @@
                     this.$['class-icon'].classList.add('class-icon-mini');
                     this.style.width = '276px';
                 }
+            }
+
+            _target() {
+                game.publish('character-target', this.target);
             }
 
             _integer(number) {

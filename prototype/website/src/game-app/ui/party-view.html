@@ -57,7 +57,7 @@
             .party-leave {
                 display: block;
                 position: absolute;
-                left: 0px;
+                left: -28px;
                 top: -24px;
             }
 
@@ -71,7 +71,7 @@
 
                 <span class="dialog-entity">Party invite</span>
 
-                <span class="invite-text">From [[invite.from]], do you accept?</span>
+                <span class="invite-text">From [[invite.from]], do you accept? [[remaining]]s</span>
 
                 <div class="response">
                     <paper-button on-tap="_decline">DECLINE</paper-button>
@@ -107,6 +107,8 @@
                 this.invite = [];
                 this.members = [];
                 this.target = false;
+                this.remaining = 0;
+                this.INVITE_TIMEOUT = 29000; // ~30s.
 
 
                 application.onRealmLoaded(realm => {
@@ -133,6 +135,13 @@
             }
 
             _listen() {
+                setInterval(() => {
+                    if (this.remaining > 0) {
+                        this.remaining -= 1;
+                        this.notifyPath("remaining");
+                    }
+                }, 1000);
+
                 this.game.subscribe('player-spawn', event => {
                     // update members when a player changes character.
                     if (this.members.includes(event.account) || event.account === this.account) {
@@ -148,8 +157,15 @@
                 });
 
                 server.connection.setHandler('party_invite', event => {
+                    this.remaining = 30;
                     this.invite = event;
                     this._show();
+
+                    setTimeout(() => {
+                        if (this.invite.partyId === event.partyId) {
+                            this._decline();
+                        }
+                    }, this.INVITE_TIMEOUT);
                 });
 
                 server.connection.setHandler('party_leave', event => {
@@ -214,6 +230,7 @@
 
             _decline() {
                 social.party_decline(event => {
+                    this.invite = {};
                 }, this.invite.partyId);
                 this._hide();
             }
