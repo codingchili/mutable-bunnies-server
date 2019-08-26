@@ -1,10 +1,12 @@
 ---
 node: "social.node"
 message: "hello world!!!"
-global: "KV6u7RNJxVuSBOjPsO3sXN3+fBcVDJVUEUHCrurFuNYgVxuhWGCZFc23MNq81gSXy+UQeznZsVq1yxfdkVGJKg=="
+global: "UgzbUe9aH+PVokzZ5oCIzeifsLwma2GaVXGVwphXyHB8FKA9gynSuucAfZQBgKJY9i38dJcUSpqiZW+1HVN4fA=="
+storage: "com.codingchili.core.storage.IndexedMapPersisted"
 logging:
   properties:
     type: "HmacSHA512"
   domain: "social.node"
-  key: "p4EDz98TcofaZwMCXcv8LVkDpA0JQRv9nCaWV6YTCvp+0I2l+rJo0dDGg6wf7QYbxY+I6+gM4LGxKVSBd4RY6A=="
-  expiry: 1566064580
+  key: "86CPBBfNMvURA32tVC9iMYLnwh7KrjCwHEwG5KFNGnr0petW+6iYqKCn4CPFV6GbOkxQSbhDhUxQcMh0KF1LFA=="
+  expiry: 1567106679
+clientSecret: "PV5IeF+lJUFZDI88WNRAf82t0bhoGVOharJqTSCsa+eINV8blhCy53pCD/Jfm/ljmpeEbD+DkAHYGy4+UKQRSw=="
