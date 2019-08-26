@@ -47,6 +47,7 @@ public class ActiveAffliction {
         this.game = game;
         game.spells().afflictions().getById(afflictionId).ifPresent(affliction -> {
             this.affliction = affliction;
+            init(affliction);
         });
     }
 
@@ -57,18 +58,26 @@ public class ActiveAffliction {
      */
     public ActiveAffliction(Creature source, Creature target, Affliction affliction) {
         this.affliction = affliction;
-        this.interval = GameContext.secondsToMs(affliction.getInterval());
-
-        // grant first tick immediately.
-        this.ticks = GameContext.secondsToMs(affliction.getDuration()) + interval;
-        this.delta = interval;
 
         this.sourceId = source.getId();
         this.targetId = target.getId();
         this.afflictionId = affliction.getId();
 
+        init(affliction);
+
         this.source = source;
         this.target = target;
+    }
+
+    private void init(Affliction affliction) {
+        this.interval = GameContext.secondsToMs(affliction.getInterval());
+
+        if (ticks == 0) {
+            // grant first tick immediately (when applied, not resumed.)
+            this.ticks = GameContext.secondsToMs(affliction.getDuration()) + interval;
+        }
+
+        this.delta = interval;
     }
 
     /**
@@ -144,6 +153,10 @@ public class ActiveAffliction {
 
     public float getDuration() {
         return GameContext.msToSeconds(ticks);
+    }
+
+    public void setDuration(Float duration) {
+        this.ticks = GameContext.secondsToMs(duration);
     }
 
     public Affliction getAffliction() {

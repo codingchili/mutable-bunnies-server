@@ -2,7 +2,7 @@ package com.codingchili.instance.model.afflictions;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.context.Ticker;
-import com.codingchili.instance.model.stats.Stats;
+import com.codingchili.instance.model.stats.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
