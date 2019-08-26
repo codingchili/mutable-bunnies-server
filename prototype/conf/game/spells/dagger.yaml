@@ -16,7 +16,7 @@ onCastComplete:
 
     log.accept('casting dagger completed');
 
-    RANGE = 192
+    RANGE = 326
     aoe = source.vector.copy().setSize(RANGE);
 
     damage = (source.stats[Attribute.strength] * -1 / 2);
