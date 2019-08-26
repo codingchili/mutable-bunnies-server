@@ -66,11 +66,14 @@ public class PlayerCreature extends SimpleCreature {
     }
 
     @Override
-    protected void onStatsModifier(Stats calculated) {
+    protected boolean onClassModifier(Stats calculated) {
         if (game != null) {
             game.classes().getById(classId).ifPresent(playableClass -> {
                 calculated.apply(playableClass.getStats());
             });
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -88,8 +91,8 @@ public class PlayerCreature extends SimpleCreature {
 
             setModel(theClass.get().getModel());
 
-            stats.setDefault(Attribute.experience, 15.0f);
-            stats.set(Attribute.nextlevel, scaling.apply(bindings));
+            baseStats.setDefault(Attribute.experience, 15.0f);
+            baseStats.set(Attribute.nextlevel, scaling.apply(bindings));
 
             for (ActiveAffliction affliction : afflictions) {
                 affliction.init(game);

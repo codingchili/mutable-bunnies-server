@@ -16,7 +16,7 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
     private transient Stats calculated = new Stats();
     protected Inventory inventory = new Inventory();
     protected SpellState spells = new SpellState();
-    protected Stats stats = new Stats();
+    protected Stats baseStats = new Stats();
 
     @Override
     public Inventory getInventory() {
@@ -30,7 +30,7 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
 
     @Override
     public Stats getBaseStats() {
-        return stats;
+        return baseStats;
     }
 
     @Override
@@ -40,45 +40,50 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
 
     @Override
     public boolean isDead() {
-        return stats.getOrDefault(Attribute.health, 0.0) < 1;
+        return baseStats.getOrDefault(Attribute.health, 0.0) < 1;
     }
 
-    protected void onStatsModifier(Stats calculated) {
+    protected boolean onClassModifier(Stats calculated) {
+        return false;
     }
 
     public Stats getStats() {
-        if (inventory.getStats().isDirty() || afflictions.getStats().isDirty() || stats.isDirty()) {
+        if (inventory.getStats().isDirty() || afflictions.getStats().isDirty() || baseStats.isDirty()) {
             calculated.clear();
 
-            onStatsModifier(calculated);
+            boolean modifier = onClassModifier(calculated);
 
             calculated.apply(inventory.getStats())
                     .apply(afflictions.getStats())
-                    .apply(stats)
+                    .apply(baseStats)
                     .set(Attribute.maxhealth, calculateMaxHealth(calculated))
                     .set(Attribute.maxenergy, calculateMaxEnergy(calculated));
 
-            if (!stats.has(Attribute.energy)) {
-                stats.set(Attribute.energy, calculated.get(Attribute.maxenergy));
+            if (!baseStats.has(Attribute.energy)) {
+                baseStats.set(Attribute.energy, calculated.get(Attribute.maxenergy));
             }
 
-            if (!stats.has(Attribute.health)) {
-                stats.set(Attribute.health, calculated.get(Attribute.maxhealth));
+            if (!baseStats.has(Attribute.health)) {
+                baseStats.set(Attribute.health, calculated.get(Attribute.maxhealth));
             }
 
             if (!calculated.has(Attribute.level)) {
-                stats.setDefault(Attribute.level, 1);
+                baseStats.setDefault(Attribute.level, 1);
             }
 
-            stats.set(Attribute.health,
-                    Math.min(stats.get(Attribute.health), calculated.get(Attribute.maxhealth)));
+            if (modifier) {
+                // only modify min/max if the class context modifier is available.
+                // (otherwise these attributes will be set when realm is serializing for instance)
+                baseStats.set(Attribute.health,
+                        Math.min(baseStats.get(Attribute.health), calculated.get(Attribute.maxhealth)));
 
-            stats.set(Attribute.energy,
-                    Math.min(stats.get(Attribute.energy), calculated.get(Attribute.maxenergy)));
+                baseStats.set(Attribute.energy,
+                        Math.min(baseStats.get(Attribute.energy), calculated.get(Attribute.maxenergy)));
+            }
 
             inventory.getStats().clean();
             afflictions.getStats().clean();
-            stats.clean();
+            baseStats.clean();
         }
         return calculated;
     }
@@ -107,6 +112,6 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
     }
 
     public void setBaseStats(Stats stats) {
-        this.stats = stats;
+        this.baseStats = stats;
     }
 }

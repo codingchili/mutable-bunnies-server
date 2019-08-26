@@ -3,8 +3,7 @@ package com.codingchili.instance.model.entity;
 import com.codingchili.instance.model.afflictions.AfflictionState;
 import com.codingchili.instance.model.items.Inventory;
 import com.codingchili.instance.model.spells.SpellState;
-import com.codingchili.instance.model.stats.Attribute;
-import com.codingchili.instance.model.stats.Stats;
+import com.codingchili.instance.model.stats.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**

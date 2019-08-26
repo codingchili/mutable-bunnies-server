@@ -2,7 +2,7 @@ package com.codingchili.instance.model.entity;
 
 import com.codingchili.instance.model.items.ArmorType;
 import com.codingchili.instance.model.items.WeaponType;
-import com.codingchili.instance.model.stats.Stats;
+import com.codingchili.instance.model.stats.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
