@@ -10,6 +10,7 @@ import java.util.*;
  * The engine that drives the party-time.
  */
 public class PartyEngine {
+    private static final int INVITE_TIMEOUT = 30_000;
     private Map<String, Set<String>> parties = new HashMap<>(); // party id to group.
     private Map<String, String> reverse = new HashMap<>();      // account to group.
     private Map<String, String> invites = new HashMap<>();      // invited account to group.
@@ -21,8 +22,10 @@ public class PartyEngine {
 
 
     /**
-     * @param account
-     * @return
+     * Lists all the members in the party for the given account.
+     *
+     * @param account the id of a member in a party.
+     * @return a list of id's of the party members if there are any, otherwise empty.
      */
     public Set<String> list(String account) {
         if (reverse.containsKey(account)) {
@@ -35,20 +38,22 @@ public class PartyEngine {
 
 
     /**
-     * @param account
-     * @param friend
+     * Sends a party invite to another account using cross-realm routing.
+     *
+     * @param account the account that is sending the party invite.
+     * @param friend  the account that is receiving the party invite.
      */
     public String invite(String account, String friend) {
         if (reverse.containsKey(friend)) {
             throw new TargetAlreadyInPartyException(friend);
         } else {
+            String id;
             if (reverse.containsKey(account)) {
-                String id = reverse.get(account);
+                id = reverse.get(account);
                 invites.put(friend, id);
                 context.send(friend, new PartyInviteMessage(account, friend, id));
-                return id;
             } else {
-                String id = UUID.randomUUID().toString();
+                id = UUID.randomUUID().toString();
                 invites.put(friend, id);
                 reverse.put(account, id);
                 parties.computeIfAbsent(id, partyId -> {
@@ -57,14 +62,25 @@ public class PartyEngine {
                     return members;
                 });
                 context.send(friend, new PartyInviteMessage(account, friend, id));
-                return id;
             }
+            context.timer(INVITE_TIMEOUT, (handler) -> {
+                String partyId = invites.get(account);
+
+                // if this is the last invitation after 30 seconds remove the invitation.
+                // if it's not; a more recent timer has been scheduled.
+                if (id.equals(partyId)) {
+                    invites.remove(account);
+                }
+            });
+            return id;
         }
     }
 
 
     /**
-     * @param account
+     * Leaves any current parties if any.
+     *
+     * @param account the account that is leaving.
      */
     public void leave(String account) {
         String id = reverse.remove(account);
@@ -90,8 +106,12 @@ public class PartyEngine {
 
 
     /**
-     * @param account
-     * @param party
+     * Accepts a party invitation by using the party id, requires that there is already
+     * an invitation for the account and party id combination. Invitations cannot be cancelled
+     * only accepted or declined by the recipient.
+     *
+     * @param account the account that is accepting an invitation.
+     * @param party   the id of the party of which to accept.
      */
     public void accept(String account, String party) {
         Set<String> members = parties.get(party);
