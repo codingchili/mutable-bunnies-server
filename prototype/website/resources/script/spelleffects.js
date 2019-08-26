@@ -6,6 +6,17 @@ window.SpellEffects = class SpellEffects {
 
     constructor() {
         this.effects = {};
+
+        let timer = setInterval(() => {
+            if (game.isPlaying) {
+                for (let id in this.effects) {
+                    let effect = this.effects[id];
+                    effect.affliction.duration -= 1;
+                }
+            } else {
+                window.clearInterval(timer);
+            }
+        }, 1000);
     }
 
     /**
@@ -21,9 +32,21 @@ window.SpellEffects = class SpellEffects {
         switch (active.affliction.id) {
             case "poison":
                 return game.particles.following('cloud', target, active.duration);
+                this.effects[active.reference] = {
+                    update: () => true,
+                    affliction: active
+                };
             case "regeneration":
+                this.effects[active.reference] = {
+                    update: () => true,
+                    affliction: active
+                };
                 return game.particles.following('leaf', target, active.duration);
             case "haste":
+                this.effects[active.reference] = {
+                    update: () => true,
+                    affliction: active
+                };
                 return game.particles.following('burst', target, active.duration);
             case "ethereal": {
                 target.tint = 0x000000;
@@ -38,7 +61,8 @@ window.SpellEffects = class SpellEffects {
                     complete: () => {
                         target.alpha = 1.0;
                         target.tint = 0xffffff;
-                    }
+                    },
+                    affliction: active
                 };
             }
         }
@@ -77,15 +101,12 @@ window.SpellEffects = class SpellEffects {
      * @param event
      */
     damage(event) {
-        console.log(event);
         if (event.effect === 'dagger') {
             let target = event.target;
             let source = event.source;
 
             Loader.load((sprite) => {
                 Object.assign(sprite, {});
-
-                console.log(event.target);
 
                 sprite.x = source.x;
                 sprite.y = source.y;
