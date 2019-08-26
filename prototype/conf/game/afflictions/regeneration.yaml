@@ -1,7 +1,7 @@
 ---
 name: "Regeneration"
-description: "Heals increasingly over time."
-duration: 60
+description: "Heals increasingly over time for 2 - 8% of max health every other second."
+duration: 30
 interval: 2
 chance: 1.0
 tick:
@@ -9,7 +9,7 @@ tick:
     if (state['amp'] != null) {
       state['amp'] = state['amp'] + 0.005F;
     } else {
-      state['amp'] = 0.01F;
+      state['amp'] = 0.02F;
     }
     // heal for 1pct of the targets max health.
     amount = target.stats[Attribute.maxhealth] * state['amp'];

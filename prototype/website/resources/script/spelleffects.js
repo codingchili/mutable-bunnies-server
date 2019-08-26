@@ -11,7 +11,9 @@ window.SpellEffects = class SpellEffects {
             if (game.isPlaying) {
                 for (let id in this.effects) {
                     let effect = this.effects[id];
-                    effect.affliction.duration -= 1;
+                    if (effect.affliction) {
+                        effect.affliction.duration -= 1;
+                    }
                 }
             } else {
                 window.clearInterval(timer);
@@ -31,11 +33,11 @@ window.SpellEffects = class SpellEffects {
 
         switch (active.affliction.id) {
             case "poison":
-                return game.particles.following('cloud', target, active.duration);
                 this.effects[active.reference] = {
                     update: () => true,
                     affliction: active
                 };
+                return game.particles.following('cloud', target, active.duration);
             case "regeneration":
                 this.effects[active.reference] = {
                     update: () => true,
@@ -109,7 +111,7 @@ window.SpellEffects = class SpellEffects {
                 Object.assign(sprite, {});
 
                 sprite.x = source.x;
-                sprite.y = source.y;
+                sprite.y = source.y - source.height / 2;
                 sprite.velocity = 672;
                 sprite.direction = 180;
                 sprite.scale.x = 0.8;
@@ -139,7 +141,7 @@ window.SpellEffects = class SpellEffects {
             let effect = this.effects[id];
 
             if (!effect.update(delta)) {
-                delete this.effects[effect];
+                delete this.effects[id];
                 game.stage.removeChild(effect);
             }
         }

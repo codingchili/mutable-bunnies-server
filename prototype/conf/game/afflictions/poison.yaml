@@ -1,6 +1,6 @@
 ---
 name: "Poison"
-description: "Deals 2% of max health per second."
+description: "Deals 2% of max health per second, antidote!"
 duration: 12
 interval: 0.5
 chance: 0.5
