@@ -111,9 +111,8 @@
             }
         </style>
 
-        <paper-material class="container center-box noselect" elevation="3">
-
-            <div hidden="[[create]]">
+        <template is="dom-if" if="[[!create]]">
+            <paper-material class="container center-box noselect" elevation="3">
                 <div class="realm-title">
                     <h4 style="display: inline-block">{{realm.node}}</h4>
                     <iron-icon on-down="realmlist"
@@ -139,17 +138,12 @@
                     </template>
 
                     <paper-button on-tap="showCreate">Create</paper-button>
-
                 </div>
-            </div>
+            </paper-material>
+        </template>
 
-            <paper-toast class="toast-success fit-bottom" id="toast" text="[[toastText]]"></paper-toast>
-
-            <character-create id="creator" hidden="[[list]]" class="character-create">
-            </character-create>
-
-        </paper-material>
-
+        <character-create id="creator" hidden="[[list]]" class="character-create"></character-create>
+        <paper-toast class="fit-bottom" id="toast" text="[[toastText]]"></paper-toast>
     </template>
     <script>
         class CharacterList extends Polymer.GestureEventListeners(Polymer.Element) {
@@ -162,10 +156,14 @@
                 super.ready();
 
                 this.list = true;
+
                 application.onRealmSelect((realm) => {
                     this.set('realm', realm);
                     this.server = new RealmServer(this.realm);
+
                     this.$.creator.setServer(this.server);
+                    this.$.creator.setToaster(this.showToast.bind(this));
+
                     this.showCharacters();
                     this.realmtoken();
                 });
@@ -311,6 +309,7 @@
 
                 this.server.remove({
                     accepted: () => {
+                        this.showToast(`${e.model.character.name} is now a goner.`);
                         this.loadCharacters();
                     },
                     error: () => {
@@ -345,7 +344,7 @@
 
             showToast(text) {
                 this.toastText = text;
-                this.$.toast.show();
+                this.$.toast.open();
             }
 
             select(e) {

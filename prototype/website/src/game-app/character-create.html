@@ -29,6 +29,14 @@
                 display: block;
             }
 
+            .container {
+                display: block;
+                width: 582px;
+                margin-bottom: 32px;
+                /* super important property that fixes a 1px jump on hover. */
+                backface-visibility: hidden;
+            }
+
             .list {
                 margin: auto;
                 max-width: 625px;
@@ -234,8 +242,7 @@
 
         </style>
 
-        <div class="container noselect">
-
+        <paper-material class="container center-box noselect" elevation="3" hidden="[[create]]">
             <div hidden="[[naming]]">
                 <div class="realm-title">
                     <h4 style="display: inline-block">Select class</h4>
@@ -327,132 +334,137 @@
                     </paper-material>
                 </div>
             </div>
-        </div>
+        </paper-material>
 
-        <paper-toast class="toast-success fit-bottom" id="toast" text="[[toastText]]"></paper-toast>
+        <!--<paper-toast class="fit-bottom" id="toast" text="[[toastText]]"></paper-toast>-->
     </template>
-</dom-module>
-<script>
-    class CharacterCreate extends Polymer.GestureEventListeners(Polymer.Element) {
-        ready() {
-            super.ready();
-            this.showSelect();
-            this.selected = false;//{name: 'Hunter'};
+    <script>
+        class CharacterCreate extends Polymer.GestureEventListeners(Polymer.Element) {
+            ready() {
+                super.ready();
+                this.showSelect();
+                this.selected = false;//{name: 'Hunter'};
 
-            application.onRealmLoaded((realm) => {
-                this.set('realm', realm);
-                this.spells = {};
-                realm.spells.forEach(spell => {
-                    this.spells[spell.id] = spell;
-                })
-            });
-        }
-
-        static get is() {
-            return 'character-create';
-        }
-
-        select(e) {
-            this.showNaming(e.model.playerclass);
-        }
-
-        _classInfo(classes, selected) {
-            if (this.realm) {
-                return this.realm.classes.get(selected);
+                application.onRealmLoaded((realm) => {
+                    this.set('realm', realm);
+                    this.spells = {};
+                    realm.spells.forEach(spell => {
+                        this.spells[spell.id] = spell;
+                    })
+                });
             }
-        }
 
-        _available(playerclass) {
-            for (let aClass of this.realm.availableClasses) {
-                if (aClass === playerclass.id) {
-                    return true;
+            static get is() {
+                return 'character-create';
+            }
+
+            select(e) {
+                this.showNaming(e.model.playerclass);
+            }
+
+            _classInfo(classes, selected) {
+                if (this.realm) {
+                    return this.realm.classes.get(selected);
                 }
             }
-            return false;
-        }
 
-        _getSpellDescription(spellId, stats) {
-            let spell = this.spells[spellId];
-            if (spell) {
-                this.character = {stats: stats};
-                return eval('`' + this.spells[spellId].description + '`');
-            } else {
-                return "No description, possible overpowered.";
+            _available(playerclass) {
+                for (let aClass of this.realm.availableClasses) {
+                    if (aClass === playerclass.id) {
+                        return true;
+                    }
+                }
+                return false;
             }
-        }
 
-        _getSpellName(spellId) {
-            let spell = this.spells[spellId];
-
-            if (spell) {
-                return spell.name;
-            } else {
-                return spellId;
+            _getSpellDescription(spellId, stats) {
+                let spell = this.spells[spellId];
+                if (spell) {
+                    this.character = {stats: stats};
+                    return eval('`' + this.spells[spellId].description + '`');
+                } else {
+                    return "No description, possible overpowered.";
+                }
             }
-        }
 
-        showSelect() {
-            this.set("selection", true);
-            this.set("naming", false);
-        }
+            _getSpellName(spellId) {
+                let spell = this.spells[spellId];
 
-        showNaming(playerClass) {
-            this.set("selection", false);
-            this.set("naming", true);
-            this.set("selected", playerClass);
-            this.$['name'].focus();
-        }
+                if (spell) {
+                    return spell.name;
+                } else {
+                    return spellId;
+                }
+            }
 
-        createCharacter(e) {
-            if (e.type === "tap" || e.keyCode === 13) {
+            showSelect() {
+                this.set("selection", true);
+                this.set("naming", false);
+            }
 
-                if (this.characterName.length === 0)
-                    this.showToast('Character name must be longer than that.');
-                else if (this.hasCharacter(this.characterName))
-                    this.showToast('You already have a character with that name');
-                else {
-                    this.showToast('Creating character ' + this.characterName + " ..");
+            showNaming(playerClass) {
+                this.set("selection", false);
+                this.set("naming", true);
+                this.set("selected", playerClass);
+                this.$['name'].focus();
+            }
 
-                    this.server.create({
-                        accepted: () => {
-                            application.publish("character-create", {});
-                            this.characterName = "";
-                            this.showSelect();
-                        },
-                        error: (msg) => {
-                            if (msg.status === 'CONFLICT') {
-                                this.showToast('There is already a character with that name');
-                            } else {
-                                application.error("Failed to connect to the authentication server for character creation.");
+            createCharacter(e) {
+                if (e.type === "tap" || e.keyCode === 13) {
+
+                    if (this.characterName.length === 0)
+                        this.showToast('Character name must be longer than that.');
+                    else if (this.hasCharacter(this.characterName))
+                        this.showToast('You already have a character with that name');
+                    else {
+                        this.showToast('Creating character ' + this.characterName + " ..");
+
+                        this.server.create({
+                            accepted: () => {
+                                application.publish("character-create", {});
+                                this.characterName = "";
+                                this.showSelect();
+                            },
+                            error: (msg) => {
+                                if (msg.status === 'CONFLICT') {
+                                    this.showToast('There is already a character with that name');
+                                } else {
+                                    application.error("Failed to connect to the authentication server for character creation.");
+                                }
                             }
-                        }
-                    }, this.selected.id, this.characterName);
+                        }, this.selected.id, this.characterName);
+                    }
                 }
+            }
+
+            showToast(text) {
+                /*this.toastText = text;
+                this.$.toast.open();*/
+                this.toaster(text);
+            }
+
+            setServer(server) {
+                this.server = server;
+            }
+
+            hasCharacter(name) {
+                for (let i = 0; i < this.realm.characters.length; i++)
+                    if (this.realm.characters[i].name === name)
+                        return true;
+
+                return false;
+            }
+
+            characterlist() {
+                this.characterName = "";
+                application.publish("cancel-create", {});
+            }
+
+            setToaster(toaster) {
+                this.toaster = toaster;
             }
         }
 
-        showToast(text) {
-            this.toastText = text;
-            this.$.toast.open();
-        }
-
-        setServer(server) {
-            this.server = server;
-        }
-
-        hasCharacter(name) {
-            for (let i = 0; i < this.realm.characters.length; i++)
-                if (this.realm.characters[i].name === name)
-                    return true;
-
-            return false;
-        }
-
-        characterlist() {
-            this.characterName = "";
-            application.publish("cancel-create", {});
-        }
-    }
-
-    window.customElements.define(CharacterCreate.is, CharacterCreate);
-</script>
+        window.customElements.define(CharacterCreate.is, CharacterCreate);
+    </script>
+</dom-module>
