@@ -54,10 +54,8 @@ window.ChatHandler = class ChatHandler {
     }
 
     _parseColors(msg) {
-        console.log('parse color');
         if (msg.party) {
             msg.color1 = '#2bc7ff';
-            console.log('is party');
         } else {
             let colors = /(#[0-9a-z]{6})/mgi;
             msg.color1 = colors.exec(msg.text);

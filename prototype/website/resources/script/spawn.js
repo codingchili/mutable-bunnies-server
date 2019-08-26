@@ -255,7 +255,6 @@ window.SpawnHandler = class SpawnHandler {
             game.chat.add({text: `${target.name} has left.`, system: true});
         }
         if (target.account) {
-            console.log('publishing player-leave');
             game.publish('player-leave', target);
         }
         game.publish('creature-despawn', target);

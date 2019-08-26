@@ -158,7 +158,6 @@ window.Game = class Game extends Canvas {
 
     _counters() {
         if (application.development.metrics) {
-            console.log('is metrics = true');
             this._counter(() => {
                 return `fps: ${this.fps}`;
             });
