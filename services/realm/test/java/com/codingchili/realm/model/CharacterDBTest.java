@@ -18,6 +18,8 @@ import com.codingchili.core.storage.StorageLoader;
 
 /**
  * @author Robin Duda
+ *
+ * Tests for the storage and retrieval of characters.
  */
 @RunWith(VertxUnitRunner.class)
 public class CharacterDBTest {
@@ -166,9 +168,8 @@ public class CharacterDBTest {
                 "    \"x\" : -1.0,\n" +
                 "    \"y\" : -1.0\n" +
                 "  },\n" +
-                "  \"afflictions\" : {\n" +
-                "    \"list\" : [ ]\n" +
-                "  },\n" +
+                "  \"afflictions\" : [\n" +
+                "  ],\n" +
                 "  \"inventory\" : {\n" +
                 "    \"equipped\" : { },\n" +
                 "    \"items\" : [ {\n" +
@@ -225,9 +226,8 @@ public class CharacterDBTest {
                         "    \"x\" : 264.50613,\n" +
                         "    \"y\" : 506.0107\n" +
                         "  },\n" +
-                        "  \"afflictions\" : {\n" +
-                        "    \"list\" : [ ]\n" +
-                        "  },\n" +
+                        "  \"afflictions\" : []\n" +
+                        "  ,\n" +
                         "  \"inventory\" : {\n" +
                         "    \"equipped\" : { },\n" +
                         "    \"items\" : [ {\n" +
@@ -284,9 +284,7 @@ public class CharacterDBTest {
 
                 db.update(creatureUpdated).setHandler(update -> {
                     if (update.succeeded()) {
-
                         async.complete();
-
                     } else {
                         test.fail(update.cause());
                     }

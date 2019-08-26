@@ -16,8 +16,7 @@ import com.codingchili.core.listener.*;
  * passing objects between the realm and the instance. This only works while the
  * instances and realm server are deployed on the same server. This is a bit faster
  * as it avoids passing messages on the cluster, but may fail in the future because
- * we cannot scale out instances using the LocalBusListener. According to my projections
- * this will not be an issue within at least 10 years, where we have coded more instances.
+ * we cannot scale out instances using the LocalBusListener.
  */
 public class FasterBusListener implements CoreListener {
     private CoreHandler handler;

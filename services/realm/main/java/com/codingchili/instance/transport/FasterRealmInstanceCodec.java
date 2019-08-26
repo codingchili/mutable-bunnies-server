@@ -53,7 +53,7 @@ public class FasterRealmInstanceCodec<S, R> implements MessageCodec<S, R> {
     @Override
     @SuppressWarnings("unchecked")
     public R transform(S message) {
-        return (R) message;
+        return (R) message;//Serializer.json(message);
     }
 
     @Override
