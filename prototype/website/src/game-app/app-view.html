@@ -48,6 +48,10 @@
         </template>
 
         <iron-pages selected="{{view}}" attr-for-selected="id" id="content">
+            <div id="start-page">
+                <start-page class="layout horizontal center-justified"/>
+            </div>
+
             <div id="game-login">
                 <game-login class="layout horizontal center-justified"/>
             </div>
@@ -66,10 +70,6 @@
 
             <div id="game-view" style="width: 100%; height: 100%;">
                 <game-view/>
-            </div>
-
-            <div id="start-page">
-                <start-page class="layout horizontal center-justified"/>
             </div>
 
             <div id="offline-view">
