@@ -3,6 +3,7 @@ package com.codingchili.instance.model.spells;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.entity.Entity;
+import com.codingchili.instance.model.items.CollectionFactory;
 
 import java.time.Instant;
 import java.util.*;
@@ -17,15 +18,15 @@ import java.util.*;
  * global cooldown - the amount of milliseconds that needs to pass between casting a spell -
  * this applies even if there are charges available for the given spell.
  * <p>
- * Unix epochs are used to set the cooldown and gcd. It is up to the caller to determine
+ * Unix epochs are used to set the cooldown and getGcd. It is up to the caller to determine
  * if the point in time has passed. This is better than using a boolean because the delay of
- * the network does not affect the cooldown/gcd state (clients are kept in sync more accurately.)
+ * the network does not affect the cooldown/getGcd state (clients are kept in sync more accurately.)
  */
 public class SpellState {
     private static final Integer GCD_MS = 250;
-    private Set<String> learned = new LinkedHashSet<>();
-    private Map<String, Long> casted = new LinkedHashMap<>();
-    private Map<String, Float> charges = new LinkedHashMap<>();
+    private Set<String> learned = CollectionFactory.set();
+    private Map<String, Long> casted = CollectionFactory.map();
+    private Map<String, Float> charges = CollectionFactory.map();
     private Long gcd = 0L;
 
     /**
@@ -80,15 +81,24 @@ public class SpellState {
      * @return the epoch in milliseconds of when the last activated global cooldown ends.
      * this point in time could have already passed.
      */
-    public Long gcd() {
+    public Long getGcd() {
         return gcd;
+    }
+
+    /**
+     * Sets the end time for global cooldown, use #{@link #triggerGcd(long)} instead.
+     *
+     * @param end the unix epoch for when gcd ends.
+     */
+    public void setGcd(Long end) {
+        this.gcd = end;
     }
 
     /**
      * @param ms the number of milliseconds the GCD is active for.
      * @return manually invoke gcd.
      */
-    public SpellState setGcd(long ms) {
+    public SpellState triggerGcd(long ms) {
         gcd = System.currentTimeMillis() + ms;
         return this;
     }

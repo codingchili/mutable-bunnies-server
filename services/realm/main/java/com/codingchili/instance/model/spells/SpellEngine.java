@@ -5,8 +5,7 @@ import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.afflictions.*;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.items.StatsUpdateEvent;
-import com.codingchili.instance.model.stats.Attribute;
-import com.codingchili.instance.model.stats.Stats;
+import com.codingchili.instance.model.stats.*;
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
 

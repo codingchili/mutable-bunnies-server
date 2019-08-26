@@ -46,7 +46,7 @@ public class SpellCastEvent implements Event {
     }
 
     public long getGcd() {
-        return state.gcd();
+        return state.getGcd();
     }
 
     @Override
