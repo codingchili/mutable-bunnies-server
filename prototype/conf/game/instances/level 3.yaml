@@ -11,6 +11,18 @@ npcs:
   point:
     x: 600
     y: 600
+- id: "squito"
+  point:
+    x: 750
+    y: 750
+- id: "squito"
+  point:
+    x: 800
+    y: 750
+- id: "squito"
+  point:
+    x: 850
+    y: 750
 onStartup:
   jexl: |
     //game.npcs().spawn("Illicit Lilith");

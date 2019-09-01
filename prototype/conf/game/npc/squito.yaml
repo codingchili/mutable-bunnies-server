@@ -1,0 +1,41 @@
+---
+name: "Squito"
+description: "Squito wan suck ya bloOod."
+model:
+  graphics: "game/character/squito/squito"
+  skin: "red"
+  scale: 0.08
+  blocking: false
+  revertX: true
+  hitbox:
+    type: rectangular
+stats:
+  level: 3
+  constitution: 8
+  movement: 140
+loot:
+  - item: "apple_golden"
+    probability: 0.42
+    min: 1
+    max: 3
+  - item: "apple_green"
+    probability: 0.76
+    min: 2
+    max: 8
+  - item: "apple_red"
+    probability: 1.0
+    min: 4
+    max: 16
+death:
+  groovy: |
+    game.instance().timer(3000, { id ->
+      game.spawner().npc('squito', target.vector.x, target.vector.y);
+    });
+tick:
+  groovy: |
+    for (creature : game.creatures().all()) {
+      if (!creature.getName().equals('Squito')) {
+        game.movement().follow(source, creature);
+        break;
+      }
+    }

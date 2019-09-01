@@ -1,180 +1,180 @@
 
 squito.png
-size: 1600,616
+size: 916,1068
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 body-pieces-and-sprier-file/green-style/back-antenna
   rotate: true
-  xy: 724, 389
+  xy: 2, 2
   size: 85, 213
   orig: 85, 213
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/back-eye
-  rotate: true
-  xy: 939, 155
+  rotate: false
+  xy: 761, 509
   size: 126, 174
   orig: 126, 174
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/back-eye-closed
-  rotate: true
-  xy: 509, 48
+  rotate: false
+  xy: 652, 295
   size: 130, 174
   orig: 130, 174
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/back-leg-bottom
   rotate: true
-  xy: 1281, 62
+  xy: 638, 83
   size: 36, 165
   orig: 36, 165
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/back-wing
   rotate: true
-  xy: 2, 140
+  xy: 345, 883
   size: 183, 324
   orig: 183, 324
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/bent-sucker
-  rotate: true
-  xy: 345, 382
+  rotate: false
+  xy: 2, 400
   size: 230, 377
   orig: 230, 377
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/body
-  rotate: false
-  xy: 724, 476
+  rotate: true
+  xy: 2, 89
   size: 309, 136
   orig: 309, 136
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/front-antenna
-  rotate: true
-  xy: 745, 261
+  rotate: false
+  xy: 761, 685
   size: 126, 192
   orig: 126, 192
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/front-eye
-  rotate: true
-  xy: 1143, 280
+  rotate: false
+  xy: 372, 681
   size: 194, 200
   orig: 194, 200
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/front-eye-closed
-  rotate: true
-  xy: 939, 283
+  rotate: false
+  xy: 568, 675
   size: 191, 202
   orig: 191, 202
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/front-leg-bottom
   rotate: false
-  xy: 1552, 431
+  xy: 877, 885
   size: 32, 181
   orig: 32, 181
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/front-wing
   rotate: false
-  xy: 2, 325
+  xy: 2, 779
   size: 341, 287
   orig: 341, 287
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/green-style/head
   rotate: true
-  xy: 1115, 153
+  xy: 471, 179
   size: 125, 174
   orig: 125, 174
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/orange-style/back-eye
   rotate: true
-  xy: 929, 27
+  xy: 462, 51
   size: 126, 174
   orig: 126, 174
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/orange-style/back-eye-closed
-  rotate: true
-  xy: 1105, 21
+  rotate: false
+  xy: 784, 333
   size: 130, 174
   orig: 130, 174
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/orange-style/body
-  rotate: false
-  xy: 2, 2
+  rotate: true
+  xy: 234, 468
   size: 309, 136
   orig: 309, 136
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/orange-style/front-eye
   rotate: false
-  xy: 549, 180
+  xy: 372, 479
   size: 194, 200
   orig: 194, 200
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/orange-style/front-eye-closed
-  rotate: true
-  xy: 1345, 232
+  rotate: false
+  xy: 568, 471
   size: 191, 202
   orig: 191, 202
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/orange-style/thorax
   rotate: true
-  xy: 745, 80
+  xy: 278, 83
   size: 179, 182
   orig: 179, 182
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/red-style/back-eye
   rotate: false
-  xy: 1467, 58
+  xy: 647, 121
   size: 128, 172
   orig: 128, 172
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/red-style/back-eye-closed
-  rotate: true
-  xy: 1291, 100
+  rotate: false
+  xy: 784, 157
   size: 130, 174
   orig: 130, 174
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/red-style/body
-  rotate: false
-  xy: 1035, 476
+  rotate: true
+  xy: 140, 89
   size: 309, 136
   orig: 309, 136
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/red-style/front-eye
   rotate: true
-  xy: 1346, 425
+  xy: 671, 879
   size: 187, 204
   orig: 187, 204
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/red-style/front-eye-closed
-  rotate: true
-  xy: 345, 189
+  rotate: false
+  xy: 278, 264
   size: 191, 202
   orig: 191, 202
   offset: 0, 0
   index: -1
 body-pieces-and-sprier-file/red-style/thorax
   rotate: false
-  xy: 328, 24
+  xy: 471, 306
   size: 179, 163
   orig: 179, 163
   offset: 0, 0

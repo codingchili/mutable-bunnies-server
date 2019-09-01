@@ -2,6 +2,7 @@ package com.codingchili.instance.model.npc;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.*;
+import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.scripting.Bindings;
 
 import java.util.HashMap;
@@ -31,8 +32,8 @@ public class SpawnEngine {
 
     /**
      * @param id the id of the npc creature to spawn.
-     * @param x the x point.
-     * @param y the y point.
+     * @param x  the x point.
+     * @param y  the y point.
      * @return the creature that was spawned.
      */
     public Optional<Creature> npc(String id, float x, float y) {
@@ -41,11 +42,10 @@ public class SpawnEngine {
         if (config.isPresent()) {
             Npc npc = new Npc(config.get());
 
-            npc.setBaseStats(config.get().getStats());
+            npc.setBaseStats(config.get().getStats().copy());
             setup(config.get(), npc);
             at(npc, x, y);
-
-
+            npc.compute();
 
             game.add(npc);
             return Optional.of(npc);
@@ -57,8 +57,8 @@ public class SpawnEngine {
 
     /**
      * @param id the id of the npc creature to spawn.
-     * @param x the x point.
-     * @param y the y point.
+     * @param x  the x point.
+     * @param y  the y point.
      * @return the structure that was spawned.
      */
     public Optional<Entity> structure(String id, float x, float y) {

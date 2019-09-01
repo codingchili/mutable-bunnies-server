@@ -115,4 +115,11 @@ public class Stats extends LinkedHashMap<Attribute, Double> {
             iterator.accept(entry.getKey(), entry.getValue());
         });
     }
+
+    /**
+     * @return a copy of the stats object.
+     */
+    public Stats copy() {
+        return new Stats().apply(this);
+    }
 }

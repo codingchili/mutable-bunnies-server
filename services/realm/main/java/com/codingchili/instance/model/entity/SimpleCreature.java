@@ -49,43 +49,47 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
 
     public Stats getStats() {
         if (inventory.getStats().isDirty() || afflictions.getStats().isDirty() || baseStats.isDirty()) {
-            calculated.clear();
-
-            boolean modifier = onClassModifier(calculated);
-
-            calculated.apply(inventory.getStats())
-                    .apply(afflictions.getStats())
-                    .apply(baseStats)
-                    .set(Attribute.maxhealth, calculateMaxHealth(calculated))
-                    .set(Attribute.maxenergy, calculateMaxEnergy(calculated));
-
-            if (!baseStats.has(Attribute.energy)) {
-                baseStats.set(Attribute.energy, calculated.get(Attribute.maxenergy));
-            }
-
-            if (!baseStats.has(Attribute.health)) {
-                baseStats.set(Attribute.health, calculated.get(Attribute.maxhealth));
-            }
-
-            if (!calculated.has(Attribute.level)) {
-                baseStats.setDefault(Attribute.level, 1);
-            }
-
-            if (modifier) {
-                // only modify min/max if the class context modifier is available.
-                // (otherwise these attributes will be set when realm is serializing for instance)
-                baseStats.set(Attribute.health,
-                        Math.min(baseStats.get(Attribute.health), calculated.get(Attribute.maxhealth)));
-
-                baseStats.set(Attribute.energy,
-                        Math.min(baseStats.get(Attribute.energy), calculated.get(Attribute.maxenergy)));
-            }
-
-            inventory.getStats().clean();
-            afflictions.getStats().clean();
-            baseStats.clean();
+            compute();
         }
         return calculated;
+    }
+
+    public void compute() {
+        calculated.clear();
+
+        boolean modifier = onClassModifier(calculated);
+
+        calculated.apply(inventory.getStats())
+                .apply(afflictions.getStats())
+                .apply(baseStats)
+                .set(Attribute.maxhealth, calculateMaxHealth(calculated))
+                .set(Attribute.maxenergy, calculateMaxEnergy(calculated));
+
+        if (!baseStats.has(Attribute.energy)) {
+            baseStats.set(Attribute.energy, calculated.get(Attribute.maxenergy));
+        }
+
+        if (!baseStats.has(Attribute.health)) {
+            baseStats.set(Attribute.health, calculated.get(Attribute.maxhealth));
+        }
+
+        if (!calculated.has(Attribute.level)) {
+            baseStats.setDefault(Attribute.level, 1);
+        }
+
+        if (modifier) {
+            // only modify min/max if the class context modifier is available.
+            // (otherwise these attributes will be set when realm is serializing for instance)
+            calculated.set(Attribute.health,
+                    Math.min(baseStats.get(Attribute.health), calculated.get(Attribute.maxhealth)));
+
+            calculated.set(Attribute.energy,
+                    Math.min(baseStats.get(Attribute.energy), calculated.get(Attribute.maxenergy)));
+        }
+
+        inventory.getStats().clean();
+        afflictions.getStats().clean();
+        baseStats.clean();
     }
 
     private Double calculateMaxEnergy(Stats stats) {
