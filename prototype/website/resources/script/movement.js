@@ -185,7 +185,11 @@ window.MovementHandler = class MovementHandler {
 
         if (entity.state.initialized) {
             if (entity.state.tracks.length === 0 || animation !== entity.state.tracks[0].animation.name) {
-                entity.state.setAnimation(0, animation, true);
+                try {
+                    entity.state.setAnimation(0, animation, true);
+                } catch (e) {
+                    // no such animation.
+                }
             }
         }
     }
