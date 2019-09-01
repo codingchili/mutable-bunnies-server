@@ -4,6 +4,6 @@ dependencies {
     // anything newer than alpha-3 results in java.lang.NoClassDefFoundError:
     //     Could not initialize class org.codehaus.groovy.runtime.InvokerHelper
     // tested up to beta-1.
-    compile 'org.codehaus.groovy:groovy-jsr223:3.0.0-alpha-3'
+    compile 'org.codehaus.groovy:groovy-jsr223:3.0.0-beta-3'
     compile project(':common')
 }
