@@ -3,4 +3,4 @@
 
 spells.heal(source, (item.rarity.ordinal() + 1) * 24)
 spells.energy(source, (item.rarity.ordinal() + 1) * 16)
-source.getSpells().setGcd(500)
+source.getSpells().triggerGcd(500)
