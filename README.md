@@ -7,6 +7,15 @@ Sample in-game image of a simple test world, first [demo video](https://www.yout
 
 Uses Pixi.js for rendering and assets from gamedeveloperstudio, see [license](https://www.gamedeveloperstudio.com/license.php). This repository doesn't contain any client code or assets - as these may not be included in any open source listing. Contributions are welcome for the backend but only the core team may work on the client/assets. 
 
+If you are a part of the team please include the client prototype submodule.
+```console
+# cloning the repository:
+git clone --recursive <repository-url>
+
+# if already cloned:
+git submodule update --init --recursive
+```
+
 ## Building
 
 - Requires Polymer-cli.
