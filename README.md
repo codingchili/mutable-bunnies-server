@@ -51,12 +51,12 @@ Core mechanics
 - [X] spell engine (cooldown, learned spells, charges)
 - [X] dialog engine
 - [X] affliction engine
-- [ ] cross realm/instance chat
-- [ ] friend lists
+- [X] cross realm/instance chat
+- [X] friend lists
 - [X] instance travel
 - [X] instance loading
 - [ ] crafting
-- [ ] questing
+- [X] questing
 - [ ] dynamically deployed instances
 
 Npcs/Entities
@@ -70,16 +70,16 @@ User interface
 - [X] spellbar
 - [X] character status
 - [X] chat box
-- [ ] creature targeting
-- [ ] inventory
-- [ ] quest tracker
+- [X] creature targeting
+- [X] inventory
+- [X] quest tracker
 - [ ] crafting
 - [ ] in-game help
 
 Effects
 - [X] skybox
-- [ ] sound effects
-- [ ] spell effects
+- [X] sound effects
+- [X] spell effects
 
 Website
 - [X] patch notes
