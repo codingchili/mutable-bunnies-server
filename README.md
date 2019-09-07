@@ -2,7 +2,7 @@
 
 A microservices based distributed 2d MMORPG with Hazelcast and Vert.x on Java 11, currently 20k LOC + configuration.
 
-![in-game-v2.png](images/in-game-v2.png)
+![in-game-v2.png](images/in-game-v3.png)
 Sample in-game image of a simple test world.
 
 Uses Pixi.js for rendering and assets from gamedeveloperstudio, see [license](https://www.gamedeveloperstudio.com/license.php).
