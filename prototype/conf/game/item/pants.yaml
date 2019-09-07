@@ -1,9 +1,0 @@
-name: "Non-magical Pants +2"
-description: "These pants are certified non-magical."
-icon: "pants.png"
-slot: "legs"
-stats:
-  wisdom: 2
-  dexterity: 2
-  magicResist: 2
-  armorClass: 2

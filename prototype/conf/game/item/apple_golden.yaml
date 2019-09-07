@@ -1,5 +1,0 @@
-name: "Golden Apple"
-icon: "apple_golden.png"
-rarity: "legendary"
-onUse: "apple_heal.groovy"
-description: "A divine snack reserved for the gods."

@@ -1,7 +1,0 @@
-name: "Moldy Bow"
-rarity: "uncommon"
-slot: "weapon"
-icon: "bow.png"
-description: "It shoots arrows, sometimes when the string doesn't break."
-stats:
-  dexterity: 2

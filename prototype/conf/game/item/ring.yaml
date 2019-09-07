@@ -1,7 +1,0 @@
-name: "Diamond Ring"
-description: "Gold with a diamond on top."
-icon: "ring_1.png"
-slot: "ring"
-rarity: "uncommon"
-stats:
-  wisdom: 1

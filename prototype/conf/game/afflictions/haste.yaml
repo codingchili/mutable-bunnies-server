@@ -1,7 +1,0 @@
----
-name: "Haste"
-duration: 12.0
-description: "Movement speed increased by 35%, on the hunt!"
-modifier:
-  jexl: |
-    stats[Attribute.movement] = source.stats[Attribute.movement] * 0.35d;

@@ -1,5 +1,0 @@
-name: "Green Apple"
-icon: "apple_green.png"
-rarity: "rare"
-onUse: "apple_heal.groovy"
-description: "A juicy snack matured to perfection."

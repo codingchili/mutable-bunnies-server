@@ -1,8 +1,0 @@
-name: "Plates Sewn Together"
-slot: "chest"
-icon: "plate.png"
-description: "The plates might protect against something, if the strings keep it together."
-stats:
-  constitution: 4
-  dexterity: -6
-  armorClass: 6

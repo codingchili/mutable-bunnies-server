@@ -1,8 +1,0 @@
-name: "Maybe Body Armor"
-slot: "chest"
-icon: "body_armor.png"
-description: "The salesman was convinced that this was armor, you're not."
-stats:
-  constitution: 2
-  dexterity: -4
-  armorClass: 2
