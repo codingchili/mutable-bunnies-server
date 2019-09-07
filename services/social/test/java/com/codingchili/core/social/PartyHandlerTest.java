@@ -45,8 +45,9 @@ public class PartyHandlerTest {
         test.assertFalse(engine.list(B).contains(A));
         test.assertFalse(engine.list(A).contains(B));
 
-        // sole party member. #sadface.
-        test.assertTrue(engine.list(A).contains(A));
+        // The party has been disbanded and A is no longer in it.
+        // this is to make sure that A can now receive invitations again.
+        test.assertFalse(engine.list(A).contains(A));
     }
 
     @Test
@@ -68,8 +69,9 @@ public class PartyHandlerTest {
         test.assertFalse(engine.list(B).contains(A));
         test.assertFalse(engine.list(B).contains(B));
 
-        // A is still left in party.
-        test.assertTrue(engine.list(A).contains(A));
+        // The party has been disbanded and A is no longer in it.
+        // this is to make sure that A can now receive invitations again.
+        test.assertFalse(engine.list(A).contains(A));
     }
 
     @Test
