@@ -3,9 +3,18 @@
 A microservices based distributed 2d MMORPG with Hazelcast and Vert.x on Java 11, currently 20k LOC + configuration.
 
 ![in-game-v2.png](images/in-game-v3.png)
-Sample in-game image of a simple test world.
+Sample in-game image of a simple test world, first [demo video](https://www.youtube.com/watch?v=TlFcvCJb9lw) now available!
 
-Uses Pixi.js for rendering and assets from gamedeveloperstudio, see [license](https://www.gamedeveloperstudio.com/license.php).
+Uses Pixi.js for rendering and assets from gamedeveloperstudio, see [license](https://www.gamedeveloperstudio.com/license.php). This repository doesn't contain any client code or assets - as these may not be included in any open source listing. Contributions are welcome for the backend but only the core team may work on the client/assets. 
+
+If you are a part of the team please include the client prototype submodule.
+```console
+# cloning the repository:
+git clone --recursive <repository-url>
+
+# if already cloned:
+git submodule update --init --recursive
+```
 
 ## Building
 
@@ -51,12 +60,12 @@ Core mechanics
 - [X] spell engine (cooldown, learned spells, charges)
 - [X] dialog engine
 - [X] affliction engine
-- [ ] cross realm/instance chat
-- [ ] friend lists
+- [X] cross realm/instance chat
+- [X] friend lists
 - [X] instance travel
 - [X] instance loading
 - [ ] crafting
-- [ ] questing
+- [X] questing
 - [ ] dynamically deployed instances
 
 Npcs/Entities
@@ -70,16 +79,16 @@ User interface
 - [X] spellbar
 - [X] character status
 - [X] chat box
-- [ ] creature targeting
-- [ ] inventory
-- [ ] quest tracker
+- [X] creature targeting
+- [X] inventory
+- [X] quest tracker
 - [ ] crafting
 - [ ] in-game help
 
 Effects
 - [X] skybox
-- [ ] sound effects
-- [ ] spell effects
+- [X] sound effects
+- [X] spell effects
 
 Website
 - [X] patch notes
