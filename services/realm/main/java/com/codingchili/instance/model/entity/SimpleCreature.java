@@ -78,8 +78,6 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
         }
 
         if (modifier) {
-            // only modify min/max if the class context modifier is available.
-            // (otherwise these attributes will be set when realm is serializing for instance)
             calculated.set(Attribute.health,
                     Math.min(baseStats.get(Attribute.health), calculated.get(Attribute.maxhealth)));
 

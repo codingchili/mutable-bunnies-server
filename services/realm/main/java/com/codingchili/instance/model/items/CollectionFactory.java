@@ -17,7 +17,7 @@ public class CollectionFactory {
      * @return
      */
     public static <K, V> Map<K, V> map() {
-        return new HashMap<>();
+        return new LinkedHashMap<>();
     }
 
     /**
