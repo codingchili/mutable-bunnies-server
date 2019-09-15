@@ -8,7 +8,6 @@ script:
   - npm install -g bower
   - ./gradlew -version
   - ./gradlew build --info --stacktrace
-  - ./gradlew archivePrototype -x test
   - ./gradlew javadocJar -x test
   - ./gradlew archiveTestReport -x test
 notifications:
@@ -20,6 +19,8 @@ cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
+git:
+  submodules: false
 deploy:
   provider: releases
   api_key:
