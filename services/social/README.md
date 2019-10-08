@@ -2,12 +2,12 @@
 
 Service to handle social interactions between users.
 
-##### Featureset
+##### Feature set
 
-- :x: one-to-one private chat
-- :x: private chat rooms
-- :x: public chat rooms
-- :x: guilds
-- :x: friend lists
-- :x: online status
-- :x: achievements
+- [x] one-to-one private chat
+- [x] private chat rooms
+- [x] public chat rooms
+- [x] friend lists
+- [x] online status
+- [ ] guilds
+- [ ] achievements

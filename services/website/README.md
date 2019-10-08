@@ -2,9 +2,10 @@
 
 Serves files from **website/** directory in the server root.
 
-##### Featureset
-- gzip support
-- file caching
-- hot reload of files
-- :x: support for templating with Jade
-- :x: support for 0-copy
+##### Feature set
+
+- [x] gzip support
+- [x] file caching
+- [x] hot reload of files
+- [x] support for templating with Jade
+- [ ] support for 0-copy
