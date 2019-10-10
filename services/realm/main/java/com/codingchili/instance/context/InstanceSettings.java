@@ -1,9 +1,8 @@
 package com.codingchili.instance.context;
 
-import com.codingchili.instance.model.SpawnPoint;
-import com.codingchili.instance.model.entity.Skybox;
-import com.codingchili.instance.model.entity.SpawnConfiguration;
+import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.scripting.Scripted;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ import static com.codingchili.core.configuration.CoreStrings.EXT_YAML;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * Contains settings for an instance in a realm.
  */
 public class InstanceSettings implements Configurable {
@@ -28,7 +27,9 @@ public class InstanceSettings implements Configurable {
     private String name = "default";
     private String texture = "";
     private int limit = 0;
-    private int size = 4096;
+
+    @JsonUnwrapped
+    private IsometricProjection projection;
 
     /**
      * @return the name of the realm.
@@ -43,6 +44,22 @@ public class InstanceSettings implements Configurable {
      */
     protected InstanceSettings setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    /**
+     * @return the isometric projection used to render the tiles.
+     */
+    public IsometricProjection getProjection() {
+        return projection;
+    }
+
+    /**
+     * @param projection the isometric projection used to render the tiles.
+     * @return fluent
+     */
+    public InstanceSettings setProjection(IsometricProjection projection) {
+        this.projection = projection;
         return this;
     }
 
@@ -102,22 +119,6 @@ public class InstanceSettings implements Configurable {
      */
     public void setSpawns(List<SpawnPoint> spawns) {
         this.spawns = spawns;
-    }
-
-    /**
-     * @return the width and height of the map.
-     */
-    public int getSize() {
-        return size;
-    }
-
-    /**
-     * @param size set the width and height of the map.
-     * @return fluent
-     */
-    protected InstanceSettings setSize(int size) {
-        this.size = size;
-        return this;
     }
 
     /**

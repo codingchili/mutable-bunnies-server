@@ -23,10 +23,10 @@ public class HashGrid<T extends Entity>  implements Grid<T> {
     private int width;
 
     /**
-     * @param width the width of the grid
+     * @param size the size of the grid in px of the longest axis.
      */
-    public HashGrid(int width) {
-        this.width = width;
+    public HashGrid(int size) {
+        this.width = size;
         this.selector = new AreaSelector<>(this, CELL_SIZE);
     }
 

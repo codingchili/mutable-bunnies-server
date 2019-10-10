@@ -55,9 +55,12 @@ public class GameContext {
     public GameContext(InstanceContext instance) {
         this.instance = instance;
 
-        int width = instance.settings().getSize();
-        this.creatures = new LinkedGrid<>(width);
-        this.structures = new LinkedGrid<>(width);
+        int size = instance.settings().getProjection()
+                .getCartesianSize()
+                .getHighestAxis();
+
+        this.creatures = new LinkedGrid<>(size);
+        this.structures = new LinkedGrid<>(size);
         this.classes = new ClassDB(instance);
         this.logger = instance.logger(getClass());
 

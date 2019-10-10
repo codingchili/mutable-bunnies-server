@@ -1,7 +1,7 @@
 package com.codingchili.instance.context;
 
 import com.codingchili.common.ReceivableMessage;
-import com.codingchili.instance.model.SpawnPoint;
+import com.codingchili.instance.model.entity.SpawnPoint;
 import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.events.*;
@@ -128,9 +128,9 @@ public class InstanceContext extends SystemContext implements ServiceContext {
         SpawnPoint point;
 
         if (settings.getSpawns().isEmpty()) {
-            point = new SpawnPoint()
-                    .setX((int) player.getVector().getX())
-                    .setY((int) player.getVector().getY());
+            point = new SpawnPoint();
+            point.setX((int) player.getVector().getX());
+            point.setY((int) player.getVector().getY());
 
             logger.event("player.spawn", Level.WARNING)
                     .put(ID_INSTANCE, settings.getName())

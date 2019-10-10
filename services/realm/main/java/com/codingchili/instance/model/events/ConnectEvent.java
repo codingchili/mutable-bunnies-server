@@ -1,7 +1,6 @@
 package com.codingchili.instance.model.events;
 
-import com.codingchili.instance.context.GameContext;
-import com.codingchili.instance.context.InstanceSettings;
+import com.codingchili.instance.context.*;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.spells.SpellState;
 
@@ -16,10 +15,11 @@ import java.util.Collection;
 public class ConnectEvent implements Event {
     private Collection<Entity> entities;
     private Collection<Creature> creatures;
+    private IsometricProjection projection;
     private Skybox skybox;
     private Creature player;
     private String texture;
-    private int size;
+
 
     /**
      * @param game   the game context (instance) on which the connection is made.
@@ -30,8 +30,8 @@ public class ConnectEvent implements Event {
         this.entities = game.entities().all();
         this.creatures = game.creatures().all();
         this.texture = instance.getTexture();
-        this.size = instance.getSize();
         this.skybox = instance.getSkybox();
+        this.projection = instance.getProjection();
         this.player = player;
     }
 
@@ -57,12 +57,12 @@ public class ConnectEvent implements Event {
         this.texture = texture;
     }
 
-    public int getSize() {
-        return size;
+    public IsometricProjection getProjection() {
+        return projection;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    public void setProjection(IsometricProjection projection) {
+        this.projection = projection;
     }
 
     public SpawnEvent.SpawnType getSpawn() {

@@ -23,12 +23,12 @@ public class LinkedGrid<T extends Entity> implements Grid<T> {
     private int width;
 
     /**
-     * @param width of the game world in px units.
+     * @param size of the game world in px units of the longest axis.
      */
-    public LinkedGrid(int width) {
-        this.width = width;
+    public LinkedGrid(int size) {
+        this.width = size;
         this.selector = new AreaSelector<>(this, CELL_SIZE);
-        int cellCount = (int) Math.pow(width * 1.0 / CELL_SIZE, 2.0);
+        int cellCount = (int) Math.pow(size * 1.0 / CELL_SIZE, 2.0);
 
         cells = new ArrayList<>(cellCount);
 
