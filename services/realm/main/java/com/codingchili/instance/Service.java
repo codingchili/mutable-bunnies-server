@@ -7,7 +7,6 @@ package com.codingchili.instance;
  */
 public class Service {
 
-
     /* deployed instances needs to register to their configured realm. */
 
 }
