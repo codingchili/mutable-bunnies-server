@@ -1,11 +1,14 @@
 package com.codingchili.instance.transport;
 
+import com.codingchili.instance.model.entity.EventProtocol;
+import com.codingchili.instance.model.entity.PlayerCreature;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.codingchili.core.context.CoreContext;
+import com.codingchili.core.logging.RemoteLogger;
 import com.codingchili.core.protocol.Serializer;
 
 /**
@@ -25,7 +28,7 @@ public class FasterRealmInstanceCodec<S, R> implements MessageCodec<S, R> {
      */
     public static void initialize(CoreContext context) {
         if (!initialized.getAndSet(true)) {
-            context.bus().registerCodec(new FasterRealmInstanceCodec());
+            context.bus().registerCodec(new FasterRealmInstanceCodec<>());
         }
 
         /*Consumer<Class<?>> register = (theClass) -> {

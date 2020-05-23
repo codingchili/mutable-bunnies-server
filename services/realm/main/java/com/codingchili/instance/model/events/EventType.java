@@ -4,6 +4,8 @@ package com.codingchili.instance.model.events;
  * @author Robin Duda
  */
 public enum EventType {
+    admin,
+
     spell,
     spellstate,
     cleanse,
