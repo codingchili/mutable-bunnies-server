@@ -51,9 +51,20 @@ public interface Entity extends Storable, Receiver<Event> {
     Map<String, Object> getAttributes();
 
     /**
-     * Called after loading the creature to set the context.
+     * Called before adding the creature to the instance.
      *
      * @param game the game context.
      */
     void setContext(GameContext game);
+
+    /**
+     * Callback for when the entity is completely added to the instance.
+     */
+    default void joined() {};
+
+    /**
+     * Callback for when the entity is completely removed from the instance.
+     * Any tickers started on game context needs to be disabled here.
+     */
+    default void removed() {};
 }

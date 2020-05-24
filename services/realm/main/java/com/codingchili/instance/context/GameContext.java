@@ -194,29 +194,37 @@ public class GameContext {
         });
     }
 
-    public void add(Creature creature) {
-        addNew(creature);
-        creatures.add(creature);
-    }
-
     public void add(Entity entity) {
-        addNew(entity);
-        structures.add(entity);
-    }
-
-    private void addNew(Entity entity) {
         entity.setContext(this);
+
         publish(new SpawnEvent().setEntity(entity));
         subscribe(entity.getId(), entity.protocol());
+
+        if (isCreature(entity)) {
+            creatures.add((Creature) entity);
+        } else {
+            structures.add(entity);
+        }
+        entity.joined();
     }
 
     public void remove(Entity entity) {
-        creatures.remove(entity.getId());
-        structures.remove(entity.getId());
+        if (isCreature(entity)) {
+            creatures.remove(entity.getId());
+        } else {
+            structures.remove(entity.getId());
+        }
+
         unsubscribe(entity.getId());
         publish(new SpawnEvent()
                 .setEntity(entity)
                 .setType(SpawnEvent.SpawnType.DESPAWN));
+
+        entity.removed();
+    }
+
+    private boolean isCreature(Entity entity) {
+        return entity instanceof Creature;
     }
 
     private void unsubscribe(String subscriberId) {

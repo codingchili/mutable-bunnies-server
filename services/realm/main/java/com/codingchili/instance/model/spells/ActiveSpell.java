@@ -133,7 +133,7 @@ public class ActiveSpell {
          * @param value the amount of damage to deal.
          * @param type the type of damage to deal.
          */
-        void damage(Creature target, Float value, DamageType type);
+        void damage(Creature target, Float value, ModifierType type);
     }
 
     public Spell getSpell() {

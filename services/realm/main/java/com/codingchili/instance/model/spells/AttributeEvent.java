@@ -9,21 +9,21 @@ import com.codingchili.instance.model.events.*;
  * <p>
  * Event fired when a creature takes damage;
  */
-public class DamageEvent implements Event {
+public class AttributeEvent implements Event {
     private Entity target;
     private Entity source;
-    private DamageType type;
+    private ModifierType type;
     private String effect;
     private boolean critical = false;
     private double value;
     private Runnable completer;
 
-    public DamageEvent(Creature source, Creature target) {
+    public AttributeEvent(Creature source, Creature target) {
         this.source = source;
         this.target = target;
     }
 
-    public DamageEvent completer(Runnable completer) {
+    public AttributeEvent completer(Runnable completer) {
         this.completer = completer;
         return this;
     }
@@ -32,46 +32,52 @@ public class DamageEvent implements Event {
         completer.run();
     }
 
-    public DamageEvent target(Creature target) {
+    public AttributeEvent target(Creature target) {
         this.target = target;
         return this;
     }
 
-    public DamageEvent source(Creature source) {
+    public AttributeEvent source(Creature source) {
         this.source = source;
         return this;
     }
 
-    public DamageEvent heal(Double value) {
-        this.type = DamageType.heal;
+    public AttributeEvent energy(Double value) {
+        this.type = ModifierType.energy;
         this.value = value;
         return this;
     }
 
-    public DamageEvent poison(Double value) {
-        this.type = DamageType.poison;
+    public AttributeEvent heal(Double value) {
+        this.type = ModifierType.heal;
         this.value = value;
         return this;
     }
 
-    public DamageEvent magical(Double value) {
-        this.type = DamageType.magical;
+    public AttributeEvent poison(Double value) {
+        this.type = ModifierType.poison;
         this.value = value;
         return this;
     }
 
-    public DamageEvent physical(Double value) {
-        this.type = DamageType.physical;
+    public AttributeEvent magical(Double value) {
+        this.type = ModifierType.magical;
         this.value = value;
         return this;
     }
 
-    public DamageEvent effect(String effect) {
+    public AttributeEvent physical(Double value) {
+        this.type = ModifierType.physical;
+        this.value = value;
+        return this;
+    }
+
+    public AttributeEvent effect(String effect) {
         this.effect = effect;
         return this;
     }
 
-    public DamageEvent setSource(Creature source) {
+    public AttributeEvent setSource(Creature source) {
         this.source = source;
         return this;
     }
@@ -88,12 +94,12 @@ public class DamageEvent implements Event {
         return critical;
     }
 
-    public DamageEvent critical(Boolean is) {
+    public AttributeEvent critical(Boolean is) {
         this.critical = is;
         return this;
     }
 
-    public DamageEvent normal() {
+    public AttributeEvent normal() {
         this.critical = false;
         return this;
     }
@@ -110,7 +116,7 @@ public class DamageEvent implements Event {
         return target.getId();
     }
 
-    public DamageType getType() {
+    public ModifierType getType() {
         return type;
     }
 
@@ -120,7 +126,7 @@ public class DamageEvent implements Event {
 
     @Override
     public EventType getRoute() {
-        return EventType.damage;
+        return EventType.attribute;
     }
 
     @Override

@@ -23,7 +23,6 @@ public class AdminHandler implements GameHandler {
 
     @Api
     public void admin(InstanceRequest request) {
-        game.getLogger(getClass()).log("WARNING: ADMIN COMMANDS ENABLED");
         engine.handle(request.raw(AdminEvent.class));
     }
 }

@@ -13,5 +13,5 @@ creatures.each {
     console.log(it)
 
     amplified = target.stats[Attribute.maxhealth] * 0.02 + damage
-    spells.damage(source, it, -amplified, DamageType.poison)
+    spells.damage(source, it, -amplified, ModifierType.poison)
 }*/

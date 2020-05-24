@@ -25,37 +25,38 @@ public class AdminEngine implements Receiver<AdminEvent> {
     @Api
     @Description("spawn")
     public void spawn(AdminEvent event) {
-
+        game.getLogger(getClass()).log("FOO SPAWN");
     }
 
     @Api
     @Description("kick")
     public void kick(AdminEvent event) {
-
+        game.getLogger(getClass()).log("FOO KICK");
     }
 
     @Api
     @Description("teleport")
     public void teleport(AdminEvent event) {
-
+        game.getLogger(getClass()).log("FOO TELEPORT");
     }
 
     @Api
     @Description("item")
     public void item(AdminEvent event) {
-        
+        game.getLogger(getClass()).log("FOO ITEM");
     }
 
     @Api
     @Description("slay")
     public void slay(AdminEvent event) {
-
+        game.getLogger(getClass()).log("FOO SLAY");
     }
 
     @Api
     @Description("banner")
     public void banner(AdminEvent event) {
         // show a banner
+        game.getLogger(getClass()).log("FOO BANNER");
     }
 
     // trigger events, signal npc's etc, spawn loot on ground etc.
@@ -63,7 +64,7 @@ public class AdminEngine implements Receiver<AdminEvent> {
     @Api
     @Description("get the id of the logged in account of the player")
     public void identify(AdminEvent event) {
-
+        game.getLogger(getClass()).log("FOO IDENTIFY");
     }
 
     public Collection<CommandInfo> list() {

@@ -49,7 +49,6 @@ public class SocialContext extends SystemContext {
         new StorageLoader<FriendList>(core)
                 .withPlugin(context.settings().getStorage())
                 .withValue(FriendList.class)
-                .withDB("friend_list")
                 .build(storage -> {
                     if (storage.succeeded()) {
                         context.setFriends(new FriendsDB(storage.result(), context.online()));

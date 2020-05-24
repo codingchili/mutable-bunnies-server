@@ -21,7 +21,7 @@ public enum EventType {
 
     chat,
     shutdown,
-    damage,
+    attribute,
     stats,
     save,
 

@@ -260,18 +260,20 @@ public class SpellEngine {
      */
     public boolean energy(Creature target, double amount) {
         double max = target.getStats().get(Attribute.maxenergy);
-        double current = target.getBaseStats().get(Attribute.energy);
+        double current = target.getStats().get(Attribute.energy);
 
-        if (amount < 0 && current < amount) {
+        if (amount < 0 && current < Math.abs(amount)) {
             // cannot update energy to negative values.
             return false;
         } else {
-            if (amount + max > max) {
-                // prevent updating over maximum.
+            if (current + amount > max) {
                 amount = max - current;
             }
-            target.getBaseStats().update(Attribute.energy, amount);
-            game.publish(new StatsUpdateEvent(target));
+
+            if (amount != 0.0) {
+                target.getBaseStats().update(Attribute.energy, amount);
+                game.publish(new AttributeEvent(null, target).energy(amount));
+            }
             return true;
         }
     }
@@ -281,22 +283,24 @@ public class SpellEngine {
      * above the maximum health.
      *
      * @param target the target to apply the health to.
-     * @param value  the amount of health to apply, may not exceed the max health of the being.
+     * @param amount  the amount of health to apply, may not exceed the max health of the being.
      */
-    public void heal(Creature target, final double value) {
-        DamageEvent event = new DamageEvent(null, target);
+    public void heal(Creature target, final double amount) {
+        AttributeEvent event = new AttributeEvent(null, target);
 
         double max = target.getStats().get(Attribute.maxhealth);
         double current = target.getBaseStats().get(Attribute.health);
 
-        if (current + value > max) {
+        if (current + amount > max) {
             event.heal(Math.max(0, max - current));
         } else {
-            event.heal(value);
+            event.heal(amount);
         }
 
-        target.getBaseStats().update(Attribute.health, value);
-        game.publish(event);
+        if (event.getValue() > 0) {
+            target.getBaseStats().update(Attribute.health, amount);
+            game.publish(event);
+        }
     }
 
     /**
@@ -318,8 +322,8 @@ public class SpellEngine {
      * @param target the target the damage is to be applied to.
      * @return a damage event builder, invoke apply to commit.
      */
-    public DamageEvent damage(Creature source, Creature target) {
-        DamageEvent event = new DamageEvent(source, target);
+    public AttributeEvent damage(Creature source, Creature target) {
+        AttributeEvent event = new AttributeEvent(source, target);
 
         event.completer(() -> {
             int value = (int) event.getValue();

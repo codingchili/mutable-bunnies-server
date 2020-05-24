@@ -1,7 +1,9 @@
 package com.codingchili.instance.model.entity;
 
 import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.afflictions.ActiveAffliction;
+import com.codingchili.instance.model.events.ConnectEvent;
 import com.codingchili.instance.model.events.Event;
 import com.codingchili.instance.model.events.EventType;
 import com.codingchili.instance.model.questing.QuestState;
@@ -23,6 +25,8 @@ import com.codingchili.core.context.CoreRuntimeException;
  */
 public class PlayerCreature extends SimpleCreature {
     private transient boolean fromAnotherInstance = false;
+    private transient Ticker healthRegeneration;
+    private transient Ticker energyRegeneration;
     private QuestState quests = new QuestState();
     private Integer logins = 0;
     private String instance;
@@ -116,6 +120,25 @@ public class PlayerCreature extends SimpleCreature {
         }
     }
 
+    @Override
+    public void joined() {
+        handle(new ConnectEvent(game, this));
+
+        healthRegeneration = game.ticker(ticker -> {
+            game.spells().heal(this, getStats().get(Attribute.maxhealth) * 0.01);
+        }, GameContext.secondsToTicks(5));
+
+        energyRegeneration = game.ticker(ticker -> {
+            game.spells().energy(this, 10);
+        }, GameContext.secondsToTicks(1));
+    }
+
+    @Override
+    public void removed() {
+        energyRegeneration.disable();
+        healthRegeneration.disable();
+    }
+
     public String getAccount() {
         return account;
     }
@@ -154,7 +177,7 @@ public class PlayerCreature extends SimpleCreature {
         UpdateMessage update = new UpdateMessage(event, account);
         game.instance().sendRealm(update).setHandler(done -> {
             if (done.failed()) {
-                game.getLogger(getClass()).onError(done.cause());
+                onError(done.cause().getMessage());
             }
         });
     }

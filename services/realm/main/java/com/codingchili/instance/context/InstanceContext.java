@@ -181,13 +181,13 @@ public class InstanceContext extends SystemContext implements ServiceContext {
                 .send();
     }
 
-    private DeliveryOptions options = new DeliveryOptions()
+    private final DeliveryOptions options = new DeliveryOptions()
             .setSendTimeout(TIMEOUT_SECONDS)
             .setCodecName(FasterRealmInstanceCodec.getName());
 
     public Future<Object> sendRealm(ReceivableMessage message) {
         Future<Object> future = Future.future();
-        context.bus().send(realm().getNode(), message, options, (send) -> {
+        context.bus().request(realm().getNode(), message, options, (send) -> {
             if (send.succeeded()) {
                 future.complete(send.result().body());
             } else {

@@ -3,6 +3,6 @@ package com.codingchili.instance.model.spells;
 /**
  * @author Robin Duda
  */
-public enum DamageType {
-    physical, magical, poison, heal
+public enum ModifierType {
+    physical, magical, poison, heal, energy
 }

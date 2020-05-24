@@ -77,8 +77,6 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
 
         context.onPlayerJoin(join);
         game.add(player);
-
-        request.write(new ConnectEvent(game, player));
     }
 
     @Api
