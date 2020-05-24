@@ -27,6 +27,7 @@ import static com.codingchili.core.files.Configurations.*;
 public class RealmSettings extends AttributeConfigurable {
     private final List<InstanceSettings> instances = new ArrayList<>();
     private Set<String> availableClasses = new HashSet<>();
+    private Set<String> admins = new HashSet<>();
     private ListenerSettings listener = new ListenerSettings();
     private Scripted onPlayerJoin;
     private Scripted levelScaling;
@@ -323,6 +324,20 @@ public class RealmSettings extends AttributeConfigurable {
     @Override
     public boolean equals(Object other) {
         return other instanceof RealmSettings && (((RealmSettings) other).getNode().equals(node));
+    }
+
+    /**
+     * @return a list of accounts that are admins on the realm.
+     */
+    public Set<String> getAdmins() {
+        return admins;
+    }
+
+    /**
+     * @param admins the list of accounts that are admins on the realm.
+     */
+    public void setAdmins(Set<String> admins) {
+        this.admins = admins;
     }
 
     @Override

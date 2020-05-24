@@ -1,5 +1,6 @@
 package com.codingchili.instance.model.admin;
 
+import com.codingchili.instance.model.entity.Vector;
 import com.codingchili.instance.model.events.Event;
 import com.codingchili.instance.model.events.EventType;
 
@@ -11,10 +12,13 @@ import com.codingchili.core.context.CommandParser;
  * An admin command from a client.
  */
 public class AdminEvent implements Event {
+    private String target;
     private String entity;
     private String command;
     private String id;
     private String line;
+    private String message;
+    private Vector vector;
     private int quantity;
 
     public String getLine() {
@@ -28,13 +32,22 @@ public class AdminEvent implements Event {
             CommandParser parser = new CommandParser(line.split(" "));
             parser.getCommand().ifPresent(command -> {
                 this.command = command;
-                this.entity = parser.getValue("--entity").orElse(null);
-                this.id = parser.getValue("--id").orElse(null);
+                this.entity = parser.getValue("--entity").orElse(this.entity);
+                this.message = String.join(" ", parser.getAllValues("--message"));
+                this.id = parser.getValue("--id").orElse(this.id);
                 parser.getValue("--quantity").ifPresent(value -> {
                     this.quantity = Integer.parseInt(value);
                 });
             });
         }
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+    public String getTarget() {
+        return this.target;
     }
 
     public String getEntity() {
@@ -67,6 +80,22 @@ public class AdminEvent implements Event {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Vector getVector() {
+        return vector;
+    }
+
+    public void setVector(Vector vector) {
+        this.vector = vector;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override

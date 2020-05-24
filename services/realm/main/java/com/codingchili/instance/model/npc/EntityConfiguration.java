@@ -2,13 +2,11 @@ package com.codingchili.instance.model.npc;
 
 import com.codingchili.instance.model.entity.Model;
 import com.codingchili.instance.model.stats.*;
-import com.codingchili.instance.scripting.JexlScript;
 import com.codingchili.instance.scripting.Scripted;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.storage.Storable;
 
 /**
@@ -27,27 +25,6 @@ public class EntityConfiguration implements Storable {
     private Scripted spawn;
     private Scripted death;
     private Scripted tick;
-
-    public static void main(String[] args) {
-        EntityConfiguration npc = new EntityConfiguration();
-        npc.name = "Illicit Lilith";
-        npc.description = "Malevolent. Angry. Spirit.";
-        npc.dialog = "tutor";
-        npc.stats = new Stats()
-                .set(Attribute.health, 1000)
-                .set(Attribute.maxhealth, 1000);
-
-        npc.spawn = new JexlScript("return true;");
-        npc.death = new JexlScript("return true;");
-        npc.tick = new JexlScript("return true;");
-
-        npc.loot.add(new LootTableItem()
-                .setItem("wooden_dagger_1")
-                .setProbability(0.2f)
-        );
-
-        System.out.println(Serializer.yaml(npc));
-    }
 
     @Override
     public String getId() {

@@ -1,11 +1,11 @@
 package com.codingchili.instance.controller;
 
+import com.codingchili.core.protocol.Api;
+import com.codingchili.core.protocol.exception.AuthorizationRequiredException;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.admin.AdminEvent;
 import com.codingchili.instance.model.dialog.AdminEngine;
 import com.codingchili.instance.transport.InstanceRequest;
-
-import com.codingchili.core.protocol.Api;
 
 /**
  * @author Robin Duda
@@ -23,6 +23,10 @@ public class AdminHandler implements GameHandler {
 
     @Api
     public void admin(InstanceRequest request) {
-        engine.handle(request.raw(AdminEvent.class));
+        if (game.instance().realm().getAdmins().contains(request.target())) {
+            engine.handle(request.raw(AdminEvent.class));
+        } else {
+            request.error(new AuthorizationRequiredException());
+        }
     }
 }

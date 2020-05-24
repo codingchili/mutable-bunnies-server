@@ -5,7 +5,9 @@ import com.codingchili.instance.scripting.Scripted;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.codingchili.core.configuration.Configurable;
 

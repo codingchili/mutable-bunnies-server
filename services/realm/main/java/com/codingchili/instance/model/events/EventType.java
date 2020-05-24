@@ -46,5 +46,7 @@ public enum EventType {
     party_decline,
 
     error,
-    any
+    any,
+
+    notification
 }

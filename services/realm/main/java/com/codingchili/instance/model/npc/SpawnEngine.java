@@ -30,6 +30,36 @@ public class SpawnEngine {
         this.npcs = new NpcDB(game.instance());
     }
 
+    public NpcDB npcs() {
+        return npcs;
+    }
+
+    public EntityDB entities() {
+        return entities;
+    }
+
+    /**
+     * Spawns an entity or creature if exists with the given id.
+     * @param id the id of the entity to spawn as defined in configuration.
+     * @param x  the x point.
+     * @param y  the y point.
+     * @return the structure or npc that was spawned if any.
+     */
+    public Optional<? extends Entity> spawn(String id, float x, float y) {
+        Optional<EntityConfiguration> config = npcs.getById(id);
+
+        if (config.isPresent()) {
+            return npc(id, x, y);
+        } else {
+            config = entities.getById(id);
+            if (config.isPresent()) {
+                return structure(id, x, y);
+            } else {
+                return Optional.empty();
+            }
+        }
+    }
+
     /**
      * @param id the id of the npc creature to spawn.
      * @param x  the x point.
@@ -73,6 +103,7 @@ public class SpawnEngine {
             game.add(structure);
             return Optional.of(structure);
         } else {
+            game.getLogger(getClass()).onError(new NoSuchNpcException(id));
             return Optional.empty();
         }
     }
