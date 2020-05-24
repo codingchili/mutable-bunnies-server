@@ -76,13 +76,12 @@ public class RealmDB implements AsyncRealmStore {
     }
 
     @Override
-    public Future<Token> signToken(String realm, String domain) {
+    public Future<Token> signToken(String realmId, String domain) {
         Future<Token> future = Future.future();
 
-        realms.query(ID_NODE).equalTo(realm).execute(map -> {
-            Collection<RegisteredRealm> realms = map.result();
-            if (map.succeeded() && realms.size() > 0) {
-                RegisteredRealm settings = realms.iterator().next();
+        realms.get(realmId, map -> {
+            if (map.succeeded() && map.result() != null) {
+                RegisteredRealm settings = map.result();
                 Token token = new Token(domain);
                 TokenFactory factory = new TokenFactory(this.realms.context(), getSecretBytes(settings));
                 factory.hmac(token).setHandler(done -> {

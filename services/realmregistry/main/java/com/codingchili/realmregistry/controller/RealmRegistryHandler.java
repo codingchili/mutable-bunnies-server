@@ -64,14 +64,14 @@ public class RealmRegistryHandler implements CoreHandler {
 
     private void update(RealmRequest request) {
         RegisteredRealm realm = request.getRealm();
-        realm.setTrusted(context.isTrustedRealm(realm.getNode()));
+        realm.setTrusted(context.isTrustedRealm(realm.getId()));
         realm.setUpdated(Instant.now().toEpochMilli());
         realm.setPlayers(request.players());
 
         realms.put(insert -> {
             if (insert.succeeded()) {
                 request.accept();
-                context.onRealmUpdated(realm.getNode(), realm.getPlayers());
+                context.onRealmUpdated(realm.getId(), realm.getPlayers());
             } else {
                 request.error(new RealmUpdateException());
             }

@@ -122,8 +122,6 @@ public class PlayerCreature extends SimpleCreature {
 
     @Override
     public void joined() {
-        handle(new ConnectEvent(game, this));
-
         healthRegeneration = game.ticker(ticker -> {
             game.spells().heal(this, getStats().get(Attribute.maxhealth) * 0.01);
         }, GameContext.secondsToTicks(5));

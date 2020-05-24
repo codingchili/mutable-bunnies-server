@@ -60,7 +60,7 @@ public class RealmRegistryClientHandler implements CoreHandler {
     }
 
     private void realmToken(ClientRequest request) {
-        realms.signToken(request.realmName(), request.account()).setHandler(sign -> {
+        realms.signToken(request.realmId(), request.account()).setHandler(sign -> {
             if (sign.succeeded()) {
                 request.write(new TokenResponse(sign.result()));
             } else {

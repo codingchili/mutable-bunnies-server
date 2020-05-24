@@ -21,7 +21,7 @@ public class DialogHandlerTest {
 
     @Before
     public void setUp() {
-        RealmSettings settings = new RealmSettings().setNode("Angel Oak");
+        RealmSettings settings = new RealmSettings().setId("angel_oak");
 
         RealmContext realm = new RealmContext(new SystemContext(), () -> settings);
         InstanceContext instance = new InstanceContext(realm, new InstanceSettings());

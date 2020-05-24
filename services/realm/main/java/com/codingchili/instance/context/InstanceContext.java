@@ -35,7 +35,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
     private static final String COUNT = "count";
     private static final String PLAYER_JOIN = "player.join";
     private static final String PLAYER_LEAVE = "player.leave";
-    private static final int TIMEOUT_SECONDS = 5000;
+    private static final int TIMEOUT_SECONDS = 30_000;
     private final String settings;
     private final RealmContext context;
     private Logger logger;
@@ -51,7 +51,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
         this.context = context;
 
         this.logger = context.logger(getClass())
-                .setMetadata(ID_INSTANCE, instance::getName);
+                .setMetadata(ID_INSTANCE, instance::getId);
 
         this.settings = instance.getPath();
     }
@@ -60,7 +60,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
      * @return the unique listening address of this instance.
      */
     public String address() {
-        return context.realm().getNode() + "." + settings().getName();
+        return context.realm().getId() + "." + settings().getId();
     }
 
     /**
@@ -133,7 +133,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
             point.setY((int) player.getVector().getY());
 
             logger.event("player.spawn", Level.WARNING)
-                    .put(ID_INSTANCE, settings.getName())
+                    .put(ID_INSTANCE, settings.getId())
                     .send("missing spawn point configurations, using player coordinates.");
         } else {
             point = settings.getSpawns().get(
@@ -145,7 +145,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
     @Override
     public Logger logger(Class aClass) {
         return context.logger(aClass)
-                .setMetadata(ID_INSTANCE, settings()::getName);
+                .setMetadata(ID_INSTANCE, settings()::getId);
     }
 
     public void onInstanceStarted(String realm, String instance) {
@@ -187,7 +187,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
 
     public Future<Object> sendRealm(ReceivableMessage message) {
         Future<Object> future = Future.future();
-        context.bus().request(realm().getNode(), message, options, (send) -> {
+        context.bus().request(realm().getId(), message, options, (send) -> {
             if (send.succeeded()) {
                 future.complete(send.result().body());
             } else {

@@ -57,7 +57,7 @@ public class Service implements CoreService {
         InstancesBootstrap.bootstrap(context).setHandler(done -> {
             if (done.succeeded()) {
                 for (String enabled : server.getEnabled()) {
-                    Supplier<RealmSettings> realm = () -> Configurations.get(realmPath(enabled), RealmSettings.class);
+                    Supplier<RealmSettings> realm = () -> Configurations.get(realmPath(enabled), RealmSettings.class).setId(enabled);
                     realm.get().load();
                     Future<Void> future = Future.future();
                     deploy(future, realm);
@@ -70,8 +70,8 @@ public class Service implements CoreService {
         });
     }
 
-    private static String realmPath(String realmName) {
-        return PATH_REALM + realmName + EXT_YAML;
+    private static String realmPath(String realmId) {
+        return PATH_REALM + realmId + EXT_YAML;
     }
 
     /**
@@ -83,7 +83,7 @@ public class Service implements CoreService {
     private void deploy(Future<Void> future, Supplier<RealmSettings> realm) {
         Consumer<RealmContext> deployer = (rc) -> {
             // Check if the routing id for the realm is unique
-            context.bus().send(realm.get().getNode(), getPing(), getDeliveryOptions(), response -> {
+            context.bus().send(realm.get().getId(), getPing(), getDeliveryOptions(), response -> {
 
                 if (response.failed()) {
                     // If no response then the id is not already in use.
@@ -99,7 +99,7 @@ public class Service implements CoreService {
                                     // deploy handler for incoming messages from clients.
                                     rc.listener(() -> listener).setHandler(deploy -> {
                                         if (deploy.failed()) {
-                                            rc.onDeployRealmFailure(realm.get().getNode());
+                                            rc.onDeployRealmFailure(realm.get().getId());
                                             throw new RuntimeException(deploy.cause());
                                         }
                                     }).setHandler(clients -> {

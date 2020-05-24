@@ -17,7 +17,8 @@ public class RegisteredRealm implements Storable {
     private String resources;
     private String host;
     private String version;
-    private String node;
+    private String id;
+    private String name;
     private Boolean trusted;
     private Boolean secure;
     private Boolean binaryWebsocket;
@@ -28,7 +29,21 @@ public class RegisteredRealm implements Storable {
 
     @Override
     public String getId() {
-        return node;
+        return id;
+    }
+
+    public RegisteredRealm setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public RegisteredRealm setName(String name) {
+        this.name = name;
+        return this;
     }
 
     /**
@@ -213,22 +228,6 @@ public class RegisteredRealm implements Storable {
     }
 
     /**
-     * @return the name of the realm.
-     */
-    public String getNode() {
-        return node;
-    }
-
-    /**
-     * @param node the new name of the realm.
-     * @return fluent
-     */
-    public RegisteredRealm setNode(String node) {
-        this.node = node;
-        return this;
-    }
-
-    /**
      * @return a set of extra attributes for the realm.
      */
     public Map<String, Object> getAttributes() {
@@ -266,7 +265,7 @@ public class RegisteredRealm implements Storable {
 
     @Override
     public String toString() {
-        return "{name=" + node;
+        return "{name=" + name;
     }
 
     @Override

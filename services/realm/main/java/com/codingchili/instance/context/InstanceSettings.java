@@ -27,6 +27,7 @@ public class InstanceSettings implements Configurable {
     private Scripted onStartup;
     private Scripted onPlayerJoin;
     private String name = "default";
+    private String id;
     private String texture = "";
     private int limit = 0;
 
@@ -46,6 +47,21 @@ public class InstanceSettings implements Configurable {
      */
     protected InstanceSettings setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    /**
+     * @return the id of the instance used in scripts.
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id of the instance used in scripts.
+     */
+    public InstanceSettings setId(String id) {
+        this.id = id;
         return this;
     }
 
@@ -169,6 +185,6 @@ public class InstanceSettings implements Configurable {
 
     @Override
     public String getPath() {
-        return PATH_INSTANCE + name + EXT_YAML;
+        return PATH_INSTANCE + id + EXT_YAML;
     }
 }

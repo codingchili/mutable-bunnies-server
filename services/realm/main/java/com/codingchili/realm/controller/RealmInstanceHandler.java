@@ -46,7 +46,7 @@ public class RealmInstanceHandler implements CoreHandler {
 
     @Override
     public void start(Future<Void> future) {
-        context.onRealmStarted(context.realm().getNode());
+        context.onRealmStarted(context.realm().getId());
         deployInstances(future);
     }
 
@@ -72,7 +72,7 @@ public class RealmInstanceHandler implements CoreHandler {
         PlayerTravelMessage message = request.raw(PlayerTravelMessage.class);
 
         Optional<InstanceSettings> settings = context.instances().stream()
-                .filter(instance -> instance.getName().equals(message.getInstance()))
+                .filter(instance -> instance.getId().equals(message.getInstance()))
                 .findFirst();
 
         if (settings.isPresent()) {
@@ -87,7 +87,7 @@ public class RealmInstanceHandler implements CoreHandler {
 
                 JoinMessage join = new JoinMessage()
                         .setPlayer(message.getPlayer())
-                        .setRealmName(context.realm().getNode());
+                        .setRealmName(context.realm().getId());
 
                 context.sendInstance(destination, join).setHandler(done -> {
                     if (done.succeeded()) {
@@ -127,7 +127,7 @@ public class RealmInstanceHandler implements CoreHandler {
                         if (done.succeeded()) {
                             blocking.complete();
                         } else {
-                            context.onInstanceFailed(instance.getName(), done.cause());
+                            context.onInstanceFailed(instance.getId(), done.cause());
                             blocking.complete();
                         }
                     });
@@ -156,12 +156,12 @@ public class RealmInstanceHandler implements CoreHandler {
 
                 if (update.is(ACCEPTED)) {
                     if (!registered) {
-                        context.onRealmRegistered(context.realm().getNode());
+                        context.onRealmRegistered(context.realm().getId());
                     }
                     registered = true;
                 } else {
                     registered = false;
-                    context.onRealmRejected(context.realm().getNode(), update.message());
+                    context.onRealmRejected(context.realm().getId(), update.message());
                 }
             }
         });
@@ -169,7 +169,7 @@ public class RealmInstanceHandler implements CoreHandler {
 
     @Override
     public String address() {
-        return context.realm().getNode();
+        return context.realm().getId();
     }
 
     @Override

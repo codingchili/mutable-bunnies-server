@@ -66,7 +66,7 @@ public class RealmClientHandler implements CoreHandler {
 
                 JoinMessage join = new JoinMessage()
                         .setPlayer(find.result())
-                        .setRealmName(context.realm().getNode());
+                        .setRealmName(context.realm().getId());
 
                 // store the player character and account names on the connection.
                 request.connection().setProperty(ID_NAME, creature.getName());

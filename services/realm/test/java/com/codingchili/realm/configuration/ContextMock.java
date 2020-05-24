@@ -33,7 +33,7 @@ public class ContextMock extends RealmContext {
         Token token = new Token("realmName");
 
         factory.hmac(token).setHandler(hmac -> {
-            realmSettings.setNode(token.getDomain());
+            realmSettings.setId(token.getDomain());
             realmSettings.setAuthentication(token);
             future.complete(context);
         });

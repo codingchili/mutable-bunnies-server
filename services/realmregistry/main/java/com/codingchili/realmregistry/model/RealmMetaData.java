@@ -11,7 +11,7 @@ import com.codingchili.core.configuration.Attributes;
  */
 public class RealmMetaData extends Attributes {
     private long updated;
-    private String node;
+    private String id;
     private String description;
     private String host;
     private String resources;
@@ -29,7 +29,7 @@ public class RealmMetaData extends Attributes {
     }
 
     public RealmMetaData(RegisteredRealm settings) {
-        this.setNode(settings.getNode())
+        this.setId(settings.getId())
                 .setBinaryWebsocket(settings.getBinaryWebsocket())
                 .setResources(settings.getResources())
                 .setVersion(settings.getVersion())
@@ -88,12 +88,12 @@ public class RealmMetaData extends Attributes {
         return this;
     }
 
-    public String getNode() {
-        return node;
+    public String getId() {
+        return id;
     }
 
-    private RealmMetaData setNode(String node) {
-        this.node = node;
+    private RealmMetaData setId(String id) {
+        this.id = id;
         return this;
     }
 

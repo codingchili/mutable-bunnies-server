@@ -18,7 +18,7 @@ class ClientRequest implements RequestWrapper {
         this.request = request;
     }
 
-    public String realmName() {
+    public String realmId() {
         return data().getString(Strings.ID_REALM);
     }
 

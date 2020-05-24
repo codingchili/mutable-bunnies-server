@@ -77,6 +77,10 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
 
         context.onPlayerJoin(join);
         game.add(player);
+
+        // required synchronous response
+        // todo: race condition fix
+        request.write(new ConnectEvent(game, player));
     }
 
     @Api
@@ -108,7 +112,7 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
     @Override
     public void stop(Future<Void> future) {
         game.close();
-        context.onInstanceStopped(future, context.realm().getNode(), context.settings().getName());
+        context.onInstanceStopped(future, context.realm().getId(), context.settings().getId());
     }
 
     @Override

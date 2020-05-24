@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.vertx.core.json.JsonObject;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.*;
 
 import com.codingchili.core.configuration.AttributeConfigurable;
@@ -35,7 +36,8 @@ public class RealmSettings extends AttributeConfigurable {
     private String resources;
     private String version;
     private String type;
-    private String node;
+    private String name;
+    private String id;
     private String host;
     private Boolean trusted;
     private int players = 0;
@@ -68,7 +70,8 @@ public class RealmSettings extends AttributeConfigurable {
     public RegisteredRealm toMetadata() {
         return new RegisteredRealm()
                 .setBinaryWebsocket(listener.isBinaryWebsockets())
-                .setNode(node)
+                .setName(name)
+                .setId(id)
                 .setSize(size)
                 .setHost(host)
                 .setPort(listener.getPort())
@@ -82,9 +85,14 @@ public class RealmSettings extends AttributeConfigurable {
 
     public void load() {
         available(PATH_INSTANCE).stream()
-                .map(path -> override(path, node))
-                .map(path -> get(path, InstanceSettings.class))
+                .map(path -> override(path, id))
+                .map(path -> get(path, InstanceSettings.class).setId(getInstanceIdFromPath(path)))
                 .forEach(instances::add);
+    }
+
+    private String getInstanceIdFromPath(String path) {
+        String fileName = Paths.get(path).getFileName().toString();
+        return fileName.substring(0, Math.min(fileName.length(), fileName.lastIndexOf(".")));
     }
 
     /**
@@ -190,19 +198,21 @@ public class RealmSettings extends AttributeConfigurable {
         return this;
     }
 
-    /**
-     * @return get the handler of this realm.
-     */
-    public String getNode() {
-        return node;
+    public String getName() {
+        return name;
     }
 
-    /**
-     * @param node set the handler of this realm
-     * @return fluent
-     */
-    public RealmSettings setNode(String node) {
-        this.node = node;
+    public RealmSettings setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public RealmSettings setId(String id) {
+        this.id = id;
         return this;
     }
 
@@ -323,7 +333,7 @@ public class RealmSettings extends AttributeConfigurable {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof RealmSettings && (((RealmSettings) other).getNode().equals(node));
+        return other instanceof RealmSettings && (((RealmSettings) other).getId().equals(id));
     }
 
     /**

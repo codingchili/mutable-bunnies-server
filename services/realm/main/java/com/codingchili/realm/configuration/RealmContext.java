@@ -65,7 +65,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
         this.classes = new ClassDB(core);
         this.settings = settings;
         this.logger = core.logger(getClass())
-                .setMetadata("realm", realm()::getNode);
+                .setMetadata("realm", realm()::getId);
 
         delivery.setSendTimeout(realm().getListener().getTimeout());
     }
@@ -83,7 +83,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
         new StorageLoader<PlayerCreature>(new StorageContext<>(context))
                 .withPlugin(context.service().getStorage())
                 .withValue(PlayerCreature.class)
-                .withCollection(settings.get().getNode()
+                .withCollection(settings.get().getId()
                         .toLowerCase()
                         .replaceAll("[ ]+", "_") + "." + COLLECTION_CHARACTERS)
                 .build(storage -> {
@@ -124,7 +124,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
         Logger logger = super.logger(aClass);
 
         if (settings != null) {
-            logger.setMetadata(ID_REALM, settings.get()::getNode);
+            logger.setMetadata(ID_REALM, settings.get()::getId);
         }
         return logger;
     }
@@ -211,7 +211,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
     }
 
     public String setInstance(PlayerCreature creature, Connection connection) {
-        String address = realm().getNode() + "." + creature.getInstance();
+        String address = realm().getId() + "." + creature.getInstance();
         connection.setProperty(ID_INSTANCE, address);
         return address;
     }
@@ -244,7 +244,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
 
     private void notify(String account, boolean online) {
         bus().send(ONLINE_SOCIAL_NODE, Serializer.json(
-                new OnlineStatusMessage(account, realm().getNode(), online)));
+                new OnlineStatusMessage(account, realm().getId(), online)));
     }
 
     public void clearInstance(RealmRequest request) {
