@@ -175,7 +175,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
     }
 
     public void onRealmStarted(String realm) {
-        logger.event(LOG_REALM_START, Level.STARTUP)
+        logger.event(LOG_REALM_START)
                 .put(ID_REALM, realm).send();
     }
 

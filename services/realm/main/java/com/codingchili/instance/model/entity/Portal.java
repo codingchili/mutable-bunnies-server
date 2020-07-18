@@ -3,6 +3,8 @@ package com.codingchili.instance.model.entity;
 
 import com.codingchili.instance.model.events.Event;
 
+import java.util.logging.Logger;
+
 import com.codingchili.core.protocol.Api;
 
 /**
@@ -15,6 +17,7 @@ public class Portal extends SimpleEntity {
 
     @Api
     public void use(Event event) {
+        Logger logger;
         if (event.getSource() != null) {
             game.creatures().adjacent(vector).forEach(entity -> {
                 if (entity.getId().equals(event.getSource())) {

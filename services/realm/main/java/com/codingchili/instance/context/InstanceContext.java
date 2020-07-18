@@ -149,13 +149,13 @@ public class InstanceContext extends SystemContext implements ServiceContext {
     }
 
     public void onInstanceStarted(String realm, String instance) {
-        logger.event(LOG_INSTANCE_START, Level.STARTUP)
+        logger.event(LOG_INSTANCE_START)
                 .put(LOG_INSTANCE, instance)
                 .put(ID_REALM, realm).send();
     }
 
     public void onInstanceStopped(Future<Void> future, String realm, String instance) {
-        logger.event(LOG_INSTANCE_STOP, Level.ERROR)
+        logger.event(LOG_INSTANCE_STOP)
                 .put(LOG_INSTANCE, instance)
                 .put(ID_REALM, realm).send();
 
@@ -168,14 +168,14 @@ public class InstanceContext extends SystemContext implements ServiceContext {
     }
 
     public void onPlayerJoin(JoinMessage join) {
-        logger.event(PLAYER_JOIN, Level.INFO)
+        logger.event(PLAYER_JOIN)
                 .put(ID_CHARACTER, join.getPlayer().getName())
                 .put(ID_ACCOUNT, join.getPlayer().getAccount())
                 .send();
     }
 
     public void onPlayerLeave(LeaveMessage leave) {
-        logger.event(PLAYER_LEAVE, Level.INFO)
+        logger.event(PLAYER_LEAVE)
                 .put(ID_CHARACTER, leave.getPlayerName())
                 .put(ID_ACCOUNT, leave.getAccountName())
                 .send();
