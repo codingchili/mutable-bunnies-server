@@ -21,7 +21,7 @@ public class GroovyScriptTest {
     public static void setUp(TestContext test) {
         Async async = test.async();
         CoreContext core = new SystemContext();
-        ReferencedScript.initialize(core).setHandler(done -> {
+        ScriptReference.initialize(core).setHandler(done -> {
             if (done.succeeded()) {
                 async.complete();
             } else {

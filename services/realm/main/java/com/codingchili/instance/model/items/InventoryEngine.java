@@ -137,7 +137,7 @@ public class InventoryEngine {
             // notify client?
         } else {
             if (item.getOnUse() != null) {
-                Scripted scripted = new ReferencedScript(item.onUse);
+                Scripted scripted = new ScriptReference(item.onUse);
                 item.setQuantity(item.getQuantity() - 1);
 
                 if (item.getQuantity() < 1) {

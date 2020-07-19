@@ -18,7 +18,7 @@ public class ScriptEngines {
         engines.put(JexlScript.TYPE, JexlScript::new);
         engines.put(JavaScript.TYPE, JavaScript::new);
         engines.put(NativeScript.TYPE, NativeScript::new);
-        engines.put(ReferencedScript.TYPE, ReferencedScript::new);
+        engines.put(ScriptReference.TYPE, ScriptReference::new);
         engines.put(GroovyScript.TYPE, GroovyScript::new);
     }
 

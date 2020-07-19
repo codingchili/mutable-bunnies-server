@@ -5,7 +5,7 @@ package com.codingchili.instance.model.entity;
  *
  * Configuration used to specify where a pre-defined entity will be spawned on a map.
  */
-public class SpawnConfiguration {
+public class SpawnConfig {
     private String id;
     private Point point;
 

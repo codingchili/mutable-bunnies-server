@@ -5,7 +5,7 @@ import com.codingchili.instance.model.dialog.DialogDB;
 import com.codingchili.instance.model.entity.EntityDB;
 import com.codingchili.instance.model.npc.NpcDB;
 import com.codingchili.instance.model.spells.SpellDB;
-import com.codingchili.instance.scripting.ReferencedScript;
+import com.codingchili.instance.scripting.ScriptReference;
 import com.codingchili.realm.model.ClassDB;
 import io.vertx.core.Future;
 
@@ -28,7 +28,7 @@ public class InstancesBootstrap {
     public static Future<Void> bootstrap(CoreContext core) {
         Future<Void> future = Future.future();
 
-        ReferencedScript.initialize(core).setHandler(done -> {
+        ScriptReference.initialize(core).setHandler(done -> {
             if (done.succeeded()) {
                 core.blocking(blocking -> {
                     ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);

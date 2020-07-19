@@ -2,7 +2,6 @@ package com.codingchili.instance.model.npc;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.SimpleCreature;
-import com.codingchili.instance.model.items.Item;
 import com.codingchili.instance.model.items.ItemDB;
 import com.codingchili.instance.model.spells.DeathEvent;
 import com.codingchili.instance.model.stats.Stats;
@@ -18,9 +17,9 @@ import com.codingchili.core.protocol.Api;
  * Model of an NPC.
  */
 public class Npc extends SimpleCreature {
-    private EntityConfiguration config;
+    private EntityConfig config;
 
-    public Npc(EntityConfiguration config) {
+    public Npc(EntityConfig config) {
         this.config = config;
     }
 
@@ -64,7 +63,7 @@ public class Npc extends SimpleCreature {
         }
     }
 
-    public Npc setConfiguration(EntityConfiguration config) {
+    public Npc setConfiguration(EntityConfig config) {
         this.config = config;
         return this;
     }

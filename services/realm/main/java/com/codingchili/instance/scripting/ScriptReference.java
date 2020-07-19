@@ -22,7 +22,7 @@ import static com.codingchili.core.configuration.CoreStrings.*;
  * A script that can be used to reference another script. The referenced script
  * must be loaded before this script is loaded.
  */
-public class ReferencedScript implements Scripted {
+public class ScriptReference implements Scripted {
     public static final String TYPE = "reference";
     private static final String SCRIPT_LOAD = "script.load";
     private static final String SCRIPT_PATH = "conf/game/scripts";
@@ -32,7 +32,7 @@ public class ReferencedScript implements Scripted {
 
     public static Future<Void> initialize(CoreContext core) {
         long start = System.currentTimeMillis();
-        Logger logger = core.logger(ReferencedScript.class);
+        Logger logger = core.logger(ScriptReference.class);
 
         if (!initialized.getAndSet(true)) {
             Future<Void> future = Future.future();
@@ -41,7 +41,7 @@ public class ReferencedScript implements Scripted {
                 try {
                     long loaded = ConfigurationFactory.enumerate(SCRIPT_PATH, true)
                             .map(File::new)
-                            .peek(ReferencedScript::loadScriptAt)
+                            .peek(ScriptReference::loadScriptAt)
                             .filter((file) -> Boolean.TRUE)
                             .count();
 
@@ -94,7 +94,7 @@ public class ReferencedScript implements Scripted {
      *
      * @param referenceName the name of the script to load from the bank.
      */
-    public ReferencedScript(String referenceName) {
+    public ScriptReference(String referenceName) {
         this.reference = get(referenceName).orElseThrow(() -> new CoreRuntimeException(
                 String.format("Failed to find referenced script '%s/%s'.", SCRIPT_PATH, referenceName)));
     }

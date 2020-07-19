@@ -8,9 +8,9 @@ import com.codingchili.instance.model.entity.SimpleEntity;
  * Concrete class for structures.
  */
 public class Structure extends SimpleEntity {
-    private EntityConfiguration config;
+    private EntityConfig config;
 
-    public Structure(EntityConfiguration config) {
+    public Structure(EntityConfig config) {
         this.config = config;
     }
 }

@@ -5,9 +5,7 @@ import com.codingchili.instance.scripting.Scripted;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.codingchili.core.configuration.Configurable;
 
@@ -20,8 +18,8 @@ import static com.codingchili.core.configuration.CoreStrings.EXT_YAML;
  * Contains settings for an instance in a realm.
  */
 public class InstanceSettings implements Configurable {
-    private List<SpawnConfiguration> structures = new ArrayList<>();
-    private List<SpawnConfiguration> npcs = new ArrayList<>();
+    private List<SpawnConfig> structures = new ArrayList<>();
+    private List<SpawnConfig> npcs = new ArrayList<>();
     private List<SpawnPoint> spawns = new ArrayList<>();
     private Skybox skybox = new Skybox();
     private Scripted onStartup;
@@ -142,22 +140,22 @@ public class InstanceSettings implements Configurable {
     /**
      * @return a list of structures to spawn on the map.
      */
-    public List<SpawnConfiguration> getStructures() {
+    public List<SpawnConfig> getStructures() {
         return structures;
     }
 
-    public void setStructures(List<SpawnConfiguration> structures) {
+    public void setStructures(List<SpawnConfig> structures) {
         this.structures = structures;
     }
 
     /**
      * @return a list of NPCs to spawn on the map.
      */
-    public List<SpawnConfiguration> getNpcs() {
+    public List<SpawnConfig> getNpcs() {
         return npcs;
     }
 
-    public void setNpcs(List<SpawnConfiguration> npcs) {
+    public void setNpcs(List<SpawnConfig> npcs) {
         this.npcs = npcs;
     }
 

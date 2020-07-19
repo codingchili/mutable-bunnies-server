@@ -9,7 +9,7 @@ import com.codingchili.core.context.CoreContext;
  */
 public class NpcDB {
     private static final String CONF_PATH = "conf/game/npc";
-    private static DB<EntityConfiguration> npcs;
+    private static DB<EntityConfig> npcs;
 
     /**
      * Creates a new or re-uses an existing npc database.
@@ -17,10 +17,10 @@ public class NpcDB {
      * @param core the core context to create the database on.
      */
     public NpcDB(CoreContext core) {
-        npcs = DB.create(core, EntityConfiguration.class, CONF_PATH);
+        npcs = DB.create(core, EntityConfig.class, CONF_PATH);
     }
 
-    public Optional<EntityConfiguration> getById(String id) {
+    public Optional<EntityConfig> getById(String id) {
         return npcs.getById(id);
     }
 }

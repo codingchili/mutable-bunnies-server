@@ -14,7 +14,7 @@ import com.codingchili.core.storage.Storable;
  * <p>
  * NPC configuration.
  */
-public class EntityConfiguration implements Storable {
+public class EntityConfig implements Storable {
     private List<LootTableItem> loot = new ArrayList<>();
     private String id;
     private Model model;

@@ -2,7 +2,6 @@ package com.codingchili.instance.model.npc;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.*;
-import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.scripting.Bindings;
 
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class SpawnEngine {
      * @return the structure or npc that was spawned if any.
      */
     public Optional<? extends Entity> spawn(String id, float x, float y) {
-        Optional<EntityConfiguration> config = npcs.getById(id);
+        Optional<EntityConfig> config = npcs.getById(id);
 
         if (config.isPresent()) {
             return npc(id, x, y);
@@ -67,7 +66,7 @@ public class SpawnEngine {
      * @return the creature that was spawned.
      */
     public Optional<Creature> npc(String id, float x, float y) {
-        Optional<EntityConfiguration> config = npcs.getById(id);
+        Optional<EntityConfig> config = npcs.getById(id);
 
         if (config.isPresent()) {
             Npc npc = new Npc(config.get());
@@ -92,7 +91,7 @@ public class SpawnEngine {
      * @return the structure that was spawned.
      */
     public Optional<Entity> structure(String id, float x, float y) {
-        Optional<EntityConfiguration> config = entities.getById(id);
+        Optional<EntityConfig> config = entities.getById(id);
 
         if (config.isPresent()) {
             Structure structure = new Structure(config.get());
@@ -108,7 +107,7 @@ public class SpawnEngine {
         }
     }
 
-    private void setup(EntityConfiguration config, SimpleEntity entity) {
+    private void setup(EntityConfig config, SimpleEntity entity) {
         entity.setName(config.getName());
         entity.setModel(config.getModel());
 
