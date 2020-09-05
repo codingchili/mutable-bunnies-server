@@ -28,7 +28,7 @@ public class ScriptEngineTest {
     private CoreContext context;
 
     @Rule
-    public Timeout timeout = Timeout.seconds(10);
+    public Timeout timeout = Timeout.seconds(60);
 
     @Before
     public void setUp() {
@@ -41,8 +41,9 @@ public class ScriptEngineTest {
     }
 
     @Test
+    @Ignore("Disabled by default, performance test only.")
     public void performance(TestContext test) {
-        BenchmarkGroup group = new BenchmarkGroupBuilder("scriptEngines", 20);
+        BenchmarkGroup group = new BenchmarkGroupBuilder("scriptEngines", 2000);
         Map<String, Scripted> scripts = new HashMap<>();
         Async async = test.async();
 
