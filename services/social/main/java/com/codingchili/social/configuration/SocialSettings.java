@@ -11,7 +11,7 @@ import static com.codingchili.core.configuration.CoreStrings.getService;
  * Settings for the social service.
  */
 public class SocialSettings implements Configurable {
-    public static final String PATH = getService("socialserver");
+    public static final String PATH = getService("social");
     private String storage;
     private Token logging;
     private byte[] clientSecret;

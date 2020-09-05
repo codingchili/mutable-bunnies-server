@@ -16,7 +16,7 @@ import static com.codingchili.core.configuration.CoreStrings.getService;
  * Settings for the router identity.
  */
 public class RouterSettings extends ServiceConfigurable {
-    public static final String PATH_ROUTING = getService("routingserver");
+    public static final String PATH_ROUTING = getService("routing");
     private List<ListenerSettings> transport = new ArrayList<>();
     private Map<String, String> external = new HashMap<>();
 

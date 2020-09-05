@@ -57,6 +57,7 @@ public class InstanceSettings implements Configurable {
 
     /**
      * @param id the id of the instance used in scripts.
+     * @return fluent
      */
     public InstanceSettings setId(String id) {
         this.id = id;

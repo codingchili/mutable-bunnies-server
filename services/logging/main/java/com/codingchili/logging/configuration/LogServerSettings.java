@@ -9,7 +9,7 @@ import com.codingchili.core.storage.JsonMap;
  * Contains settings for the logserver.
  */
 public class LogServerSettings extends ServiceConfigurable {
-    static final String PATH_LOGSERVER = Strings.getService("logserver");
+    static final String PATH_LOGSERVER = Strings.getService("logging");
     private byte[] secret = new byte[]{0x53, 0x48};
     private Boolean console = true;
     private String db = "logging";

@@ -11,7 +11,7 @@ import com.codingchili.core.listener.ListenerSettings;
  * Settings for the web server.
  */
 public class WebserverSettings extends ServiceConfigurable {
-    public static final String PATH_WEBSERVER = Strings.getService("webserver");
+    public static final String PATH_WEBSERVER = Strings.getService("web");
     private String startPage = "index.html";
     private String missingPage = "missing.html";
     private String resources = "website";
