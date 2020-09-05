@@ -1,4 +1,6 @@
-# Auction service
+# Banking service
+
+Implements banking and auction services.
 
 - send (items/cash/message)
     - target account name only?

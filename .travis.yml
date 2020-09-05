@@ -8,7 +8,7 @@ script:
   - npm install -g bower
   - ./gradlew -version
   - ./gradlew build --info --stacktrace
-  - ./gradlew javadocJar -x test
+  - ./gradlew dokkaHtmlMultiModule -x test
   - ./gradlew archiveTestReport -x test
 notifications:
   email: true
