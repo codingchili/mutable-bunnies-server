@@ -16,6 +16,8 @@ project.group = 'com.github.codingchili.chili-game-ext'
 subprojects {
     plugins.apply("java")
     plugins.apply("org.jetbrains.kotlin.jvm")
+    plugins.apply("org.jetbrains.dokka")
+
 
     version = rootProject.version
     group = rootProject.group
