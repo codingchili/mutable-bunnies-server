@@ -2,7 +2,7 @@
 
 A microservices based distributed 2d MMORPG with Hazelcast and Vert.x on Java 11, currently 20k LOC + configuration.
 
-Game clients
+#### Game clients
 
 - [Web based client](https://github.com/codingchili/mutable-bunnies-client)
 - [Android auction client](https://github.com/codingchili/mutable-bunnies-auctions)
@@ -10,7 +10,7 @@ Game clients
 The backend is developed using the chili-core framework
 - [chili-core framework](https://github.com/codingchili/chili-core)
 
-Game architecture
+#### Game architecture
 
 ![architecture.png](images/architecture.png)
 
