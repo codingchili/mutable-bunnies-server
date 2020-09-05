@@ -42,6 +42,7 @@ public class PartyEngine {
      *
      * @param account the account that is sending the party invite.
      * @param friend  the account that is receiving the party invite.
+     * @return the generated invite code for the friend.
      */
     public String invite(String account, String friend) {
         if (reverse.containsKey(friend)) {
@@ -130,8 +131,9 @@ public class PartyEngine {
 
 
     /**
-     * @param account
-     * @param party
+     * Declines a request to join a party.
+     * @param account the account declining the request.
+     * @param party the id of the party of which the invite is declined.
      */
     public void decline(String account, String party) {
         parties.computeIfAbsent(party, id -> new HashSet<>());

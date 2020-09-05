@@ -1,0 +1,8 @@
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.4.0"
+}
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/main'
+    main.java.srcDirs += 'src/main'
+}

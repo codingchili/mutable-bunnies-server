@@ -18,6 +18,7 @@ public class RealmMetaData extends Attributes {
     private String version;
     private String type;
     private String lifetime;
+    private String name;
     private Boolean trusted;
     private Boolean secure;
     private Boolean binaryWebsocket;
@@ -40,7 +41,17 @@ public class RealmMetaData extends Attributes {
                 .setTrusted(settings.getTrusted())
                 .setUpdated(settings.getUpdated())
                 .setSecure(settings.getSecure())
+                .setName(settings.getName())
                 .setAttributes(settings.getAttributes());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public RealmMetaData setName(String name) {
+        this.name = name;
+        return this;
     }
 
     public long getUpdated() {

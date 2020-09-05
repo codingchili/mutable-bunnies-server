@@ -49,7 +49,7 @@ public class ContextMock extends RegistryContext {
 
                     factory.hmac(token).setHandler(hmac -> {
                         RegisteredRealm realm = new RegisteredRealm()
-                                .setNode("realmName")
+                                .setId("realmName")
                                 .setAuthentication(token);
 
                         realmDB.put(Future.future(), realm);

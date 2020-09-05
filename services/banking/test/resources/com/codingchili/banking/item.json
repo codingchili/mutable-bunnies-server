@@ -1,0 +1,19 @@
+{
+  "slot": "ring",
+  "armorType": "plate",
+  "weaponType": "battleaxe",
+  "id": "4035e207-f552-4817-8a22-f9bcbcd48777",
+  "icon": "dagger.png",
+  "name": "Bottlax of Killah",
+  "description": "once upon a time item description",
+  "stats": {
+    "dexterity": 5.0,
+    "intelligence": 2.0
+  },
+  "rarity": "epic",
+  "quantity": 99,
+  "onDamaged": "zap.groovy",
+  "onHit": "boom.groovy",
+  "onUse": "slurp.groovy",
+  "unmappedProperty": "sample property that the banking service doesn't care about but needs to retain."
+}

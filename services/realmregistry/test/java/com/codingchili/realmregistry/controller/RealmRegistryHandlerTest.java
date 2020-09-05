@@ -47,7 +47,7 @@ public class RealmRegistryHandlerTest {
         Token token = new Token(REALM_NAME);
         mock.getRealmFactory().hmac(token).setHandler(hmac -> {
             realmconfig.setAuthentication(token);
-            realmconfig.setNode(REALM_NAME);
+            realmconfig.setId(REALM_NAME);
             realmToken = Serializer.json(token);
 
             Future<Void> future = Future.future();
@@ -71,7 +71,7 @@ public class RealmRegistryHandlerTest {
     @Test
     public void failWithClientToken(TestContext test) {
         Async async = test.async();
-        Token token = new Token(realmconfig.getNode());
+        Token token = new Token(realmconfig.getId());
         mock.getClientFactory().hmac(token).setHandler(hmac -> {
 
             handle(REALM_UPDATE, (response, status) -> {

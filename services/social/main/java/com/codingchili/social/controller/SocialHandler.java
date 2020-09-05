@@ -16,12 +16,14 @@ import static com.codingchili.common.Strings.SOCIAL_NODE;
  * <p>
  * Social handler to handle friendlists and xr-messaging.
  */
+@Address(SOCIAL_NODE)
 public class SocialHandler implements CoreHandler {
     private final Protocol<Request> protocol = new Protocol<>(this);
     private SocialContext context;
 
     public SocialHandler(SocialContext context) {
         this.context = context;
+        protocol.authenticator((request) -> context.verify(request.token()).map(v -> Role.USER));
     }
 
     @Override
@@ -32,28 +34,8 @@ public class SocialHandler implements CoreHandler {
         protocol.annotated(new MessageHandler(context));
     }
 
-    @Authenticator
-    public Future<RoleType> authenticator(Request request) {
-        Future<RoleType> future = Future.future();
-
-        context.verify(request.token()).setHandler(done -> {
-            if (done.succeeded()) {
-                future.complete(Role.USER);
-            } else {
-                future.fail(done.cause());
-            }
-        });
-
-        return future;
-    }
-
     @Override
     public void handle(Request request) {
         protocol.process(new SocialRequest(request));
-    }
-
-    @Override
-    public String address() {
-        return SOCIAL_NODE;
     }
 }

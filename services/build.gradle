@@ -1,25 +1,15 @@
+apply plugin: 'java'
+
 subprojects {
     dependencies {
         compile project(':common')
         testCompile 'io.vertx:vertx-unit:3.8.0'
         testCompile 'junit:junit:4.12'
     }
-    project.group = 'com.codingchili.service'
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-jsr223:3.0.0-beta-3'
-}
-
-subprojects.each {
-    subproject -> evaluationDependsOn(subproject.path)
-}
-
-task sourcesJar(type: Jar) {
-    classifier 'sources'
-    subprojects.each { subproject ->
-        from subproject.sourceSets.main.allSource
-    }
+    compile project(':common')
 }
 
 task allJar(type: Jar, dependsOn: subprojects.jar) {

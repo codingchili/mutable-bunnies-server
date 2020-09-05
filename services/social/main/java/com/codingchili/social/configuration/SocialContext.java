@@ -106,6 +106,7 @@ public class SocialContext extends SystemContext {
      *
      * @param target  the receiver account id of the message.
      * @param message the message to send.
+     * @return future completed on request completion.
      */
     public CompositeFuture send(String target, Object message) {
         List<Future> futures = new ArrayList<>();
