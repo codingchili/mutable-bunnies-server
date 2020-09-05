@@ -70,6 +70,8 @@ public abstract class Strings extends CoreStrings {
     public static final String NODE_CLIENT_LOGGING = "client.logging.node";
     public static final String NODE_ROUTER = "routing.node";
     public static final String SOCIAL_NODE = "social.node";
+    public static final String BANKING_NODE = "banking.node";
+    public static final String AUCTION_NODE = "auction.node";
     public static final String ONLINE_SOCIAL_NODE = "online.social.node";
 
     public static final String COLLECTION_REALMS = "realms";

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Robin Duda
- *
+ * <p>
  * Utility methods for performing AOE selections over a Grid.
  */
 public class AreaSelector<T extends Entity> {
@@ -24,9 +24,11 @@ public class AreaSelector<T extends Entity> {
     private static final Integer DEGREES = 45;
 
     /**
+     * Finds all entities in a cone from the given vectors position, direction and size.
+     * The cone is 45 degrees wide.
      *
-     * @param vector
-     * @return
+     * @param vector the starting vector for target selection
+     * @return a list of entities of type T matching the query vector.
      */
     public Set<T> cone(Vector vector) {
         return radius(vector).stream()
@@ -43,9 +45,10 @@ public class AreaSelector<T extends Entity> {
     }
 
     /**
+     * Finds all entities in radius of the vector given its position and size.
      *
-     * @param vector
-     * @return
+     * @param vector the starting vector for target selection
+     * @return a list of entities of type T matching the query vector.
      */
     public Set<T> radius(Vector vector) {
         Set<T> results = new HashSet<>();

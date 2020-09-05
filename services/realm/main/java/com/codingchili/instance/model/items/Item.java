@@ -1,5 +1,6 @@
 package com.codingchili.instance.model.items;
 
+import com.codingchili.core.protocol.Serializer;
 import com.codingchili.instance.model.stats.*;
 
 import java.util.UUID;
@@ -122,5 +123,22 @@ public class Item extends ItemType implements Storable {
     public boolean equals(Object obj) {
         return (obj instanceof Item) &&
                 ((Item) (obj)).getId().equals(id);
+    }
+
+    public static void main(String[] args) {
+        Item item = new Item() {{
+            description = "once upon a time item description";
+            rarity = ItemRarity.epic;
+            slot = Slot.ring;
+            armorType = ArmorType.plate;
+            weaponType = WeaponType.battleaxe;
+            name = "Bottlax of Killah";
+            onUse = "slurp.groovy";
+            onHit = "boom.groovy";
+            onDamaged = "zap.groovy";
+            icon = "dagger.png";
+            quantity = 99;
+        }};
+        System.out.println(Serializer.json(item));
     }
 }

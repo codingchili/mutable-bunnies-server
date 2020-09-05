@@ -252,6 +252,7 @@ public class RegisteredRealm implements Storable {
 
     /**
      * @param binaryWebsocket true if websockets use the binary protocol.
+     * @return fluent
      */
     public RegisteredRealm setBinaryWebsocket(Boolean binaryWebsocket) {
         this.binaryWebsocket = binaryWebsocket;

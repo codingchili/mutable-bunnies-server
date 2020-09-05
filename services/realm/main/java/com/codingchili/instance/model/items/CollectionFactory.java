@@ -12,25 +12,25 @@ import java.util.*;
 public class CollectionFactory {
 
     /**
-     * @param <K>
-     * @param <V>
-     * @return
+     * @param <K> key type of the map.
+     * @param <V> value type of the map.
+     * @return a map implementation for the given generic type arguments.
      */
     public static <K, V> Map<K, V> map() {
         return new LinkedHashMap<>();
     }
 
     /**
-     * @param <V>
-     * @return
+     * @param <V> value type of the set.
+     * @return a set implementation for the given generic type argument.
      */
     public static <V> Set<V> set() {
         return new LinkedHashSet<>();
     }
 
     /**
-     * @param <V>
-     * @return
+     * @param <V> value type of the list.
+     * @return a list implementation for the given generic type argument.
      */
     public static <V> List<V> list() {
         return new ArrayList<>(32);

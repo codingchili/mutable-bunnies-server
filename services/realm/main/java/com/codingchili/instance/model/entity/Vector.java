@@ -221,6 +221,7 @@ public class Vector {
      * Returns the cells that the vector is placed in.
      *
      * @param cellSize the size of the cells.
+     * @param width the total width of the grid.
      * @return cell numbers that this vector exists within.
      */
     public Collection<Integer> cells(final int cellSize, final int width) {

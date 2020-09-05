@@ -2,7 +2,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 apply plugin: 'java'
 
-project.version = "1.3.2"
+project.version = "1.3.4"
 project.group = 'com.github.codingchili.chili-game-ext'
 
 subprojects {
@@ -141,6 +141,7 @@ task archiveTestReport(type: Zip, dependsOn: testReport) {
     from fileTree(file("$buildDir/reports/allTests"))
 }
 
+jar.enabled = false
 javadoc.dependsOn javadocJar
 
 artifacts {
