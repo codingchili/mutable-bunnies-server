@@ -2,7 +2,7 @@
 
 A microservices based distributed 2d MMORPG with Hazelcast and Vert.x on Java 11, currently 20k LOC + configuration.
 
-![in-game-v2.png](images/in-game-v3.png)
+![architecture.png](images/architecture.png)
 Sample in-game image of a simple test world, first [demo video](https://www.youtube.com/watch?v=TlFcvCJb9lw) now available!
 
 Uses Pixi.js for rendering and assets from gamedeveloperstudio, see [license](https://www.gamedeveloperstudio.com/license.php). This repository doesn't contain any client code or assets - as these may not be included in any open source listing. Contributions are welcome for the backend but only the core team may work on the client/assets. 
@@ -129,7 +129,7 @@ Do you have an idea for a spell? a new player class? an NPC? gameplay mechanics?
 
 ## Architecture
 
-![architecture.png](images/architecture.png)
+See design at the top of this readme.
 
 Some services comes with additional resources, these can be bundled within the jar if moved to **src/main/resources**. This also applies to configuration files, it is however recommended that these are easily edited. 
 
