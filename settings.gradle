@@ -7,4 +7,5 @@ include 'common',
         'services:social',
         'services:router',
         'services:logging',
-        'services:website'
+        'services:website',
+        'client'

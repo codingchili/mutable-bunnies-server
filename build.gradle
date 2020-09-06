@@ -8,8 +8,6 @@ repositories {
     jcenter()
 }
 
-import org.apache.tools.ant.taskdefs.condition.Os
-
 project.version = "1.3.4"
 project.group = 'com.github.codingchili.chili-game-ext'
 
@@ -68,87 +66,6 @@ subprojects {
     }
 }
 
-ext {
-    polymerBin = Os.isFamily(Os.FAMILY_WINDOWS) ? 'polymer.cmd' : 'polymer'
-    bowerBin = Os.isFamily(Os.FAMILY_WINDOWS) ? 'bower.cmd' : 'bower'
-}
-
-task polymer {
-    doLast {
-        exec {
-            workingDir './prototype/website'
-            commandLine = [bowerBin, 'install']
-        }
-        exec {
-            workingDir './prototype/website'
-            commandLine = [polymerBin, 'build']
-        }
-    }
-    inputs.files(fileTree(dir: './prototype/website', include: '**/*', exclude: '/build/**'))
-    outputs.dir('./prototype/website/build')
-}
-
-task archivePrototype(type: Zip, dependsOn: [subprojects.jar, polymer]) {
-    archiveBaseName = 'prototype'
-
-    into('/') {
-        from('prototype/script') {
-            fileMode = 0755
-            include '**/*'
-            expand(jar: jar.outputs.files[0].name, app: project.name, version: project.version)
-        }
-    }
-
-    into('conf') {
-        from fileTree('prototype/conf')
-    }
-
-    into('website') {
-        from fileTree('prototype/website/build/default')
-    }
-
-    into('website/resources') {
-        from fileTree('prototype/website/resources/')
-    }
-
-    into('/website') {
-        from 'prototype/website/manifest.json', 'prototype/website/service_worker.json'
-    }
-
-    into('lib') {
-        from(project(':common').configurations.compile)
-        from(project(':services').configurations.compile)
-        from(project(':common').jar)
-        from(project(':services').subprojects.jar)
-    }
-}
-
-task prototype(type: JavaExec, dependsOn: subprojects.classes) {
-    workingDir = 'prototype'
-    main = 'com.codingchili.core.Launcher'
-
-    if (project.hasProperty('exec')) {
-        args += exec
-    } else {
-        args += '--deploy'
-    }
-
-    subprojects.each {
-        classpath += it.sourceSets.main.runtimeClasspath
-    }
-}
-
-/*task alljavadoc(type: Javadoc) {
-    source subprojects.collect { it.sourceSets.main.allSource }
-    classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
-}
-
-task javadocJar(type: Jar, dependsOn: alljavadoc) {
-    classifier = 'javadoc'
-    from alljavadoc.destinationDir
-}*/
-
-
 task testReport(type: TestReport, dependsOn: 'build') {
     destinationDir = file("$buildDir/reports/allTests")
     reportOn subprojects*.test
@@ -160,9 +77,3 @@ task archiveTestReport(type: Zip, dependsOn: testReport) {
 }
 
 jar.enabled = false
-//javadoc.dependsOn dokka
-
-/*
-artifacts {
-    archives javadocJar
-}*/
