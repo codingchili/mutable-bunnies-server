@@ -5,7 +5,7 @@ import java.time.Instant
 import java.util.*
 import kotlin.math.max
 
-class Auction(var initial: Int, var item: Item, var seller: String) : Storable {
+public class Auction(var initial: Int, var item: Item, var seller: String) : Storable {
     var bids = listOf<Bid>()
     var end: Long = Date().time + 2 * 60 * 1000
     var _id: String? = UUID.randomUUID().toString()

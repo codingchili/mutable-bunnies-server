@@ -8,8 +8,8 @@ script:
   - npm install -g bower
   - ./gradlew -version
   - ./gradlew build --info --stacktrace
-  - ./gradlew dokkaHtmlMultiModule -x test
   - ./gradlew archiveTestReport -x test
+  #- ./gradlew dokkaHtmlMultiModule -x test
 notifications:
   email: true
 before_cache:
