@@ -1,4 +1,4 @@
-rootProject.name = 'chili-game-ext'
+rootProject.name = 'server'
 include 'common',
         'services:banking',
         'services:authentication',
