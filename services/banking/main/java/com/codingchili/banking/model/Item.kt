@@ -3,7 +3,7 @@ package com.codingchili.banking.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import io.vertx.core.json.JsonObject
 
-class Item(
+class Item (
         val icon: String,
         val quantity: Int = 0,
         val rarity: ItemRarity,

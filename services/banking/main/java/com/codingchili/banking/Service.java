@@ -6,6 +6,9 @@ import com.codingchili.banking.controller.AuctionHandler;
 import com.codingchili.banking.controller.BankingHandler;
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.listener.CoreService;
+import com.codingchili.core.protocol.Serializer;
+
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 
@@ -15,6 +18,7 @@ public class Service implements CoreService {
     @Override
     public void init(CoreContext core) {
         this.core = core;
+        Serializer.json.registerModule(new KotlinModule());
     }
 
     @Override

@@ -3,6 +3,9 @@ apply plugin: 'java'
 subprojects {
     dependencies {
         compile project(':common')
+
+        implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.10"
+
         testCompile 'io.vertx:vertx-unit:3.8.0'
         testCompile 'junit:junit:4.12'
     }
