@@ -1,6 +1,7 @@
 package com.codingchili.instance.context;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -14,7 +15,8 @@ public class Ticker implements Supplier<Integer> {
     private int id = UUID.randomUUID().hashCode();
     private GameContext context;
     private AtomicInteger interval;
-    private Long lastTick = System.currentTimeMillis();
+    private boolean active = true;
+    private Long lastTick = now();
     private Long deltaMS = 0L;
     private Consumer<Ticker> exec;
 
@@ -30,8 +32,12 @@ public class Ticker implements Supplier<Integer> {
         context.setTicker(this);
     }
 
+    private long now() {
+        return TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
+    }
+
     public void run() {
-        Long currentTick = System.currentTimeMillis();
+        Long currentTick = now();
         deltaMS = currentTick - lastTick;
 
         if (deltaMS < 0) {
@@ -57,10 +63,18 @@ public class Ticker implements Supplier<Integer> {
         return deltaMS * 0.001f;
     }
 
-    public Ticker disable() {
-        interval.set(0);
+    public void enable() {
+        active = true;
         context.setTicker(this);
-        return this;
+    }
+
+    public void disable() {
+        active = false;
+        context.setTicker(this);
+    }
+
+    public boolean active() {
+        return active;
     }
 
     @Override

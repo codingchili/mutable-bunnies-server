@@ -45,6 +45,8 @@ public enum EventType {
     party_accept,
     party_decline,
 
+    registry,
+
     error,
     any,
 

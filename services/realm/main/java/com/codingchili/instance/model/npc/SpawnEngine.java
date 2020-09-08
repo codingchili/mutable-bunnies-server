@@ -1,11 +1,16 @@
 package com.codingchili.instance.model.npc;
 
 import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.context.InstanceSettings;
+import com.codingchili.instance.model.designer.DesignerRequest;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.scripting.Bindings;
+import io.vertx.core.Promise;
+import io.vertx.core.WorkerExecutor;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -16,6 +21,10 @@ import java.util.function.Consumer;
 public class SpawnEngine {
     private static final String DESCRIPTION = "description";
     private static final double TPS = 4; // limits NPCs to 4 AI update per second.
+    private static final int POOL_SIZE = 1;
+    private static final int MAX_EXECUTE_TIME = 2;
+    private static final String EXECUTOR_NAME = "instance-writer";
+    private WorkerExecutor executor;
     private GameContext game;
     private EntityDB entities;
     private NpcDB npcs;
@@ -27,6 +36,14 @@ public class SpawnEngine {
         this.game = game;
         this.entities = new EntityDB(game.instance());
         this.npcs = new NpcDB(game.instance());
+
+        // shared across all jvm-local instances.
+        executor = game.instance().
+                vertx().createSharedWorkerExecutor(EXECUTOR_NAME,
+                POOL_SIZE,
+                MAX_EXECUTE_TIME,
+                TimeUnit.SECONDS
+        );
     }
 
     public NpcDB npcs() {
@@ -39,6 +56,7 @@ public class SpawnEngine {
 
     /**
      * Spawns an entity or creature if exists with the given id.
+     *
      * @param id the id of the entity to spawn as defined in configuration.
      * @param x  the x point.
      * @param y  the y point.
@@ -143,5 +161,46 @@ public class SpawnEngine {
         entity.getVector()
                 .setX(x)
                 .setY(y);
+    }
+
+    /**
+     * Adds the entity to the current context if found in configuration
+     * and also permanently adds it to the instance spawn configuration.
+     *
+     * @param designer
+     */
+    public Promise<Void> add(DesignerRequest designer) {
+        Promise<Void> promise = Promise.promise();
+        InstanceSettings settings = game.instance().settings();
+
+        settings.getStructures()
+                .add(designer.toSpawnConfig());
+
+        // needs both game ID and template ID to remove.
+        // how do we know which SpawnConfig an NPC spawned from?
+
+        executor.executeBlocking((done) -> {
+            settings.save();
+
+            spawn(designer.getId(), designer.getX(), designer.getY());
+
+            done.complete();
+        }, false, done -> {
+            if (done.failed()) {
+                game.getLogger(getClass())
+                        .onError(done.cause());
+            }
+        });
+        return promise;
+    }
+
+    /**
+     * Removes the entity from the current context if present and
+     * removes it from configuration.
+     *
+     * @param designer
+     */
+    public void remove(DesignerRequest designer) {
+
     }
 }

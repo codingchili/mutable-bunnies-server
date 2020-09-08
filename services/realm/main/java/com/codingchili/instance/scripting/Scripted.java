@@ -1,6 +1,7 @@
 package com.codingchili.instance.scripting;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Robin Duda
@@ -13,7 +14,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * Example:
  * {"scriptedBehavior": {"jexl": "some jexl script;"} }
  */
-@JsonDeserialize(using = ScriptedSerializer.class)
+@JsonSerialize(using = ScriptedSerializer.class)
+@JsonDeserialize(using = ScriptedDeserializer.class)
 public interface Scripted {
 
     /**

@@ -28,11 +28,10 @@ public class DB<E extends Storable> {
     private static final int POLL_FILE_MODIFY = 1500;
     private static final String DB_LOAD = "db.load";
     private static final String UPDATED = "updated";
-    private static Map<String, DB<?>> maps = new ConcurrentHashMap<>();
-    private Map<String, E> items;
-    private Runnable onInvalidate = () -> {
-    };
-    private Logger logger;
+    private static final Map<String, DB<?>> maps = new ConcurrentHashMap<>();
+    private final Map<String, E> items;
+    private Runnable onInvalidate = () -> { };
+    private final Logger logger;
 
     /**
      * Creates a new database to hold references of the given class. If the database is already

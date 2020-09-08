@@ -1,15 +1,11 @@
 package com.codingchili.instance.transport;
 
-import com.codingchili.instance.model.entity.EventProtocol;
-import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.core.context.CoreContext;
+import com.codingchili.core.protocol.Serializer;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.codingchili.core.context.CoreContext;
-import com.codingchili.core.logging.RemoteLogger;
-import com.codingchili.core.protocol.Serializer;
 
 /**
  * @author Robin Duda

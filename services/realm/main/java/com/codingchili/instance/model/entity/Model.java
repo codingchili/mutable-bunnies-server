@@ -9,10 +9,19 @@ public class Model {
     private String graphics = "game/placeholder.png";
     private String skin;
     private float scale = 1.0f;
+    private Hitbox hitbox = new Hitbox();
     private boolean blocking = false;
     private boolean revertX = false;
-    private Hitbox hitbox = new Hitbox();
+    private Point pivot = new Point(0, 0);
     private int layer = 5;
+
+    public Point getPivot() {
+        return pivot;
+    }
+
+    public void setPivot(Point pivot) {
+        this.pivot = pivot;
+    }
 
     /**
      * @return the graphical representation of the model, a sprite for example.
@@ -57,7 +66,7 @@ public class Model {
     public void setHitbox(Hitbox hitbox) {
         this.hitbox = hitbox;
     }
-    
+
     /**
      * @return the layer at which the graphic will be rendered.
      */

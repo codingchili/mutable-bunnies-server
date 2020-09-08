@@ -31,6 +31,4 @@ public class SpawnEvent implements Event {
     public EventType getRoute() {
         return EventType.spawn;
     }
-
-    public enum SpawnType {SPAWN, DESPAWN, DISCONNECT, DEATH}
 }

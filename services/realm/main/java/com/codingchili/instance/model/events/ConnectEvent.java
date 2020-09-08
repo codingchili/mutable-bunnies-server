@@ -65,8 +65,8 @@ public class ConnectEvent implements Event {
         this.projection = projection;
     }
 
-    public SpawnEvent.SpawnType getSpawn() {
-        return SpawnEvent.SpawnType.SPAWN;
+    public SpawnType getSpawn() {
+        return SpawnType.SPAWN;
     }
 
     public Collection<Entity> getEntities() {

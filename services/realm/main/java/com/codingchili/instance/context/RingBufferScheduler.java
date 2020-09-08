@@ -2,6 +2,7 @@ package com.codingchili.instance.context;
 
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -104,14 +105,14 @@ public class RingBufferScheduler<E extends Supplier<Integer>> {
         }
 
         System.out.println("=== start measure ===");
-        long start = System.currentTimeMillis();
+        long start = TimeUnit.MILLISECONDS.toMillis(System.nanoTime());
         for (int i = 0; i < 1000; i++) {
             scheduler.forNext((x) -> {
                 //System.out.println("x = " + x + " t = " + times.get());
             });
         }
         System.out.println("called: " + times.get());
-        System.out.println("time: " + (System.currentTimeMillis() - start) + " ms.");
+        System.out.println("time: " + (TimeUnit.MILLISECONDS.toMillis(System.nanoTime()) - start) + " ms.");
         System.out.println("=== end measure ===");
     }
 }

@@ -2,12 +2,14 @@ package com.codingchili.instance.context;
 
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.scripting.Scripted;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.codingchili.core.configuration.Configurable;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import static com.codingchili.common.Strings.PATH_INSTANCE;
 import static com.codingchili.core.configuration.CoreStrings.EXT_YAML;
@@ -67,6 +69,7 @@ public class InstanceSettings implements Configurable {
     /**
      * @return the isometric projection used to render the tiles.
      */
+    @JsonIgnore
     public IsometricProjection getProjection() {
         return projection;
     }

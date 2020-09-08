@@ -1,6 +1,8 @@
 package com.codingchili.instance;
 
+import com.codingchili.core.protocol.Serializer;
 import com.codingchili.instance.scripting.*;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.ext.unit.TestContext;
@@ -25,6 +27,7 @@ import com.codingchili.core.context.SystemContext;
  */
 @RunWith(VertxUnitRunner.class)
 public class ScriptEngineTest {
+    private static final String SOURCE = "//";
     private CoreContext context;
 
     @Rule
@@ -38,6 +41,19 @@ public class ScriptEngineTest {
     @After
     public void tearDown(TestContext test) {
         context.close(test.asyncAssertSuccess());
+    }
+
+    @Test
+    public void serializeScripted(TestContext text) {
+        System.out.println(Serializer.json(ScriptEngines.script(SOURCE, JexlScript.TYPE)));
+    }
+
+    @Test
+    public void deserializeScripted(TestContext test) {
+        JsonObject json = new JsonObject().put(JexlScript.TYPE, SOURCE);
+        Scripted scripted = Serializer.unpack(json, Scripted.class);
+        test.assertEquals(scripted.getEngine(), JexlScript.TYPE);
+        test.assertEquals(scripted.getSource(), SOURCE);
     }
 
     @Test

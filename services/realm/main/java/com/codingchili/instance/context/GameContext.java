@@ -1,5 +1,7 @@
 package com.codingchili.instance.context;
 
+import com.codingchili.core.context.TimerSource;
+import com.codingchili.core.logging.Logger;
 import com.codingchili.instance.model.dialog.DialogEngine;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.events.*;
@@ -13,16 +15,16 @@ import com.codingchili.instance.scripting.Scripted;
 import com.codingchili.realm.model.ClassDB;
 import io.vertx.core.impl.ConcurrentHashSet;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
-import com.codingchili.core.context.TimerSource;
-import com.codingchili.core.logging.Logger;
 
 /**
  * @author Robin Duda
@@ -186,7 +188,7 @@ public class GameContext {
 
     public void setTicker(Ticker ticker) {
         queue(() -> {
-            if (ticker.get() > 0) {
+            if (ticker.active()) {
                 tickers.add(ticker);
             } else {
                 tickers.remove(ticker);
@@ -218,7 +220,7 @@ public class GameContext {
         unsubscribe(entity.getId());
         publish(new SpawnEvent()
                 .setEntity(entity)
-                .setType(SpawnEvent.SpawnType.DESPAWN));
+                .setType(SpawnType.DESPAWN));
 
         entity.removed();
     }

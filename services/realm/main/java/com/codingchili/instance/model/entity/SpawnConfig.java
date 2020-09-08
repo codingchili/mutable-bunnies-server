@@ -19,8 +19,9 @@ public class SpawnConfig {
     /**
      * @param id the id of the entity to spawn.
      */
-    public void setId(String id) {
+    public SpawnConfig setId(String id) {
         this.id = id;
+        return this;
     }
 
     /**
@@ -33,7 +34,8 @@ public class SpawnConfig {
     /**
      * @param point the point where the entity will be spawned.
      */
-    public void setPoint(Point point) {
+    public SpawnConfig setPoint(Point point) {
         this.point = point;
+        return this;
     }
 }
