@@ -2,7 +2,6 @@ package com.codingchili.banking.model;
 
 import com.codingchili.core.listener.Request;
 import com.codingchili.core.listener.RequestWrapper;
-import com.codingchili.core.protocol.Serializer;
 
 public class AuctionRequest implements RequestWrapper {
     private Request request;
@@ -12,7 +11,19 @@ public class AuctionRequest implements RequestWrapper {
     }
 
     public String itemId() {
-        return data().getString("item");
+        return data().getString("itemId");
+    }
+
+    public String auctionId() {
+        return data().getString("auctionId");
+    }
+
+    public String param() {
+        return data().getString("params");
+    }
+
+    public Boolean isFavorite() {
+        return data().getBoolean("add");
     }
 
     public Integer value() {
@@ -20,7 +31,11 @@ public class AuctionRequest implements RequestWrapper {
     }
 
     public QueryType query() {
-        return Serializer.unpack(data().getString("query"), QueryType.class);
+        return QueryType.valueOf(data().getString("query"));
+    }
+
+    public String owner() {
+        return token().getDomain();
     }
 
     @Override

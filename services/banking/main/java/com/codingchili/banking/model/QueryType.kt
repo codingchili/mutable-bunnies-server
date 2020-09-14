@@ -30,5 +30,9 @@ enum class QueryType {
     slot,
     weapon_type,
     armor_type,
-    rarity
+    rarity;
+
+    fun readableName(): String {
+        return name.replace("_", " ");
+    }
 }
