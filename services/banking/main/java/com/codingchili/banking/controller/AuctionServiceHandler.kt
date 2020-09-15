@@ -46,8 +46,8 @@ class AuctionServiceHandler(val vertx: Vertx) : AuctionService {
             QueryType.sold -> finished.filter { it.seller == user && it.bids.isNotEmpty() }
             QueryType.active -> active.filter { it.seller == user }
             QueryType.not_sold -> finished.filter { it.seller == user && it.bids.isEmpty() }
-            QueryType.won -> finished.filter { it.bids.isNotEmpty() && it.bids[0].owner == user }
-            QueryType.lost -> finished.filter { it.bids.find { it.owner == user } != null }
+            QueryType.won -> finished.filter { it.bids.take(1).any { it.owner == user } }
+            QueryType.lost -> finished.filter { it.bids.drop(1).any { it.owner == user } }
             QueryType.leading -> active.filter { it.bids.take(1).any { it.owner == user } }
             QueryType.overbid -> active.filter { it.bids.drop(1).any { it.owner == user } }
             QueryType.armor_type -> active.filter { it.item.type == param!! }
@@ -146,11 +146,14 @@ class AuctionServiceHandler(val vertx: Vertx) : AuctionService {
         // notify all users that favorited the auction but did not place any bids.
         favorites.forEach { (user, favorites) ->
             if (auction in favorites && auction.bids.find { it.owner == user } == null) {
-                notify(
-                        user,
-                        auction,
-                        "Auction for <b>${auction.item.name}</b> finished at <b>${formatValue(high?.value ?: auction.initial)}</b>"
-                )
+                // skip notification if the user is also the seller, to avoid multiple notifications.
+                if (auction.seller != user) {
+                    notify(
+                            user,
+                            auction,
+                            "Auction for <b>${auction.item.name}</b> finished at <b>${formatValue(high?.value ?: auction.initial)}</b>"
+                    )
+                }
             }
         }
     }
@@ -181,7 +184,7 @@ class AuctionServiceHandler(val vertx: Vertx) : AuctionService {
             inventory.items = items
             auctions.add(auction)
         } else {
-            throw Exception("No longer in possession of the given item.")
+            throw AuctionException("No longer in possession of the given item.")
         }
         return auction
     }
@@ -192,7 +195,7 @@ class AuctionServiceHandler(val vertx: Vertx) : AuctionService {
         val inventory = inventory(owner)
 
         if (owner == auction.seller) {
-            throw Exception("Cannot bid on own auction.")
+            throw AuctionException("Cannot bid on own auction.")
         }
 
         // require new bid to be higher than last
@@ -228,10 +231,10 @@ class AuctionServiceHandler(val vertx: Vertx) : AuctionService {
                             )
                         }
             } else {
-                throw Exception("Funds are not enough to increase bid.")
+                throw AuctionException("Funds are not enough to increase bid.")
             }
         } else {
-            throw Exception("Bid is not high enough.")
+            throw AuctionException("Bid is not high enough.")
         }
         return auction
     }
@@ -241,6 +244,6 @@ class AuctionServiceHandler(val vertx: Vertx) : AuctionService {
     }
 
     override fun findById(auctionId: String): Auction {
-        return auctions.find { it.id == auctionId } ?: throw Exception("Auction not found.")
+        return auctions.find { it.id == auctionId } ?: throw AuctionException("Auction not found.")
     }
 }

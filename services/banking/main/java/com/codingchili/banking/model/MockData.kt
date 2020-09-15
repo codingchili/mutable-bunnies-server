@@ -52,7 +52,7 @@ class MockData {
             rarity = ItemRarity.rare,
             quantity = 99,
             name = "Green Apple",
-            slot = Type.consumable,
+            type = Type.consumable,
             description = "Its just a green apple. A deliciously green, fresh and juicy apple. MMmmmmm."
         )
 
