@@ -40,6 +40,7 @@ public class ScriptReference implements Scripted {
             core.blocking((blocking) -> {
                 try {
                     long loaded = ConfigurationFactory.enumerate(SCRIPT_PATH, true)
+                            .parallel()
                             .map(File::new)
                             .peek(ScriptReference::loadScriptAt)
                             .filter((file) -> Boolean.TRUE)
