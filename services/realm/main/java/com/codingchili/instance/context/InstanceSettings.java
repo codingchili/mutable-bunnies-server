@@ -32,7 +32,7 @@ public class InstanceSettings implements Configurable {
     private int limit = 0;
 
     @JsonUnwrapped
-    private IsometricProjection projection;
+    private IsometricProjection projection = new IsometricProjection();
 
     /**
      * @return the name of the realm.

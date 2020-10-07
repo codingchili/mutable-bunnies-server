@@ -260,7 +260,7 @@ public class SpellEngine {
      */
     public boolean energy(Creature target, double amount) {
         double max = target.getStats().get(Attribute.maxenergy);
-        double current = target.getStats().get(Attribute.energy);
+        double current = target.getBaseStats().get(Attribute.energy);
 
         if (amount < 0 && current < Math.abs(amount)) {
             // cannot update energy to negative values.
@@ -271,8 +271,12 @@ public class SpellEngine {
             }
 
             if (amount != 0.0) {
-                target.getBaseStats().update(Attribute.energy, amount);
-                game.publish(new AttributeEvent(null, target).energy(amount));
+                Stats base = target.getBaseStats();
+                base.update(Attribute.energy, amount);
+                game.publish(new AttributeEvent(null, target)
+                        .energy(amount)
+                        .current(base.get(Attribute.energy))
+                );
             }
             return true;
         }
@@ -291,15 +295,16 @@ public class SpellEngine {
         double max = target.getStats().get(Attribute.maxhealth);
         double current = target.getBaseStats().get(Attribute.health);
 
-        if (current + amount > max) {
-            event.heal(Math.max(0, max - current));
+        if (current + amount >= max) {
+            event.heal(Math.max(0, Math.floor(max - current)));
         } else {
             event.heal(amount);
         }
 
         if (event.getValue() > 0) {
-            target.getBaseStats().update(Attribute.health, amount);
-            game.publish(event);
+            Stats base = target.getBaseStats();
+            base.update(Attribute.health, event.getValue());
+            game.publish(event.current(base.get(Attribute.health)));
         }
     }
 

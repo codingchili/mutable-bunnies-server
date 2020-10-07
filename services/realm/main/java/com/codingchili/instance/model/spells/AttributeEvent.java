@@ -16,6 +16,7 @@ public class AttributeEvent implements Event {
     private String effect;
     private boolean critical = false;
     private double value;
+    private double current;
     private Runnable completer;
 
     public AttributeEvent(Creature source, Creature target) {
@@ -104,7 +105,16 @@ public class AttributeEvent implements Event {
         return this;
     }
 
-    public void setValue(int value) {
+    public AttributeEvent current(double current) {
+        this.current = current;
+        return this;
+    }
+
+    public double getCurrent() {
+        return current;
+    }
+
+    public void setValue(double value) {
         this.value = value;
     }
 
