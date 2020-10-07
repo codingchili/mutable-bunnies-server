@@ -33,25 +33,25 @@ import java.util.stream.Stream;
  */
 public class GameContext {
     public static final int TICK_INTERVAL_MS = 16;
-    private Map<EventType, Map<String, EventProtocol>> listeners = new ConcurrentHashMap<>();
-    private Queue<Runnable> queue = new ConcurrentLinkedQueue<>();
-    private Set<Ticker> tickers = new ConcurrentHashSet<>();
-    private AtomicInteger skippedTicks = new AtomicInteger(0);
-    private AtomicBoolean processing = new AtomicBoolean(false);
-    private AtomicBoolean closed = new AtomicBoolean(false);
-    private InstanceContext instance;
-    private Grid<Creature> creatures;
-    private Grid<Entity> structures;
+    private final Map<EventType, Map<String, EventProtocol>> listeners = new ConcurrentHashMap<>();
+    private final Queue<Runnable> queue = new ConcurrentLinkedQueue<>();
+    private final Set<Ticker> tickers = new ConcurrentHashSet<>();
+    private final AtomicInteger skippedTicks = new AtomicInteger(0);
+    private final AtomicBoolean processing = new AtomicBoolean(false);
+    private final AtomicBoolean closed = new AtomicBoolean(false);
+    private final InstanceContext instance;
+    private final Grid<Creature> creatures;
+    private final Grid<Entity> structures;
 
-    private SpellEngine spells;
-    private MovementEngine movement;
-    private InventoryEngine inventory;
-    private DialogEngine dialogs;
-    private SpawnEngine npcs;
-    private QuestEngine quests;
+    private final SpellEngine spells;
+    private final MovementEngine movement;
+    private final InventoryEngine inventory;
+    private final DialogEngine dialogs;
+    private final SpawnEngine npcs;
+    private final QuestEngine quests;
 
-    private ClassDB classes;
-    private Logger logger;
+    private final ClassDB classes;
+    private final Logger logger;
     private Long currentTick = 0L;
 
     public GameContext(InstanceContext instance) {

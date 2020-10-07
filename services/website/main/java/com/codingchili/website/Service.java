@@ -11,6 +11,8 @@ import io.vertx.ext.web.handler.StaticHandler;
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.listener.CoreService;
 
+import java.nio.file.Path;
+
 import static com.codingchili.core.context.FutureHelper.untyped;
 
 /**
@@ -43,10 +45,18 @@ public class Service implements CoreService {
 
             router.route("/*").handler(StaticHandler.create()
                     .setCachingEnabled(settings.isCache())
-                    .setCacheEntryTimeout(32000L)
+                    .setCacheEntryTimeout(300_000L)
                     .setSendVaryHeader(false)
                     .setIndexPage(settings.getStartPage())
                     .setWebRoot(settings.getResources()));
+
+            router.route().last().handler(ctx -> {
+                if (settings.getMissingPage() != null) {
+                    ctx.response().sendFile(Path.of(settings.getResources(), settings.getMissingPage()).toString());
+                } else {
+                    ctx.next();
+                }
+            });
 
             HttpServerOptions options = settings.getListener().getHttpOptions()
                     .setCompressionSupported(settings.getGzip());
