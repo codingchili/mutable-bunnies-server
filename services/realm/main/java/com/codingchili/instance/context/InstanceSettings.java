@@ -20,16 +20,16 @@ import static com.codingchili.core.configuration.CoreStrings.EXT_YAML;
  * Contains settings for an instance in a realm.
  */
 public class InstanceSettings implements Configurable {
-    private List<SpawnConfig> structures = new ArrayList<>();
-    private List<SpawnConfig> npcs = new ArrayList<>();
-    private List<SpawnPoint> spawns = new ArrayList<>();
+    private String id;
+    private String name = "default";
+    private String texture = "";
     private Skybox skybox = new Skybox();
+    private int limit = 0;
     private Scripted onStartup;
     private Scripted onPlayerJoin;
-    private String name = "default";
-    private String id;
-    private String texture = "";
-    private int limit = 0;
+    private List<SpawnPoint> spawns = new ArrayList<>();
+    private List<SpawnConfig> npcs = new ArrayList<>();
+    private List<SpawnConfig> structures = new ArrayList<>();
 
     @JsonUnwrapped
     private IsometricProjection projection;
