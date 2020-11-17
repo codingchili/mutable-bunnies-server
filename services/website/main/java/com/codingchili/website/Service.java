@@ -8,10 +8,10 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
+import java.nio.file.Path;
+
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.listener.CoreService;
-
-import java.nio.file.Path;
 
 import static com.codingchili.core.context.FutureHelper.untyped;
 
@@ -52,7 +52,8 @@ public class Service implements CoreService {
 
             router.route().last().handler(ctx -> {
                 if (settings.getMissingPage() != null) {
-                    ctx.response().sendFile(Path.of(settings.getResources(), settings.getMissingPage()).toString());
+                    String path = Path.of(settings.getResources(), settings.getMissingPage()).toString();
+                    ctx.response().setStatusCode(404).sendFile(path);
                 } else {
                     ctx.next();
                 }
