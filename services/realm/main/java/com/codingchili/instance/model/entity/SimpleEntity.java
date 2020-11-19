@@ -20,6 +20,11 @@ public abstract class SimpleEntity implements Entity {
     protected Vector vector = new Vector();
 
     @Override
+    public boolean isCreature() {
+        return false;
+    }
+
+    @Override
     public void setContext(GameContext game) {
         this.game = game;
     }

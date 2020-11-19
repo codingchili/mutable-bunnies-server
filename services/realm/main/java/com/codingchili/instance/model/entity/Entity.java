@@ -50,6 +50,12 @@ public interface Entity extends Storable, Receiver<Event> {
      */
     Map<String, Object> getAttributes();
 
+
+    /**
+     * @return true if the entity is a creature.
+     */
+    boolean isCreature();
+
     /**
      * Called before adding the creature to the instance.
      *

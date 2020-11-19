@@ -39,6 +39,11 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
     }
 
     @Override
+    public boolean isCreature() {
+        return true;
+    }
+
+    @Override
     public boolean isDead() {
         return baseStats.getOrDefault(Attribute.health, 0.0) < 1;
     }

@@ -13,4 +13,9 @@ public class Structure extends SimpleEntity {
     public Structure(EntityConfig config) {
         this.config = config;
     }
+
+    @Override
+    public boolean isCreature() {
+        return false;
+    }
 }
