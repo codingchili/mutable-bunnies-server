@@ -2,6 +2,7 @@ package com.codingchili.router;
 
 import com.codingchili.core.Launcher;
 import com.codingchili.core.context.CoreContext;
+import com.codingchili.core.context.FutureHelper;
 import com.codingchili.core.listener.CoreListener;
 import com.codingchili.core.listener.CoreService;
 import com.codingchili.core.listener.ListenerSettings;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.codingchili.core.context.FutureHelper.untyped;
 import static io.vertx.core.CompositeFuture.all;
 
 /**
@@ -68,14 +70,15 @@ public class Service implements CoreService {
                         break;
                 }
             }
-            all(deployments).setHandler(done -> blocking.complete());
+            all(deployments).setHandler(untyped(blocking.future()));
         }, start);
     }
 
     private void start(Supplier<CoreListener> listener, WireType type, Future<String> future) {
         context.listener(() -> listener.get()
                 .handler(handler)
-                .settings(context.getListener(type))).setHandler(future);
+                .settings(context.getListener(type)))
+                .setHandler(future);
     }
 
     public static void main(String[] args) {
