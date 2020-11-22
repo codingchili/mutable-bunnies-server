@@ -3,6 +3,8 @@ package com.codingchili.instance.controller;
 import com.codingchili.core.protocol.Api;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.Creature;
+import com.codingchili.instance.model.movement.AnimationEvent;
+import com.codingchili.instance.model.movement.Animation;
 import com.codingchili.instance.model.movement.MovementEvent;
 import com.codingchili.instance.model.movement.MovementEngine;
 import com.codingchili.instance.transport.InstanceRequest;
@@ -22,6 +24,21 @@ public class MovementHandler implements GameHandler {
     public MovementHandler(GameContext game) {
         this.engine = game.movement();
         this.game = game;
+    }
+
+    @Api
+    public void dance_1(InstanceRequest request) {
+        game.publish(new AnimationEvent(request.target(), Animation.dance_1));
+    }
+
+    @Api
+    public void dance_2(InstanceRequest request) {
+        game.publish(new AnimationEvent(request.target(), Animation.dance_2));
+    }
+
+    @Api
+    public void jump(InstanceRequest request) {
+        game.publish(new AnimationEvent(request.target(), Animation.jump));
     }
 
     @Api

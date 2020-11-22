@@ -13,6 +13,7 @@ public enum EventType {
     affliction,
 
     move,
+    animation,
 
     death,
     join,
