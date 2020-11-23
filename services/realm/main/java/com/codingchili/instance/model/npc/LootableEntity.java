@@ -22,16 +22,44 @@ public class LootableEntity extends SimpleEntity {
     private static final int LOOT_DECAY_TIME = 300_000; // 5 minutes.
     private Set<String> subscribers = new HashSet<>();
     private List<Item> items;
+    private boolean corpse = false;
+    private String source;
 
+    public static LootableEntity fromCorpse(Entity source, List<Item> items) {
+        return new LootableEntity(source.getVector(), items)
+                .setCorpse(true)
+                .setSource(source.getId());
+    }
 
-    public LootableEntity(String name, Vector vector, List<Item> items) {
+    public static LootableEntity dropped(Vector vector, Item item) {
+        return new LootableEntity(vector, Collections.singletonList(item));
+    }
+
+    private LootableEntity(Vector vector, List<Item> items) {
         this.vector = vector.copy();
         this.items = items;
         this.interactions.add("loot");
-        this.name = name;
         this.vector.stop();
 
         model.setGraphics("game/corpse.png");
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public LootableEntity setSource(String source) {
+        this.source = source;
+        return this;
+    }
+
+    public boolean isCorpse() {
+        return corpse;
+    }
+
+    public LootableEntity setCorpse(boolean corpse) {
+        this.corpse = corpse;
+        return this;
     }
 
     @Override

@@ -18,6 +18,7 @@ public enum EventType {
     death,
     join,
     spawn,
+    despawn,
     update,
 
     chat,

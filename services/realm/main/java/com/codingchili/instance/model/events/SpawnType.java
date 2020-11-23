@@ -5,7 +5,5 @@ package com.codingchili.instance.model.events;
  */
 public enum SpawnType {
     SPAWN,
-    DESPAWN,
-    DISCONNECT,
-    DEATH
+    DESPAWN
 }

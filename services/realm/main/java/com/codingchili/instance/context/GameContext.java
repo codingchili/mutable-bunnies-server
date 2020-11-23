@@ -199,7 +199,7 @@ public class GameContext {
     public void add(Entity entity) {
         entity.setContext(this);
 
-        publish(new SpawnEvent().setEntity(entity));
+        publish(new SpawnEvent(entity));
         subscribe(entity.getId(), entity.protocol());
 
         if (isCreature(entity)) {
@@ -218,9 +218,7 @@ public class GameContext {
         }
 
         unsubscribe(entity.getId());
-        publish(new SpawnEvent()
-                .setEntity(entity)
-                .setType(SpawnType.DESPAWN));
+        publish(new DespawnEvent(entity));
 
         entity.removed();
     }

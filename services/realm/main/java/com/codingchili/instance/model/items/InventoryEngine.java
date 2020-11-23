@@ -171,7 +171,7 @@ public class InventoryEngine {
         Item item = inventory.getById(itemId);
         inventory.getItems().remove(item);
         update(source);
-        game.add(new LootableEntity("dropped by " + source.getName(), source.getVector(), Collections.singletonList(item)));
+        game.add(LootableEntity.dropped(source.getVector(), item));
     }
 
     /**
@@ -191,7 +191,7 @@ public class InventoryEngine {
         inventory.getItems().clear();
 
         game.instance().save(source);
-        game.add(new LootableEntity("corpse of " + source.getName(), source.getVector(), loot));
+        game.add(LootableEntity.fromCorpse(source, loot));
     }
 
     /**
