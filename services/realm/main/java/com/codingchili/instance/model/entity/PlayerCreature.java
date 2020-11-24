@@ -6,6 +6,8 @@ import com.codingchili.instance.model.afflictions.ActiveAffliction;
 import com.codingchili.instance.model.events.ConnectEvent;
 import com.codingchili.instance.model.events.Event;
 import com.codingchili.instance.model.events.EventType;
+import com.codingchili.instance.model.items.Item;
+import com.codingchili.instance.model.items.ItemDB;
 import com.codingchili.instance.model.questing.QuestState;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
@@ -13,7 +15,9 @@ import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
 import com.codingchili.instance.transport.UpdateMessage;
 
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import com.codingchili.core.context.CoreRuntimeException;
@@ -27,6 +31,7 @@ public class PlayerCreature extends SimpleCreature {
     private transient boolean fromAnotherInstance = false;
     private transient Ticker healthRegeneration;
     private transient Ticker energyRegeneration;
+    private transient Ticker spawner;
     private QuestState quests = new QuestState();
     private Integer logins = 0;
     private String instance;
@@ -129,12 +134,32 @@ public class PlayerCreature extends SimpleCreature {
         energyRegeneration = game.ticker(ticker -> {
             game.spells().energy(this, 10);
         }, GameContext.secondsToTicks(1));
+
+        spawner = game.ticker(ticker -> {
+            ItemDB items = game.inventory().items();
+            ArrayList<String> ids = new ArrayList<>() {{
+                add("apple_red");
+                add("battleaxe");
+                add("cloak");
+                add("branch");
+                add("ring");
+                add("wand");
+            }};
+            items.getById(ids.get(new Random().nextInt(ids.size()))).ifPresent(item -> {
+                game.inventory().item(this, item);
+
+                game.instance().timer(500, (id) -> {
+                    game.inventory().drop(this, item.getId());
+                });
+            });
+        }, GameContext.secondsToTicks(2.0));
     }
 
     @Override
     public void removed() {
         energyRegeneration.disable();
         healthRegeneration.disable();
+        spawner.disable();
     }
 
     public String getAccount() {

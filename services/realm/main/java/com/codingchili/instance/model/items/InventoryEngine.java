@@ -75,6 +75,17 @@ public class InventoryEngine {
     }
 
     /**
+     * Adds the given item to the players inventory.
+     *
+     * @param target the target to add the item to.
+     * @param item   the item to add.
+     */
+    public void item(Creature target, Item item) {
+        target.getInventory().add(item);
+        target.handle(new InventoryUpdateEvent(target));
+    }
+
+    /**
      * Removes an equipped item and places it into the creatures bag.
      *
      * @param source the creature to unequip an item..
@@ -257,5 +268,9 @@ public class InventoryEngine {
     private void update(Creature source) {
         source.getInventory().update();
         source.handle(new InventoryUpdateEvent(source));
+    }
+
+    public ItemDB items() {
+        return items;
     }
 }

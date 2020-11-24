@@ -36,27 +36,27 @@ public class SpellLog implements Receiver<Event> {
     @Api
     public void spawn(SpawnEvent spawn) {
         // clear logs on spawn/despawn.
-        logger.log("something spawned");
+        //logger.log("something spawned");
         logs.remove(spawn.getSource());
     }
 
     @Api
     public void despawn(DespawnEvent spawn) {
         // clear logs on spawn/despawn.
-        logger.log("something despawned");
+        //logger.log("something despawned");
         logs.remove(spawn.getSource());
     }
 
     @Api
     public void death(DeathEvent event) {
         // record death
-        logger.log("something died");
+        //logger.log("something died");
     }
 
     @Api
     public void attribute(AttributeEvent event) {
         // record damage, remove old damage events too old. <addeddate, event>
-        logger.log("something damaged");
+        //logger.log("something damaged");
     }
 
     @Override
