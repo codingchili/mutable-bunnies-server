@@ -1,5 +1,6 @@
 package com.codingchili.instance.model.npc;
 
+import com.codingchili.core.files.Configurations;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.entity.Vector;
@@ -10,6 +11,8 @@ import java.util.*;
 
 import com.codingchili.core.context.CoreRuntimeException;
 
+import static com.codingchili.instance.model.entity.Interaction.DESCRIPTION;
+
 /**
  * @author Robin Duda
  * <p>
@@ -19,29 +22,74 @@ import com.codingchili.core.context.CoreRuntimeException;
  * container expires, is emptied or the creature leaves the instance.
  */
 public class LootableEntity extends SimpleEntity {
-    private static final int LOOT_DECAY_TIME = 300_000; // 5 minutes.
-    private Set<String> subscribers = new HashSet<>();
-    private List<Item> items;
+    private static final Random random = new Random();
+    private final Set<String> subscribers = new HashSet<>();
+    private final List<Item> items;
     private boolean corpse = false;
     private String source;
 
+    /**
+     * Creates a new container used to store the loot of the given corpse.
+     *
+     * @param source the entity that is spawning the loot.
+     * @param items  the items to be contained in the container.
+     * @return an entity that can be added to the game context.
+     */
     public static LootableEntity fromCorpse(Entity source, List<Item> items) {
-        return new LootableEntity(source.getVector(), items)
+        Vector vector = source.getVector().copy()
+                .setY(source.getVector().getY() + configuration().getCorpseOffsetY());
+
+        LootableEntity entity = new LootableEntity(vector, items)
                 .setCorpse(true)
                 .setSource(source.getId());
+
+        Model model = configuration().getModel();
+        model.setRevertX(random.nextBoolean());
+        entity.setModel(model);
+
+        entity.setName(configuration().getName());
+        entity.getAttributes().put(DESCRIPTION,
+                String.format(configuration().getDescription(), source.getName())
+        );
+        return entity;
     }
 
-    public static LootableEntity dropped(Vector vector, Item item) {
-        return new LootableEntity(vector, Collections.singletonList(item));
+    /**
+     * Creates a new loot container with a single item.
+     *
+     * @param source the location at which to drop loot.
+     * @param item   the items to be contained in the container.
+     * @return an entity that can be added to the game context.
+     */
+    public static LootableEntity dropped(Vector source, Item item) {
+        Vector vector = source.copy();
+
+        float distance = configuration().getDropDistance();
+        float offset = random.nextInt(360);
+        vector.setY(vector.getY() + (float) Math.cos(Math.toRadians(offset)) * distance);
+        vector.setX(vector.getX() + (float) Math.sin(Math.toRadians(offset)) * distance);
+
+        List<Item> items = new ArrayList<>();
+        items.add(item);
+
+        LootableEntity entity = new LootableEntity(vector, items);
+        entity.setName(item.getName());
+        Model model = entity.getModel();
+        model.setGraphics(item.getIcon());
+        model.setScale(0.5f);
+
+        return entity;
     }
 
     private LootableEntity(Vector vector, List<Item> items) {
         this.vector = vector.copy();
         this.items = items;
-        this.interactions.add("loot");
+        this.interactions.add(Interaction.LOOT);
         this.vector.stop();
+    }
 
-        model.setGraphics("game/corpse.png");
+    private static LootableConfiguration configuration() {
+        return Configurations.get(LootableConfiguration.PATH, LootableConfiguration.class);
     }
 
     public String getSource() {
@@ -65,8 +113,8 @@ public class LootableEntity extends SimpleEntity {
     @Override
     public void setContext(GameContext game) {
         super.setContext(game);
-
-        game.instance().timer(LOOT_DECAY_TIME, (id) -> {
+        long decay = configuration().getDecay();
+        game.instance().timer(decay, (id) -> {
             game.remove(this);
         });
     }
@@ -84,21 +132,30 @@ public class LootableEntity extends SimpleEntity {
         subscribers.remove(targetId);
     }
 
+    private boolean removeWhenEmpty() {
+        return configuration().isRemoveWhenEmpty();
+    }
+
     public Item takeItem(String itemId) {
+        Item found = null;
+
         for (Item item : items) {
             if (item.getId().equals(itemId)) {
-
-                /*if (items.size() == 0) {
-                    game.remove(this);
-                }*/
-
-                items.remove(item);
-                notifySubscribers();
-
-                return item;
+                found = item;
+                break;
             }
         }
-        throw new CoreRuntimeException("Item is not available.");
+        if (found != null) {
+            items.remove(found);
+            notifySubscribers();
+
+            if (!corpse && items.size() == 0) {
+                game.remove(this);
+            }
+            return found;
+        } else {
+            throw new CoreRuntimeException("Item is not available.");
+        }
     }
 
     public boolean subscribed(Creature source) {

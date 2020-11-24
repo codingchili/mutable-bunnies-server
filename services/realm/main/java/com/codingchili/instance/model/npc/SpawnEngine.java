@@ -13,13 +13,14 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import static com.codingchili.instance.model.entity.Interaction.DESCRIPTION;
+
 /**
  * @author Robin Duda
  * <p>
  * Handles NPC stuff.
  */
 public class SpawnEngine {
-    private static final String DESCRIPTION = "description";
     private static final double TPS = 4; // limits NPCs to 4 AI update per second.
     private static final int POOL_SIZE = 1;
     private static final int MAX_EXECUTE_TIME = 2;
