@@ -9,6 +9,7 @@ public class Model {
     private String graphics = "game/placeholder.png";
     private String skin;
     private String tint = "#ffffff";
+    private float rotation = 0;
     private float scale = 1.0f;
     private Hitbox hitbox = new Hitbox();
     private boolean blocking = false;
@@ -26,6 +27,7 @@ public class Model {
                 .setPivot(pivot)
                 .setLayer(layer)
                 .setTint(tint)
+                .setRotation(rotation)
                 .setSkin(skin);
     }
 
@@ -44,6 +46,15 @@ public class Model {
 
     public Model setPivot(Point pivot) {
         this.pivot = pivot;
+        return this;
+    }
+
+    public float getRotation() {
+        return rotation;
+    }
+
+    public Model setRotation(float rotation) {
+        this.rotation = rotation;
         return this;
     }
 

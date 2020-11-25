@@ -25,6 +25,7 @@ public class LootableEntity extends SimpleEntity {
     private static transient final Random random = new Random();
     private final Set<String> subscribers = new HashSet<>();
     private final List<Item> items;
+    private transient Entity corpse;
     private String corpseOf;
     private long timer;
 
@@ -40,12 +41,12 @@ public class LootableEntity extends SimpleEntity {
                 .setY(source.getVector().getY() + configuration().getCorpseOffsetY());
 
         LootableEntity entity = new LootableEntity(vector, items)
-                .setCorpseOf(source.getId());
+                .setCorpse(source);
 
-        Model model = configuration().getGravestone();
-        model.setRevertX(random.nextBoolean());
+        Model model = configuration().getGravestone()
+                .setRevertX(random.nextBoolean());
+
         entity.setModel(model);
-
         entity.setName(configuration().getName());
         entity.getAttributes().put(DESCRIPTION,
                 String.format(configuration().getDescription(), source.getName())
@@ -71,8 +72,8 @@ public class LootableEntity extends SimpleEntity {
         List<Item> items = new ArrayList<>();
         items.add(item);
 
-        Model model = configuration().getItem();
-        model.setGraphics(item.getIcon());
+        Model model = configuration().getItem()
+                .setGraphics(item.getIcon());
 
         LootableEntity entity = new LootableEntity(vector, items);
         entity.setName(item.getName());
@@ -92,6 +93,12 @@ public class LootableEntity extends SimpleEntity {
         return Configurations.get(LootableConfiguration.PATH, LootableConfiguration.class);
     }
 
+    public LootableEntity setCorpse(Entity corpse) {
+        this.corpse = corpse;
+        this.corpseOf = corpse.getId();
+        return this;
+    }
+
     public String getCorpseOf() {
         return corpseOf;
     }
@@ -109,9 +116,18 @@ public class LootableEntity extends SimpleEntity {
     public void setContext(GameContext game) {
         super.setContext(game);
         long decay = configuration().getDecay();
-        timer = game.instance().timer(decay, (id) -> {
-            game.remove(this);
-        });
+
+        if (isCorpse()) {
+            setTintFromPlayerClass();
+        }
+        timer = game.instance().timer(decay, (id) -> game.remove(this));
+    }
+
+    private void setTintFromPlayerClass() {
+        if (corpse instanceof PlayerCreature) {
+            game.classes().getById(((PlayerCreature) corpse).getClassId()).ifPresent(theClass ->
+                    model.setTint(theClass.getTheme()));
+        }
     }
 
     @Override
