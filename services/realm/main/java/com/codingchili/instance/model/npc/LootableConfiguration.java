@@ -7,11 +7,20 @@ public class LootableConfiguration implements Configurable {
     public static String PATH = "conf/game/looting/looting.yaml";
     private String description = "Corpse of %s, RIP";
     private String name = "Corpse";
-    private Model model = new Model();
+    private Model gravestone = new Model();
+    private Model item = new Model();
     private boolean removeWhenEmpty = false;
     private long decay = 180_000;
     private int dropDistance = 64;
     private int corpseOffsetY = -48;
+
+    public Model getItem() {
+        return item.copy();
+    }
+
+    public void setItem(Model item) {
+        this.item = item;
+    }
 
     public boolean isRemoveWhenEmpty() {
         return removeWhenEmpty;
@@ -29,12 +38,12 @@ public class LootableConfiguration implements Configurable {
         this.name = name;
     }
 
-    public Model getModel() {
-        return model;
+    public Model getGravestone() {
+        return gravestone.copy();
     }
 
-    public void setModel(Model model) {
-        this.model = model;
+    public void setGravestone(Model gravestone) {
+        this.gravestone = gravestone;
     }
 
     public int getDropDistance() {

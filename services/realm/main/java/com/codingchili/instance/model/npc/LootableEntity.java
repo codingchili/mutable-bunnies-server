@@ -22,11 +22,11 @@ import static com.codingchili.instance.model.entity.Interaction.DESCRIPTION;
  * container expires, is emptied or the creature leaves the instance.
  */
 public class LootableEntity extends SimpleEntity {
-    private static final Random random = new Random();
+    private static transient final Random random = new Random();
     private final Set<String> subscribers = new HashSet<>();
     private final List<Item> items;
-    private boolean corpse = false;
-    private String source;
+    private String corpseOf;
+    private long timer;
 
     /**
      * Creates a new container used to store the loot of the given corpse.
@@ -40,10 +40,9 @@ public class LootableEntity extends SimpleEntity {
                 .setY(source.getVector().getY() + configuration().getCorpseOffsetY());
 
         LootableEntity entity = new LootableEntity(vector, items)
-                .setCorpse(true)
-                .setSource(source.getId());
+                .setCorpseOf(source.getId());
 
-        Model model = configuration().getModel();
+        Model model = configuration().getGravestone();
         model.setRevertX(random.nextBoolean());
         entity.setModel(model);
 
@@ -72,11 +71,12 @@ public class LootableEntity extends SimpleEntity {
         List<Item> items = new ArrayList<>();
         items.add(item);
 
+        Model model = configuration().getItem();
+        model.setGraphics(item.getIcon());
+
         LootableEntity entity = new LootableEntity(vector, items);
         entity.setName(item.getName());
-        Model model = entity.getModel();
-        model.setGraphics(item.getIcon());
-        model.setScale(0.5f);
+        entity.setModel(model);
 
         return entity;
     }
@@ -92,31 +92,31 @@ public class LootableEntity extends SimpleEntity {
         return Configurations.get(LootableConfiguration.PATH, LootableConfiguration.class);
     }
 
-    public String getSource() {
-        return source;
+    public String getCorpseOf() {
+        return corpseOf;
     }
 
-    public LootableEntity setSource(String source) {
-        this.source = source;
+    public LootableEntity setCorpseOf(String corpseOf) {
+        this.corpseOf = corpseOf;
         return this;
     }
 
     public boolean isCorpse() {
-        return corpse;
-    }
-
-    public LootableEntity setCorpse(boolean corpse) {
-        this.corpse = corpse;
-        return this;
+        return corpseOf != null;
     }
 
     @Override
     public void setContext(GameContext game) {
         super.setContext(game);
         long decay = configuration().getDecay();
-        game.instance().timer(decay, (id) -> {
+        timer = game.instance().timer(decay, (id) -> {
             game.remove(this);
         });
+    }
+
+    @Override
+    public void removed() {
+        game.instance().cancel(timer);
     }
 
     public void subscribe(Creature source) {
@@ -149,7 +149,7 @@ public class LootableEntity extends SimpleEntity {
             items.remove(found);
             notifySubscribers();
 
-            if (!corpse && items.size() == 0) {
+            if (!isCorpse() && items.size() == 0) {
                 game.remove(this);
             }
             return found;

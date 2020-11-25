@@ -31,7 +31,6 @@ public class PlayerCreature extends SimpleCreature {
     private transient boolean fromAnotherInstance = false;
     private transient Ticker healthRegeneration;
     private transient Ticker energyRegeneration;
-    private transient Ticker spawner;
     private QuestState quests = new QuestState();
     private Integer logins = 0;
     private String instance;
@@ -134,32 +133,12 @@ public class PlayerCreature extends SimpleCreature {
         energyRegeneration = game.ticker(ticker -> {
             game.spells().energy(this, 10);
         }, GameContext.secondsToTicks(1));
-
-        spawner = game.ticker(ticker -> {
-            ItemDB items = game.inventory().items();
-            ArrayList<String> ids = new ArrayList<>() {{
-                add("apple_red");
-                add("battleaxe");
-                add("cloak");
-                add("branch");
-                add("ring");
-                add("wand");
-            }};
-            items.getById(ids.get(new Random().nextInt(ids.size()))).ifPresent(item -> {
-                game.inventory().item(this, item);
-
-                game.instance().timer(500, (id) -> {
-                    game.inventory().drop(this, item.getId());
-                });
-            });
-        }, GameContext.secondsToTicks(2.0));
     }
 
     @Override
     public void removed() {
         energyRegeneration.disable();
         healthRegeneration.disable();
-        spawner.disable();
     }
 
     public String getAccount() {

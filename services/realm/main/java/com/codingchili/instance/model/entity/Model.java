@@ -8,6 +8,7 @@ package com.codingchili.instance.model.entity;
 public class Model {
     private String graphics = "game/placeholder.png";
     private String skin;
+    private String tint = "#ffffff";
     private float scale = 1.0f;
     private Hitbox hitbox = new Hitbox();
     private boolean blocking = false;
@@ -15,12 +16,35 @@ public class Model {
     private Point pivot = new Point(0, 0);
     private int layer = 5;
 
+    public Model copy() {
+        return new Model()
+                .setGraphics(graphics)
+                .setScale(scale)
+                .setRevertX(revertX)
+                .setBlocking(blocking)
+                .setHitbox(hitbox)
+                .setPivot(pivot)
+                .setLayer(layer)
+                .setTint(tint)
+                .setSkin(skin);
+    }
+
+    public String getTint() {
+        return tint;
+    }
+
+    public Model setTint(String tint) {
+        this.tint = tint;
+        return this;
+    }
+
     public Point getPivot() {
         return pivot;
     }
 
-    public void setPivot(Point pivot) {
+    public Model setPivot(Point pivot) {
         this.pivot = pivot;
+        return this;
     }
 
     /**
@@ -30,8 +54,9 @@ public class Model {
         return graphics;
     }
 
-    public void setGraphics(String graphics) {
+    public Model setGraphics(String graphics) {
         this.graphics = graphics;
+        return this;
     }
 
     /**
@@ -41,8 +66,9 @@ public class Model {
         return scale;
     }
 
-    public void setScale(float scale) {
+    public Model setScale(float scale) {
         this.scale = scale;
+        return this;
     }
 
     /**
@@ -52,8 +78,9 @@ public class Model {
         return blocking;
     }
 
-    public void setBlocking(boolean blocking) {
+    public Model setBlocking(boolean blocking) {
         this.blocking = blocking;
+        return this;
     }
 
     /**
@@ -63,8 +90,9 @@ public class Model {
         return hitbox;
     }
 
-    public void setHitbox(Hitbox hitbox) {
+    public Model setHitbox(Hitbox hitbox) {
         this.hitbox = hitbox;
+        return this;
     }
 
     /**
@@ -74,8 +102,9 @@ public class Model {
         return layer;
     }
 
-    public void setLayer(int layer) {
+    public Model setLayer(int layer) {
         this.layer = layer;
+        return this;
     }
 
     /**
@@ -85,15 +114,17 @@ public class Model {
         return skin;
     }
 
-    public void setSkin(String skin) {
+    public Model setSkin(String skin) {
         this.skin = skin;
+        return this;
     }
 
     public boolean isRevertX() {
         return revertX;
     }
 
-    public void setRevertX(boolean revertX) {
+    public Model setRevertX(boolean revertX) {
         this.revertX = revertX;
+        return this;
     }
 }
