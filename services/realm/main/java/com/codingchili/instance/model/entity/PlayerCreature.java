@@ -9,6 +9,7 @@ import com.codingchili.instance.model.events.EventType;
 import com.codingchili.instance.model.items.Item;
 import com.codingchili.instance.model.items.ItemDB;
 import com.codingchili.instance.model.questing.QuestState;
+import com.codingchili.instance.model.skills.SkillState;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Bindings;
@@ -32,6 +33,7 @@ public class PlayerCreature extends SimpleCreature {
     private transient Ticker healthRegeneration;
     private transient Ticker energyRegeneration;
     private QuestState quests = new QuestState();
+    private SkillState skills = new SkillState();
     private Integer logins = 0;
     private String instance;
     private String classId;
@@ -148,6 +150,14 @@ public class PlayerCreature extends SimpleCreature {
     public PlayerCreature setAccount(String account) {
         this.account = account;
         return this;
+    }
+
+    public SkillState getSkills() {
+        return skills;
+    }
+
+    public void setSkills(SkillState skills) {
+        this.skills = skills;
     }
 
     public String getInstance() {

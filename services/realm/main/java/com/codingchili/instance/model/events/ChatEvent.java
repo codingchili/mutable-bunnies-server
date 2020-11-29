@@ -24,8 +24,9 @@ public class ChatEvent implements Event {
         this.party = party;
     }
 
-    public void setSystem(boolean system) {
+    public ChatEvent setSystem(boolean system) {
         this.system = system;
+        return this;
     }
 
     public boolean isParty() {

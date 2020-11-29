@@ -1,14 +1,12 @@
 package com.codingchili.instance.scripting;
 
-import com.esotericsoftware.reflectasm.ConstructorAccess;
+import com.codingchili.core.context.CoreRuntimeException;
+import com.codingchili.core.logging.Level;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
-import com.codingchili.core.context.CoreRuntimeException;
-import com.codingchili.core.logging.Level;
 
 /**
  * @author Robin Duda

@@ -1,6 +1,7 @@
 package com.codingchili.instance.model.npc;
 
 import com.codingchili.instance.model.entity.SimpleEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Robin Duda
@@ -12,6 +13,11 @@ public class Structure extends SimpleEntity {
 
     public Structure(EntityConfig config) {
         this.config = config;
+    }
+
+    @JsonIgnore
+    public EntityConfig getConfig() {
+        return config;
     }
 
     @Override

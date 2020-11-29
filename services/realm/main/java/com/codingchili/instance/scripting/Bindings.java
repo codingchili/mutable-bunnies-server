@@ -19,6 +19,7 @@ import java.util.Map;
  * For native scripts this class provides typed access to binding variables.
  */
 public class Bindings extends HashMap<String, Object> {
+    public static final Bindings NONE = new Bindings();
     private static final String GAME = "game";
     private static final String ATTRIBUTE = "Attribute";
     private static final String AFFLICTION = "affliction";
@@ -26,7 +27,6 @@ public class Bindings extends HashMap<String, Object> {
     private static final String SOURCE = "source";
     private static final String TARGET = "target";
     private static final String STATE = "state";
-    public static final Bindings NONE = new Bindings();
 
     public Bindings() {}
 
@@ -59,6 +59,11 @@ public class Bindings extends HashMap<String, Object> {
     }
 
     @SuppressWarnings("unchecked")
+    public <T> T retrieve(String key) {
+        return (T) get(key);
+    }
+
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getState() {
         return (Map<String, Object>) get(STATE);
     }
@@ -81,12 +86,14 @@ public class Bindings extends HashMap<String, Object> {
         return this;
     }
 
-    public Creature getSource() {
-        return (Creature) get(SOURCE);
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> T getSource() {
+        return (T) get(SOURCE);
     }
 
-    public Creature getTarget() {
-        return (Creature) get(TARGET);
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> T getTarget() {
+        return (T) get(TARGET);
     }
 
     public Bindings setState(Map<String,Object> state) {

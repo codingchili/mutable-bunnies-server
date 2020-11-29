@@ -64,8 +64,9 @@ public class LootableEntity extends SimpleEntity {
     public static LootableEntity dropped(Vector source, Item item) {
         Vector vector = source.copy();
 
+        // space out dropped items but avoid dropping behind an entity.
+        float offset = random.nextInt(240) + 240;
         float distance = configuration().getDropDistance();
-        float offset = random.nextInt(360);
         vector.setY(vector.getY() + (float) Math.cos(Math.toRadians(offset)) * distance);
         vector.setX(vector.getX() + (float) Math.sin(Math.toRadians(offset)) * distance);
 

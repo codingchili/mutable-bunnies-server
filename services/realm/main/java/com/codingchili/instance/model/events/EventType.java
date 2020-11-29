@@ -42,6 +42,10 @@ public enum EventType {
     quest_complete,
     quest_update,
 
+    skill_state,
+    skill_info,
+    skill_exp,
+
     party_request,
     party_leave,
     party_accept,

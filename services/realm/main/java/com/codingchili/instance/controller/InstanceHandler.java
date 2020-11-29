@@ -43,6 +43,7 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
         handlers.add(new QuestHandler(game));
         handlers.add(new AdminHandler(game));
         handlers.add(new DesignHandler(game));
+        handlers.add(new SkillHandler(game));
 
         handlers.forEach(protocol::annotated);
     }
@@ -79,8 +80,6 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
         context.onPlayerJoin(join);
         game.add(player);
 
-        // required synchronous response
-        // todo: race condition fix
         request.write(new ConnectEvent(game, player));
     }
 

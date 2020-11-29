@@ -9,6 +9,7 @@ import com.codingchili.instance.model.items.InventoryEngine;
 import com.codingchili.instance.model.movement.MovementEngine;
 import com.codingchili.instance.model.npc.SpawnEngine;
 import com.codingchili.instance.model.questing.QuestEngine;
+import com.codingchili.instance.model.skills.SkillEngine;
 import com.codingchili.instance.model.spells.SpellEngine;
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
@@ -49,6 +50,7 @@ public class GameContext {
     private final DialogEngine dialogs;
     private final SpawnEngine npcs;
     private final QuestEngine quests;
+    private final SkillEngine skills;
 
     private final ClassDB classes;
     private final Logger logger;
@@ -75,6 +77,7 @@ public class GameContext {
         this.dialogs = new DialogEngine(this);
         this.npcs = new SpawnEngine(this);
         this.quests = new QuestEngine(this);
+        this.skills = new SkillEngine(this);
 
         initialize(instance.settings());
 
@@ -175,6 +178,10 @@ public class GameContext {
 
     public QuestEngine quests() {
         return quests;
+    }
+
+    public SkillEngine skills() {
+        return skills;
     }
 
     public void close() {

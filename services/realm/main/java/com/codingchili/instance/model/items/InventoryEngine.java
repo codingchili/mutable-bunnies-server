@@ -3,6 +3,7 @@ package com.codingchili.instance.model.items;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.dialog.InteractionOutOfRangeException;
 import com.codingchili.instance.model.entity.*;
+import com.codingchili.instance.model.entity.Vector;
 import com.codingchili.instance.model.npc.LootableEntity;
 import com.codingchili.instance.model.spells.SpellTarget;
 import com.codingchili.instance.scripting.*;
@@ -183,6 +184,15 @@ public class InventoryEngine {
         inventory.getItems().remove(item);
         update(source);
         game.add(LootableEntity.dropped(source.getVector(), item));
+    }
+
+    /**
+     * Drops an item in the world at the given location.
+     * @param vector the target point to drop the item at.
+     * @param item the item to drop.
+     */
+    public void drop(Vector vector, Item item) {
+        game.add(LootableEntity.dropped(vector, item));
     }
 
     /**

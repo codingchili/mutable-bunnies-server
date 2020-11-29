@@ -21,6 +21,7 @@ public class EntityConfig implements Storable {
     private String name;
     private String description;
     private String dialog;
+    private String harvest;
     private Stats stats;
     private Scripted spawn;
     private Scripted death;
@@ -101,5 +102,13 @@ public class EntityConfig implements Storable {
 
     public void setModel(Model model) {
         this.model = model;
+    }
+
+    public String getHarvest() {
+        return harvest;
+    }
+
+    public void setHarvest(String harvest) {
+        this.harvest = harvest;
     }
 }

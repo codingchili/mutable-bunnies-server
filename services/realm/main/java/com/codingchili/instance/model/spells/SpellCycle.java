@@ -5,7 +5,7 @@ package com.codingchili.instance.model.spells;
  */
 public enum SpellCycle {
     CASTING,
+    CASTED,
     CANCELLED,
-    INTERRUPTED,
-    CASTED
+    INTERRUPTED
 }

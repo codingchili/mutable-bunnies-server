@@ -19,11 +19,12 @@ import static com.codingchili.common.Strings.*;
  * A spell that is being casted or has been casted.
  */
 public class ActiveSpell {
-    private static final String SOURCE = "source";
-    private static final String TARGET = "target";
-    private static final String GAME = "game";
-    private static final String ACTIVE = "active";
-    private static final String SPELLS = "spells";
+    public static final String SOURCE = "source";
+    public static final String TARGET = "target";
+    public static final String GAME = "game";
+    public static final String ACTIVE = "active";
+    public static final String SPELLS = "spells";
+    public static final String STAGE = "stage";
     private transient Bindings bindings = null;
     private transient int interval;
     private SpellCycle cycle = SpellCycle.CASTING;
@@ -51,7 +52,7 @@ public class ActiveSpell {
 
     public void onCastProgress(GameContext game) {
         if (spell.getOnCastProgress() != null) {
-            Bindings bindings = getBindings(game);
+            Bindings bindings = getBindings(game, SpellStage.PROGRESS);
             try {
                 do {
                     spell.getOnCastProgress().apply(bindings);
@@ -66,7 +67,9 @@ public class ActiveSpell {
     public void onCastCompleted(GameContext game) {
         if (spell.getOnCastComplete() != null) {
             try {
-                spell.getOnCastComplete().apply(getBindings(game));
+                spell.getOnCastComplete().apply(
+                        getBindings(game, SpellStage.COMPLETED)
+                );
             } catch (Throwable e) {
                 game.getLogger(getClass()).onError(e);
             }
@@ -75,7 +78,9 @@ public class ActiveSpell {
 
     public boolean onCastBegin(GameContext game) {
         if (spell.getOnCastBegin() != null) {
-            Boolean check = spell.getOnCastBegin().apply(getBindings(game));
+            Boolean check = spell.getOnCastBegin().apply(
+                    getBindings(game, SpellStage.BEGIN)
+            );
 
             Objects.requireNonNull(check,
                     "onCastBegin check of spell " + spell.getId() + " returned 'null'.");
@@ -92,7 +97,7 @@ public class ActiveSpell {
 
     public void onSpellActive(GameContext game) {
         if (spell.getOnSpellActive() != null) {
-            Bindings bindings = getBindings(game);
+            Bindings bindings = getBindings(game, SpellStage.ACTIVE);
 
             while (this.delta > interval) {
                 spell.getOnSpellActive().apply(bindings);
@@ -103,6 +108,11 @@ public class ActiveSpell {
 
     public boolean shouldTick(Ticker ticker) {
         return ((this.delta += ticker.deltaMS()) >= GameContext.secondsToMs(spell.getInterval()));
+    }
+
+    private Bindings getBindings(GameContext game, SpellStage stage) {
+        return getBindings(game)
+                .set(STAGE, stage);
     }
 
     private Bindings getBindings(GameContext game) {
