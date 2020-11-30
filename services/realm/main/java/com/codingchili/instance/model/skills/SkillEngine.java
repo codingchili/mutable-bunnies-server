@@ -2,12 +2,13 @@ package com.codingchili.instance.model.skills;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.entity.SimpleEntity;
 import com.codingchili.instance.scripting.Bindings;
 
 import java.util.Map;
 
 /**
- *
+ * Manages player skills.
  */
 public class SkillEngine {
     private GameContext game;
@@ -20,9 +21,11 @@ public class SkillEngine {
         this.game = game;
     }
 
-    public void experience(PlayerCreature target, SkillType skill, int amount) {
+    public void experience(PlayerCreature target, SkillType skill, final int total) {
         SkillConfig config = skills.all().get(skill.name());
-        LearnedSkill state = target.getSkills().get(skill);
+        SkillProgress state = target.getSkills().get(skill);
+        boolean levelUp = false;
+        int amount = total;
 
         while (amount > 0) {
             int exp = state.getExperience();
@@ -32,13 +35,16 @@ public class SkillEngine {
                 amount -= next;
                 Bindings bindings = bindings(state.getLevel() + 1);
                 state.levelUp(config.getScaling().apply(bindings));
-                target.handle(new SkillExpEvent()); // todo: set levelup true.
+                levelUp = true;
             } else {
                 state.setExperience(exp + amount);
                 amount = 0;
-                target.handle(new SkillExpEvent());
             }
         }
+        target.handle(new SkillStateEvent(state)
+                .setLevelup(levelUp)
+                .setExperience(total)
+        );
     }
 
     private Bindings bindings(int nextLevel) {
@@ -58,5 +64,17 @@ public class SkillEngine {
 
     public Map<String, SkillConfig> details() {
         return skills.all();
+    }
+
+    public void register(SimpleEntity entity, String harvest) {
+        HarvestConfig config = harvestById(harvest);
+        switch (config.getSkill()) {
+            case mining:
+                entity.getInteractions().add(SkillType.mining.name());
+                break;
+            case farming:
+                entity.getInteractions().add(SkillType.farming.name());
+                break;
+        }
     }
 }

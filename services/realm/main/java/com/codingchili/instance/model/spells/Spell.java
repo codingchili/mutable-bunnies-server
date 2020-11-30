@@ -14,10 +14,12 @@ import com.codingchili.core.storage.Storable;
  * A spell item from the spell DB.
  */
 public class Spell implements Storable, Configurable {
+    private SpellAnimations animations = new SpellAnimations();
     private String id = "no_id";
     private String name = "no name";
     private String description = "no description";
     private Boolean mobile = true; // can move and cast?
+    private Boolean skill = false; // indicates if skill or spell.
     private Target target = Target.caster; // spell target: caster, area etc.
     private Integer charges = 0;  // number of times the spell can be cast in a sequence without recharge.
     private Integer range = 100; // how far away the target may be.
@@ -51,6 +53,14 @@ public class Spell implements Storable, Configurable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getSkill() {
+        return skill;
+    }
+
+    public void setSkill(Boolean skill) {
+        this.skill = skill;
     }
 
     public String getDescription() {
@@ -131,6 +141,14 @@ public class Spell implements Storable, Configurable {
 
     public void setRecharge(Float recharge) {
         this.recharge = recharge;
+    }
+
+    public SpellAnimations getAnimations() {
+        return animations;
+    }
+
+    public void setAnimations(SpellAnimations animations) {
+        this.animations = animations;
     }
 
     @JsonIgnore

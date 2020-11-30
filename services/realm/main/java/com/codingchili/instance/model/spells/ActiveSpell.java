@@ -54,10 +54,10 @@ public class ActiveSpell {
         if (spell.getOnCastProgress() != null) {
             Bindings bindings = getBindings(game, SpellStage.PROGRESS);
             try {
-                do {
+                while (this.delta > interval) {
                     spell.getOnCastProgress().apply(bindings);
                     this.delta -= interval;
-                } while (this.delta > 0);
+                }
             } catch (Throwable e) {
                 game.getLogger(getClass()).onError(e);
             }

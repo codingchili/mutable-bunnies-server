@@ -1,10 +1,14 @@
 package com.codingchili.instance.model.skills;
 
-public class LearnedSkill {
+public class SkillProgress {
     private SkillType type;
-    private int level;
-    private int experience;
-    private int nextlevel; // apply scaling on load?
+    private int level = 1;
+    private int experience = 0;
+    private int nextlevel = 100; // apply scaling on load?
+
+    public SkillProgress(SkillType type) {
+        this.type = type;
+    }
 
     public SkillType getType() {
         return type;

@@ -1,4 +1,17 @@
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.4.0"
+    id "org.jetbrains.dokka" version "1.4.0"
+}
+
+project.group = 'com.codingchili.service'
+
+sourceSets {
+    main.kotlin.srcDirs += 'main/java'
+    main.java.srcDirs += 'main/java'
+}
+
 dependencies {
     compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.10")
     compile("org.jetbrains.kotlin:kotlin-reflect:1.4.0")
+    compile project(':common')
 }

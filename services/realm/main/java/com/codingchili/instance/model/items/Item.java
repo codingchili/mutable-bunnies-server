@@ -24,6 +24,10 @@ public class Item extends ItemType implements Storable {
     protected String onHit = null;
     protected String onUse = null;
 
+    public Boolean isConsumable() {
+        return onUse != null;
+    }
+
     public String getDescription() {
         return description;
     }

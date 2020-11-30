@@ -6,34 +6,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Player skill state.
  */
 public class SkillState {
-    private Map<SkillType, LearnedSkill> skills = new HashMap<>();
+    private Map<SkillType, SkillProgress> skills = new HashMap<>();
 
-    public Map<SkillType, LearnedSkill> getSkills() {
+    public Map<SkillType, SkillProgress> getSkills() {
         return skills;
     }
 
-    public void setSkills(Map<SkillType, LearnedSkill> skills) {
+    public void setSkills(Map<SkillType, SkillProgress> skills) {
         this.skills = skills;
     }
 
     @JsonIgnore
-    public boolean learned(SkillType type) {
-        return skills.containsKey(type);
-    }
-
-    @JsonIgnore
     public int level(SkillType type) {
-        if (learned(type)) {
+        if (skills.containsKey(type)) {
             return skills.get(type).getLevel();
         } else {
             return 0;
         }
     }
 
-    public LearnedSkill get(SkillType mining) {
-        return skills.get(mining);
+    public SkillProgress get(SkillType type) {
+        return skills.computeIfAbsent(type, skill -> new SkillProgress(type));
     }
 }

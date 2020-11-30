@@ -142,6 +142,7 @@ public class SpawnEngine {
             config.getSpawn().apply(bindings);
         }
 
+
         if (config.getTick() != null) {
             game.ticker((ticker) -> {
                 if (game.exists(entity.getId())) {
@@ -150,6 +151,10 @@ public class SpawnEngine {
                     ticker.disable();
                 }
             }, GameContext.secondsToTicks(TPS));
+        }
+
+        if (config.getHarvest() != null) {
+            game.skills().register(entity, config.getHarvest());
         }
 
         if (config.getDialog() != null) {

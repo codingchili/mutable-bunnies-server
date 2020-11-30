@@ -5,7 +5,6 @@ import com.codingchili.instance.scripting.Scripted;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -66,7 +65,6 @@ public class SkillConfig implements Storable {
         this.perks = perks;
     }
 
-    @JsonIgnore
     public Scripted getScaling() {
         return scaling;
     }
@@ -75,7 +73,6 @@ public class SkillConfig implements Storable {
         this.scaling = scaling;
     }
 
-    @JsonIgnore
     public Scripted getEffectiveness() {
         return effectiveness;
     }

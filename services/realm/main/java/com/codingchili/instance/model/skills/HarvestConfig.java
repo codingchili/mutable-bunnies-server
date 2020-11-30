@@ -9,8 +9,6 @@ public class HarvestConfig implements Storable {
     private String id;
     //  skill required to harvest the resource.
     private SkillType skill;
-    // level of the skill required to harvest the resource.
-    private int level;
     // amount of experience granted to player on completion.
     private int experience;
     // chance of successfully harvesting, either per resource or per action.
@@ -32,14 +30,6 @@ public class HarvestConfig implements Storable {
 
     public void setSkill(SkillType skill) {
         this.skill = skill;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
     }
 
     public int getExperience() {

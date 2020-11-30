@@ -92,7 +92,7 @@ public class Bindings extends HashMap<String, Object> {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Entity> T getTarget() {
+    public <T> T getTarget() {
         return (T) get(TARGET);
     }
 

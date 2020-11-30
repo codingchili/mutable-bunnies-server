@@ -4,10 +4,11 @@ import com.codingchili.core.protocol.Api;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.skills.*;
+import com.codingchili.instance.model.spells.SpellResult;
 import com.codingchili.instance.transport.InstanceRequest;
 
 /**
- *
+ * Handler for player skills.
  */
 public class SkillHandler implements GameHandler {
     private SkillEngine engine;
@@ -27,19 +28,5 @@ public class SkillHandler implements GameHandler {
     public void player_skills(InstanceRequest request) {
         PlayerCreature player = game.getById(request.target());
         request.write(new SkillStateEvent(player));
-    }
-
-    @Api
-    public void skill_mine(InstanceRequest request) {
-        SkillRequest skill = request.raw(SkillRequest.class);
-        PlayerCreature player = game.getById(request.target());
-        game.spells().cast(player, skill.getSkillTarget(), SkillType.mining.name());
-    }
-
-    @Api
-    public void skill_farming(InstanceRequest request) {
-        SkillRequest skill = request.raw(SkillRequest.class);
-        PlayerCreature player = game.getById(request.target());
-        game.spells().cast(player, skill.getSkillTarget(), SkillType.farming.name());
     }
 }

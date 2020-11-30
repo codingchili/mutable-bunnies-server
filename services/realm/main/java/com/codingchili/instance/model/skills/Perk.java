@@ -1,7 +1,9 @@
 package com.codingchili.instance.model.skills;
 
+
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Learned when leveling up a skill.
@@ -9,7 +11,7 @@ import java.util.Set;
 public class Perk {
     // perks may apply to only the given classes.
     private Set<String> classes = new HashSet<>();
-    private String id;
+    private String id = UUID.randomUUID().toString();
     private String description;
     private String icon;
     private int level;

@@ -1,7 +1,5 @@
 plugins {
     id "java"
-    id "org.jetbrains.kotlin.jvm" version "1.4.0"
-    id "org.jetbrains.dokka" version "1.4.0"
 }
 
 repositories {
@@ -13,8 +11,6 @@ project.group = 'com.github.codingchili.chili-game-ext'
 
 subprojects {
     plugins.apply("java")
-    plugins.apply("org.jetbrains.kotlin.jvm")
-    plugins.apply("org.jetbrains.dokka")
 
 
     version = rootProject.version
@@ -47,7 +43,6 @@ subprojects {
     }
 
     sourceSets {
-        main.kotlin.srcDirs += 'main/java'
         main.java.srcDirs += 'main/java'
     }
 

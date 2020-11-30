@@ -2,12 +2,16 @@ package com.codingchili.instance.model.spells;
 
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.context.Ticker;
-import com.codingchili.instance.model.afflictions.*;
-import com.codingchili.instance.model.entity.*;
-import com.codingchili.instance.model.events.Event;
-import com.codingchili.instance.model.events.EventType;
+import com.codingchili.instance.model.afflictions.ActiveAffliction;
+import com.codingchili.instance.model.afflictions.AfflictionDB;
+import com.codingchili.instance.model.afflictions.AfflictionEvent;
+import com.codingchili.instance.model.afflictions.AfflictionState;
+import com.codingchili.instance.model.entity.Creature;
+import com.codingchili.instance.model.entity.Grid;
+import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.items.StatsUpdateEvent;
-import com.codingchili.instance.model.stats.*;
+import com.codingchili.instance.model.stats.Attribute;
+import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Bindings;
 import com.codingchili.instance.scripting.Scripted;
 
@@ -62,7 +66,7 @@ public class SpellEngine {
 
         if (spell.isPresent()) {
 
-            if (caster.getSpells().learned(spellId)) {
+            if (learned(caster, spellId)) {
                 if (caster.getSpells().isOnCooldown(spell.get())) {
                     return SpellResult.COOLDOWN;
                 } else {
@@ -91,6 +95,10 @@ public class SpellEngine {
         } else {
             throw new NoSuchSpellException(spellId);
         }
+    }
+
+    private boolean learned(Creature caster, String spellId) {
+        return caster.getSpells().learned(spellId);
     }
 
     /**
