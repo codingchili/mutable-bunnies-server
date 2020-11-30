@@ -3,9 +3,9 @@ package com.codingchili.instance.model.spells;
 /**
  * Animations for spell casting.
  */
-public class SpellAnimations {
-    private String casting = "casting";
-    private String complete = "force";
+public class SpellAnimation {
+    private String casting;
+    private String complete;
 
     public String getCasting() {
         return casting;

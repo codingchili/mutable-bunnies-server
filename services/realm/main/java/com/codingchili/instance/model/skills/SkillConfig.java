@@ -3,6 +3,7 @@ package com.codingchili.instance.model.skills;
 import com.codingchili.core.storage.Storable;
 import com.codingchili.instance.scripting.Scripted;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -65,18 +66,22 @@ public class SkillConfig implements Storable {
         this.perks = perks;
     }
 
+    @JsonIgnore
     public Scripted getScaling() {
         return scaling;
     }
 
+    @JsonProperty("scaling")
     public void setScaling(Scripted scaling) {
         this.scaling = scaling;
     }
 
+    @JsonIgnore
     public Scripted getEffectiveness() {
         return effectiveness;
     }
 
+    @JsonProperty("effectiveness")
     public void setEffectiveness(Scripted effectiveness) {
         this.effectiveness = effectiveness;
     }

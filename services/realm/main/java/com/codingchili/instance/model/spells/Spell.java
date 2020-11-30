@@ -14,7 +14,7 @@ import com.codingchili.core.storage.Storable;
  * A spell item from the spell DB.
  */
 public class Spell implements Storable, Configurable {
-    private SpellAnimations animations = new SpellAnimations();
+    private SpellAnimation animation = new SpellAnimation();
     private String id = "no_id";
     private String name = "no name";
     private String description = "no description";
@@ -143,12 +143,12 @@ public class Spell implements Storable, Configurable {
         this.recharge = recharge;
     }
 
-    public SpellAnimations getAnimations() {
-        return animations;
+    public SpellAnimation getAnimation() {
+        return animation;
     }
 
-    public void setAnimations(SpellAnimations animations) {
-        this.animations = animations;
+    public void setAnimation(SpellAnimation animation) {
+        this.animation = animation;
     }
 
     @JsonIgnore
