@@ -55,80 +55,53 @@ public class SpawnEngine {
         return entities;
     }
 
-    /**
-     * Spawns an entity or creature if exists with the given id.
-     *
-     * @param id the id of the entity to spawn as defined in configuration.
-     * @param x  the x point.
-     * @param y  the y point.
-     * @return the structure or npc that was spawned if any.
-     */
-    public Optional<? extends Entity> spawn(String id, float x, float y) {
-        Optional<EntityConfig> config = npcs.getById(id);
+    public <T extends Entity> Optional<T> spawn(String id, int x, int y) {
+        return spawn(new SpawnConfig().setId(id).setPoint(new Point(x, y)));
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> Optional<T> spawn(SpawnConfig spawn) {
+        Optional<EntityConfig> config = npcs.getById(spawn.getId());
 
         if (config.isPresent()) {
-            return npc(id, x, y);
+            return Optional.of((T) npc(spawn, config.get()));
         } else {
-            config = entities.getById(id);
+            config = entities.getById(spawn.getId());
             if (config.isPresent()) {
-                return structure(id, x, y);
+                return Optional.of((T) structure(spawn, config.get()));
             } else {
+                game.getLogger(getClass()).onError(new NoSuchNpcException(spawn.getId()));
                 return Optional.empty();
             }
         }
     }
 
-    /**
-     * @param id the id of the npc creature to spawn.
-     * @param x  the x point.
-     * @param y  the y point.
-     * @return the creature that was spawned.
-     */
-    public Optional<Creature> npc(String id, float x, float y) {
-        Optional<EntityConfig> config = npcs.getById(id);
-
-        if (config.isPresent()) {
-            Npc npc = new Npc(config.get());
-
-            npc.setBaseStats(config.get().getStats().copy());
-            setup(config.get(), npc);
-            at(npc, x, y);
-            npc.compute();
-
-            game.add(npc);
-            return Optional.of(npc);
-        } else {
-            game.getLogger(getClass()).onError(new NoSuchNpcException(id));
-            return Optional.empty();
-        }
+    private Creature npc(SpawnConfig spawn, EntityConfig config) {
+        Npc npc = new Npc(config);
+        npc.setBaseStats(config.getStats().copy());
+        npc.compute();
+        setup(config, npc, spawn);
+        at(npc, spawn.getPoint());
+        game.add(npc);
+        return npc;
     }
 
-    /**
-     * @param id the id of the npc creature to spawn.
-     * @param x  the x point.
-     * @param y  the y point.
-     * @return the structure that was spawned.
-     */
-    public Optional<Entity> structure(String id, float x, float y) {
-        Optional<EntityConfig> config = entities.getById(id);
 
-        if (config.isPresent()) {
-            Structure structure = new Structure(config.get());
-
-            setup(config.get(), structure);
-            at(structure, x, y);
-
-            game.add(structure);
-            return Optional.of(structure);
-        } else {
-            game.getLogger(getClass()).onError(new NoSuchNpcException(id));
-            return Optional.empty();
-        }
+    public Structure structure(SpawnConfig spawn, EntityConfig config) {
+        Structure structure = new Structure(config);
+        setup(config, structure, spawn);
+        at(structure, spawn.getPoint());
+        game.add(structure);
+        return structure;
     }
 
-    private void setup(EntityConfig config, SimpleEntity entity) {
+    private void setup(EntityConfig config, SimpleEntity entity, SpawnConfig spawn) {
         entity.setName(config.getName());
-        entity.setModel(config.getModel());
+        entity.setModel(config.getModel().copy());
+
+        if (spawn.hasScale()) {
+            entity.getModel().setScale(spawn.getScale());
+        }
 
         Bindings bindings = new Bindings()
                 .setSource(entity)
@@ -163,10 +136,10 @@ public class SpawnEngine {
         entity.getAttributes().put(DESCRIPTION, config.getDescription());
     }
 
-    private void at(Entity entity, float x, float y) {
+    private void at(Entity entity, Point point) {
         entity.getVector()
-                .setX(x)
-                .setY(y);
+                .setX(point.getX())
+                .setY(point.getY());
     }
 
     /**
@@ -178,17 +151,14 @@ public class SpawnEngine {
     public Promise<Void> add(DesignerRequest designer) {
         Promise<Void> promise = Promise.promise();
         InstanceSettings settings = game.instance().settings();
+        SpawnConfig config = designer.toSpawnConfig();
 
-        settings.getStructures()
-                .add(designer.toSpawnConfig());
-
-        // needs both game ID and template ID to remove.
-        // how do we know which SpawnConfig an NPC spawned from?
+        settings.getStructures().add(config);
 
         executor.executeBlocking((done) -> {
             settings.save();
 
-            spawn(designer.getId(), designer.getX(), designer.getY());
+            spawn(config);
 
             done.complete();
         }, false, done -> {

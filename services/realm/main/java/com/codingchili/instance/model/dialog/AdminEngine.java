@@ -10,6 +10,8 @@ import com.codingchili.instance.context.InstanceSettings;
 import com.codingchili.instance.model.admin.AdminEvent;
 import com.codingchili.instance.model.entity.Entity;
 import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.entity.Point;
+import com.codingchili.instance.model.entity.SpawnConfig;
 import com.codingchili.instance.model.events.NotificationEvent;
 import com.codingchili.instance.model.events.Event;
 import com.codingchili.instance.model.events.EventType;
@@ -35,10 +37,9 @@ public class AdminEngine implements Receiver<AdminEvent> {
     @Api
     @Description("spawn")
     public void spawn(AdminEvent event) {
-        game.spawner().spawn(
-                event.getId(),
-                event.getVector().getX(),
-                event.getVector().getY()
+        game.spawner().spawn(new SpawnConfig()
+                .setId(event.getId())
+                .setPoint(event.getVector().toPoint())
         ).orElseThrow(() -> new NoSuchNpcException(event.getEntity()));
     }
 

@@ -7,8 +7,17 @@ import com.codingchili.instance.model.events.SpawnType;
 public class DesignerRequest {
     private SpawnType type;
     private String id;
+    private Float scale;
     private int x;
     private int y;
+
+    public Float getScale() {
+        return scale;
+    }
+
+    public void setScale(Float scale) {
+        this.scale = scale;
+    }
 
     public int getX() {
         return x;
@@ -45,6 +54,7 @@ public class DesignerRequest {
     public SpawnConfig toSpawnConfig() {
         return new SpawnConfig()
                 .setId(id)
+                .setScale(scale)
                 .setPoint(new Point(x, y));
     }
 }

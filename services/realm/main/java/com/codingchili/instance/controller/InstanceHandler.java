@@ -53,16 +53,8 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
         game.queue(() -> {
             InstanceSettings settings = context.settings();
             SpawnEngine spawner = game.spawner();
-
-            settings.getStructures().forEach(entity -> {
-                Point point = entity.getPoint();
-                spawner.structure(entity.getId(), point.getX(), point.getY());
-            });
-
-            settings.getNpcs().forEach(npc -> {
-                Point point = npc.getPoint();
-                spawner.npc(npc.getId(), point.getX(), point.getY());
-            });
+            settings.getStructures().forEach(spawner::spawn);
+            settings.getNpcs().forEach(spawner::spawn);
             future.complete();
         });
     }

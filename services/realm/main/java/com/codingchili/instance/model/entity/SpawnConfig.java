@@ -8,6 +8,16 @@ package com.codingchili.instance.model.entity;
 public class SpawnConfig {
     private String id;
     private Point point;
+    private Float scale;
+
+    public Float getScale() {
+        return scale;
+    }
+
+    public SpawnConfig setScale(Float scale) {
+        this.scale = scale;
+        return this;
+    }
 
     /**
      * @return Name (id) of the entity to spawn.
@@ -37,5 +47,9 @@ public class SpawnConfig {
     public SpawnConfig setPoint(Point point) {
         this.point = point;
         return this;
+    }
+
+    public boolean hasScale() {
+        return scale != null;
     }
 }

@@ -276,4 +276,8 @@ public class Vector {
             dirty = true;
         }
     }
+
+    public Point toPoint() {
+        return new Point((int) x,(int) y);
+    }
 }
