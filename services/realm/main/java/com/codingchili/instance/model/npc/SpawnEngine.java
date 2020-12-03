@@ -55,8 +55,8 @@ public class SpawnEngine {
         return entities;
     }
 
-    public <T extends Entity> Optional<T> spawn(String id, int x, int y) {
-        return spawn(new SpawnConfig().setId(id).setPoint(new Point(x, y)));
+    public <T extends Entity> Optional<T> spawn(String id, float x, float y) {
+        return spawn(new SpawnConfig().setId(id).setPoint(new Point((int) x, (int) y)));
     }
 
     @SuppressWarnings("unchecked")
