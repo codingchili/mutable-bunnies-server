@@ -1,5 +1,8 @@
 package com.codingchili.instance.model.entity;
 
+import com.codingchili.instance.model.npc.TileConfig;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author Robin Duda
  *
@@ -9,6 +12,20 @@ public class SpawnConfig {
     private String id;
     private Point point;
     private Float scale;
+    private TileConfig tile;
+
+    public TileConfig getTile() {
+        return tile;
+    }
+
+    public void setTile(TileConfig tile) {
+        this.tile = tile;
+    }
+
+    @JsonIgnore
+    public Boolean isTile() {
+        return tile != null;
+    }
 
     public Float getScale() {
         return scale;

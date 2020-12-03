@@ -103,6 +103,10 @@ public class SpawnEngine {
             entity.getModel().setScale(spawn.getScale());
         }
 
+        if (spawn.isTile() && config.isTile()) {
+            config.getTile().applyFrom(config.getTile());
+        }
+
         Bindings bindings = new Bindings()
                 .setSource(entity)
                 .setState(new HashMap<>())

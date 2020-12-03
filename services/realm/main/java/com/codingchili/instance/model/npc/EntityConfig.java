@@ -3,6 +3,7 @@ package com.codingchili.instance.model.npc;
 import com.codingchili.instance.model.entity.Model;
 import com.codingchili.instance.model.stats.*;
 import com.codingchili.instance.scripting.Scripted;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,11 @@ public class EntityConfig implements Storable {
 
     public void setTile(TileConfig tile) {
         this.tile = tile;
+    }
+
+    @JsonIgnore
+    public boolean isTile() {
+        return tile != null;
     }
 
     public List<LootTableItem> getLoot() {
