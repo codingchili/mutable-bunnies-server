@@ -9,6 +9,7 @@ public class Model {
     private String graphics = "game/placeholder.png";
     private String skin;
     private String tint = "#ffffff";
+    private Boolean tile;
     private float rotation = 0;
     private float scale = 1.0f;
     private Hitbox hitbox = new Hitbox();
@@ -38,6 +39,14 @@ public class Model {
     public Model setTint(String tint) {
         this.tint = tint;
         return this;
+    }
+
+    public Boolean getTile() {
+        return tile;
+    }
+
+    public void setTile(Boolean tile) {
+        this.tile = tile;
     }
 
     public Point getPivot() {

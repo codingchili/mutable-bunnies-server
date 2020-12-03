@@ -23,6 +23,7 @@ public class EntityConfig implements Storable {
     private String dialog;
     private String harvest;
     private Stats stats;
+    private TileConfig tile;
     private Scripted spawn;
     private Scripted death;
     private Scripted tick;
@@ -46,6 +47,14 @@ public class EntityConfig implements Storable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public TileConfig getTile() {
+        return tile;
+    }
+
+    public void setTile(TileConfig tile) {
+        this.tile = tile;
     }
 
     public List<LootTableItem> getLoot() {
