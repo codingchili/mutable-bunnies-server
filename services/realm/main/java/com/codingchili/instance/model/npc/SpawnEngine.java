@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static com.codingchili.instance.model.entity.Interaction.DESCRIPTION;
 
@@ -21,6 +22,7 @@ import static com.codingchili.instance.model.entity.Interaction.DESCRIPTION;
  * Handles NPC stuff.
  */
 public class SpawnEngine {
+    private static final String LOG = "log";
     private static final double INTERVAL = 2; // seconds between AI updates.
     private static final int POOL_SIZE = 1;
     private static final int MAX_EXECUTE_TIME = 2;
@@ -86,7 +88,6 @@ public class SpawnEngine {
         return npc;
     }
 
-
     public Structure structure(SpawnConfig spawn, EntityConfig config) {
         Structure structure = new Structure(config);
         setup(config, structure, spawn);
@@ -95,61 +96,40 @@ public class SpawnEngine {
         return structure;
     }
 
+    private <T> void applyIfSet(Supplier<T> optional, Consumer<T> setter) {
+        Optional.ofNullable(optional.get()).ifPresent(setter);
+    }
+
+    private void registerInteractions(EntityConfig config, SimpleEntity entity) {
+        applyIfSet(config::getHarvest, harvest -> game.skills().register(entity, harvest));
+        applyIfSet(config::getDialog, dialog -> game.dialogs().register(entity, dialog));
+    }
+
     private void setup(EntityConfig config, SimpleEntity entity, SpawnConfig spawn) {
         entity.setName(config.getName());
-        entity.setModel(config.getModel()
-                .copy()
-        );
+        entity.setModel(config.getModel().copy().apply(spawn));
+        registerInteractions(config, entity);
+        Bindings bindings = getBindings(entity);
 
-        if (spawn.getRevertx() != null) {
-            entity.getModel().setRevertX(spawn.getRevertx());
-        }
-
-        if (spawn.hasScale()) {
-            entity.getModel().setScale(spawn.getScale());
-        }
-
-
-        if (spawn.getTile() != null && config.getTile() != null) {
-            config.getTile().applyFrom(config.getTile());
-        }
-
-        if (spawn.getTint() != null) {
-            entity.getModel().setTint(spawn.getTint());
-        }
-
-        Bindings bindings = new Bindings()
-                .setSource(entity)
-                .setState(new HashMap<>())
-                .set("log", (Consumer<String>) (line) -> {
-                    game.getLogger(Npc.class)
-                            .log(line);
-                }).setContext(game);
-
-        if (config.getSpawn() != null) {
-            config.getSpawn().apply(bindings);
-        }
-
-
-        if (config.getTick() != null) {
+        applyIfSet(config::getSpawn, it -> it.apply(bindings));
+        applyIfSet(config::getTick, tick -> {
             game.ticker((ticker) -> {
                 if (game.exists(entity.getId())) {
-                    config.getTick().apply(bindings);
+                    tick.apply(bindings);
                 } else {
                     ticker.disable();
                 }
-            }, GameContext.secondsToTicks(INTERVAL))
-                    .offset();
-        }
-
-        if (config.getHarvest() != null) {
-            game.skills().register(entity, config.getHarvest());
-        }
-
-        if (config.getDialog() != null) {
-            game.dialogs().register(entity, config.getDialog());
-        }
+            }, GameContext.secondsToTicks(INTERVAL)).offset();
+        });
         entity.getAttributes().put(DESCRIPTION, config.getDescription());
+    }
+
+    private Bindings getBindings(Entity entity) {
+        return new Bindings()
+                .setSource(entity)
+                .setState(new HashMap<>())
+                .set(LOG, (Consumer<String>) (line) ->
+                        game.getLogger(Npc.class).log(line)).setContext(game);
     }
 
     private void at(Entity entity, Point point) {

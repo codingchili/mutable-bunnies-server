@@ -22,7 +22,6 @@ public class EntityConfig implements Storable {
     private String dialog;
     private String harvest;
     private Stats stats;
-    private TileConfig tile;
     private EntityType type;
     private Scripted spawn;
     private Scripted death;
@@ -55,14 +54,6 @@ public class EntityConfig implements Storable {
 
     public void setType(EntityType type) {
         this.type = type;
-    }
-
-    public TileConfig getTile() {
-        return tile;
-    }
-
-    public void setTile(TileConfig tile) {
-        this.tile = tile;
     }
 
     public List<LootTableItem> getLoot() {

@@ -1,5 +1,11 @@
 package com.codingchili.instance.model.entity;
 
+import com.codingchili.instance.model.npc.TileConfig;
+
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 /**
  * @author Robin Duda
  * <p>
@@ -9,7 +15,7 @@ public class Model {
     private String graphics = "game/placeholder.png";
     private String skin;
     private String tint = "#ffffff";
-    private Boolean tile;
+    private TileConfig tile;
     private float rotation = 0;
     private float scale = 1.0f;
     private Hitbox hitbox = new Hitbox();
@@ -39,14 +45,6 @@ public class Model {
     public Model setTint(String tint) {
         this.tint = tint;
         return this;
-    }
-
-    public Boolean getTile() {
-        return tile;
-    }
-
-    public void setTile(Boolean tile) {
-        this.tile = tile;
     }
 
     public Point getPivot() {
@@ -143,8 +141,28 @@ public class Model {
         return revertX;
     }
 
-    public Model setRevertX(boolean revertX) {
+    public Model setRevertX(Boolean revertX) {
         this.revertX = revertX;
+        return this;
+    }
+
+    public TileConfig getTile() {
+        return tile;
+    }
+
+    public void setTile(TileConfig tile) {
+        this.tile = tile;
+    }
+
+    private <T> void overrideConfig(Consumer<T> consumer, Supplier<T> option) {
+        Optional.ofNullable(option.get()).ifPresent(consumer);
+    }
+
+    public Model apply(SpawnConfig spawn) {
+        overrideConfig(this::setRevertX, spawn::getRevertx);
+        overrideConfig(this::setScale, spawn::getScale);
+        overrideConfig(this::setTile, spawn::getTile);
+        overrideConfig(this::setTint, spawn::getTint);
         return this;
     }
 }

@@ -47,7 +47,7 @@ public class EntityDB implements MetadataStore<EntityConfig> {
     @Override
     public void evict() {
         items.asMap().values().forEach(config -> {
-            if (config.getTile() != null) {
+            if (config.getModel().getTile() != null) {
                 config.setType(EntityType.tile);
             } else {
                 config.setType(EntityType.structure);
