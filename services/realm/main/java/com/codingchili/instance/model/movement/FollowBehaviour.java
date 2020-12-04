@@ -5,12 +5,17 @@ import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.Vector;
 import com.codingchili.instance.model.stats.Attribute;
 
+import java.util.Random;
+
 /**
  * A behaviour that causes a source creature to follow a target creature.
  * The behaviour is in effect until either creature leaves the context.
  */
 public class FollowBehaviour implements MovementBehaviour {
-    private static int FOLLOW_RANGE = 128;
+    private static final Random random = new Random();
+    private static int FOLLOW_RANGE = 156;
+    private static int FOLLOW_OFFSET = 64; // offset needs to be less than the follow range.
+    private static float DIRECTION_OFFSET = 0.5f; // offset needs to be less than the follow range.
     private Creature source;
     private Creature target;
 
@@ -33,12 +38,12 @@ public class FollowBehaviour implements MovementBehaviour {
         Vector vector = source.getVector();
         Vector following = target.getVector();
 
-        float targetX = following.getX();
-        float targetY = following.getY();
+        float targetX = following.getX() + random.nextInt(FOLLOW_OFFSET * 2) - FOLLOW_OFFSET;
+        float targetY = following.getY() + random.nextInt(FOLLOW_OFFSET * 2) - FOLLOW_OFFSET;
 
         if (vector.distance(targetX, targetY) > FOLLOW_RANGE) {
             float direction = vector.targetAngle(targetX, targetY);
-            vector.setDirection(direction);
+            vector.setDirection(direction + (random.nextFloat() * DIRECTION_OFFSET * 2) - DIRECTION_OFFSET);
             vector.setVelocity((float) source.getStats().get(Attribute.movement));
             game.movement().update(source);
         } else {

@@ -3,7 +3,6 @@ package com.codingchili.instance.controller;
 import com.codingchili.core.protocol.Api;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.designer.DesignerRequest;
-import com.codingchili.instance.model.entity.EntityDB;
 import com.codingchili.instance.model.npc.SpawnEngine;
 import com.codingchili.instance.transport.InstanceRequest;
 
@@ -36,7 +35,12 @@ public class DesignHandler implements GameHandler {
     }
 
     @Api
-    public void registry(InstanceRequest request) {
+    public void npc_registry(InstanceRequest request) {
+        request.write(spawner.npcs().toBuffer());
+    }
+
+    @Api
+    public void structure_registry(InstanceRequest request) {
         request.write(spawner.entities().toBuffer());
     }
 }

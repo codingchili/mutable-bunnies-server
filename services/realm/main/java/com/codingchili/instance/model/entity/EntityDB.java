@@ -6,6 +6,7 @@ import com.codingchili.instance.model.MetadataStore;
 import com.codingchili.instance.model.events.EventType;
 import com.codingchili.instance.model.npc.DB;
 import com.codingchili.instance.model.npc.EntityConfig;
+import com.codingchili.instance.model.npc.EntityType;
 import io.vertx.core.buffer.Buffer;
 
 import java.util.Collection;
@@ -45,7 +46,14 @@ public class EntityDB implements MetadataStore<EntityConfig> {
 
     @Override
     public void evict() {
-        cache = CachedResponse.make(EventType.registry.name(), asMap().values());
+        items.asMap().values().forEach(config -> {
+            if (config.getTile() != null) {
+                config.setType(EntityType.tile);
+            } else {
+                config.setType(EntityType.structure);
+            }
+        });
+        cache = CachedResponse.make(EventType.structure_registry.name(), asMap().values());
     }
 
     @Override

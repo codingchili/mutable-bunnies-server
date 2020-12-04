@@ -1,5 +1,6 @@
 package com.codingchili.instance.context;
 
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,10 +13,12 @@ import java.util.function.Supplier;
  * Ticker executes periodically on the game loop.
  */
 public class Ticker implements Supplier<Integer> {
+    private static Random random = new Random();
     private int id = UUID.randomUUID().hashCode();
     private GameContext context;
     private AtomicInteger interval;
     private boolean active = true;
+    private AtomicInteger current = new AtomicInteger(0);
     private Long lastTick = now();
     private Long deltaMS = 0L;
     private Consumer<Ticker> exec;
@@ -30,6 +33,15 @@ public class Ticker implements Supplier<Integer> {
         this.context = context;
         this.interval = new AtomicInteger(interval);
         context.setTicker(this);
+    }
+
+    /**
+     * generate a random offset to space out tickers.
+     * @return fluent
+     */
+    public Ticker offset() {
+        this.current.set(random.nextInt(interval.get()));
+        return this;
     }
 
     private long now() {
@@ -47,6 +59,7 @@ public class Ticker implements Supplier<Integer> {
             exec.accept(this);
             lastTick = currentTick;
         }
+        current.set(0);
     }
 
     public Ticker interval(Integer tick) {
@@ -90,5 +103,9 @@ public class Ticker implements Supplier<Integer> {
     @Override
     public Integer get() {
         return interval.get();
+    }
+
+    public Integer incrementAndGet() {
+        return current.incrementAndGet();
     }
 }

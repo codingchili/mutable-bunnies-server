@@ -21,7 +21,7 @@ import static com.codingchili.instance.model.entity.Interaction.DESCRIPTION;
  * Handles NPC stuff.
  */
 public class SpawnEngine {
-    private static final double TPS = 4; // limits NPCs to 4 AI update per second.
+    private static final double INTERVAL = 2; // seconds between AI updates.
     private static final int POOL_SIZE = 1;
     private static final int MAX_EXECUTE_TIME = 2;
     private static final String EXECUTOR_NAME = "instance-writer";
@@ -97,14 +97,25 @@ public class SpawnEngine {
 
     private void setup(EntityConfig config, SimpleEntity entity, SpawnConfig spawn) {
         entity.setName(config.getName());
-        entity.setModel(config.getModel().copy());
+        entity.setModel(config.getModel()
+                .copy()
+        );
+
+        if (spawn.getRevertx() != null) {
+            entity.getModel().setRevertX(spawn.getRevertx());
+        }
 
         if (spawn.hasScale()) {
             entity.getModel().setScale(spawn.getScale());
         }
 
-        if (spawn.isTile() && config.isTile()) {
+
+        if (spawn.getTile() != null && config.getTile() != null) {
             config.getTile().applyFrom(config.getTile());
+        }
+
+        if (spawn.getTint() != null) {
+            entity.getModel().setTint(spawn.getTint());
         }
 
         Bindings bindings = new Bindings()
@@ -127,7 +138,8 @@ public class SpawnEngine {
                 } else {
                     ticker.disable();
                 }
-            }, GameContext.secondsToTicks(TPS));
+            }, GameContext.secondsToTicks(INTERVAL))
+                    .offset();
         }
 
         if (config.getHarvest() != null) {
@@ -150,12 +162,11 @@ public class SpawnEngine {
      * Adds the entity to the current context if found in configuration
      * and also permanently adds it to the instance spawn configuration.
      *
-     * @param designer
+     * @param config
      */
-    public Promise<Void> add(DesignerRequest designer) {
+    public Promise<Void> add(DesignerRequest config) {
         Promise<Void> promise = Promise.promise();
         InstanceSettings settings = game.instance().settings();
-        SpawnConfig config = designer.toSpawnConfig();
 
         settings.getStructures().add(config);
 

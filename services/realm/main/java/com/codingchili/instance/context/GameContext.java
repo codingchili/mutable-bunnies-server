@@ -106,29 +106,29 @@ public class GameContext {
                 instance.cancel(timer);
             } else {
                 //instance.blocking(block -> {
-                    Runnable runnable;
+                Runnable runnable;
 
-                    while ((runnable = queue.poll()) != null) {
-                        runnable.run();
+                while ((runnable = queue.poll()) != null) {
+                    runnable.run();
+                }
+
+                tickers.forEach(ticker -> {
+                    if (ticker.get().equals(ticker.incrementAndGet())) {
+                        ticker.run();
                     }
+                });
 
-                    tickers.forEach(ticker -> {
-                        if (currentTick % ticker.get() == 0) {
-                            ticker.run();
-                        }
-                    });
-
-                  //  block.complete();
+                //  block.complete();
                 //}, (done) -> {
-                  //  if (done.succeeded()) {
-                        currentTick++;
-                        if (currentTick == Long.MAX_VALUE) {
-                            currentTick = 0L;
-                        }
-                    //} else {
-                    //    logger.onError(done.cause());
-                    //}
-                    processing.set(false);
+                //  if (done.succeeded()) {
+                currentTick++;
+                if (currentTick == Long.MAX_VALUE) {
+                    currentTick = 0L;
+                }
+                //} else {
+                //    logger.onError(done.cause());
+                //}
+                processing.set(false);
                 //});
             }
         }

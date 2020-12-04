@@ -1,14 +1,12 @@
 package com.codingchili.instance.model.npc;
 
+import com.codingchili.core.storage.Storable;
 import com.codingchili.instance.model.entity.Model;
-import com.codingchili.instance.model.stats.*;
+import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Scripted;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.codingchili.core.storage.Storable;
 
 /**
  * @author Robin Duda
@@ -25,6 +23,7 @@ public class EntityConfig implements Storable {
     private String harvest;
     private Stats stats;
     private TileConfig tile;
+    private EntityType type;
     private Scripted spawn;
     private Scripted death;
     private Scripted tick;
@@ -50,17 +49,20 @@ public class EntityConfig implements Storable {
         this.description = description;
     }
 
+    public EntityType getType() {
+        return type;
+    }
+
+    public void setType(EntityType type) {
+        this.type = type;
+    }
+
     public TileConfig getTile() {
         return tile;
     }
 
     public void setTile(TileConfig tile) {
         this.tile = tile;
-    }
-
-    @JsonIgnore
-    public boolean isTile() {
-        return tile != null;
     }
 
     public List<LootTableItem> getLoot() {

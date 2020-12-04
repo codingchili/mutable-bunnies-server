@@ -12,7 +12,26 @@ public class SpawnConfig {
     private String id;
     private Point point;
     private Float scale;
+    private String tint;
+    private Boolean revertx;
     private TileConfig tile;
+
+    public String getTint() {
+        return tint;
+    }
+
+    public SpawnConfig setTint(String tint) {
+        this.tint = tint;
+        return this;
+    }
+
+    public Boolean getRevertx() {
+        return revertx;
+    }
+
+    public void setRevertx(Boolean revertx) {
+        this.revertx = revertx;
+    }
 
     public TileConfig getTile() {
         return tile;
@@ -20,11 +39,6 @@ public class SpawnConfig {
 
     public void setTile(TileConfig tile) {
         this.tile = tile;
-    }
-
-    @JsonIgnore
-    public Boolean isTile() {
-        return tile != null;
     }
 
     public Float getScale() {
