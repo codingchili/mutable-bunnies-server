@@ -13,8 +13,8 @@ import java.util.Random;
  */
 public class FollowBehaviour implements MovementBehaviour {
     private static final Random random = new Random();
-    private static int FOLLOW_RANGE = 156;
-    private static int FOLLOW_OFFSET = 64; // offset needs to be less than the follow range.
+    private static int FOLLOW_RANGE = 96;
+    private static int FOLLOW_OFFSET = 1; // offset needs to be less than the follow range.
     private static float DIRECTION_OFFSET = 0.5f; // offset needs to be less than the follow range.
     private Creature source;
     private Creature target;

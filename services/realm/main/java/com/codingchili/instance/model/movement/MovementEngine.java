@@ -21,7 +21,7 @@ import static com.codingchili.core.configuration.CoreStrings.*;
  * Handles movement in the game.
  */
 public class MovementEngine {
-    private static final float BEHAVIOUR_UPDATE_INTERVAL = 0.25f;
+    private static final float BEHAVIOUR_UPDATE_INTERVAL = 0.1f;
     private Map<Creature, MovementBehaviour> behaviours = new HashMap<>();
     private GameContext game;
 
