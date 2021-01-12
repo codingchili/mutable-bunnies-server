@@ -14,7 +14,6 @@ import java.util.Set;
 public class SkillConfig implements Storable {
     private Set<Perk> perks = new HashSet<>();
     private String id;
-    private String icon = "game/placeholder.png";
     private String name;
     private String description;
     private SkillType type;
@@ -24,14 +23,6 @@ public class SkillConfig implements Storable {
     @Override
     public String getId() {
         return id;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
     }
 
     public String getName() {

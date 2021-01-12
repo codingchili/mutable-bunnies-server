@@ -74,6 +74,7 @@ public class RealmSettings extends AttributeConfigurable {
                 .setId(id)
                 .setSize(size)
                 .setHost(host)
+                .setAdmins(admins)
                 .setPort(listener.getPort())
                 .setSecure(listener.isSecure())
                 .setResources(resources)
@@ -379,5 +380,10 @@ public class RealmSettings extends AttributeConfigurable {
     @JsonIgnore
     public byte[] getTokenBytes() {
         return getAuthentication().getKey().getBytes();
+    }
+
+    @JsonIgnore
+    public boolean isAdmin(String target) {
+        return admins.contains(target);
     }
 }

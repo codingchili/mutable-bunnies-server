@@ -13,6 +13,7 @@ import com.codingchili.core.storage.Storable;
 public class RegisteredRealm implements Storable {
     private Map<String, Object> attributes = new HashMap<>();
     private Set<String> availableClasses = new HashSet<>();
+    private Set<String> admins = new HashSet<>();
     private Token authentication;
     private String resources;
     private String host;
@@ -272,5 +273,14 @@ public class RegisteredRealm implements Storable {
     @Override
     public boolean equals(Object other) {
         return compareTo(other) == 0;
+    }
+
+    public Set<String> getAdmins() {
+        return admins;
+    }
+
+    public RegisteredRealm setAdmins(Set<String> admins) {
+        this.admins = admins;
+        return this;
     }
 }

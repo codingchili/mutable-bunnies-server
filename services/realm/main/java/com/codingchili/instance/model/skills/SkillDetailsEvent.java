@@ -3,21 +3,19 @@ package com.codingchili.instance.model.skills;
 import com.codingchili.instance.model.events.Event;
 import com.codingchili.instance.model.events.EventType;
 
-import java.util.Map;
-
 public class SkillDetailsEvent implements Event {
-    private Map<String, SkillConfig> skills;
+    private SkillConfig skill;
 
-    public SkillDetailsEvent(Map<String, SkillConfig> skills) {
-        this.skills = skills;
+    public SkillDetailsEvent(SkillConfig skill) {
+        this.skill = skill;
     }
 
-    public Map<String, SkillConfig> getSkills() {
-        return skills;
+    public SkillConfig getSkill() {
+        return skill;
     }
 
-    public void setSkills(Map<String, SkillConfig> skills) {
-        this.skills = skills;
+    public void setSkill(SkillConfig skill) {
+        this.skill = skill;
     }
 
     @Override

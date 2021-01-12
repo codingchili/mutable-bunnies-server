@@ -2,6 +2,7 @@ package com.codingchili.instance.model.skills;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,10 @@ public class SkillState {
         return skills;
     }
 
+    public Collection<SkillProgress> asList() {
+        return skills.values();
+    }
+
     public void setSkills(Map<SkillType, SkillProgress> skills) {
         this.skills = skills;
     }
@@ -26,6 +31,11 @@ public class SkillState {
         } else {
             return 0;
         }
+    }
+
+    @JsonIgnore
+    public boolean learned(SkillType type) {
+        return skills.containsKey(type);
     }
 
     public SkillProgress get(SkillType type) {

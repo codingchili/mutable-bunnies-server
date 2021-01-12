@@ -64,6 +64,10 @@ public class InstanceRequest implements Request {
         }
     }
 
+    public String account() {
+        return data.getString(ID_ACCOUNT);
+    }
+
     @Override
     public String target() {
         if (reference != null) {

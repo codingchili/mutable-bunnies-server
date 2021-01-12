@@ -6,6 +6,7 @@ import com.codingchili.instance.model.entity.SimpleEntity;
 import com.codingchili.instance.scripting.Bindings;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Manages player skills.
@@ -41,7 +42,7 @@ public class SkillEngine {
                 amount = 0;
             }
         }
-        target.handle(new SkillStateEvent(state)
+        target.handle(new SkillChangeEvent(state)
                 .setLevelup(levelUp)
                 .setExperience(total)
         );
@@ -59,11 +60,11 @@ public class SkillEngine {
 
     public SkillConfig skillById(SkillType type) {
         return skills.getById(type.name())
-                .orElseThrow(() -> new SkillConfigNotFound(type.name()));
+                .orElseThrow(() -> new SkillConfigNotFound(type));
     }
 
-    public Map<String, SkillConfig> details() {
-        return skills.all();
+    public Optional<SkillConfig> details(SkillType type) {
+        return skills.getById(type.name());
     }
 
     public void register(SimpleEntity entity, String harvest) {

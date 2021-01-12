@@ -4,7 +4,6 @@ import com.codingchili.core.protocol.Api;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.skills.*;
-import com.codingchili.instance.model.spells.SpellResult;
 import com.codingchili.instance.transport.InstanceRequest;
 
 /**
@@ -21,11 +20,15 @@ public class SkillHandler implements GameHandler {
 
     @Api
     public void skill_info(InstanceRequest request) {
-        request.write(new SkillDetailsEvent(engine.details()));
+        SkillType type = request.raw(SkillMessage.class).getId();
+        engine.details(type).ifPresentOrElse(
+                (skill) -> request.write(new SkillDetailsEvent(skill)),
+                () -> request.error(new SkillConfigNotFound(type))
+        );
     }
 
     @Api
-    public void player_skills(InstanceRequest request) {
+    public void skill_state(InstanceRequest request) {
         PlayerCreature player = game.getById(request.target());
         request.write(new SkillStateEvent(player));
     }

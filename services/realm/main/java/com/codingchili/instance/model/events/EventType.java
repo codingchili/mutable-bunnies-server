@@ -43,8 +43,8 @@ public enum EventType {
     quest_update,
 
     skill_state,
+    skill_change,
     skill_info,
-    skill_exp,
 
     party_request,
     party_leave,
