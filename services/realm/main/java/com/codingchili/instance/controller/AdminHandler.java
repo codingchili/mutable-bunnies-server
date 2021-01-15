@@ -23,7 +23,7 @@ public class AdminHandler implements GameHandler {
 
     @Api
     public void admin(InstanceRequest request) {
-        if (game.instance().realm().getAdmins().contains(request.target())) {
+        if (game.instance().realm().isAdmin(request.account())) {
             engine.handle(request.raw(AdminEvent.class));
         } else {
             request.error(new AuthorizationRequiredException());
