@@ -10,11 +10,10 @@ import com.codingchili.instance.context.InstanceSettings;
 import com.codingchili.instance.model.admin.AdminEvent;
 import com.codingchili.instance.model.entity.Entity;
 import com.codingchili.instance.model.entity.PlayerCreature;
-import com.codingchili.instance.model.entity.Point;
 import com.codingchili.instance.model.entity.SpawnConfig;
-import com.codingchili.instance.model.events.NotificationEvent;
 import com.codingchili.instance.model.events.Event;
 import com.codingchili.instance.model.events.EventType;
+import com.codingchili.instance.model.events.NotificationEvent;
 import com.codingchili.instance.model.npc.NoSuchNpcException;
 import com.codingchili.realm.configuration.RealmSettings;
 
@@ -35,7 +34,7 @@ public class AdminEngine implements Receiver<AdminEvent> {
     }
 
     @Api
-    @Description("spawn")
+    @Description("spawn the given entity id at the mouse position.")
     public void spawn(AdminEvent event) {
         game.spawner().spawn(new SpawnConfig()
                 .setId(event.getId())
@@ -70,25 +69,25 @@ public class AdminEngine implements Receiver<AdminEvent> {
     }
 
     @Api
-    @Description("kick")
+    @Description("kick the targeted user")
     public void kick(AdminEvent event) {
         game.remove(game.getById(event.getEntity()));
     }
 
     @Api
-    @Description("teleport")
+    @Description("teleport to the given instance id")
     public void teleport(AdminEvent event) {
         game.movement().travel(game.getById(event.getEntity()), event.getId());
     }
 
     @Api
-    @Description("item")
+    @Description("create an item in the targeted creatures inventory.")
     public void item(AdminEvent event) {
         game.inventory().item(game.getById(event.getEntity()), event.getId(), event.getQuantity());
     }
 
     @Api
-    @Description("slay")
+    @Description("slays the targeted creature for millions of damage.")
     public void slay(AdminEvent event) {
         game.spells().damage(game.getById(event.getTarget()), game.getById(event.getEntity()))
                 .effect("slay")
@@ -98,7 +97,7 @@ public class AdminEngine implements Receiver<AdminEvent> {
     }
 
     @Api
-    @Description("banner")
+    @Description("display a notification banner for all players on the instance.")
     public void banner(AdminEvent event) {
         game.publish(new NotificationEvent(event.getMessage()));
     }
@@ -112,7 +111,7 @@ public class AdminEngine implements Receiver<AdminEvent> {
     }
 
     @Api
-    public void list(AdminEvent event) {
+    public void help(AdminEvent event) {
         game.getById(event.getTarget()).handle(new CommandList());
     }
 
@@ -147,6 +146,7 @@ public class AdminEngine implements Receiver<AdminEvent> {
         private static final StringBuilder message = new StringBuilder();
 
         static {
+            message.append("Available admin commands\n");
             for (Method method : AdminEngine.class.getMethods()) {
                 Api api = method.getAnnotation(Api.class);
                 Description description = method.getAnnotation(Description.class);
