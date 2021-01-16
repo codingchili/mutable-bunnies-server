@@ -4,12 +4,15 @@ import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.dialog.InteractionOutOfRangeException;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.entity.Vector;
+import com.codingchili.instance.model.events.NotificationEvent;
 import com.codingchili.instance.model.npc.LootableEntity;
 import com.codingchili.instance.model.spells.SpellTarget;
 import com.codingchili.instance.scripting.*;
 import io.vertx.core.Future;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import com.codingchili.core.context.CoreRuntimeException;
 
@@ -24,6 +27,10 @@ public class InventoryEngine {
     private static final int ITEM_USE_GCD = 1000;
     private static final String ITEM = "item";
     private static final String SPELLS = "spells";
+    private static final String SKILLS = "skills";
+    public static final String REFUND = "refund";
+    public static final String SUCCESS = "success";
+    public static final String FAIL = "fail";
     private ItemDB items;
     private GameContext game;
 
@@ -148,25 +155,45 @@ public class InventoryEngine {
         if (source.getSpells().isOnGCD()) {
             // notify client?
         } else {
+            // trigger gcd first to prevent race conditions/multi-use.
+            source.getSpells().triggerGcd(ITEM_USE_GCD);
+
             if (item.getOnUse() != null) {
                 Scripted scripted = new ScriptReference(item.onUse);
-                item.setQuantity(item.getQuantity() - 1);
+                var failed = new AtomicBoolean(false);
 
-                if (item.getQuantity() < 1) {
-                    inventory.getItems().remove(item);
-                }
+                // show notification banner on error.
+                var fail = (Consumer<String>) (message) -> {
+                    source.handle(new NotificationEvent(message));
+                    failed.set(true);
+                };
+
+                // consume the item on success.
+                var success = (Runnable) () -> {
+                    item.setQuantity(item.getQuantity() - 1);
+
+                    if (item.getQuantity() < 1) {
+                        inventory.getItems().remove(item);
+                    }
+                };
 
                 Bindings bindings = new Bindings();
                 bindings.setContext(game)
                         .set(ITEM, item)
+                        .set(SUCCESS, success)
+                        .set(FAIL, fail)
                         .set(SPELLS, game.spells())
+                        .set(SKILLS, game.skills())
                         .setSource(source)
                         .set(TARGET, target);
 
-                // default and allow scripts to override.
-                source.getSpells().triggerGcd(ITEM_USE_GCD);
-
                 scripted.apply(bindings);
+
+                if (!failed.get()) {
+                    // assume success if fail is not called - prefer to consume item without effects.
+                    success.run();
+                }
+
                 update(source);
             }
         }
@@ -188,8 +215,9 @@ public class InventoryEngine {
 
     /**
      * Drops an item in the world at the given location.
+     *
      * @param vector the target point to drop the item at.
-     * @param item the item to drop.
+     * @param item   the item to drop.
      */
     public void drop(Vector vector, Item item) {
         game.add(LootableEntity.dropped(vector, item));

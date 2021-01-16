@@ -10,6 +10,7 @@ import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.Grid;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.items.StatsUpdateEvent;
+import com.codingchili.instance.model.skills.SkillType;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Bindings;
@@ -98,7 +99,7 @@ public class SpellEngine {
     }
 
     private boolean learned(Creature caster, String spellId) {
-        return caster.getSpells().learned(spellId);
+        return caster.getSpells().learned(spellId) || (caster.getSkills().learned(spellId));
     }
 
     /**

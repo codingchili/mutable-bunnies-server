@@ -1,11 +1,12 @@
 package com.codingchili.instance.model.skills;
 
 import com.codingchili.instance.context.GameContext;
+import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.entity.SimpleEntity;
+import com.codingchili.instance.model.events.ChatEvent;
 import com.codingchili.instance.scripting.Bindings;
 
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -46,6 +47,15 @@ public class SkillEngine {
                 .setLevelup(levelUp)
                 .setExperience(total)
         );
+    }
+
+    public void learn(Creature target, SkillType type) {
+        target.getSkills().learn(type);
+        target.handle(ChatEvent.system("Learned " + type.name() + " skill."));
+    }
+
+    public boolean learned(Creature target, SkillType type) {
+        return target.getSkills().learned(type);
     }
 
     private Bindings bindings(int nextLevel) {

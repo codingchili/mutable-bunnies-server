@@ -2,9 +2,11 @@ package com.codingchili.instance.model.skills;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * Player skill state.
@@ -40,5 +42,14 @@ public class SkillState {
 
     public SkillProgress get(SkillType type) {
         return skills.computeIfAbsent(type, skill -> new SkillProgress(type));
+    }
+
+    public boolean learned(String skillId) {
+        return Arrays.stream(SkillType.values())
+                .anyMatch(skill -> skill.name().equals(skillId));
+    }
+
+    public void learn(SkillType type) {
+        skills.putIfAbsent(type, new SkillProgress(type));
     }
 }

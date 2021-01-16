@@ -2,6 +2,7 @@ package com.codingchili.instance.model.entity;
 
 import com.codingchili.instance.model.afflictions.AfflictionState;
 import com.codingchili.instance.model.items.Inventory;
+import com.codingchili.instance.model.skills.SkillState;
 import com.codingchili.instance.model.spells.SpellState;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
@@ -16,6 +17,7 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
     private transient Stats calculated = new Stats();
     protected Inventory inventory = new Inventory();
     protected SpellState spells = new SpellState();
+    private SkillState skills = new SkillState();
     protected Stats baseStats = new Stats();
 
     @Override
@@ -36,6 +38,11 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
     @Override
     public SpellState getSpells() {
         return spells;
+    }
+
+    @Override
+    public SkillState getSkills() {
+        return skills;
     }
 
     @Override
@@ -120,5 +127,9 @@ public abstract class SimpleCreature extends SimpleEntity implements Creature {
 
     public void setBaseStats(Stats stats) {
         this.baseStats = stats;
+    }
+
+    public void setSkills(SkillState skills) {
+        this.skills = skills;
     }
 }
