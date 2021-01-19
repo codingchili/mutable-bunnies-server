@@ -4,7 +4,7 @@ import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.entity.SimpleEntity;
-import com.codingchili.instance.model.events.ChatEvent;
+import com.codingchili.instance.model.events.NotificationEvent;
 import com.codingchili.instance.scripting.Bindings;
 
 import java.util.Optional;
@@ -51,7 +51,7 @@ public class SkillEngine {
 
     public void learn(Creature target, SkillType type) {
         target.getSkills().learn(type);
-        target.handle(ChatEvent.system("Learned " + type.name() + " skill."));
+        target.handle(new NotificationEvent("Learned " + type.name() + " skill."));
     }
 
     public boolean learned(Creature target, SkillType type) {
