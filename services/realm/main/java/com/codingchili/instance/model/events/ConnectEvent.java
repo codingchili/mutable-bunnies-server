@@ -19,6 +19,7 @@ public class ConnectEvent implements Event {
     private Skybox skybox;
     private Creature player;
     private String texture;
+    private String instance;
 
 
     /**
@@ -27,6 +28,7 @@ public class ConnectEvent implements Event {
      */
     public ConnectEvent(GameContext game, Creature player) {
         InstanceSettings instance = game.instance().settings();
+        this.instance = instance.getName();
         this.entities = game.entities().all();
         this.creatures = game.creatures().all();
         this.texture = instance.getTexture();
@@ -55,6 +57,14 @@ public class ConnectEvent implements Event {
 
     public void setTexture(String texture) {
         this.texture = texture;
+    }
+
+    public String getInstance() {
+        return instance;
+    }
+
+    public void setInstance(String instance) {
+        this.instance = instance;
     }
 
     public IsometricProjection getProjection() {

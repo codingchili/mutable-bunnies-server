@@ -6,6 +6,7 @@ import com.codingchili.instance.context.Ticker;
 import com.codingchili.instance.model.afflictions.ActiveAffliction;
 import com.codingchili.instance.model.events.Event;
 import com.codingchili.instance.model.events.EventType;
+import com.codingchili.instance.model.events.NotificationEvent;
 import com.codingchili.instance.model.questing.QuestState;
 import com.codingchili.instance.model.skills.SkillState;
 import com.codingchili.instance.model.stats.Attribute;
