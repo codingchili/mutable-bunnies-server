@@ -10,7 +10,8 @@ import com.codingchili.core.storage.JsonMap;
  */
 public class LogServerSettings extends ServiceConfigurable {
     static final String PATH_LOGSERVER = Strings.getService("logging");
-    private byte[] secret = new byte[]{0x53, 0x48};
+    private byte[] loggingSecret;
+    private byte[] clientSecret;
     private Boolean console = true;
     private String db = "logging";
     private String collection = "events";
@@ -37,15 +38,29 @@ public class LogServerSettings extends ServiceConfigurable {
     /**
      * @return the secret key for logging tokens.
      */
-    public byte[] getSecret() {
-        return secret;
+    public byte[] getLoggingSecret() {
+        return loggingSecret;
     }
 
     /**
      * @param secret sets the secret key for logging tokens.
      */
-    public void setSecret(byte[] secret) {
-        this.secret = secret;
+    public void setLoggingSecret(byte[] secret) {
+        this.loggingSecret = secret;
+    }
+
+    /**
+     * @return the secret used to verify client tokens.
+     */
+    public byte[] getClientSecret() {
+        return clientSecret;
+    }
+
+    /**
+     * @param clientSecret the secret used to verify client tokens.
+     */
+    public void setClientSecret(byte[] clientSecret) {
+        this.clientSecret = clientSecret;
     }
 
     /**

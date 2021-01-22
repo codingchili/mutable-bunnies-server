@@ -2,7 +2,6 @@ package com.codingchili.realm.configuration;
 
 import com.codingchili.common.Strings;
 import com.codingchili.core.configuration.ServiceConfigurable;
-import com.codingchili.core.storage.IndexedMapPersisted;
 import com.codingchili.core.storage.IndexedMapVolatile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

@@ -48,9 +48,9 @@ public class SharedLogHandlerTest {
         LogServerSettings settings = new LogServerSettings();
         Configurations.put(settings);
         SystemContext system = new SystemContext();
-        settings.setSecret(new byte[]{0x0});
+        settings.setLoggingSecret(new byte[]{0x0});
         context = new LogContext(system, future);
-        factory = new TokenFactory(context, settings.getSecret());
+        factory = new TokenFactory(context, settings.getLoggingSecret());
     }
 
     @Before

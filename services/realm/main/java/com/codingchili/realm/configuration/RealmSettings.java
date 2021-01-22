@@ -33,6 +33,7 @@ public class RealmSettings extends AttributeConfigurable {
     private Scripted onPlayerJoin;
     private Scripted levelScaling;
     private Token authentication;
+    private Token logging;
     private String resources;
     private String version;
     private String type;
@@ -349,6 +350,14 @@ public class RealmSettings extends AttributeConfigurable {
      */
     public void setAdmins(Set<String> admins) {
         this.admins = admins;
+    }
+
+    public Token getLogging() {
+        return logging;
+    }
+
+    public void setLogging(Token logging) {
+        this.logging = logging;
     }
 
     @Override

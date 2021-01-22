@@ -32,7 +32,7 @@ abstract class AbstractLogHandler implements CoreHandler {
         store = new StorageLogger(context, getClass());
 
         protocol.setRole(PUBLIC)
-                .use(PROTOCOL_LOGGING, this::log)
+                .use(PROTOCOL_LOGGING, this::logging)
                 .use(ID_PING, Request::accept);
     }
 
@@ -46,5 +46,5 @@ abstract class AbstractLogHandler implements CoreHandler {
         return address;
     }
 
-    protected abstract void log(Request request);
+    protected abstract void logging(Request request);
 }
