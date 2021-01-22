@@ -9,6 +9,7 @@ import com.codingchili.logging.configuration.LogContext;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
+import java.time.Instant;
 import java.util.logging.Level;
 
 import static com.codingchili.common.Strings.*;
@@ -20,6 +21,7 @@ import static com.codingchili.common.Strings.*;
  * Log handler for messages incoming from clients.
  */
 public class ClientLogHandler extends AbstractLogHandler {
+    private static final String BROWSER = "browser";
 
     public ClientLogHandler(LogContext context) {
         super(context, NODE_CLIENT_LOGGING);
@@ -28,14 +30,15 @@ public class ClientLogHandler extends AbstractLogHandler {
     @Override
     protected void logging(Request request) {
         JsonObject logdata = request.data().getJsonObject(ID_MESSAGE);
-        // force event to known good value, clients are only allowed to specify client.event
-        // block changes to timestamp
-        logdata.put("level", Level.INFO.getName());
-        logdata.put("source", "Browser");
+        // clients are not allowed to overwrite the following values.
+        logdata.put(LOG_LEVEL, Level.INFO.getName());
+        logdata.put(LOG_SOURCE, BROWSER);
+        logdata.put(ID_ACCOUNT, request.token().getDomain());
+        logdata.put(LOG_TIME, Instant.now().toEpochMilli());
+        logdata.put(LOG_REMOTE, request.data().getString(PROTOCOL_CONNECTION));
 
         verifyToken(request.data()).setHandler(verify -> {
             if (verify.succeeded()) {
-                logdata.remove(ID_TOKEN);
                 console.log(logdata);
                 store.log(logdata.copy());
                 request.accept();
