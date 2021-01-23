@@ -1,6 +1,6 @@
 package com.codingchili.logging.model;
 
-import com.codingchili.core.logging.DefaultLogger;
+import com.codingchili.core.logging.AbstractLogger;
 import com.codingchili.core.logging.JsonLogger;
 import com.codingchili.core.logging.Logger;
 import com.codingchili.core.storage.JsonItem;
@@ -12,7 +12,7 @@ import io.vertx.core.json.JsonObject;
  * <p>
  * Logs to an output storage.
  */
-public class StorageLogger extends DefaultLogger implements JsonLogger {
+public class StorageLogger extends AbstractLogger implements JsonLogger {
     private final LogContext context;
 
     public StorageLogger(LogContext context, Class aClass) {

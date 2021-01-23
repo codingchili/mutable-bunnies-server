@@ -39,8 +39,8 @@ public class ClientLogHandler extends AbstractLogHandler {
 
         verifyToken(request.data()).setHandler(verify -> {
             if (verify.succeeded()) {
-                console.log(logdata);
-                store.log(logdata.copy());
+                console.log(logdata.copy());
+                store.log(logdata);
                 request.accept();
             } else {
                 request.error(new AuthorizationRequiredException());

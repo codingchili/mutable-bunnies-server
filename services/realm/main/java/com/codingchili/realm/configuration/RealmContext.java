@@ -65,7 +65,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
         this.classes = new ClassDB(core);
         this.settings = settings;
         this.logger = core.logger(getClass())
-                .setMetadata("realm", realm()::getId);
+                .setMetadataValue("realm", realm()::getId);
 
         delivery.setSendTimeout(realm().getListener().getTimeout());
     }
@@ -124,7 +124,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
         Logger logger = super.logger(aClass);
 
         if (settings != null) {
-            logger.setMetadata(ID_REALM, settings.get()::getId);
+            logger.setMetadataValue(ID_REALM, settings.get()::getId);
         }
         return logger;
     }

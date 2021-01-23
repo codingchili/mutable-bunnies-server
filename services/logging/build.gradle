@@ -1,0 +1,9 @@
+project.group = 'com.codingchili.service'
+
+dependencies {
+    compile("com.github.codingchili.chili-core:core:$project.version") {
+        /*exclude group: 'org.elasticsearch.client', module: 'elasticsearch-rest-high-level-client'*/
+        exclude group: 'io.vertx', module: 'vertx-mongo-client'
+        exclude group: 'io.vertx', module: 'vertx-hazelcast'
+    }
+}

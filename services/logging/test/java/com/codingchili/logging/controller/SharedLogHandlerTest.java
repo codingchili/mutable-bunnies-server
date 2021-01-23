@@ -1,17 +1,17 @@
 package com.codingchili.logging.controller;
 
 import com.codingchili.common.Strings;
-
-import com.codingchili.core.context.*;
+import com.codingchili.core.context.CoreContext;
+import com.codingchili.core.context.SystemContext;
+import com.codingchili.core.context.TimerSource;
 import com.codingchili.core.files.Configurations;
-import com.codingchili.core.logging.DefaultLogger;
+import com.codingchili.core.logging.AbstractLogger;
 import com.codingchili.core.logging.Level;
 import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.security.Token;
 import com.codingchili.core.security.TokenFactory;
 import com.codingchili.core.testing.RequestMock;
 import com.codingchili.core.testing.ResponseListener;
-
 import com.codingchili.logging.configuration.LogContext;
 import com.codingchili.logging.configuration.LogServerSettings;
 import io.vertx.core.Future;
@@ -26,7 +26,8 @@ import org.junit.runner.RunWith;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.codingchili.core.configuration.CoreStrings.*;
+import static com.codingchili.core.configuration.CoreStrings.ID_MESSAGE;
+import static com.codingchili.core.configuration.CoreStrings.ID_TOKEN;
 
 /**
  * @author Robin Duda
@@ -98,11 +99,11 @@ public class SharedLogHandlerTest {
 
     protected JsonObject getLogMessage() {
         return new JsonObject()
-                .put(ID_MESSAGE, new ClientLogHandlerTest.LogMessageGenerator(null, getClass())
+                .put(ID_MESSAGE, new LogMessageGenerator(null, getClass())
                         .event("test-event", Level.WARNING).put("unique", UUID.randomUUID().toString()).toJson());
     }
 
-    class LogMessageGenerator extends DefaultLogger {
+    static class LogMessageGenerator extends AbstractLogger {
         public LogMessageGenerator(CoreContext context, Class aClass) {
             super(context, aClass);
         }

@@ -51,7 +51,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
         this.context = context;
 
         this.logger = context.logger(getClass())
-                .setMetadata(ID_INSTANCE, instance::getId);
+                .setMetadataValue(ID_INSTANCE, instance::getId);
 
         this.settings = instance.getPath();
     }
@@ -145,7 +145,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
     @Override
     public Logger logger(Class aClass) {
         return context.logger(aClass)
-                .setMetadata(ID_INSTANCE, settings()::getId);
+                .setMetadataValue(ID_INSTANCE, settings()::getId);
     }
 
     public void onInstanceStarted(String realm, String instance) {

@@ -34,9 +34,14 @@ public class LogContext extends SystemContext implements ServiceContext {
                 .withValue(JsonItem.class)
                 .withDB(service().getDb())
                 .withCollection(service().getCollection())
+                .withProperties(service().getElastic())
                 .build(result -> {
-                    storage = result.result();
-                    future.complete();
+                    if (result.succeeded()) {
+                        storage = result.result();
+                        future.complete();
+                    } else {
+                        future.fail(result.cause());
+                    }
                 });
     }
 

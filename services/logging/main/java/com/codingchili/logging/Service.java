@@ -27,10 +27,14 @@ public class Service implements CoreService {
     @Override
     public void start(Future<Void> start) {
         future.setHandler(done -> {
-            CompositeFuture.all(
-                    context.handler(() -> new ServiceLogHandler(context)),
-                    context.handler(() -> new ClientLogHandler(context))
-            ).setHandler(untyped(start));
+            if (done.succeeded()) {
+                CompositeFuture.all(
+                        context.handler(() -> new ServiceLogHandler(context)),
+                        context.handler(() -> new ClientLogHandler(context))
+                ).setHandler(untyped(start));
+            } else {
+                start.fail(done.cause());
+            }
         });
     }
 }

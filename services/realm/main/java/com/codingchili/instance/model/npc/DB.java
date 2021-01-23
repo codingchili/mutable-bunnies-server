@@ -79,7 +79,7 @@ public class DB<E extends Storable> {
 
         logger.event(DB_LOAD)
                 .put(ID_COUNT, items.size())
-                .put(ID_TIME, (System.currentTimeMillis() - start) + "ms")
+                .put(ID_TIME, (System.currentTimeMillis() - start))
                 .send();
 
         onInvalidate.run();

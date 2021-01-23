@@ -2,7 +2,10 @@ package com.codingchili.logging.configuration;
 
 import com.codingchili.common.Strings;
 import com.codingchili.core.configuration.ServiceConfigurable;
+import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.storage.JsonMap;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.vertx.core.json.JsonObject;
 
 /**
  * @author Robin Duda
@@ -16,6 +19,7 @@ public class LogServerSettings extends ServiceConfigurable {
     private String db = "logging";
     private String collection = "events";
     private String plugin = JsonMap.class.getCanonicalName();
+    private JsonObject elastic;
 
     public LogServerSettings() {
         this.path = PATH_LOGSERVER;
@@ -103,5 +107,19 @@ public class LogServerSettings extends ServiceConfigurable {
      */
     public void setPlugin(String plugin) {
         this.plugin = plugin;
+    }
+
+    /**
+     * @return elasticsearch mapping and index settings.
+     */
+    public JsonObject getElastic() {
+        return elastic;
+    }
+
+    /**
+     * @param elastic contains elasticsearch 'mapping' and/or 'index' settings.
+     */
+    public void setElastic(Object elastic) {
+        this.elastic = Serializer.json(elastic);
     }
 }
