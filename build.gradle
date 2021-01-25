@@ -7,11 +7,10 @@ repositories {
 }
 
 project.version = "1.3.5"
-project.group = 'com.github.codingchili.chili-game-ext'
+project.group = 'com.github.codingchili.mutable'
 
 subprojects {
     plugins.apply("java")
-
 
     version = rootProject.version
     group = rootProject.group
@@ -48,16 +47,16 @@ subprojects {
 
     repositories {
         mavenLocal()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
         jcenter()
-        mavenCentral()
     }
 
     test {
         testLogging {
             exceptionFormat "full"
         }
-        reports.html.enabled = false
+        reports.html.enabled = true
     }
 }
 

@@ -1,3 +1,5 @@
+project.group = 'com.codingchili.common'
+
 dependencies {
     compile("com.github.codingchili.chili-core:core:$project.version") {
         exclude group: 'org.elasticsearch.client', module: 'elasticsearch-rest-high-level-client'
