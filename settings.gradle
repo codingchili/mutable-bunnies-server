@@ -1,6 +1,6 @@
 rootProject.name = 'server'
+//'services:banking',
 include 'common',
-        'services:banking',
         'services:authentication',
         'services:realm',
         'services:realmregistry',
