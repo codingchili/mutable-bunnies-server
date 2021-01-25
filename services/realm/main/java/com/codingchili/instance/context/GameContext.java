@@ -1,5 +1,6 @@
 package com.codingchili.instance.context;
 
+import com.codahale.metrics.Timer;
 import com.codingchili.core.context.TimerSource;
 import com.codingchili.core.logging.Logger;
 import com.codingchili.instance.model.dialog.DialogEngine;
@@ -34,6 +35,7 @@ import java.util.stream.Stream;
  */
 public class GameContext {
     public static final int TICK_INTERVAL_MS = 16;
+    private static final String GAMELOOP = "gameloop";
     private final Map<EventType, Map<String, EventProtocol>> listeners = new ConcurrentHashMap<>();
     private final Queue<Runnable> queue = new ConcurrentLinkedQueue<>();
     private final Set<Ticker> tickers = new ConcurrentHashSet<>();
@@ -54,6 +56,7 @@ public class GameContext {
 
     private final ClassDB classes;
     private final Logger logger;
+    private final Timer timer;
     private Long currentTick = 0L;
 
     public GameContext(InstanceContext instance) {
@@ -67,6 +70,7 @@ public class GameContext {
         this.structures = new LinkedGrid<>(size);
         this.classes = new ClassDB(instance);
         this.logger = instance.logger(getClass());
+        this.timer = instance.registry().timer(GAMELOOP);
 
         ticker(creatures::update, 1);
         ticker(structures::update, 5);
@@ -81,8 +85,10 @@ public class GameContext {
 
         initialize(instance.settings());
 
-        instance.periodic(TimerSource.of(TICK_INTERVAL_MS).setName(instance.address()),
-                this::tick);
+        instance.periodic(
+                TimerSource.of(TICK_INTERVAL_MS).setName(instance.address()),
+                (id) -> timer.time(() -> tick(id))
+        );
     }
 
     private void initialize(InstanceSettings settings) {
@@ -93,21 +99,19 @@ public class GameContext {
         }
     }
 
-    private void tick(Long timer) {
+    private void tick(Long id) {
         if (processing.getAndSet(true)) {
             skippedTicks.incrementAndGet();
         } else {
-
             if (skippedTicks.get() > 0) {
                 instance.skippedTicks(skippedTicks.getAndSet(0));
             }
 
             if (closed.get()) {
-                instance.cancel(timer);
+                instance.cancel(id);
             } else {
-                //instance.blocking(block -> {
-                Runnable runnable;
 
+                Runnable runnable;
                 while ((runnable = queue.poll()) != null) {
                     runnable.run();
                 }
@@ -118,18 +122,11 @@ public class GameContext {
                     }
                 });
 
-                //  block.complete();
-                //}, (done) -> {
-                //  if (done.succeeded()) {
                 currentTick++;
                 if (currentTick == Long.MAX_VALUE) {
                     currentTick = 0L;
                 }
-                //} else {
-                //    logger.onError(done.cause());
-                //}
                 processing.set(false);
-                //});
             }
         }
     }

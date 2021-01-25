@@ -50,7 +50,7 @@ public class LogContext extends SystemContext implements ServiceContext {
     }
 
     public LogServerSettings service() {
-        return Configurations.get(PATH_LOGSERVER, LogServerSettings.class);
+        return LogServerSettings.get();
     }
 
     public boolean consoleEnabled() {

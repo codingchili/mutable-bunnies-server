@@ -2,9 +2,9 @@ package com.codingchili.logging.configuration;
 
 import com.codingchili.common.Strings;
 import com.codingchili.core.configuration.ServiceConfigurable;
+import com.codingchili.core.files.Configurations;
 import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.storage.JsonMap;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -23,6 +23,10 @@ public class LogServerSettings extends ServiceConfigurable {
 
     public LogServerSettings() {
         this.path = PATH_LOGSERVER;
+    }
+
+    public static LogServerSettings get() {
+        return Configurations.get(PATH_LOGSERVER, LogServerSettings.class);
     }
 
     /**

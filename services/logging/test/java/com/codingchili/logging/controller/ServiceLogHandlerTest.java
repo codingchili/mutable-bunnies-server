@@ -2,6 +2,7 @@ package com.codingchili.logging.controller;
 
 import com.codingchili.core.context.SystemContext;
 import com.codingchili.logging.configuration.LogContext;
+import com.codingchili.logging.configuration.LogServerSettings;
 import io.vertx.core.Future;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -21,6 +22,7 @@ public class ServiceLogHandlerTest extends SharedLogHandlerTest {
     public ServiceLogHandlerTest() {
         super();
         handler = new ServiceLogHandler(context);
+        LogServerSettings.get().setClientSecret("foo".getBytes());
     }
 
     @Before

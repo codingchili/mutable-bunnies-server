@@ -1,6 +1,8 @@
 package com.codingchili.instance.context;
 
+import com.codahale.metrics.MetricRegistry;
 import com.codingchili.common.ReceivableMessage;
+import com.codingchili.core.metrics.MetricCollector;
 import com.codingchili.instance.model.entity.SpawnPoint;
 import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.PlayerCreature;
@@ -36,6 +38,7 @@ public class InstanceContext extends SystemContext implements ServiceContext {
     private static final String PLAYER_JOIN = "player.join";
     private static final String PLAYER_LEAVE = "player.leave";
     private static final int TIMEOUT_SECONDS = 30_000;
+    private final MetricCollector metrics;
     private final String settings;
     private final RealmContext context;
     private Logger logger;
@@ -49,11 +52,17 @@ public class InstanceContext extends SystemContext implements ServiceContext {
     public InstanceContext(RealmContext context, InstanceSettings instance) {
         super(context);
         this.context = context;
+        this.settings = instance.getPath();
+        this.metrics = context.metrics(address());
+
+        metrics.type("instance")
+                .metadata()
+                .put("address", address())
+                .put("realm", realm().getId())
+                .put("instance", settings().getId());
 
         this.logger = context.logger(getClass())
                 .setMetadataValue(ID_INSTANCE, instance::getId);
-
-        this.settings = instance.getPath();
     }
 
     /**
@@ -61,6 +70,13 @@ public class InstanceContext extends SystemContext implements ServiceContext {
      */
     public String address() {
         return context.realm().getId() + "." + settings().getId();
+    }
+
+    /**
+     * @return metrics reporting for the instance.
+     */
+    public MetricRegistry registry() {
+        return metrics.registry();
     }
 
     /**

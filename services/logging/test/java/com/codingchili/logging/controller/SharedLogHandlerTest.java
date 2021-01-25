@@ -50,6 +50,7 @@ public class SharedLogHandlerTest {
         Configurations.put(settings);
         SystemContext system = new SystemContext();
         settings.setLoggingSecret(new byte[]{0x0});
+        settings.setClientSecret(new byte[]{0x0});
         context = new LogContext(system, future);
         factory = new TokenFactory(context, settings.getLoggingSecret());
     }

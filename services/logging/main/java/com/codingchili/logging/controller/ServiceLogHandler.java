@@ -29,7 +29,7 @@ public class ServiceLogHandler extends AbstractLogHandler {
                 String node = logdata.getString(LOG_NODE);
 
                 if (!NODE_LOGGING.equals(node) && context.consoleEnabled()) {
-                    console.log(logdata);
+                    console.log(logdata.copy());
                 }
                 store.log(logdata);
             /*} else {
