@@ -18,11 +18,11 @@ import static com.codingchili.core.protocol.Role.PUBLIC;
  * Base log handler to receive remote logging events.
  */
 abstract class AbstractLogHandler implements CoreHandler {
+    private final Protocol<Request> protocol = new Protocol<>();
+    protected LogContext context;
     final ConsoleLogger console;
     final StorageLogger store;
-    private final Protocol<Request> protocol = new Protocol<>();
     private String address;
-    protected LogContext context;
 
     AbstractLogHandler(LogContext context, String address) {
         this.context = context;
