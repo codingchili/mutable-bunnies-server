@@ -3,7 +3,7 @@ package com.codingchili.logging.model;
 import com.codingchili.core.logging.AbstractLogger;
 import com.codingchili.core.logging.JsonLogger;
 import com.codingchili.core.logging.Logger;
-import com.codingchili.core.storage.JsonItem;
+import com.codingchili.core.storage.JsonStorable;
 import com.codingchili.logging.configuration.LogContext;
 import io.vertx.core.json.JsonObject;
 
@@ -21,7 +21,7 @@ public class StorageLogger extends AbstractLogger implements JsonLogger {
     }
 
     public Logger log(JsonObject data) {
-        JsonItem item = new JsonItem();
+        JsonStorable item = new JsonStorable();
         item.mergeIn(data);
 
         context.storage().put(item, result -> {

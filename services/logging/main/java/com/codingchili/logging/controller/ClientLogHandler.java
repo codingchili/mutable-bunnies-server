@@ -1,11 +1,16 @@
 package com.codingchili.logging.controller;
 
+import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
-import com.codingchili.core.logging.LogLevel;
+import com.codingchili.core.logging.ConsoleLogger;
+import com.codingchili.core.protocol.Api;
+import com.codingchili.core.protocol.Protocol;
+import com.codingchili.core.protocol.Roles;
 import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.protocol.exception.AuthorizationRequiredException;
 import com.codingchili.core.security.Token;
 import com.codingchili.logging.configuration.LogContext;
+import com.codingchili.logging.model.StorageLogger;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
@@ -13,6 +18,7 @@ import java.time.Instant;
 import java.util.logging.Level;
 
 import static com.codingchili.common.Strings.*;
+import static com.codingchili.core.protocol.RoleMap.PUBLIC;
 
 
 /**
@@ -20,15 +26,31 @@ import static com.codingchili.common.Strings.*;
  * <p>
  * Log handler for messages incoming from clients.
  */
-public class ClientLogHandler extends AbstractLogHandler {
+@Roles(PUBLIC)
+public class ClientLogHandler implements CoreHandler {
+    private Protocol<Request> protocol = new Protocol<>(this);
     private static final String BROWSER = "browser";
+    private LogContext context;
+    private ConsoleLogger console;
+    private StorageLogger store;
 
+    /**
+     *
+     * @param context
+     */
     public ClientLogHandler(LogContext context) {
-        super(context, NODE_CLIENT_LOGGING);
+        this.context = context;
+        this.console = new ConsoleLogger(getClass());
+        this.store = new StorageLogger(context, getClass());
     }
 
-    @Override
-    protected void logging(Request request) {
+    @Api
+    public void ping(Request request) {
+        request.accept();
+    }
+
+    @Api
+    public void logging(Request request) {
         JsonObject logdata = request.data().getJsonObject(ID_MESSAGE);
         // clients are not allowed to overwrite the following values.
         logdata.put(LOG_LEVEL, Level.INFO.getName());
@@ -54,5 +76,15 @@ public class ClientLogHandler extends AbstractLogHandler {
         } else {
             return Future.failedFuture("request is missing token.");
         }
+    }
+
+    @Override
+    public void handle(Request request) {
+        protocol.process(request);
+    }
+
+    @Override
+    public String address() {
+        return NODE_CLIENT_LOGGING;
     }
 }

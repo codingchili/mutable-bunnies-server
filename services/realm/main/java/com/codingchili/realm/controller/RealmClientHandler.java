@@ -165,6 +165,7 @@ public class RealmClientHandler implements CoreHandler {
         characters.create(creation -> {
             if (creation.succeeded()) {
                 request.accept();
+                context.onCharacterCreated(request);
             } else {
                 context.logger(getClass()).onError(creation.cause());
                 request.error(new CharacterExistsException(request.character()));

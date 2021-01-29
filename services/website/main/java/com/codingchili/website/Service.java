@@ -4,11 +4,13 @@ import com.codingchili.website.configuration.WebserverContext;
 import com.codingchili.website.configuration.WebserverSettings;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpServerOptions;
+import io.vertx.ext.web.Http2PushMapping;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.listener.CoreService;
@@ -48,6 +50,7 @@ public class Service implements CoreService {
                     .setCacheEntryTimeout(300_000L)
                     .setSendVaryHeader(false)
                     .setIndexPage(settings.getStartPage())
+                    .setHttp2PushMapping(List.of(new Http2PushMapping()))
                     .setWebRoot(settings.getResources()));
 
             router.route().last().handler(ctx -> {

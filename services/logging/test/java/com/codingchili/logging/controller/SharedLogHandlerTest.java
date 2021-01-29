@@ -5,6 +5,7 @@ import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.context.SystemContext;
 import com.codingchili.core.context.TimerSource;
 import com.codingchili.core.files.Configurations;
+import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.logging.AbstractLogger;
 import com.codingchili.core.logging.Level;
 import com.codingchili.core.protocol.Serializer;
@@ -40,7 +41,7 @@ public class SharedLogHandlerTest {
     private static final int MESSAGE_COUNT = 20;
     @Rule
     public Timeout timeout = new Timeout(50000, TimeUnit.SECONDS);
-    AbstractLogHandler handler;
+    CoreHandler handler;
     LogContext context;
     private TokenFactory factory;
     private Future<Void> future = Future.future();

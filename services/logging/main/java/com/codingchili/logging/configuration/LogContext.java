@@ -3,15 +3,12 @@ package com.codingchili.logging.configuration;
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.context.ServiceContext;
 import com.codingchili.core.context.SystemContext;
-import com.codingchili.core.files.Configurations;
 import com.codingchili.core.security.Token;
 import com.codingchili.core.security.TokenFactory;
 import com.codingchili.core.storage.AsyncStorage;
-import com.codingchili.core.storage.JsonItem;
+import com.codingchili.core.storage.JsonStorable;
 import com.codingchili.core.storage.StorageLoader;
 import io.vertx.core.Future;
-
-import static com.codingchili.logging.configuration.LogServerSettings.PATH_LOGSERVER;
 
 /**
  * @author Robin Duda
@@ -19,7 +16,7 @@ import static com.codingchili.logging.configuration.LogServerSettings.PATH_LOGSE
  * Context used by logging handlers.
  */
 public class LogContext extends SystemContext implements ServiceContext {
-    private AsyncStorage<JsonItem> storage;
+    private AsyncStorage<JsonStorable> storage;
     private TokenFactory clientFactory;
     private TokenFactory serverFactory;
 
@@ -29,9 +26,9 @@ public class LogContext extends SystemContext implements ServiceContext {
         clientFactory = new TokenFactory(this, service().getClientSecret());
         serverFactory = new TokenFactory(this, service().getLoggingSecret());
 
-        new StorageLoader<JsonItem>(context)
+        new StorageLoader<JsonStorable>(context)
                 .withPlugin(service().getPlugin())
-                .withValue(JsonItem.class)
+                .withValue(JsonStorable.class)
                 .withDB(service().getDb())
                 .withCollection(service().getCollection())
                 .withProperties(service().getElastic())
@@ -45,7 +42,7 @@ public class LogContext extends SystemContext implements ServiceContext {
                 });
     }
 
-    public AsyncStorage<JsonItem> storage() {
+    public AsyncStorage<JsonStorable> storage() {
         return storage;
     }
 

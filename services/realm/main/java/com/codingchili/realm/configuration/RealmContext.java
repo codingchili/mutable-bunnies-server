@@ -65,7 +65,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
         this.classes = new ClassDB(core);
         this.settings = settings;
         this.logger = core.logger(getClass())
-                .setMetadataValue("realm", realm()::getId);
+                .setMetadataValue(ID_REALM, realm()::getId);
 
         delivery.setSendTimeout(realm().getListener().getTimeout());
     }
@@ -245,6 +245,14 @@ public class RealmContext extends SystemContext implements ServiceContext {
     private void notify(String account, boolean online) {
         bus().send(ONLINE_SOCIAL_NODE, Serializer.json(
                 new OnlineStatusMessage(account, realm().getId(), online)));
+    }
+
+    public void onCharacterCreated(RealmRequest request) {
+        logger.event(CLIENT_CHARACTER_CREATE)
+                .put(ID_CHARACTER, request.character())
+                .put(ID_ACCOUNT, request.account())
+                .put(ID_PLAYERCLASS, request.classId())
+                .send();
     }
 
     public void clearInstance(RealmRequest request) {

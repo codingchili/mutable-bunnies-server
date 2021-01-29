@@ -26,12 +26,12 @@ public class Service implements CoreService {
 
     @Override
     public void start(Future<Void> start) {
-        future.setHandler(done -> {
+        future.onComplete(done -> {
             if (done.succeeded()) {
                 CompositeFuture.all(
                         context.handler(() -> new ServiceLogHandler(context)),
                         context.handler(() -> new ClientLogHandler(context))
-                ).setHandler(untyped(start));
+                ).onComplete(untyped(start));
             } else {
                 start.fail(done.cause());
             }
