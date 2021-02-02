@@ -53,7 +53,7 @@ public class ServiceLogHandler implements CoreHandler {
         if (!NODE_LOGGING.equals(node) && context.consoleEnabled()) {
             console.log(logdata.copy());
         }
-        process(logdata);
+        //process(logdata);
         store.log(logdata);
     }
 
