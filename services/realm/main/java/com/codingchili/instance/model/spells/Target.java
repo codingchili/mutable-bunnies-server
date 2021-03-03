@@ -5,5 +5,9 @@ package com.codingchili.instance.model.spells;
  * Required for spellcasting.
  */
 enum Target {
-    caster, area, ray, cone, selected, line, trap, point
+    caster,
+    selected,
+    area,
+    cone,
+    line
 }
