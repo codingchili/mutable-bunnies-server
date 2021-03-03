@@ -161,11 +161,13 @@ public class InventoryEngine {
             if (item.getOnUse() != null) {
                 Scripted scripted = new ScriptReference(item.onUse);
                 var failed = new AtomicBoolean(false);
+                var called = new AtomicBoolean(false);
 
                 // show notification banner on error.
                 var fail = (Consumer<String>) (message) -> {
                     source.handle(new NotificationEvent(message));
                     failed.set(true);
+                    called.set(true);
                 };
 
                 // consume the item on success.
@@ -175,6 +177,7 @@ public class InventoryEngine {
                     if (item.getQuantity() < 1) {
                         inventory.getItems().remove(item);
                     }
+                    called.set(true);
                 };
 
                 Bindings bindings = new Bindings();
@@ -189,7 +192,7 @@ public class InventoryEngine {
 
                 scripted.apply(bindings);
 
-                if (!failed.get()) {
+                if (!called.get()) {
                     // assume success if fail is not called - prefer to consume item without effects.
                     success.run();
                 }
