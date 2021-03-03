@@ -1,18 +1,17 @@
 package com.codingchili.instance.model.skills;
 
-import com.codingchili.core.context.CoreRuntimeException;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.model.entity.Entity;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.npc.Structure;
-import com.codingchili.instance.model.spells.ActiveSpell;
-import com.codingchili.instance.model.spells.SpellStage;
-import com.codingchili.instance.model.spells.SpellTarget;
+import com.codingchili.instance.model.spells.*;
 import com.codingchili.instance.scripting.Bindings;
 
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
+
+import com.codingchili.core.context.CoreRuntimeException;
 
 /**
  * Implementation of the Mining spell in Java.
@@ -87,7 +86,7 @@ public class Mining<T> implements Function<Bindings, Boolean> {
         // effectiveness affects drop rate and failure rate.
         float roll = random.nextFloat();
         boolean success = roll < harvest.getSuccess() * effectiveness;
-        boolean failure = roll < harvest.getFail() * effectiveness;
+        boolean failure = roll < harvest.getFail() * (1.0f / effectiveness);
 
         if (success) {
             game.inventory().items().getById(harvest.getId()).ifPresent(item -> {
