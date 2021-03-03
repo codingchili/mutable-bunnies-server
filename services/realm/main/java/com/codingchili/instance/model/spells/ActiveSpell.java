@@ -25,6 +25,8 @@ public class ActiveSpell {
     public static final String ACTIVE = "active";
     public static final String SPELLS = "spells";
     public static final String STAGE = "stage";
+    public static final String SPELL = "spell";
+
     private transient Bindings bindings = null;
     private transient int interval;
     private SpellCycle cycle = SpellCycle.CASTING;
@@ -118,6 +120,7 @@ public class ActiveSpell {
     private Bindings getBindings(GameContext game) {
         if (bindings == null) {
             bindings = new Bindings();
+            bindings.put(SPELL, spell);
             bindings.put(SOURCE, source);
             bindings.put(TARGET, target);
             bindings.put(SPELLS, game.spells());
