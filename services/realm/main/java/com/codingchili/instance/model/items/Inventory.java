@@ -1,11 +1,10 @@
 package com.codingchili.instance.model.items;
 
-import com.codingchili.instance.model.stats.*;
+import com.codingchili.instance.model.stats.Stats;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.codingchili.core.context.CoreRuntimeException;
 
@@ -56,6 +55,10 @@ public class Inventory implements Serializable {
             items.add(item);
         }
         return this;
+    }
+
+    public void addAll(Collection<Item> items) {
+        items.forEach(this::add);
     }
 
     public Integer getCurrency() {

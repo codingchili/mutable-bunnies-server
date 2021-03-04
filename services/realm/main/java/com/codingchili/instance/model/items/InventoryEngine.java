@@ -28,9 +28,8 @@ public class InventoryEngine {
     private static final String ITEM = "item";
     private static final String SPELLS = "spells";
     private static final String SKILLS = "skills";
-    public static final String REFUND = "refund";
-    public static final String SUCCESS = "success";
-    public static final String FAIL = "fail";
+    private static final String SUCCESS = "success";
+    private static final String FAIL = "fail";
     private ItemDB items;
     private GameContext game;
 
@@ -263,6 +262,19 @@ public class InventoryEngine {
             source.getInventory().add(item);
             update(source);
         }
+    }
+
+    /**
+     * Takes all items out of the loot container and moves it into the
+     * inventory of the looter. No subscription is required.
+     *
+     * @param source the creature performing the looting.
+     * @param targetId the if of the container that holds the loot.
+     */
+    public void takeAll(Creature source, String targetId) {
+        LootableEntity entity = game.getById(targetId);
+        source.getInventory().addAll(entity.takeAll());
+        update(source);
     }
 
     /**

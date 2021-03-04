@@ -1,15 +1,15 @@
 package com.codingchili.instance.model.npc;
 
-import com.codingchili.core.files.Configurations;
 import com.codingchili.instance.context.GameContext;
-import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.entity.Vector;
-import com.codingchili.instance.model.items.ListEntityLootEvent;
+import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.items.Item;
+import com.codingchili.instance.model.items.ListEntityLootEvent;
 
 import java.util.*;
 
 import com.codingchili.core.context.CoreRuntimeException;
+import com.codingchili.core.files.Configurations;
 
 import static com.codingchili.instance.model.entity.Interaction.DESCRIPTION;
 
@@ -28,6 +28,13 @@ public class LootableEntity extends SimpleEntity {
     private transient Entity corpse;
     private String corpseOf;
     private long timer;
+
+    private LootableEntity(Vector vector, List<Item> items) {
+        this.vector = vector.copy();
+        this.items = items;
+        this.interactions.add(Interaction.LOOT);
+        this.vector.stop();
+    }
 
     /**
      * Creates a new container used to store the loot of the given corpse.
@@ -81,13 +88,6 @@ public class LootableEntity extends SimpleEntity {
         entity.setModel(model);
 
         return entity;
-    }
-
-    private LootableEntity(Vector vector, List<Item> items) {
-        this.vector = vector.copy();
-        this.items = items;
-        this.interactions.add(Interaction.LOOT);
-        this.vector.stop();
     }
 
     private static LootableConfiguration configuration() {
@@ -153,26 +153,30 @@ public class LootableEntity extends SimpleEntity {
         return configuration().isRemoveWhenEmpty();
     }
 
+    private void changed() {
+        notifySubscribers();
+
+        if (!isCorpse() && items.size() == 0) {
+            game.remove(this);
+        }
+    }
+
+    public Collection<Item> takeAll() {
+        var items = new ArrayList<>(this.items);
+        this.items.clear();
+        changed();
+        return items;
+    }
+
     public Item takeItem(String itemId) {
-        Item found = null;
+        var found = items.stream()
+                .filter(entry -> entry.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new CoreRuntimeException("Item is not available."));
 
-        for (Item item : items) {
-            if (item.getId().equals(itemId)) {
-                found = item;
-                break;
-            }
-        }
-        if (found != null) {
-            items.remove(found);
-            notifySubscribers();
-
-            if (!isCorpse() && items.size() == 0) {
-                game.remove(this);
-            }
-            return found;
-        } else {
-            throw new CoreRuntimeException("Item is not available.");
-        }
+        items.remove(found);
+        changed();
+        return found;
     }
 
     public boolean subscribed(Creature source) {
