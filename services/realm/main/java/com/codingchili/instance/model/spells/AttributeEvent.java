@@ -4,12 +4,16 @@ import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.Entity;
 import com.codingchili.instance.model.events.*;
 
+import java.util.Random;
+
 /**
  * @author Robin Duda
  * <p>
  * Event fired when a creature takes damage;
  */
 public class AttributeEvent implements Event {
+    private static final Random random = new Random();
+    private static final float DEFAULT_VARY = 15.0f;
     private Entity target;
     private Entity source;
     private ModifierType type;
@@ -114,8 +118,9 @@ public class AttributeEvent implements Event {
         return current;
     }
 
-    public void setValue(double value) {
+    public AttributeEvent setValue(double value) {
         this.value = value;
+        return this;
     }
 
     public String getEffect() {
@@ -132,6 +137,16 @@ public class AttributeEvent implements Event {
 
     public double getValue() {
         return value;
+    }
+
+    public AttributeEvent vary() {
+        vary(DEFAULT_VARY);
+        return this;
+    }
+
+    public AttributeEvent vary(float percent) {
+        value += ((random.nextBoolean() ? -1.0 : 1.0) * (random.nextFloat() * (percent / 100.0f)) * value);
+        return this;
     }
 
     @Override
