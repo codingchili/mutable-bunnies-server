@@ -41,12 +41,12 @@ public class InventoryHandler implements GameHandler {
 
     @Api
     public void equip_item(InstanceRequest request) {
-        inventory.equip(creature(request), request.raw(EquipItemEvent.class).getItemId());
+        inventory.equip(creature(request), request.raw(EquipItemRequest.class).getItemId());
     }
 
     @Api
     public void unequip_item(InstanceRequest request) {
-        inventory.unequip(creature(request), request.raw(UnequipItemEvent.class).getSlot());
+        inventory.unequip(creature(request), request.raw(UnequipItemRequest.class).getSlot());
     }
 
     @Api
