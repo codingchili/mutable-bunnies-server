@@ -106,6 +106,7 @@ public class InventoryEngine {
         }
         update(source);
         game.publish(new StatsUpdateEvent(source));
+        game.publish(new UnequipItemEvent(source, slot));
     }
 
     /**
@@ -117,24 +118,28 @@ public class InventoryEngine {
     public void equip(Creature source, String itemId) {
         Inventory inventory = source.getInventory();
         Item item = inventory.getById(itemId);
+        Slot slot = item.getSlot();
 
         if (!item.getSlot().equals(Slot.none)) {
             int position = inventory.getItems().indexOf(item);
             inventory.getItems().remove(item);
 
             if (inventory.getEquipped().containsKey(item.getSlot())) {
-                inventory.getItems().add(position,
-                        inventory.getEquipped().replace(item.getSlot(), item));
+                // if slot is weapon and offhand is free, equip to offhand.
+                if (Slot.weapon == item.getSlot() && !inventory.getEquipped().containsKey(Slot.offhand)) {
+                    inventory.getEquipped().put(Slot.offhand, item);
+                    slot = Slot.offhand;
+                } else {
+                    inventory.getItems().add(position,
+                            inventory.getEquipped().replace(item.getSlot(), item));
+                }
             } else {
                 inventory.getEquipped().put(item.slot, item);
             }
             update(source);
 
             game.publish(new StatsUpdateEvent(source));
-            game.publish(new EquipItemEvent()
-                    .setItemId(item.getId())
-                    .setIcon(item.getIcon())
-                    .setSource(source.getId()));
+            game.publish(new EquipItemEvent(source, item, slot));
         } else {
             throw new CoreRuntimeException("Not able to equip item: " + item.getName());
         }
