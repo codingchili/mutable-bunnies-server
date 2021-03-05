@@ -3,8 +3,8 @@ apply plugin: 'java'
 subprojects {
     dependencies {
         compile project(':common')
-        testCompile 'io.vertx:vertx-unit:3.8.0'
-        testCompile 'junit:junit:4.12'
+        testCompile 'io.vertx:vertx-unit:3.9.5'
+        testCompile 'junit:junit:4.13.1'
     }
 }
 
