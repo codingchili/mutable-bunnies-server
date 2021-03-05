@@ -14,15 +14,15 @@ import java.util.function.Supplier;
 public class Model {
     private String graphics = "game/placeholder.png";
     private String skin;
-    private String tint = "#ffffff";
+    private String tint;
     private TileConfig tile;
-    private float rotation = 0;
-    private float scale = 1.0f;
-    private Hitbox hitbox = new Hitbox();
-    private boolean blocking = false;
-    private boolean revertX = false;
-    private Point pivot = new Point(0, 0);
-    private int layer = 5;
+    private Float rotation;
+    private Float scale = 1.0f;
+    private Hitbox hitbox;
+    private Boolean blocking;
+    private Boolean revertX;
+    private Point pivot;
+    private Integer layer;
 
     public Model copy() {
         return new Model()
@@ -56,11 +56,11 @@ public class Model {
         return this;
     }
 
-    public float getRotation() {
+    public Float getRotation() {
         return rotation;
     }
 
-    public Model setRotation(float rotation) {
+    public Model setRotation(Float rotation) {
         this.rotation = rotation;
         return this;
     }
@@ -80,11 +80,11 @@ public class Model {
     /**
      * @return the scale at which the hitbox and sprite should be rendered.
      */
-    public float getScale() {
+    public Float getScale() {
         return scale;
     }
 
-    public Model setScale(float scale) {
+    public Model setScale(Float scale) {
         this.scale = scale;
         return this;
     }
@@ -92,11 +92,11 @@ public class Model {
     /**
      * @return indicates if the model is penetrable by a player or not.
      */
-    public boolean isBlocking() {
+    public Boolean isBlocking() {
         return blocking;
     }
 
-    public Model setBlocking(boolean blocking) {
+    public Model setBlocking(Boolean blocking) {
         this.blocking = blocking;
         return this;
     }
@@ -116,11 +116,11 @@ public class Model {
     /**
      * @return the layer at which the graphic will be rendered.
      */
-    public int getLayer() {
+    public Integer getLayer() {
         return layer;
     }
 
-    public Model setLayer(int layer) {
+    public Model setLayer(Integer layer) {
         this.layer = layer;
         return this;
     }
@@ -137,7 +137,7 @@ public class Model {
         return this;
     }
 
-    public boolean isRevertX() {
+    public Boolean isRevertX() {
         return revertX;
     }
 
