@@ -6,5 +6,5 @@ package com.codingchili.instance.model.items;
  * Different types of weapons, configured in class and enforced in inventory.
  */
 public enum WeaponType {
-    staff, bow, dagger, hammer, sword, battleaxe, none
+    staff, bow, dagger, hammer, sword, battleaxe, flail, shield, none
 }
