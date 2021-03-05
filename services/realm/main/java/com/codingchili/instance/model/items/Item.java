@@ -1,6 +1,8 @@
 package com.codingchili.instance.model.items;
 
 import com.codingchili.core.protocol.Serializer;
+
+import com.codingchili.instance.model.entity.Model;
 import com.codingchili.instance.model.stats.*;
 
 import java.util.UUID;
@@ -14,6 +16,7 @@ import com.codingchili.core.storage.Storable;
  */
 public class Item extends ItemType implements Storable {
     private String id = UUID.randomUUID().toString();
+    private Model model = null;
     protected String icon = "dagger.png";
     protected String name = "no name";
     protected String description = "no description.";
@@ -21,7 +24,7 @@ public class Item extends ItemType implements Storable {
     protected ItemRarity rarity = ItemRarity.common;
     protected Integer quantity = 1;
     protected String onDamaged = null;
-    protected String onHit = null;
+    protected String onAttack = null;
     protected String onUse = null;
 
     public Boolean isConsumable() {
@@ -46,6 +49,14 @@ public class Item extends ItemType implements Storable {
         return this;
     }
 
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
     public Stats getStats() {
         return stats;
     }
@@ -55,12 +66,12 @@ public class Item extends ItemType implements Storable {
         return this;
     }
 
-    public String getOnHit() {
-        return onHit;
+    public String getOnAttack() {
+        return onAttack;
     }
 
-    public Item setOnHit(String onHit) {
-        this.onHit = onHit;
+    public Item setOnAttack(String onAttack) {
+        this.onAttack = onAttack;
         return this;
     }
 
@@ -138,7 +149,7 @@ public class Item extends ItemType implements Storable {
             weaponType = WeaponType.battleaxe;
             name = "Bottlax of Killah";
             onUse = "slurp.groovy";
-            onHit = "boom.groovy";
+            onAttack = "boom.groovy";
             onDamaged = "zap.groovy";
             icon = "dagger.png";
             quantity = 99;
