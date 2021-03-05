@@ -21,6 +21,7 @@ import com.codingchili.core.storage.StorageLoader;
  * Context wrapper for the social service.
  */
 public class SocialContext extends SystemContext {
+    private static final String FRIENDS = "friends";
     private OnlineDB online;
     private AsyncFriendStore friends;
     private TokenFactory factory;
@@ -49,6 +50,7 @@ public class SocialContext extends SystemContext {
         new StorageLoader<FriendList>(core)
                 .withPlugin(context.settings().getStorage())
                 .withValue(FriendList.class)
+                .withDB(FRIENDS)
                 .build(storage -> {
                     if (storage.succeeded()) {
                         context.setFriends(new FriendsDB(storage.result(), context.online()));
