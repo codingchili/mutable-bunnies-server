@@ -1,24 +1,18 @@
 package com.codingchili.instance.model.dialog;
 
-import com.codingchili.core.listener.Receiver;
-import com.codingchili.core.protocol.Api;
-import com.codingchili.core.protocol.Description;
-import com.codingchili.core.protocol.Protocol;
-import com.codingchili.core.protocol.Role;
 import com.codingchili.instance.context.GameContext;
 import com.codingchili.instance.context.InstanceSettings;
 import com.codingchili.instance.model.admin.AdminEvent;
-import com.codingchili.instance.model.entity.Entity;
-import com.codingchili.instance.model.entity.PlayerCreature;
-import com.codingchili.instance.model.entity.SpawnConfig;
-import com.codingchili.instance.model.events.Event;
-import com.codingchili.instance.model.events.EventType;
-import com.codingchili.instance.model.events.NotificationEvent;
+import com.codingchili.instance.model.entity.*;
+import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.npc.NoSuchNpcException;
 import com.codingchili.realm.configuration.RealmSettings;
 
 import java.lang.reflect.Method;
 import java.util.function.Consumer;
+
+import com.codingchili.core.listener.Receiver;
+import com.codingchili.core.protocol.*;
 
 /**
  * @author Robin Duda
@@ -45,14 +39,14 @@ public class AdminEngine implements Receiver<AdminEvent> {
     @Api
     @Description("promotes the given user account to admin")
     public void promote(AdminEvent event) {
-        PlayerCreature player = game.getById(event.getId());
+        PlayerCreature player = game.getById(event.getEntity());
         realm(settings -> settings.getAdmins().add(player.getAccount()));
     }
 
     @Api
     @Description("demotes the given user account admin privilegies.")
     public void demote(AdminEvent event) {
-        PlayerCreature player = game.getById(event.getId());
+        PlayerCreature player = game.getById(event.getEntity());
         realm(settings -> settings.getAdmins().remove(player.getAccount()));
     }
 
@@ -69,6 +63,13 @@ public class AdminEngine implements Receiver<AdminEvent> {
     }
 
     @Api
+    @Description("gives the target quantity exp")
+    public void exp(AdminEvent event) {
+        Creature target = game.getById(event.getEntity());
+        game.spells().experience(target, event.getQuantity());
+    }
+
+    @Api
     @Description("kick the targeted user")
     public void kick(AdminEvent event) {
         game.remove(game.getById(event.getEntity()));
@@ -76,7 +77,7 @@ public class AdminEngine implements Receiver<AdminEvent> {
 
     @Api
     @Description("teleport to the given instance id")
-    public void teleport(AdminEvent event) {
+    public void tele(AdminEvent event) {
         game.movement().travel(game.getById(event.getEntity()), event.getId());
     }
 
@@ -87,12 +88,12 @@ public class AdminEngine implements Receiver<AdminEvent> {
     }
 
     @Api
-    @Description("slays the targeted creature for millions of damage.")
-    public void slay(AdminEvent event) {
+    @Description("smites the targeted creature for millions of damage.")
+    public void smite(AdminEvent event) {
         game.spells().damage(game.getById(event.getTarget()), game.getById(event.getEntity()))
                 .effect("slay")
                 .critical(true)
-                .physical((double) Integer.MIN_VALUE)
+                .magical(-32_000_000.0)
                 .apply();
     }
 
@@ -105,7 +106,7 @@ public class AdminEngine implements Receiver<AdminEvent> {
     @Api
     @Description("get the id of the logged in account of the player")
     public void identify(AdminEvent event) {
-        game.getById(event.getTarget()).handle(
+        game.getById(event.getEntity()).handle(
                 new Identification(game.getById(event.getEntity()))
         );
     }
