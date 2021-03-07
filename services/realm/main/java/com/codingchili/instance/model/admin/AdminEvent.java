@@ -32,10 +32,10 @@ public class AdminEvent implements Event {
             CommandParser parser = new CommandParser(line.split(" "));
             parser.getCommand().ifPresent(command -> {
                 this.command = command;
-                this.entity = parser.getValue("--entity").orElse(this.entity);
+                this.entity = parser.getValue("-e").orElse(this.entity);
                 this.message = String.join(" ", parser.getAllValues("--message"));
-                this.id = parser.getValue("--id").orElse(this.id);
-                parser.getValue("--quantity").ifPresent(value -> {
+                this.id = parser.getValue("-i").orElse(this.id);
+                parser.getValue("-q").ifPresent(value -> {
                     this.quantity = Integer.parseInt(value);
                 });
             });
