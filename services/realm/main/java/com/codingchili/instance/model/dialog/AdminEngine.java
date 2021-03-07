@@ -44,7 +44,7 @@ public class AdminEngine implements Receiver<AdminEvent> {
     }
 
     @Api
-    @Description("demotes the given user account admin privilegies.")
+    @Description("remove admin privileges from target.")
     public void demote(AdminEvent event) {
         PlayerCreature player = game.getById(event.getEntity());
         realm(settings -> settings.getAdmins().remove(player.getAccount()));
@@ -88,7 +88,7 @@ public class AdminEngine implements Receiver<AdminEvent> {
     }
 
     @Api
-    @Description("smites the targeted creature for millions of damage.")
+    @Description("smites the targeted creature millions of dmg.")
     public void smite(AdminEvent event) {
         game.spells().damage(game.getById(event.getTarget()), game.getById(event.getEntity()))
                 .effect("slay")
@@ -98,7 +98,7 @@ public class AdminEngine implements Receiver<AdminEvent> {
     }
 
     @Api
-    @Description("display a notification banner for all players on the instance.")
+    @Description("display a notification banner for the instance.")
     public void banner(AdminEvent event) {
         game.publish(new NotificationEvent(event.getMessage()));
     }
@@ -106,7 +106,7 @@ public class AdminEngine implements Receiver<AdminEvent> {
     @Api
     @Description("get the id of the logged in account of the player")
     public void identify(AdminEvent event) {
-        game.getById(event.getEntity()).handle(
+        game.getById(event.getTarget()).handle(
                 new Identification(game.getById(event.getEntity()))
         );
     }
