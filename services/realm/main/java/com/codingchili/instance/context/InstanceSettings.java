@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.codingchili.core.configuration.Configurable;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import static com.codingchili.common.Strings.PATH_INSTANCE;
 import static com.codingchili.core.configuration.CoreStrings.EXT_YAML;
@@ -23,6 +22,7 @@ public class InstanceSettings implements Configurable {
     private String id;
     private String name = "default";
     private String texture = "";
+    private String ambient;
     private Skybox skybox = new Skybox();
     private int limit = 0;
     private Scripted onStartup;
@@ -47,6 +47,21 @@ public class InstanceSettings implements Configurable {
      */
     protected InstanceSettings setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    /**
+     * @return ambient sound resource for the instance.
+     */
+    public String getAmbient() {
+        return ambient;
+    }
+
+    /**
+     * @param ambient sound resource for the instance.
+     */
+    public InstanceSettings setAmbient(String ambient) {
+        this.ambient = ambient;
         return this;
     }
 
