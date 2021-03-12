@@ -26,20 +26,24 @@ public class LogContext extends SystemContext implements ServiceContext {
         clientFactory = new TokenFactory(this, service().getClientSecret());
         serverFactory = new TokenFactory(this, service().getLoggingSecret());
 
-        new StorageLoader<JsonStorable>(context)
-                .withPlugin(service().getPlugin())
-                .withValue(JsonStorable.class)
-                .withDB(service().getDb())
-                .withCollection(service().getCollection())
-                .withProperties(service().getElastic())
-                .build(result -> {
-                    if (result.succeeded()) {
-                        storage = result.result();
-                        future.complete();
-                    } else {
-                        future.fail(result.cause());
-                    }
-                });
+        if (storageEnabled()) {
+            new StorageLoader<JsonStorable>(context)
+                    .withPlugin(service().getPlugin())
+                    .withValue(JsonStorable.class)
+                    .withDB(service().getDb())
+                    .withCollection(service().getCollection())
+                    .withProperties(service().getElastic())
+                    .build(result -> {
+                        if (result.succeeded()) {
+                            storage = result.result();
+                            future.complete();
+                        } else {
+                            future.fail(result.cause());
+                        }
+                    });
+        } else {
+            future.complete();
+        }
     }
 
     public AsyncStorage<JsonStorable> storage() {
@@ -52,6 +56,10 @@ public class LogContext extends SystemContext implements ServiceContext {
 
     public boolean consoleEnabled() {
         return service().getConsole();
+    }
+
+    public boolean storageEnabled() {
+        return service().getStorage();
     }
 
     public Future<Void> verifyClientToken(Token token) {

@@ -24,11 +24,13 @@ public class StorageLogger extends AbstractLogger implements JsonLogger {
         JsonStorable item = new JsonStorable();
         item.mergeIn(data);
 
-        context.storage().put(item, result -> {
-            if (result.failed()) {
-                throw new RuntimeException(result.cause());
-            }
-        });
+        if (context.storageEnabled()) {
+            context.storage().put(item, result -> {
+                if (result.failed()) {
+                    throw new RuntimeException(result.cause());
+                }
+            });
+        }
         return this;
     }
 

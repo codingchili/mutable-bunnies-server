@@ -16,6 +16,7 @@ public class LogServerSettings extends ServiceConfigurable {
     private byte[] loggingSecret;
     private byte[] clientSecret;
     private Boolean console = true;
+    private Boolean storage = false;
     private String db = "logging";
     private String collection = "events";
     private String plugin = JsonMap.class.getCanonicalName();
@@ -125,5 +126,19 @@ public class LogServerSettings extends ServiceConfigurable {
      */
     public void setElastic(Object elastic) {
         this.elastic = Serializer.json(elastic);
+    }
+
+    /**
+     * @return true if plugin-based storage should be used.
+     */
+    public Boolean getStorage() {
+        return storage;
+    }
+
+    /**
+     * @param storage true if plugin-based storage should be used.
+     */
+    public void setStorage(Boolean storage) {
+        this.storage = storage;
     }
 }
