@@ -1,5 +1,4 @@
 rootProject.name = 'server'
-//'services:banking',
 include 'common',
         'services:authentication',
         'services:realm',
@@ -8,4 +7,5 @@ include 'common',
         'services:router',
         'services:logging',
         'services:website',
+        'services:banking',
         'client'
