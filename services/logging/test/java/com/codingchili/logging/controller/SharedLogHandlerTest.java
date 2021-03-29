@@ -1,18 +1,6 @@
 package com.codingchili.logging.controller;
 
 import com.codingchili.common.Strings;
-import com.codingchili.core.context.CoreContext;
-import com.codingchili.core.context.SystemContext;
-import com.codingchili.core.context.TimerSource;
-import com.codingchili.core.files.Configurations;
-import com.codingchili.core.listener.CoreHandler;
-import com.codingchili.core.logging.AbstractLogger;
-import com.codingchili.core.logging.Level;
-import com.codingchili.core.protocol.Serializer;
-import com.codingchili.core.security.Token;
-import com.codingchili.core.security.TokenFactory;
-import com.codingchili.core.testing.RequestMock;
-import com.codingchili.core.testing.ResponseListener;
 import com.codingchili.logging.configuration.LogContext;
 import com.codingchili.logging.configuration.LogServerSettings;
 import io.vertx.core.Future;
@@ -27,8 +15,18 @@ import org.junit.runner.RunWith;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.codingchili.core.configuration.CoreStrings.ID_MESSAGE;
-import static com.codingchili.core.configuration.CoreStrings.ID_TOKEN;
+import com.codingchili.core.context.*;
+import com.codingchili.core.files.Configurations;
+import com.codingchili.core.listener.CoreHandler;
+import com.codingchili.core.logging.AbstractLogger;
+import com.codingchili.core.logging.Level;
+import com.codingchili.core.protocol.Serializer;
+import com.codingchili.core.security.Token;
+import com.codingchili.core.security.TokenFactory;
+import com.codingchili.core.testing.RequestMock;
+import com.codingchili.core.testing.ResponseListener;
+
+import static com.codingchili.core.configuration.CoreStrings.*;
 
 /**
  * @author Robin Duda
@@ -47,7 +45,9 @@ public class SharedLogHandlerTest {
     private Future<Void> future = Future.future();
 
     public SharedLogHandlerTest() {
-        LogServerSettings settings = new LogServerSettings();
+        LogServerSettings settings = new LogServerSettings()
+                .setStorage(true);
+
         Configurations.put(settings);
         SystemContext system = new SystemContext();
         settings.setLoggingSecret(new byte[]{0x0});
@@ -60,9 +60,11 @@ public class SharedLogHandlerTest {
     public void setUp(TestContext test) {
         Async async = test.async();
 
-        future.setHandler(done -> context.storage().clear(cleared -> {
-            async.complete();
-        }));
+        future.setHandler(done -> {
+            context.storage().clear(cleared -> {
+                async.complete();
+            });
+        });
     }
 
     @After

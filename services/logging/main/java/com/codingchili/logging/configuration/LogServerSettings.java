@@ -137,8 +137,10 @@ public class LogServerSettings extends ServiceConfigurable {
 
     /**
      * @param storage true if plugin-based storage should be used.
+     * @return fluent
      */
-    public void setStorage(Boolean storage) {
+    public LogServerSettings setStorage(Boolean storage) {
         this.storage = storage;
+        return this;
     }
 }

@@ -1,4 +1,4 @@
-# Mutable Bunnies [![Build Status](https://travis-ci.org/codingchili/mutable-bunnies-server.svg?branch=master)](https://travis-ci.org/codingchili/mutable-bunnies-server)
+# Mutable Bunnies [![Build Status](https://travis-ci.com/codingchili/mutable-bunnies-server.svg?branch=master)](https://travis-ci.com/codingchili/mutable-bunnies-server)
 
 A microservices based distributed 2d MMORPG with Hazelcast and Vert.x on Java 11, currently 20k LOC + configuration.
 
