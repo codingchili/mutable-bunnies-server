@@ -10,7 +10,6 @@ import com.codingchili.instance.model.entity.Creature;
 import com.codingchili.instance.model.entity.Grid;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.instance.model.items.StatsUpdateEvent;
-import com.codingchili.instance.model.skills.SkillType;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
 import com.codingchili.instance.scripting.Bindings;
@@ -33,7 +32,7 @@ public class SpellEngine {
     private Map<Creature, ActiveSpell> casting = new ConcurrentHashMap<>();
     private Collection<ActiveSpell> active = new ConcurrentLinkedQueue<>();
     private Collection<Projectile> projectiles = new ConcurrentLinkedQueue<>();
-    private SpellLog spellLog;
+    private EventLog eventLog;
     private Grid<Creature> creatures;
     private AfflictionDB afflictions;
     private SpellDB spells;
@@ -49,7 +48,7 @@ public class SpellEngine {
         this.creatures = game.creatures();
         this.spells = new SpellDB(game.instance());
         this.afflictions = new AfflictionDB(game.instance());
-        this.spellLog = new SpellLog(game);
+        this.eventLog = new EventLog(game);
 
         game.ticker(this::tick, GameContext.secondsToTicks(0.1));
     }

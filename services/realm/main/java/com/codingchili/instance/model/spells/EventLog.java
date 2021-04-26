@@ -22,41 +22,37 @@ import java.util.UUID;
  *
  * todo: filter for creatures only?
  */
-public class SpellLog implements Receiver<Event> {
+public class EventLog implements Receiver<Event> {
     private EventProtocol protocol = new EventProtocol(this);
     private Map<String, List<SpellLogEntry>> logs = new HashMap<>();
-    private Logger logger;
     private GameContext game;
+    private Logger logger;
 
-    public SpellLog(GameContext game) {
+    public EventLog(GameContext game) {
         game.subscribe(UUID.randomUUID().toString(), protocol);
         logger = game.getLogger(getClass());
     }
 
     @Api
     public void spawn(SpawnEvent spawn) {
-        // clear logs on spawn/despawn.
-        //logger.log("something spawned");
         logs.remove(spawn.getSource());
     }
 
     @Api
     public void despawn(DespawnEvent spawn) {
-        // clear logs on spawn/despawn.
-        //logger.log("something despawned");
         logs.remove(spawn.getSource());
     }
 
     @Api
     public void death(DeathEvent event) {
-        // record death
-        //logger.log("something died");
+        logs.remove(event.getSource());
     }
 
     @Api
     public void attribute(AttributeEvent event) {
-        // record damage, remove old damage events too old. <addeddate, event>
-        //logger.log("something damaged");
+        //event.getEffect();
+        //event.getSourceId();
+        //event.getType()
     }
 
     @Override
