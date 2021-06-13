@@ -27,8 +27,7 @@ git submodule update --init --recursive
 
 ## Building
 
-- Requires Polymer-cli.
-- Requires Bower.
+- Requires node/npm
 
 Builds the project and runs all tests.
 ```console
