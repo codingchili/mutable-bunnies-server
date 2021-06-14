@@ -8,6 +8,7 @@ public class SkillChangeEvent implements Event {
     private SkillProgress skill;
     private Boolean levelup = false;
     private Boolean learned = false;
+    private String creatureId;
     private int experience;
 
     public SkillChangeEvent(PlayerCreature player, SkillType type) {
@@ -57,5 +58,14 @@ public class SkillChangeEvent implements Event {
     @Override
     public EventType getRoute() {
         return EventType.skill_change;
+    }
+
+    public Event setCreatureId(String id) {
+        this.creatureId = id;
+        return this;
+    }
+
+    public String getCreatureId() {
+        return creatureId;
     }
 }

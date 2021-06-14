@@ -304,6 +304,6 @@ public class GameContext {
     }
 
     public static float msToSeconds(long ms) {
-        return ms / 1000;
+        return ms / 1000.0f;
     }
 }

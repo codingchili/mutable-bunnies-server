@@ -53,4 +53,12 @@ public class MovementHandler implements GameHandler {
         Creature creature = game.getById(request.target());
         engine.moveTo(creature, movement.getVector());
     }
+
+    @Api
+    public void follow(InstanceRequest request) {
+        MovementEvent movement = request.raw(MovementEvent.class);
+        Creature source = game.getById(request.target());
+        Creature target = game.getById(movement.getCreatureId());
+        engine.follow(source, target);
+    }
 }

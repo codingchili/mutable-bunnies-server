@@ -5,11 +5,13 @@ import com.codingchili.instance.model.entity.Vector;
 import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.items.Item;
 import com.codingchili.instance.model.items.ListEntityLootEvent;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.*;
 
 import com.codingchili.core.context.CoreRuntimeException;
 import com.codingchili.core.files.Configurations;
+import com.codingchili.core.protocol.Serializer;
 
 import static com.codingchili.instance.model.entity.Interaction.DESCRIPTION;
 
@@ -24,8 +26,9 @@ import static com.codingchili.instance.model.entity.Interaction.DESCRIPTION;
 public class LootableEntity extends SimpleEntity {
     private static transient final Random random = new Random();
     private final Set<String> subscribers = new HashSet<>();
-    private final List<Item> items;
     private transient Entity corpse;
+    private final List<Item> items;
+    private Vector sourceVector;
     private String corpseOf;
     private long timer;
 
@@ -69,25 +72,37 @@ public class LootableEntity extends SimpleEntity {
      * @return an entity that can be added to the game context.
      */
     public static LootableEntity dropped(Vector source, Item item) {
-        Vector vector = source.copy();
-
         // space out dropped items but avoid dropping behind an entity.
         float offset = random.nextInt(240) + 240;
         float distance = configuration().getDropDistance();
-        vector.setY(vector.getY() + (float) Math.cos(Math.toRadians(offset)) * distance);
-        vector.setX(vector.getX() + (float) Math.sin(Math.toRadians(offset)) * distance);
 
-        List<Item> items = new ArrayList<>();
-        items.add(item);
+        Vector target = source.copy()
+                .setY(source.getY() + (float) Math.cos(Math.toRadians(offset)) * distance)
+                .setX(source.getX() + (float) Math.sin(Math.toRadians(offset)) * distance);
 
         Model model = configuration().getItem()
                 .setGraphics(item.getIcon());
 
-        LootableEntity entity = new LootableEntity(vector, items);
-        entity.setName(item.getName());
+        List<Item> items = new ArrayList<>();
+        items.add(item);
+
+        LootableEntity entity = new LootableEntity(target, items)
+                .setSourceVector(source.copy());
+
         entity.setModel(model);
+        entity.setName(item.getName());
 
         return entity;
+    }
+
+    private LootableEntity setSourceVector(Vector source) {
+        this.sourceVector = source;
+        return this;
+    }
+
+    @JsonProperty
+    public Vector getSourceVector() {
+        return sourceVector;
     }
 
     private static LootableConfiguration configuration() {
@@ -203,5 +218,6 @@ public class LootableEntity extends SimpleEntity {
         event.setTargetId(getId());
         return event;
     }
+
 }
 

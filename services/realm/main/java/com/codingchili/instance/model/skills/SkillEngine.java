@@ -1,9 +1,7 @@
 package com.codingchili.instance.model.skills;
 
 import com.codingchili.instance.context.GameContext;
-import com.codingchili.instance.model.entity.Creature;
-import com.codingchili.instance.model.entity.PlayerCreature;
-import com.codingchili.instance.model.entity.SimpleEntity;
+import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.events.NotificationEvent;
 import com.codingchili.instance.scripting.Bindings;
 
@@ -43,10 +41,21 @@ public class SkillEngine {
                 amount = 0;
             }
         }
-        target.handle(new SkillChangeEvent(state)
-                .setLevelup(levelUp)
-                .setExperience(total)
+        notify(target,
+                new SkillChangeEvent(state)
+                        .setLevelup(levelUp)
+                        .setExperience(total)
         );
+    }
+
+    private void notify(PlayerCreature target, SkillChangeEvent event) {
+        event.setCreatureId(target.getId());
+
+        if (event.getLevelup()) {
+            game.publish(event);
+        } else {
+            target.handle(event);
+        }
     }
 
     public void learn(Creature target, SkillType type) {

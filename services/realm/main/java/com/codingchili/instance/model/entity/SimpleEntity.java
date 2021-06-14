@@ -72,8 +72,9 @@ public abstract class SimpleEntity implements Entity {
         return model;
     }
 
-    public void setModel(Model model) {
+    public SimpleEntity setModel(Model model) {
         this.model = model;
+        return this;
     }
 
     @Override
