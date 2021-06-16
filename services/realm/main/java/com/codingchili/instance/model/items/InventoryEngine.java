@@ -276,10 +276,15 @@ public class InventoryEngine {
      * @param source the creature performing the looting.
      * @param targetId the if of the container that holds the loot.
      */
-    public void takeAll(Creature source, String targetId) {
-        LootableEntity entity = game.getById(targetId);
-        source.getInventory().addAll(entity.takeAll());
-        update(source);
+    public Future<Void> takeAll(Creature source, String targetId) {
+        if (targetInRange(source, game.getById(targetId))) {
+            LootableEntity entity = game.getById(targetId);
+            source.getInventory().addAll(entity.takeAll());
+            update(source);
+            return Future.succeededFuture();
+        } else {
+            return Future.failedFuture(new InteractionOutOfRangeException());
+        }
     }
 
     /**
