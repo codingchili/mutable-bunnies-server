@@ -1,6 +1,9 @@
 project.group = 'com.codingchili.service'
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-jsr223:3.0.0-beta-3'
-    compile project(':common')
+    implementation project(':common')
+
+    implementation 'com.esotericsoftware:kryo:5.1.1'
+    implementation 'org.apache.commons:commons-jexl:2.1.1'
+    implementation 'org.codehaus.groovy:groovy-jsr223:3.0.0-beta-3'
 }

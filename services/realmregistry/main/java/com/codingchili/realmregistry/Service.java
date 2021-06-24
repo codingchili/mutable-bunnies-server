@@ -5,8 +5,7 @@ import com.codingchili.core.listener.CoreService;
 import com.codingchili.realmregistry.configuration.RegistryContext;
 import com.codingchili.realmregistry.controller.RealmRegistryClientHandler;
 import com.codingchili.realmregistry.controller.RealmRegistryHandler;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
+import io.vertx.core.*;
 
 import static com.codingchili.core.context.FutureHelper.untyped;
 
@@ -25,12 +24,12 @@ public class Service implements CoreService {
     }
 
     @Override
-    public void start(Future<Void> start) {
+    public void start(Promise<Void> start) {
         context = new RegistryContext(core);
 
         CompositeFuture.all(
                 context.handler(() -> new RealmRegistryHandler(context)),
                 context.handler(() -> new RealmRegistryClientHandler(context))
-        ).setHandler(untyped(start));
+        ).onComplete(untyped(start));
     }
 }

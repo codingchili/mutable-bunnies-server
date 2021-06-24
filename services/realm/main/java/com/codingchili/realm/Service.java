@@ -5,8 +5,7 @@ import com.codingchili.instance.context.InstancesBootstrap;
 import com.codingchili.realm.configuration.*;
 import com.codingchili.realm.controller.*;
 import com.codingchili.realm.model.RealmNotUniqueException;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
+import io.vertx.core.*;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
 
@@ -50,20 +49,20 @@ public class Service implements CoreService {
     }
 
     @Override
-    public void start(Future<Void> start) {
+    public void start(Promise<Void> start) {
         RealmServerSettings server = Configurations.get(PATH_REALMSERVER, RealmServerSettings.class);
         List<Future> deployments = new ArrayList<>();
 
-        InstancesBootstrap.bootstrap(context).setHandler(done -> {
+        InstancesBootstrap.bootstrap(context).onComplete(done -> {
             if (done.succeeded()) {
                 for (String enabled : server.getEnabled()) {
                     Supplier<RealmSettings> realm = () -> Configurations.get(realmPath(enabled), RealmSettings.class).setId(enabled);
                     realm.get().load();
-                    Future<Void> future = Future.future();
-                    deploy(future, realm);
-                    deployments.add(future);
+                    Promise<Void> promise = Promise.promise();
+                    deploy(promise, realm);
+                    deployments.add(promise.future());
                 }
-                CompositeFuture.all(deployments).setHandler(untyped(start));
+                CompositeFuture.all(deployments).onComplete(untyped(start));
             } else {
                 start.fail(done.cause());
             }
@@ -80,10 +79,10 @@ public class Service implements CoreService {
      *
      * @param realm the realm to be deployed dynamically.
      */
-    private void deploy(Future<Void> future, Supplier<RealmSettings> realm) {
+    private void deploy(Promise<Void> future, Supplier<RealmSettings> realm) {
         Consumer<RealmContext> deployer = (rc) -> {
             // Check if the routing id for the realm is unique
-            context.bus().send(realm.get().getId(), getPing(), getDeliveryOptions(), response -> {
+            context.bus().request(realm.get().getId(), getPing(), getDeliveryOptions(), response -> {
 
                 if (response.failed()) {
                     // If no response then the id is not already in use.
@@ -93,16 +92,16 @@ public class Service implements CoreService {
 
                     // deploy handler for incoming messages from instances.
                     rc.listener(() -> new FasterBusListener().handler(new RealmInstanceHandler(rc)))
-                            .setHandler(instances -> {
+                            .onComplete(instances -> {
 
                                 if (instances.succeeded()) {
                                     // deploy handler for incoming messages from clients.
-                                    rc.listener(() -> listener).setHandler(deploy -> {
+                                    rc.listener(() -> listener).onComplete(deploy -> {
                                         if (deploy.failed()) {
                                             rc.onDeployRealmFailure(realm.get().getId());
                                             throw new RuntimeException(deploy.cause());
                                         }
-                                    }).setHandler(clients -> {
+                                    }).onComplete(clients -> {
                                         if (clients.succeeded()) {
                                             future.complete();
                                         } else {
@@ -121,7 +120,7 @@ public class Service implements CoreService {
         };
 
         // set up the realm context asynchronously.
-        RealmContext.create(context, realm).setHandler(create -> {
+        RealmContext.create(context, realm).onComplete(create -> {
             if (create.succeeded()) {
                 deployer.accept(create.result());
             } else {

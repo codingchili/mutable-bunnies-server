@@ -9,6 +9,7 @@ import com.codingchili.core.security.Account;
 import com.codingchili.core.testing.RequestMock;
 import com.codingchili.core.testing.ResponseListener;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -47,13 +48,10 @@ public class ClientHandlerTest {
         Async async = test.async();
         AsyncAccountStore accounts = context.getAccountStore();
 
-        Future<Account> future = Future.future();
+        Promise<Account> promise = Promise.promise();
 
-        future.setHandler(result -> {
-            async.complete();
-        });
-
-        accounts.register(future, new Account(USERNAME, PASSWORD));
+        promise.future().onComplete(result -> async.complete());
+        accounts.register(promise, new Account(USERNAME, PASSWORD));
     }
 
     @Before

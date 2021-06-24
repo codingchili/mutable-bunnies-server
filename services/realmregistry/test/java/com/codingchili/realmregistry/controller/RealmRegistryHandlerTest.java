@@ -3,6 +3,7 @@ package com.codingchili.realmregistry.controller;
 import com.codingchili.common.RegisteredRealm;
 import com.codingchili.realmregistry.ContextMock;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -45,14 +46,14 @@ public class RealmRegistryHandlerTest {
         handler = new RealmRegistryHandler(mock);
 
         Token token = new Token(REALM_NAME);
-        mock.getRealmFactory().hmac(token).setHandler(hmac -> {
+        mock.getRealmFactory().hmac(token).onComplete(hmac -> {
             realmconfig.setAuthentication(token);
             realmconfig.setId(REALM_NAME);
             realmToken = Serializer.json(token);
 
-            Future<Void> future = Future.future();
-            handler.start(future);
-            future.setHandler(done -> async.complete());
+            Promise<Void> promise = Promise.promise();
+            handler.start(promise);
+            promise.future().onComplete(done -> async.complete());
         });
     }
 
@@ -72,7 +73,7 @@ public class RealmRegistryHandlerTest {
     public void failWithClientToken(TestContext test) {
         Async async = test.async();
         Token token = new Token(realmconfig.getId());
-        mock.getClientFactory().hmac(token).setHandler(hmac -> {
+        mock.getClientFactory().hmac(token).onComplete(hmac -> {
 
             handle(REALM_UPDATE, (response, status) -> {
                 test.assertEquals(ResponseStatus.UNAUTHORIZED, status);

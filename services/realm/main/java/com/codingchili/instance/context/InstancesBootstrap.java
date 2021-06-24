@@ -8,6 +8,7 @@ import com.codingchili.instance.model.spells.SpellDB;
 import com.codingchili.instance.scripting.ScriptReference;
 import com.codingchili.realm.model.ClassDB;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import java.util.concurrent.*;
 
@@ -26,9 +27,9 @@ public class InstancesBootstrap {
      * @return future
      */
     public static Future<Void> bootstrap(CoreContext core) {
-        Future<Void> future = Future.future();
+        Promise<Void> promise = Promise.promise();
 
-        ScriptReference.initialize(core).setHandler(done -> {
+        ScriptReference.initialize(core).onComplete(done -> {
             if (done.succeeded()) {
                 core.blocking(blocking -> {
                     ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
@@ -45,12 +46,12 @@ public class InstancesBootstrap {
                     } catch (Exception e) {
                         blocking.fail(e);
                     }
-                }, future);
+                }, promise);
             } else {
-                future.fail(done.cause());
+                promise.fail(done.cause());
             }
         });
-        return future;
+        return promise.future();
     }
 
 }

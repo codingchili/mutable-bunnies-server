@@ -3,6 +3,7 @@ package com.codingchili.authentication.controller;
 import com.codingchili.authentication.configuration.AuthContext;
 import com.codingchili.authentication.model.*;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
@@ -38,15 +39,15 @@ public class ClientHandler implements CoreHandler {
     }
 
     private Future<RoleType> authenticate(Request request) {
-        Future<RoleType> future = Future.future();
-        context.verifyClientToken(request.token()).setHandler(verify -> {
+        Promise<RoleType> promise = Promise.promise();
+        context.verifyClientToken(request.token()).onComplete(verify -> {
             if (verify.succeeded()) {
-                future.complete(Role.USER);
+                promise.complete(Role.USER);
             } else {
-                future.complete(Role.PUBLIC);
+                promise.complete(Role.PUBLIC);
             }
         });
-        return future;
+        return promise.future();
     }
 
     private void register(ClientLogin request) {
@@ -73,7 +74,7 @@ public class ClientHandler implements CoreHandler {
     }
 
     private void sendAuthentication(Account account, ClientLogin request, boolean registered) {
-        context.signClientToken(account.getUsername()).setHandler(sign -> {
+        context.signClientToken(account.getUsername()).onComplete(sign -> {
             request.write(
                     new ClientAuthentication(
                             account,

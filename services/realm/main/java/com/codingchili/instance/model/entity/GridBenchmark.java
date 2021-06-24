@@ -1,9 +1,7 @@
 package com.codingchili.instance.model.entity;
 
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
+import io.vertx.core.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +42,7 @@ public class GridBenchmark extends BenchmarkImplementationBuilder {
         return this;
     }
 
-    private void add(Future<Void> future) {
+    private void add(Promise<Void> future) {
         grid.add(entities.get(index()));
         future.complete();;
     }
@@ -58,12 +56,12 @@ public class GridBenchmark extends BenchmarkImplementationBuilder {
         return current;
     }
 
-    public void tick(Future<Void> future) {
+    public void tick(Promise<Void> future) {
         grid.update(null);
         //future.complete();
     }
 
-    private void remove(Future<Void> future) {
+    private void remove(Promise<Void> future) {
         grid.add(entities.get(index()));
         future.complete();
     }

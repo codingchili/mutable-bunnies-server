@@ -11,6 +11,7 @@ import com.codingchili.instance.transport.FasterRealmInstanceCodec;
 import com.codingchili.realm.controller.RealmRequest;
 import com.codingchili.realm.model.*;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.eventbus.*;
 
 import java.util.List;
@@ -76,7 +77,7 @@ public class RealmContext extends SystemContext implements ServiceContext {
      * @return a callback with a RealmContext.
      */
     public static Future<RealmContext> create(CoreContext core, Supplier<RealmSettings> settings) {
-        Future<RealmContext> future = Future.future();
+        Promise<RealmContext> promise = Promise.promise();
 
         RealmContext context = new RealmContext(core, settings);
 
@@ -89,34 +90,34 @@ public class RealmContext extends SystemContext implements ServiceContext {
                 .build(storage -> {
                     if (storage.succeeded()) {
                         context.characters = new CharacterDB(storage.result());
-                        future.complete(context);
+                        promise.complete(context);
                     } else {
-                        future.fail(storage.cause());
+                        promise.fail(storage.cause());
                     }
                 });
 
-        return future;
+        return promise.future();
     }
 
     public Future<Object> sendInstance(String instance, Object data) {
-        Future<Object> future = Future.future();
+        Promise<Object> promise = Promise.promise();
 
-        bus().send(instance, data, delivery, handler -> {
+        bus().request(instance, data, delivery, handler -> {
             // only process missing handlers and recipient failures - timeouts are expected.
             if (handler.failed() && handler.cause() instanceof ReplyException) {
                 ReplyFailure type = ((ReplyException) handler.cause()).failureType();
                 if (type == NO_HANDLERS || type == RECIPIENT_FAILURE) {
                     logger.onError(handler.cause());
-                    future.fail(new CoreRuntimeException(throwableToString(handler.cause())));
+                    promise.fail(new CoreRuntimeException(throwableToString(handler.cause())));
                 }
             }
             // ignore failures - the instance does not need to respond synchronously.
             // if they do respond - make sure the client receives it.
             if (handler.succeeded()) {
-                future.complete(handler.result().body());
+                promise.complete(handler.result().body());
             }
         });
-        return future;
+        return promise.future();
     }
 
     @Override
@@ -185,11 +186,11 @@ public class RealmContext extends SystemContext implements ServiceContext {
                 .put(ID_MESSAGE, message).send();
     }
 
-    public void onRealmStopped(Future<Void> future, String realm) {
+    public void onRealmStopped(Promise<Void> promise, String realm) {
         logger.event(LOG_REALM_STOP, ERROR)
                 .put(ID_REALM, realm).send();
 
-        future.complete();
+        promise.complete();
     }
 
     public void onRealmRegistered(String realm) {

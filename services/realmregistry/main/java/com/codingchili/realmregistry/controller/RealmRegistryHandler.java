@@ -5,6 +5,7 @@ import com.codingchili.common.Strings;
 import com.codingchili.realmregistry.configuration.RegistryContext;
 import com.codingchili.realmregistry.model.*;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import java.time.Instant;
 
@@ -34,7 +35,7 @@ public class RealmRegistryHandler implements CoreHandler {
     }
 
     @Override
-    public void start(Future<Void> start) {
+    public void start(Promise<Void> start) {
         context.getRealmStore(done -> {
            if (done.succeeded()) {
                 this.realms = done.result();
@@ -51,15 +52,15 @@ public class RealmRegistryHandler implements CoreHandler {
     }
 
     private Future<RoleType> authenticate(Request request) {
-        Future<RoleType> future = Future.future();
-        context.verifyRealmToken(request.token()).setHandler(authenticated -> {
+        Promise<RoleType> promise = Promise.promise();
+        context.verifyRealmToken(request.token()).onComplete(authenticated -> {
            if (authenticated.succeeded()) {
-               future.complete(Role.USER);
+               promise.complete(Role.USER);
            }  else {
-               future.complete(Role.PUBLIC);
+               promise.complete(Role.PUBLIC);
            }
         });
-        return future;
+        return promise.future();
     }
 
     private void update(RealmRequest request) {

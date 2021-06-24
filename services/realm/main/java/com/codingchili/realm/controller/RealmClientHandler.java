@@ -7,6 +7,7 @@ import com.codingchili.instance.model.items.*;
 import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.realm.model.*;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
 
 import java.util.Collection;
@@ -53,7 +54,7 @@ public class RealmClientHandler implements CoreHandler {
         connection.getProperty(ID_ACCOUNT).ifPresent(account -> json.put(ID_ACCOUNT, account));
         connection.getProperty(ID_NAME).ifPresent(character -> json.put(PROTOCOL_TARGET, character));
 
-        context.sendInstance(request.instance(), request.data()).setHandler(request::result);
+        context.sendInstance(request.instance(), request.data()).onComplete(request::result);
     }
 
     @Api(route = CLIENT_INSTANCE_JOIN)
@@ -76,7 +77,7 @@ public class RealmClientHandler implements CoreHandler {
 
                 // save the instance the player is connected to on the request object.
                 context.setInstance(creature, request.connection());
-                context.sendInstance(request.instance(), join).setHandler(request::result);
+                context.sendInstance(request.instance(), join).onComplete(request::result);
             } else {
                 request.result(find);
             }
@@ -181,28 +182,28 @@ public class RealmClientHandler implements CoreHandler {
     @Authenticator
     public Future<Role> authenticator(Request request) {
         Connection connection = request.connection();
-        Future<Role> future = Future.future();
+        Promise<Role> promise = Promise.promise();
 
         // websockets are persistent: only need to verify users token once.
         if ((connection.getProperty(ID_ACCOUNT).isPresent())) {
-            future.complete(Role.USER);
+            promise.complete(Role.USER);
         } else {
             Token token = request.token();
 
-            context.verifyToken(token).setHandler(verify -> {
+            context.verifyToken(token).onComplete(verify -> {
                 if (verify.succeeded()) {
                     if (context.isConnected(token.getDomain())) {
-                        future.fail(new CoreRuntimeException("Account is already connected to this realm."));
+                        promise.fail(new CoreRuntimeException("Account is already connected to this realm."));
                     } else {
                         context.connect(connection, token.getDomain());
                         connection.setProperty(ID_ACCOUNT, token.getDomain());
-                        future.complete(Role.USER);
+                        promise.complete(Role.USER);
                     }
                 } else {
-                    future.complete(Role.PUBLIC);
+                    promise.complete(Role.PUBLIC);
                 }
             });
         }
-        return future;
+        return promise.future();
     }
 }

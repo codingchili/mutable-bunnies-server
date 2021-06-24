@@ -1,8 +1,7 @@
 package com.codingchili.social.configuration;
 
 import com.codingchili.social.model.*;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
+import io.vertx.core.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class SocialContext extends SystemContext {
      * @return future.
      */
     public static Future<SocialContext> create(CoreContext core) {
-        Future<SocialContext> future = Future.future();
+        Promise<SocialContext> promise = Promise.promise();
         SocialContext context = new SocialContext(core);
 
         new StorageLoader<FriendList>(core)
@@ -54,12 +53,12 @@ public class SocialContext extends SystemContext {
                 .build(storage -> {
                     if (storage.succeeded()) {
                         context.setFriends(new FriendsDB(storage.result(), context.online()));
-                        future.complete(context);
+                        promise.complete(context);
                     } else {
-                        future.fail(storage.cause());
+                        promise.fail(storage.cause());
                     }
                 });
-        return future;
+        return promise.future();
     }
 
     private void setFriends(AsyncFriendStore db) {
@@ -113,13 +112,13 @@ public class SocialContext extends SystemContext {
     public CompositeFuture send(String target, Object message) {
         List<Future> futures = new ArrayList<>();
         for (String realm : online.realms(target)) {
-            Future<Void> future = Future.future();
-            futures.add(future);
+            Promise<Void> promise = Promise.promise();
+            futures.add(promise.future());
             bus().request(realm, Serializer.json(message), done -> {
                 if (done.succeeded()) {
-                    future.complete();
+                    promise.complete();
                 } else {
-                    future.fail(done.cause());
+                    promise.fail(done.cause());
                 }
             });
         }

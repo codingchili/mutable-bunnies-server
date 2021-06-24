@@ -2,14 +2,14 @@ apply plugin: 'java'
 
 subprojects {
     dependencies {
-        compile project(':common')
-        testCompile 'io.vertx:vertx-unit:3.9.5'
-        testCompile 'junit:junit:4.13.1'
+        implementation project(':common')
+        testImplementation 'io.vertx:vertx-unit:4.1.0'
+        testImplementation 'junit:junit:4.13.2'
     }
 }
 
 dependencies {
-    compile project(':common')
+    implementation project(':common')
 }
 
 task allJar(type: Jar, dependsOn: subprojects.jar) {

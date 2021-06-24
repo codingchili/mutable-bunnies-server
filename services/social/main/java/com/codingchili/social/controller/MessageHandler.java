@@ -2,8 +2,7 @@ package com.codingchili.social.controller;
 
 import com.codingchili.social.configuration.SocialContext;
 import com.codingchili.social.model.*;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
+import io.vertx.core.*;
 
 import java.util.*;
 
@@ -34,14 +33,14 @@ public class MessageHandler implements SocialServiceHandler {
     public void friend_message(SocialRequest request) {
         String friend = request.friend();
 
-        friends.list(request.account()).setHandler(done -> {
+        friends.list(request.account()).onComplete(done -> {
             if (done.succeeded()) {
                 FriendList list = done.result();
 
                 if (list.isFriend(friend)) {
                     if (online.is(friend)) {
 
-                        sendRealm(online.realms(friend), new FriendMessage(request)).setHandler(msg -> {
+                        sendRealm(online.realms(friend), new FriendMessage(request)).onComplete(msg -> {
                             if (msg.succeeded()) {
                                 request.accept();
                             } else {
@@ -64,13 +63,13 @@ public class MessageHandler implements SocialServiceHandler {
     private CompositeFuture sendRealm(Set<String> realms, FriendMessage message) {
         List<Future> futures = new ArrayList<>();
         for (String realm : realms) {
-            Future<Void> future = Future.future();
-            futures.add(future);
+            Promise<Void> promise = Promise.promise();
+            futures.add(promise.future());
             context.bus().request(realm, Serializer.json(message), done -> {
                 if (done.succeeded()) {
-                    future.complete();
+                    promise.complete();
                 } else {
-                    future.fail(done.cause());
+                    promise.fail(done.cause());
                 }
             });
         }

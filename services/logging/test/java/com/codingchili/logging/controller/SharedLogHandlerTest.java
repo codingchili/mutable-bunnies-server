@@ -3,7 +3,7 @@ package com.codingchili.logging.controller;
 import com.codingchili.common.Strings;
 import com.codingchili.logging.configuration.LogContext;
 import com.codingchili.logging.configuration.LogServerSettings;
-import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -42,7 +42,7 @@ public class SharedLogHandlerTest {
     CoreHandler handler;
     LogContext context;
     private TokenFactory factory;
-    private Future<Void> future = Future.future();
+    private Promise<Void> promise = Promise.promise();
 
     public SharedLogHandlerTest() {
         LogServerSettings settings = new LogServerSettings()
@@ -52,7 +52,7 @@ public class SharedLogHandlerTest {
         SystemContext system = new SystemContext();
         settings.setLoggingSecret(new byte[]{0x0});
         settings.setClientSecret(new byte[]{0x0});
-        context = new LogContext(system, future);
+        context = new LogContext(system, promise);
         factory = new TokenFactory(context, settings.getLoggingSecret());
     }
 
@@ -60,7 +60,7 @@ public class SharedLogHandlerTest {
     public void setUp(TestContext test) {
         Async async = test.async();
 
-        future.setHandler(done -> {
+        promise.future().onComplete(done -> {
             context.storage().clear(cleared -> {
                 async.complete();
             });
@@ -77,7 +77,7 @@ public class SharedLogHandlerTest {
         Async async = test.async();
 
         Token token = new Token("domain");
-        factory.hmac(token).setHandler(done -> {
+        factory.hmac(token).onComplete(done -> {
             for (int i = 0; i < MESSAGE_COUNT; i++) {
                 handle(Strings.PROTOCOL_LOGGING, (response, status) -> {
                 }, messageWithToken(token));

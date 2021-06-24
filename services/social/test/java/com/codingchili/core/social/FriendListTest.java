@@ -51,17 +51,17 @@ public class FriendListTest {
     @Before
     public void prepare(TestContext test) {
         Async async = test.async();
-        friends.clear().setHandler(done -> async.complete());
+        friends.clear().onComplete(done -> async.complete());
     }
 
     @Test
     public void request(TestContext test) {
         Async async = test.async();
 
-        friends.request(ACCOUNT_A, ACCOUNT_B).setHandler(done -> {
+        friends.request(ACCOUNT_A, ACCOUNT_B).onComplete(done -> {
             if (done.succeeded()) {
                 // verify the request is present on account B's state.
-                friends.list(ACCOUNT_B).setHandler(list -> {
+                friends.list(ACCOUNT_B).onComplete(list -> {
                     test.assertTrue(list.result().getRequests().contains(ACCOUNT_A));
                     async.complete();
                 });
@@ -75,9 +75,9 @@ public class FriendListTest {
     public void reject(TestContext test) {
         Async async = test.async();
 
-        friends.request(ACCOUNT_A, ACCOUNT_B).setHandler(done -> {
+        friends.request(ACCOUNT_A, ACCOUNT_B).onComplete(done -> {
             if (done.succeeded()) {
-                friends.reject(ACCOUNT_B, ACCOUNT_A).setHandler(rejected -> {
+                friends.reject(ACCOUNT_B, ACCOUNT_A).onComplete(rejected -> {
                     if (rejected.succeeded()) {
                         async.complete();
                     } else {
@@ -96,11 +96,11 @@ public class FriendListTest {
 
         friends.request(ACCOUNT_A, ACCOUNT_B)
                 .compose(m -> friends.accept(ACCOUNT_B, ACCOUNT_A))
-                .setHandler(m -> friends.list(ACCOUNT_B).setHandler(list -> {
+                .onComplete(m -> friends.list(ACCOUNT_B).onComplete(list -> {
 
                     test.assertTrue(list.result().getFriends().contains(ACCOUNT_A));
 
-                    friends.list(ACCOUNT_A).setHandler(second -> {
+                    friends.list(ACCOUNT_A).onComplete(second -> {
                         test.assertTrue(second.result().getFriends().contains(ACCOUNT_B));
                         async.complete();
                     });
@@ -112,9 +112,9 @@ public class FriendListTest {
     public void pending(TestContext test) {
         Async async = test.async();
 
-        friends.request(ACCOUNT_A, ACCOUNT_B).setHandler(done -> {
+        friends.request(ACCOUNT_A, ACCOUNT_B).onComplete(done -> {
             if (done.succeeded()) {
-                friends.pending(ACCOUNT_A).setHandler(requested -> {
+                friends.pending(ACCOUNT_A).onComplete(requested -> {
                     if (requested.succeeded()) {
                         test.assertTrue(requested.result()
                                 .getPending().contains(ACCOUNT_B));
@@ -137,11 +137,11 @@ public class FriendListTest {
         friends.request(ACCOUNT_A, ACCOUNT_B)
                 .compose(m -> friends.accept(ACCOUNT_B, ACCOUNT_A))
                 .compose(m -> friends.remove(ACCOUNT_B, ACCOUNT_A))
-                .setHandler(done -> {
-                    friends.list(ACCOUNT_A).setHandler(a -> {
+                .onComplete(done -> {
+                    friends.list(ACCOUNT_A).onComplete(a -> {
                         test.assertFalse(a.result().getFriends().contains(ACCOUNT_B));
 
-                        friends.list(ACCOUNT_B).setHandler(b -> {
+                        friends.list(ACCOUNT_B).onComplete(b -> {
                             test.assertFalse(b.result().getFriends().contains(ACCOUNT_A));
                             async.complete();
                         });
@@ -157,9 +157,9 @@ public class FriendListTest {
         friends.request(ACCOUNT_A, ACCOUNT_B)
                 .compose(m -> friends.request("missing", "missing"))
                 .compose(m -> friends.accept(ACCOUNT_B, ACCOUNT_A))
-                .setHandler(done -> {
+                .onComplete(done -> {
                     friends.suggestions(ACCOUNT_A.substring(0, 5))
-                            .setHandler(q -> {
+                            .onComplete(q -> {
                                 // verify missing not in hits.
                                 test.assertEquals(q.result().getSuggestions().size(), 2);
                                 async.complete();

@@ -8,8 +8,7 @@ import com.codingchili.instance.transport.InstanceRequest;
 import com.codingchili.realm.configuration.RealmContext;
 import com.codingchili.realm.model.RealmUpdate;
 import com.codingchili.realm.model.UpdateResponse;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
+import io.vertx.core.*;
 
 import java.util.*;
 
@@ -45,7 +44,7 @@ public class RealmInstanceHandler implements CoreHandler {
     }
 
     @Override
-    public void start(Future<Void> future) {
+    public void start(Promise<Void> future) {
         context.onRealmStarted(context.realm().getId());
         deployInstances(future);
     }
@@ -89,7 +88,7 @@ public class RealmInstanceHandler implements CoreHandler {
                         .setPlayer(message.getPlayer())
                         .setRealmName(context.realm().getId());
 
-                context.sendInstance(destination, join).setHandler(done -> {
+                context.sendInstance(destination, join).onComplete(done -> {
                     if (done.succeeded()) {
                         connection.write(done.result());
                         request.accept();
@@ -107,14 +106,14 @@ public class RealmInstanceHandler implements CoreHandler {
     @Api
     public void save(InstanceRequest request) {
         SavePlayerMessage message = request.raw(SavePlayerMessage.class);
-        context.characters().update(message.getCreature()).setHandler(request::result);
+        context.characters().update(message.getCreature()).onComplete(request::result);
     }
 
-    private void deployInstances(Future<Void> future) {
+    private void deployInstances(Promise<Void> future) {
         List<Future> futures = new ArrayList<>();
         for (InstanceSettings instance : context.instances()) {
-            Future deploy = Future.future();
-            futures.add(deploy);
+            Promise<Void> deploy = Promise.promise();
+            futures.add(deploy.future());
 
             context.blocking((blocking) -> {
                 try {
@@ -123,20 +122,18 @@ public class RealmInstanceHandler implements CoreHandler {
 
                     // sometime in the future the instances will be deployed remotely - just deploy
                     // the instances on the same cluster.
-                    instanceContext.listener(() -> new FasterBusListener().handler(handler)).setHandler((done) -> {
-                        if (done.succeeded()) {
-                            blocking.complete();
-                        } else {
+                    instanceContext.listener(() -> new FasterBusListener().handler(handler)).onComplete((done) -> {
+                        if (!done.succeeded()) {
                             context.onInstanceFailed(instance.getId(), done.cause());
-                            blocking.complete();
                         }
+                        blocking.complete();
                     });
                 } catch (Exception e) {
                     blocking.fail(e);
                 }
             }, FutureHelper.untyped(deploy));
         }
-        CompositeFuture.all(futures).setHandler(done -> {
+        CompositeFuture.all(futures).onComplete(done -> {
             if (done.succeeded()) {
                 future.complete();
             } else {
@@ -150,7 +147,7 @@ public class RealmInstanceHandler implements CoreHandler {
         RealmUpdate realm = new RealmUpdate(context.realm())
                 .setPlayers(context.connections().size());
 
-        context.bus().send(NODE_AUTHENTICATION_REALMS, Serializer.json(realm), response -> {
+        context.bus().request(NODE_AUTHENTICATION_REALMS, Serializer.json(realm), response -> {
             if (response.succeeded()) {
                 UpdateResponse update = new UpdateResponse(response.result());
 

@@ -4,6 +4,7 @@ import com.codingchili.common.Strings;
 import com.codingchili.realmregistry.ContextMock;
 import com.codingchili.realmregistry.model.RealmList;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -45,12 +46,12 @@ public class RealmRegistryClientHandlerTest {
         Token token = new Token(USERNAME);
         context = new ContextMock();
 
-        context.getClientFactory().hmac(token).setHandler(hmac -> {
+        context.getClientFactory().hmac(token).onComplete(hmac -> {
             clientToken = Serializer.json(token);
             handler = new RealmRegistryClientHandler(context);
-            Future<Void> future = Future.future();
-            handler.start(future);
-            future.setHandler(done -> async.complete());
+            Promise<Void> promise = Promise.promise();
+            handler.start(promise);
+            promise.future().onComplete(done -> async.complete());
         });
     }
 

@@ -47,12 +47,12 @@ public class ContextMock extends RegistryContext {
                     TokenFactory factory = new TokenFactory(this, "s".getBytes());
                     Token token = new Token("realmName");
 
-                    factory.hmac(token).setHandler(hmac -> {
+                    factory.hmac(token).onComplete(hmac -> {
                         RegisteredRealm realm = new RegisteredRealm()
                                 .setId("realmName")
                                 .setAuthentication(token);
 
-                        realmDB.put(Future.future(), realm);
+                        realmDB.put(Promise.promise(), realm);
                         handler.handle(Future.succeededFuture(realmDB));
                     });
                 });

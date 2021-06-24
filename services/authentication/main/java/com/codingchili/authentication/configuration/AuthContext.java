@@ -2,10 +2,17 @@ package com.codingchili.authentication.configuration;
 
 import com.codingchili.authentication.model.*;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import io.vertx.core.json.JsonObject;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import com.codingchili.core.context.*;
+import com.codingchili.core.files.ConfigurationFactory;
 import com.codingchili.core.files.Configurations;
 import com.codingchili.core.logging.Logger;
+import com.codingchili.core.protocol.Serializer;
 import com.codingchili.core.security.*;
 import com.codingchili.core.storage.StorageLoader;
 
@@ -28,7 +35,7 @@ public class AuthContext extends SystemContext implements ServiceContext {
         this.logger = core.logger(getClass());
     }
 
-    public static void create(Future<AuthContext> future, CoreContext core) {
+    public static void create(Promise<AuthContext> promise, CoreContext core) {
         AuthContext context = new AuthContext(core);
         new StorageLoader<AccountMapping>(context)
                 .withPlugin(context.service().getStorage())
@@ -36,8 +43,16 @@ public class AuthContext extends SystemContext implements ServiceContext {
                 .withValue(AccountMapping.class)
                 .build(prepare -> {
                     context.accounts = new AccountDB(prepare.result(), context);
-                    future.complete(context);
+                    promise.complete(context);
                 });
+    }
+
+    public static void main(String[] args) {
+        JsonObject json = ConfigurationFactory.readObject("conf\\service\\authentication.yaml");
+        json.put("clientSecret", Base64.getEncoder().encodeToString("MOROT".getBytes(StandardCharsets.UTF_8)));
+        var config = Serializer.unpack(json, AuthenticationSettings.class);
+
+        System.out.println(new String(config.getClientSecret()));
     }
 
     public AsyncAccountStore getAccountStore() {

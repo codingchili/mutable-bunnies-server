@@ -2,11 +2,10 @@ package com.codingchili.instance.controller;
 
 import com.codingchili.instance.context.*;
 import com.codingchili.instance.model.entity.PlayerCreature;
-import com.codingchili.instance.model.entity.Point;
 import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.npc.SpawnEngine;
 import com.codingchili.instance.transport.InstanceRequest;
-import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -49,7 +48,7 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
     }
 
     @Override
-    public void start(Future<Void> future) {
+    public void start(Promise<Void> future) {
         game.queue(() -> {
             InstanceSettings settings = context.settings();
             SpawnEngine spawner = game.spawner();
@@ -102,7 +101,7 @@ public class InstanceHandler implements CoreHandler, DeploymentAware {
     }
 
     @Override
-    public void stop(Future<Void> future) {
+    public void stop(Promise<Void> future) {
         game.close();
         context.onInstanceStopped(future, context.realm().getId(), context.settings().getId());
     }

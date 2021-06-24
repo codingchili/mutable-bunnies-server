@@ -1,6 +1,7 @@
 package com.codingchili.social.model;
 
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -25,23 +26,23 @@ public class FriendsDB implements AsyncFriendStore {
 
     @Override
     public Future<Void> request(String from, String to) {
-        Future<Void> future = Future.future();
+        Promise<Void> promise = Promise.promise();
 
         getOrCreate(to, list -> {
             if (!list.getFriends().contains(to)) {
                 list.request(from);
-                friends.put(list, (ignored) -> future.complete());
+                friends.put(list, (ignored) -> promise.complete());
             } else {
-                future.complete();
+                promise.complete();
             }
         });
 
-        return future;
+        return promise.future();
     }
 
     @Override
     public Future<FriendList> accept(String account, String friend) {
-        Future<FriendList> future = Future.future();
+        Promise<FriendList> promise = Promise.promise();
 
         // add add as friend to first
         getOrCreate(account, list -> {
@@ -52,72 +53,72 @@ public class FriendsDB implements AsyncFriendStore {
                     getOrCreate(friend, other -> {
                         other.accepted(account);
                         friends.put(other, (ignored) -> {
-                            future.complete(list);
+                            promise.complete(list);
                         });
                     });
                 });
             } else {
-                future.complete(list);
+                promise.complete(list);
             }
         });
 
-        return future;
+        return promise.future();
     }
 
     @Override
     public Future<FriendList> reject(String account, String requestor) {
-        Future<FriendList> future = Future.future();
+        Promise<FriendList> promise = Promise.promise();
 
         getOrCreate(account, list -> {
             list.reject(requestor);
-            friends.put(list, (ignored) -> future.complete(setOnlineStatus(list)));
+            friends.put(list, (ignored) -> promise.complete(setOnlineStatus(list)));
         });
-        return future;
+        return promise.future();
     }
 
     @Override
     public Future<FriendList> list(String account) {
-        Future<FriendList> future = Future.future();
-        getOrCreate(account, list -> future.complete(setOnlineStatus(list)));
-        return future;
+        Promise<FriendList> promise = Promise.promise();
+        getOrCreate(account, list -> promise.complete(setOnlineStatus(list)));
+        return promise.future();
     }
 
     @Override
     public Future<PendingList> pending(String account) {
-        Future<PendingList> future = Future.future();
+        Promise<PendingList> promise = Promise.promise();
 
         friends.query(ID_REQUESTED).equalTo(account)
                 .execute(query -> {
                     if (query.succeeded()) {
-                        future.complete(new PendingList(
+                        promise.complete(new PendingList(
                                 query.result().stream()
                                         .map(FriendList::getAccount)
                                         .collect(Collectors.toList()))
                         );
                     } else {
-                        future.fail(query.cause());
+                        promise.fail(query.cause());
                     }
                 });
-        return future;
+        return promise.future();
     }
 
     @Override
     public Future<FriendList> remove(String account, String friend) {
-        Future<FriendList> future = Future.future();
+        Promise<FriendList> promise = Promise.promise();
         getOrCreate(account, first -> {
             first.remove(friend);
             friends.put(first, done -> {
                 getOrCreate(friend, second -> {
                     second.remove(account);
                     friends.put(second, (saved) -> {
-                        future.complete(setOnlineStatus(second));
+                        promise.complete(setOnlineStatus(second));
                     });
                 });
 
             });
 
         });
-        return future;
+        return promise.future();
     }
 
     private FriendList setOnlineStatus(FriendList list) {
@@ -131,30 +132,30 @@ public class FriendsDB implements AsyncFriendStore {
 
     @Override
     public Future<SuggestionList> suggestions(String query) {
-        Future<SuggestionList> future = Future.future();
+        Promise<SuggestionList> promise = Promise.promise();
         friends.query(Storable.idField)
                 .startsWith(query)
                 .pageSize(6)
                 .order(SortOrder.ASCENDING)
                 .execute(q -> {
                     if (q.succeeded()) {
-                        future.complete(new SuggestionList(
+                        promise.complete(new SuggestionList(
                                 q.result().stream()
                                         .map(FriendList::getAccount)
                                         .collect(Collectors.toList()))
                         );
                     } else {
-                        future.fail(q.cause());
+                        promise.fail(q.cause());
                     }
                 });
-        return future;
+        return promise.future();
     }
 
     @Override
     public Future<Void> clear() {
-        Future<Void> future = Future.future();
-        friends.clear(future);
-        return future;
+        Promise<Void> promise = Promise.promise();
+        friends.clear(promise);
+        return promise.future();
     }
 
     private void getOrCreate(String id, Consumer<FriendList> handler) {

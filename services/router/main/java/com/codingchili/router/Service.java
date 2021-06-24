@@ -13,6 +13,7 @@ import com.codingchili.core.listener.transport.WebsocketListener;
 import com.codingchili.router.configuration.RouterContext;
 import com.codingchili.router.controller.RouterHandler;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,39 +45,39 @@ public class Service implements CoreService {
     }
 
     @Override
-    public void start(Future<Void> start) {
+    public void start(Promise<Void> start) {
         context.blocking(blocking -> {
             List<Future> deployments = new ArrayList<>();
 
             for (ListenerSettings listener : context.transports()) {
                 handler = new RouterHandler(context);
-                Future<String> future = Future.future();
-                deployments.add(future);
+                Promise<String> promise = Promise.promise();
+                deployments.add(promise.future());
 
                 switch (listener.getType()) {
                     case UDP:
-                        start(UdpListener::new, listener.getType(), future);
+                        start(UdpListener::new, listener.getType(), promise);
                         break;
                     case TCP:
-                        start(TcpListener::new, listener.getType(), future);
+                        start(TcpListener::new, listener.getType(), promise);
                         break;
                     case WEBSOCKET:
-                        start(WebsocketListener::new, listener.getType(), future);
+                        start(WebsocketListener::new, listener.getType(), promise);
                         break;
                     case REST:
-                        start(RestListener::new, listener.getType(), future);
+                        start(RestListener::new, listener.getType(), promise);
                         break;
                 }
             }
-            all(deployments).setHandler(untyped(blocking.future()));
+            all(deployments).onComplete(untyped(blocking));
         }, start);
     }
 
-    private void start(Supplier<CoreListener> listener, WireType type, Future<String> future) {
+    private void start(Supplier<CoreListener> listener, WireType type, Promise<String> future) {
         context.listener(() -> listener.get()
                 .handler(handler)
                 .settings(context.getListener(type)))
-                .setHandler(future);
+                .onComplete(future);
     }
 
     public static void main(String[] args) {

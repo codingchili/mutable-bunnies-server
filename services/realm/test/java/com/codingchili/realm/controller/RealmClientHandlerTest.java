@@ -4,8 +4,7 @@ import com.codingchili.common.Strings;
 import com.codingchili.realm.configuration.ContextMock;
 import com.codingchili.instance.model.entity.PlayerCreature;
 import com.codingchili.realm.model.AsyncCharacterStore;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
+import io.vertx.core.*;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
@@ -54,16 +53,16 @@ public class RealmClientHandlerTest {
     public void setUp(TestContext test) {
         Async async = test.async();
 
-        ContextMock.create().setHandler(mock -> {
+        ContextMock.create().onComplete(mock -> {
             context = mock.result();
             handler = new RealmClientHandler(context);
 
             Token token = new Token(USERNAME);
-            context.getClientFactory().hmac(token).setHandler(hmac -> {
+            context.getClientFactory().hmac(token).onComplete(hmac -> {
                 clientToken = Serializer.json(token);
                 characters = context.characters();
                 createCharacters(async);
-                handler.start(Future.future());
+                handler.start(Promise.promise());
             });
         });
     }
@@ -76,13 +75,13 @@ public class RealmClientHandlerTest {
     private void createCharacters(Async async) {
         PlayerCreature add = new PlayerCreature(CHARACTER_NAME).setAccount(USERNAME);
         PlayerCreature delete = new PlayerCreature(CHARACTER_NAME_DELETED).setAccount(USERNAME);
-        Future<Void> addFuture = Future.future();
-        Future<Void> removeFuture = Future.future();
+        Promise<Void> addPromise = Promise.promise();
+        Promise<Void> removePromise = Promise.promise();
 
-        CompositeFuture.all(addFuture, removeFuture).setHandler(done -> async.complete());
+        CompositeFuture.all(addPromise.future(), removePromise.future()).onComplete(done -> async.complete());
 
-        characters.create(addFuture, add);
-        characters.create(removeFuture, delete);
+        characters.create(addPromise, add);
+        characters.create(removePromise, delete);
     }
 
     @Test

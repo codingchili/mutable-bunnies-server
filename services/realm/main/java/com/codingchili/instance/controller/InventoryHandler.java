@@ -63,7 +63,7 @@ public class InventoryHandler implements GameHandler {
     @Api
     public void loot_all(InstanceRequest request) {
         LootEntityEvent event = request.raw(LootEntityEvent.class);
-        inventory.takeAll(creature(request), event.getTargetId()).setHandler(done -> {
+        inventory.takeAll(creature(request), event.getTargetId()).onComplete(done -> {
             if (done.failed()) {
                 request.error(done.cause());
             }
@@ -79,7 +79,7 @@ public class InventoryHandler implements GameHandler {
     @Api
     public void loot_list(InstanceRequest request) {
         ListEntityLootEvent event = request.raw(ListEntityLootEvent.class);
-        inventory.listLoot(creature(request), event.getTargetId()).setHandler(done -> {
+        inventory.listLoot(creature(request), event.getTargetId()).onComplete(done -> {
             if (done.failed()) {
                 request.error(done.cause());
             }

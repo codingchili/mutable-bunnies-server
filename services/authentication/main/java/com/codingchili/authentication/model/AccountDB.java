@@ -53,7 +53,7 @@ public class AccountDB implements AsyncAccountStore {
     public void register(Handler<AsyncResult<Account>> future, Account account) {
         AccountMapping mapping = new AccountMapping(account);
 
-        hasher.hash(account.getPassword()).setHandler(hash -> {
+        hasher.hash(account.getPassword()).onComplete(hash -> {
             mapping.setHash(hash.result());
 
             accounts.putIfAbsent(mapping, map -> {

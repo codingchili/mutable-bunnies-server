@@ -2,10 +2,7 @@ package com.codingchili.instance.context;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codingchili.common.ReceivableMessage;
-import com.codingchili.core.metrics.MetricCollector;
-import com.codingchili.instance.model.entity.SpawnPoint;
-import com.codingchili.instance.model.entity.Creature;
-import com.codingchili.instance.model.entity.PlayerCreature;
+import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.events.*;
 import com.codingchili.instance.model.stats.Attribute;
 import com.codingchili.instance.model.stats.Stats;
@@ -14,6 +11,7 @@ import com.codingchili.instance.scripting.Scripted;
 import com.codingchili.instance.transport.FasterRealmInstanceCodec;
 import com.codingchili.realm.configuration.*;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.eventbus.DeliveryOptions;
 
 import java.util.Random;
@@ -24,6 +22,7 @@ import com.codingchili.core.context.SystemContext;
 import com.codingchili.core.files.Configurations;
 import com.codingchili.core.logging.Level;
 import com.codingchili.core.logging.Logger;
+import com.codingchili.core.metrics.MetricCollector;
 
 import static com.codingchili.common.Strings.*;
 
@@ -54,6 +53,9 @@ public class InstanceContext extends SystemContext implements ServiceContext {
         this.context = context;
         this.settings = instance.getPath();
         this.metrics = context.metrics(address());
+        this.metrics.settings().setEnabled(
+                Configurations.system().getMetrics().isEnabled()
+        );
 
         metrics.type("instance")
                 .metadata()
@@ -170,12 +172,12 @@ public class InstanceContext extends SystemContext implements ServiceContext {
                 .put(ID_REALM, realm).send();
     }
 
-    public void onInstanceStopped(Future<Void> future, String realm, String instance) {
+    public void onInstanceStopped(Promise<Void> promise, String realm, String instance) {
         logger.event(LOG_INSTANCE_STOP)
                 .put(LOG_INSTANCE, instance)
                 .put(ID_REALM, realm).send();
 
-        future.complete();
+        promise.complete();
     }
 
     public void skippedTicks(int ticks) {
@@ -202,15 +204,15 @@ public class InstanceContext extends SystemContext implements ServiceContext {
             .setCodecName(FasterRealmInstanceCodec.getName());
 
     public Future<Object> sendRealm(ReceivableMessage message) {
-        Future<Object> future = Future.future();
+        Promise<Object> promise = Promise.promise();
         context.bus().request(realm().getId(), message, options, (send) -> {
             if (send.succeeded()) {
-                future.complete(send.result().body());
+                promise.complete(send.result().body());
             } else {
-                future.fail(send.cause());
+                promise.fail(send.cause());
             }
         });
-        return future;
+        return promise.future();
     }
 
     /**

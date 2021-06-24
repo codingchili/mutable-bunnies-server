@@ -126,7 +126,7 @@ public class CharacterDBTest {
             if (done.succeeded()) {
                 creature.setVector(new Vector());
                 creature.setInventory(new Inventory());
-                db.update(creature).setHandler(update -> {
+                db.update(creature).onComplete(update -> {
                     if (update.succeeded()) {
                         async.complete();
                     } else {
@@ -282,7 +282,7 @@ public class CharacterDBTest {
                         "  }\n" +
                         "}", PlayerCreature.class);
 
-                db.update(creatureUpdated).setHandler(update -> {
+                db.update(creatureUpdated).onComplete(update -> {
                     if (update.succeeded()) {
                         async.complete();
                     } else {

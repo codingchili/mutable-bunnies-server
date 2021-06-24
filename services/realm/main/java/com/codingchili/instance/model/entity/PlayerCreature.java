@@ -173,7 +173,7 @@ public class PlayerCreature extends SimpleCreature {
     @Override
     public void handle(Event event) {
         UpdateMessage update = new UpdateMessage(event, account);
-        game.instance().sendRealm(update).setHandler(done -> {
+        game.instance().sendRealm(update).onComplete(done -> {
             if (done.failed()) {
                 onError(done.cause().getMessage());
             }

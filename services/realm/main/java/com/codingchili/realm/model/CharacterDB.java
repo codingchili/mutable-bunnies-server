@@ -2,9 +2,7 @@ package com.codingchili.realm.model;
 
 import com.codingchili.core.storage.AsyncStorage;
 import com.codingchili.instance.model.entity.PlayerCreature;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
+import io.vertx.core.*;
 
 import java.util.Collection;
 
@@ -65,8 +63,8 @@ public class CharacterDB implements AsyncCharacterStore {
 
     @Override
     public Future<Void> update(PlayerCreature player) {
-        Future<Void> future = Future.future();
-        characters.put(player, future);
-        return future;
+        Promise<Void> promise = Promise.promise();
+        characters.put(player, promise);
+        return promise.future();
     }
 }

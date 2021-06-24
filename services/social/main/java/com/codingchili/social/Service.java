@@ -4,6 +4,7 @@ import com.codingchili.social.configuration.SocialContext;
 import com.codingchili.social.controller.OnlineHandler;
 import com.codingchili.social.controller.SocialHandler;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.listener.CoreService;
@@ -22,13 +23,13 @@ public class Service implements CoreService {
     }
 
     @Override
-    public void start(Future<Void> start) {
-        SocialContext.create(core).setHandler(context -> {
+    public void start(Promise<Void> start) {
+        SocialContext.create(core).onComplete(context -> {
 
             if (context.succeeded()) {
                 core.handler(() -> new SocialHandler(context.result()))
                         .compose((a) -> core.handler(() -> new OnlineHandler(context.result())))
-                        .setHandler((done) -> {
+                        .onComplete((done) -> {
                             if (done.succeeded()) {
                                 start.complete();
                             } else {

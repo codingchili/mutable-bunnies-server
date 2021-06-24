@@ -4,7 +4,7 @@ import com.codingchili.authentication.configuration.AuthContext;
 import com.codingchili.authentication.controller.ClientHandler;
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.listener.CoreService;
-import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import static com.codingchili.core.context.FutureHelper.untyped;
 
@@ -22,17 +22,17 @@ public class Service implements CoreService {
     }
 
     @Override
-    public void start(Future<Void> start) {
-        Future<AuthContext> providerFuture = Future.future();
+    public void start(Promise<Void> start) {
+        Promise<AuthContext> providerPromise = Promise.promise();
 
-        providerFuture.setHandler(future -> {
+        providerPromise.future().onComplete(future -> {
             if (future.succeeded()) {
                 context = future.result();
-                context.handler(() -> new ClientHandler(context)).setHandler(untyped(start));
+                context.handler(() -> new ClientHandler(context)).onComplete(untyped(start));
             } else {
                 start.fail(future.cause());
             }
         });
-        AuthContext.create(providerFuture, core);
+        AuthContext.create(providerPromise, core);
     }
 }

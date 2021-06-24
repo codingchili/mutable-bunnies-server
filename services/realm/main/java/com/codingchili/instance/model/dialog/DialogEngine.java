@@ -5,6 +5,7 @@ import com.codingchili.instance.model.entity.*;
 import com.codingchili.instance.model.entity.Vector;
 import com.codingchili.instance.model.events.ChatEvent;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import java.util.*;
 
@@ -63,7 +64,7 @@ public class DialogEngine {
      * @return future.
      */
     public Future<ActiveDialog> trigger(String sourceId, String targetId, String dialogId) {
-        Future<ActiveDialog> future = Future.future();
+        Promise<ActiveDialog> promise = Promise.promise();
         Optional<Dialog> dialog = dialogDB.getById(dialogId);
         Entity source = game.getById(sourceId);
         Entity target = game.getById(targetId);
@@ -72,13 +73,13 @@ public class DialogEngine {
             ActiveDialog active = new ActiveDialog(game, dialog.get(), target, source);
             dialogs.put(targetId, active);
             target.handle(DialogRequest.from(active));
-            future.complete(active);
+            promise.complete(active);
         } else {
             game.getLogger(getClass()).event("dialog.engine")
                     .put("id", dialogId)
                     .send("failed to trigger dialog, id reference failure.");
         }
-        return future;
+        return promise.future();
     }
 
     /**

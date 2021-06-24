@@ -53,7 +53,7 @@ public class OnlineHandler implements CoreHandler {
     }
 
     private void notifyAllFriends(FriendOnlineEvent event) {
-        friends.list(event.getFriend()).setHandler(list -> {
+        friends.list(event.getFriend()).onComplete(list -> {
             list.result().getFriends().forEach(friend -> {
                 if (online.is(friend)) {
                     context.send(friend, event.setTarget(friend));

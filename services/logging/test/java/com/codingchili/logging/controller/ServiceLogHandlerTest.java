@@ -3,7 +3,7 @@ package com.codingchili.logging.controller;
 import com.codingchili.core.context.SystemContext;
 import com.codingchili.logging.configuration.LogContext;
 import com.codingchili.logging.configuration.LogServerSettings;
-import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(VertxUnitRunner.class)
 public class ServiceLogHandlerTest extends SharedLogHandlerTest {
-    private Future<Void> future = Future.future();
+    private Promise<Void> promise = Promise.promise();
 
     public ServiceLogHandlerTest() {
         super();
@@ -28,9 +28,9 @@ public class ServiceLogHandlerTest extends SharedLogHandlerTest {
     @Before
     public void setUp(TestContext test) {
         Async async = test.async();
-        context = new LogContext(new SystemContext(), future);
+        context = new LogContext(new SystemContext(), promise);
 
-        future.setHandler(done -> {
+        promise.future().onComplete(done -> {
             context.storage().clear(clear -> {
                 async.complete();
             });

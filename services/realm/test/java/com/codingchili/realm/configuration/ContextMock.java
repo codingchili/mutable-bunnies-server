@@ -3,6 +3,7 @@ package com.codingchili.realm.configuration;
 import com.codingchili.realm.model.AsyncCharacterStore;
 import com.codingchili.realm.model.CharacterDB;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import com.codingchili.core.context.*;
 import com.codingchili.core.security.Token;
@@ -26,26 +27,26 @@ public class ContextMock extends RealmContext {
     }
 
     public static Future<ContextMock> create() {
-        Future<ContextMock> future = Future.future();
+        Promise<ContextMock> promise = Promise.promise();
         ContextMock context = new ContextMock();
 
         TokenFactory factory = new TokenFactory(context, "s".getBytes());
         Token token = new Token("realmName");
 
-        factory.hmac(token).setHandler(hmac -> {
+        factory.hmac(token).onComplete(hmac -> {
             realmSettings.setId(token.getDomain());
             realmSettings.setAuthentication(token);
-            future.complete(context);
+            promise.complete(context);
         });
 
 
-        return future;
+        return promise.future();
     }
 
     @Override
     public AsyncCharacterStore characters() {
         // the sharedMap is set up synchronously.
-        return new CharacterDB(new SharedMap<>(Future.future(), new StorageContext<>(this)));
+        return new CharacterDB(new SharedMap<>(Promise.promise(), new StorageContext<>(this)));
     }
 
     public TokenFactory getClientFactory() {

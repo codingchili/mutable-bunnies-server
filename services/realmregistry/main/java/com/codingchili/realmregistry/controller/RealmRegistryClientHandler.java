@@ -3,6 +3,7 @@ package com.codingchili.realmregistry.controller;
 import com.codingchili.realmregistry.configuration.RegistryContext;
 import com.codingchili.realmregistry.model.*;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import com.codingchili.core.listener.CoreHandler;
 import com.codingchili.core.listener.Request;
@@ -31,7 +32,7 @@ public class RealmRegistryClientHandler implements CoreHandler {
     }
 
     @Override
-    public void start(Future<Void> start) {
+    public void start(Promise<Void> start) {
         context.getRealmStore(done -> {
             if (done.succeeded()) {
                 realms = done.result();
@@ -48,19 +49,19 @@ public class RealmRegistryClientHandler implements CoreHandler {
     }
 
     private Future<RoleType> authenticate(Request request) {
-        Future<RoleType> future = Future.future();
-        context.verifyClientToken(request.token()).setHandler(authentication -> {
+        Promise<RoleType> promise = Promise.promise();
+        context.verifyClientToken(request.token()).onComplete(authentication -> {
            if (authentication.succeeded()) {
-               future.complete(Role.USER);
+               promise.complete(Role.USER);
            }  else {
-               future.complete(Role.PUBLIC);
+               promise.complete(Role.PUBLIC);
            }
         });
-        return future;
+        return promise.future();
     }
 
     private void realmToken(ClientRequest request) {
-        realms.signToken(request.realmId(), request.account()).setHandler(sign -> {
+        realms.signToken(request.realmId(), request.account()).onComplete(sign -> {
             if (sign.succeeded()) {
                 request.write(new TokenResponse(sign.result()));
             } else {

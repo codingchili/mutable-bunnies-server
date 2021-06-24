@@ -1,6 +1,7 @@
 package com.codingchili.instance.scripting;
 
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -35,7 +36,7 @@ public class ScriptReference implements Scripted {
         Logger logger = core.logger(ScriptReference.class);
 
         if (!initialized.getAndSet(true)) {
-            Future<Void> future = Future.future();
+            Promise<Void> promise = Promise.promise();
 
             core.blocking((blocking) -> {
                 try {
@@ -56,8 +57,8 @@ public class ScriptReference implements Scripted {
                 } catch (Exception e) {
                     blocking.fail(e);
                 }
-            }, future);
-            return future;
+            }, promise);
+            return promise.future();
         } else {
             return Future.succeededFuture();
         }

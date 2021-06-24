@@ -9,6 +9,7 @@ import com.codingchili.instance.model.npc.LootableEntity;
 import com.codingchili.instance.model.spells.SpellTarget;
 import com.codingchili.instance.scripting.*;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -296,20 +297,20 @@ public class InventoryEngine {
      */
     public Future<Void> listLoot(Creature source, String targetId) {
         LootableEntity entity = game.getById(targetId);
-        Future<Void> future = Future.future();
+        Promise<Void> promise = Promise.promise();
 
         if (targetInRange(source, entity)) {
             if (entity.getItems().isEmpty()) {
-                future.fail(new LootableEmptyException());
+                promise.fail(new LootableEmptyException());
             } else {
                 entity.subscribe(source);
-                future.complete();
+                promise.complete();
                 game.movement().stop(source);
             }
         } else {
-            future.fail(new InteractionOutOfRangeException());
+            promise.fail(new InteractionOutOfRangeException());
         }
-        return future;
+        return promise.future();
     }
 
     /**

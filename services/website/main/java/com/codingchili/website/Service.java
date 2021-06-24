@@ -3,6 +3,7 @@ package com.codingchili.website;
 import com.codingchili.website.configuration.WebserverContext;
 import com.codingchili.website.configuration.WebserverSettings;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Http2PushMapping;
 import io.vertx.ext.web.Router;
@@ -33,7 +34,7 @@ public class Service implements CoreService {
     }
 
     @Override
-    public void start(Future<Void> start) {
+    public void start(Promise<Void> start) {
         core.blocking((blocking) -> {
             Router router = Router.router(core.vertx());
             router.route().handler(BodyHandler.create());
@@ -67,7 +68,7 @@ public class Service implements CoreService {
 
             core.vertx().createHttpServer(options)
                     .requestHandler(router)
-                    .listen(settings.getListener().getPort(), untyped(blocking.future()));
+                    .listen(settings.getListener().getPort(), untyped(blocking));
         }, start);
     }
 }

@@ -91,7 +91,7 @@ public class ScriptEngineTest {
 
         new BenchmarkExecutor(context)
                 .setListener(new BenchmarkConsoleListener())
-                .start(group).setHandler(done -> {
+                .start(group).onComplete(done -> {
                     try {
                         new BenchmarkHTMLReport(done.result()).display();
                     } catch (Exception e) {

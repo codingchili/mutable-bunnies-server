@@ -173,7 +173,7 @@ public class MovementEngine {
         if (!creature.getInstance().equals(instance)) {
             creature.setFromAnotherInstance(true);
 
-            game.instance().sendRealm(new PlayerTravelMessage(creature, instance)).setHandler(done -> {
+            game.instance().sendRealm(new PlayerTravelMessage(creature, instance)).onComplete(done -> {
                 if (done.succeeded()) {
                     JsonObject response = Serializer.json(done.result());
                     ResponseStatus status = ResponseStatus.valueOf(response.getString(PROTOCOL_STATUS));

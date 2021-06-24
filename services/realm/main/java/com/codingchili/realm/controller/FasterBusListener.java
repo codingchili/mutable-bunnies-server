@@ -3,6 +3,7 @@ package com.codingchili.realm.controller;
 import com.codingchili.instance.transport.FasterRealmInstanceCodec;
 import com.codingchili.instance.transport.InstanceRequest;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 import java.util.function.Supplier;
 
@@ -28,7 +29,7 @@ public class FasterBusListener implements CoreListener {
     }
 
     @Override
-    public void start(Future<Void> start) {
+    public void start(Promise<Void> start) {
         FasterRealmInstanceCodec.initialize(core);
 
         core.bus().consumer(handler.address(), msg -> {
@@ -40,7 +41,7 @@ public class FasterBusListener implements CoreListener {
     }
 
     @Override
-    public void stop(Future<Void> stop) {
+    public void stop(Promise<Void> stop) {
         handler.stop(stop);
     }
 
