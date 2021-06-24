@@ -11,7 +11,7 @@ sourceSets {
 }
 
 dependencies {
-    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.10")
-    compile("org.jetbrains.kotlin:kotlin-reflect:1.4.0")
-    compile project(':common')
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.10")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.0")
+    implementation project(':common')
 }

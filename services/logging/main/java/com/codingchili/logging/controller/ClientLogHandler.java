@@ -59,7 +59,7 @@ public class ClientLogHandler implements CoreHandler {
         logdata.put(LOG_TIME, Instant.now().toEpochMilli());
         logdata.put(LOG_REMOTE, request.data().getString(PROTOCOL_CONNECTION));
 
-        verifyToken(request.data()).setHandler(verify -> {
+        verifyToken(request.data()).onComplete(verify -> {
             if (verify.succeeded()) {
                 console.log(logdata.copy());
                 store.log(logdata);

@@ -1,14 +1,12 @@
 package com.codingchili.logging.configuration;
 
-import com.codingchili.core.context.CoreContext;
-import com.codingchili.core.context.ServiceContext;
-import com.codingchili.core.context.SystemContext;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+
+import com.codingchili.core.context.*;
 import com.codingchili.core.security.Token;
 import com.codingchili.core.security.TokenFactory;
-import com.codingchili.core.storage.AsyncStorage;
-import com.codingchili.core.storage.JsonStorable;
-import com.codingchili.core.storage.StorageLoader;
-import io.vertx.core.Future;
+import com.codingchili.core.storage.*;
 
 /**
  * @author Robin Duda
@@ -20,7 +18,7 @@ public class LogContext extends SystemContext implements ServiceContext {
     private TokenFactory clientFactory;
     private TokenFactory serverFactory;
 
-    public LogContext(CoreContext context, Future<Void> future) {
+    public LogContext(CoreContext context, Promise<Void> promise) {
         super(context);
 
         clientFactory = new TokenFactory(this, service().getClientSecret());
@@ -36,13 +34,13 @@ public class LogContext extends SystemContext implements ServiceContext {
                     .build(result -> {
                         if (result.succeeded()) {
                             storage = result.result();
-                            future.complete();
+                            promise.complete();
                         } else {
-                            future.fail(result.cause());
+                            promise.fail(result.cause());
                         }
                     });
         } else {
-            future.complete();
+            promise.complete();
         }
     }
 

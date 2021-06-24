@@ -12,8 +12,8 @@ import com.codingchili.core.protocol.RoleType;
 import com.codingchili.core.security.TokenFactory;
 import com.codingchili.core.storage.AsyncStorage;
 import com.codingchili.core.storage.StorageLoader;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
+
+import io.vertx.core.*;
 
 import java.util.function.Function;
 
@@ -38,8 +38,8 @@ public class BankingContext extends SystemContext {
 
     public static Future<BankingContext> create(CoreContext core) {
         var context = new BankingContext(core);
-        var bank = Future.<AsyncStorage<Inventory>>future();
-        var auctions = Future.<AsyncStorage<Auction>>future();
+        var bank = Promise.<AsyncStorage<Inventory>>promise();
+        var auctions = Promise.<AsyncStorage<Auction>>promise();
 
         new StorageLoader<Inventory>(context)
                 .withPlugin(context.settings().getStorage())
@@ -51,9 +51,9 @@ public class BankingContext extends SystemContext {
                 .withValue(Auction.class)
                 .build(auctions);
 
-        return CompositeFuture.all(bank, auctions).map(v -> {
-            context.bank = new BankDB(bank.result());
-            context.auctions = new AuctionDB(auctions.result());
+        return CompositeFuture.all(bank.future(), auctions.future()).map(v -> {
+            context.bank = new BankDB(bank.future().result());
+            context.auctions = new AuctionDB(auctions.future().result());
             return context;
         });
     }

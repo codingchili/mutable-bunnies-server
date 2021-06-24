@@ -6,8 +6,7 @@ import com.codingchili.core.listener.CoreService;
 import com.codingchili.logging.configuration.LogContext;
 import com.codingchili.logging.controller.ClientLogHandler;
 import com.codingchili.logging.controller.ServiceLogHandler;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
+import io.vertx.core.*;
 
 import static com.codingchili.core.context.FutureHelper.untyped;
 
@@ -17,16 +16,16 @@ import static com.codingchili.core.context.FutureHelper.untyped;
  */
 public class Service implements CoreService {
     private LogContext context;
-    private Future<Void> future = Future.future();
+    private Promise<Void> promise = Promise.promise();
 
     @Override
     public void init(CoreContext core) {
-        this.context = new LogContext(core, future);
+        this.context = new LogContext(core, promise);
     }
 
     @Override
-    public void start(Future<Void> start) {
-        future.onComplete(done -> {
+    public void start(Promise<Void> start) {
+        promise.future().onComplete(done -> {
             if (done.succeeded()) {
                 CompositeFuture.all(
                         context.handler(() -> new ServiceLogHandler(context)),

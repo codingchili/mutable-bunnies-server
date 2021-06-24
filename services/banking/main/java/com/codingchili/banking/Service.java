@@ -9,8 +9,7 @@ import com.codingchili.core.listener.CoreService;
 import com.codingchili.core.protocol.Serializer;
 
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
+import io.vertx.core.*;
 
 public class Service implements CoreService {
     private CoreContext core;
@@ -22,22 +21,22 @@ public class Service implements CoreService {
     }
 
     @Override
-    public void start(Future<Void> start) {
-        var auctions = Future.future();
-        var banking = Future.future();
+    public void start(Promise<Void> start) {
+        var auctions = Promise.promise();
+        var banking = Promise.promise();
 
-        BankingContext.create(core).setHandler(context -> {
+        BankingContext.create(core).onComplete(context -> {
             core.handler(() -> new AuctionHandler(context.result()))
                     .mapEmpty()
-                    .setHandler(auctions);
+                    .onComplete(auctions);
 
             core.handler(() -> new BankingHandler(context.result()))
                     .mapEmpty()
-                    .setHandler(banking);
+                    .onComplete(banking);
         });
         
-        CompositeFuture.all(auctions, banking)
+        CompositeFuture.all(auctions.future(), banking.future())
                 .<Void>mapEmpty()
-                .setHandler(start);
+                .onComplete(start);
     }
 }
