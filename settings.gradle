@@ -7,5 +7,5 @@ include 'common',
         'services:router',
         'services:logging',
         'services:website',
-        'services:banking',
+        //'services:banking',
         'client'
