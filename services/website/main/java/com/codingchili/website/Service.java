@@ -9,6 +9,7 @@ import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.listener.CoreService;
@@ -46,9 +47,16 @@ public class Service implements CoreService {
 
             router.route("/*").handler(ctx -> {
                 if (ctx.request().path().equals("/")) {
+                    // serve index page directly and avoid redirect.
                     core.onPageLoaded(ctx.request());
+                    ctx.response().sendFile(
+                            Paths.get(
+                                    settings.getResources(),
+                                    settings.getStartPage()).toString()
+                    );
+                } else {
+                    ctx.next();
                 }
-                ctx.next();
             });
 
             router.route("/*").handler(StaticHandler.create()
@@ -73,7 +81,9 @@ public class Service implements CoreService {
 
             core.vertx().createHttpServer(options)
                     .requestHandler(router)
-                    .exceptionHandler(logger::onError)
+                    // logs a lot of connection reset errors with browser clients.
+                    .exceptionHandler(e -> {
+                    })
                     .listen(settings.getListener().getPort(), untyped(blocking));
         }, start);
     }
