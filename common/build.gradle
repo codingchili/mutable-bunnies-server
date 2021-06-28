@@ -4,7 +4,6 @@ project.group = 'com.codingchili.common'
 
 dependencies {
     api('io.dropwizard.metrics:metrics-jvm:4.2.2')
-    api('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.1')
     api('com.fasterxml.jackson.core:jackson-databind:2.12.1')
 
     api("com.github.codingchili:core:$project.version") {
