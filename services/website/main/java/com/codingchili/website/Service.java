@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 
 import com.codingchili.core.context.CoreContext;
 import com.codingchili.core.listener.CoreService;
-import com.codingchili.core.logging.Logger;
 
 import static com.codingchili.core.context.FutureHelper.untyped;
 
@@ -26,11 +25,9 @@ public class Service implements CoreService {
     public static final long KB_256 = 256_000;
     private WebserverContext core;
     private WebserverSettings settings;
-    private Logger logger;
 
     @Override
     public void init(CoreContext core) {
-        this.logger = core.logger(getClass());
         this.core = new WebserverContext(core);
         this.settings = this.core.service();
     }
@@ -42,7 +39,7 @@ public class Service implements CoreService {
             router.route().handler(
                     BodyHandler.create()
                             .setBodyLimit(KB_256)
-                            .setDeleteUploadedFilesOnEnd(true)
+                            .setHandleFileUploads(false)
             );
 
             router.route("/*").handler(ctx -> {
@@ -82,8 +79,7 @@ public class Service implements CoreService {
             core.vertx().createHttpServer(options)
                     .requestHandler(router)
                     // logs a lot of connection reset errors with browser clients.
-                    .exceptionHandler(e -> {
-                    })
+                    .exceptionHandler(e -> { })
                     .listen(settings.getListener().getPort(), untyped(blocking));
         }, start);
     }
